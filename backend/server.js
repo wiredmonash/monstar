@@ -5,7 +5,8 @@ const cors = require('cors');
 const app = express();
 
 // Router Imports 
-//const (something)Routes = require('./routes/(route)');
+const UnitRouter = require('./routes/units');
+const ReviewRouter = require('./routes/reviews');
 
 // === Middleware ===
 app.use(cors());
@@ -19,7 +20,8 @@ connect(url)
     .catch((error) => console.log(error));
 
 // === Routes ===
-//app.use('/api/v1/(someDefaultRoute Here)', (something)Routes);
+app.use('/api/v1/units', UnitRouter);
+app.use('/api/v1/reviews', ReviewRouter);
 
 // === Debugging Root Route ===
 app.get('/', (req, res) => {
