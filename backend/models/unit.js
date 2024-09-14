@@ -4,7 +4,6 @@ Schema and Model for a review on the platform
 
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-s
 const unitSchema = new Schema({
     // Unit code
     unitCode: {type: String, required: true, unique: true, index: true},
