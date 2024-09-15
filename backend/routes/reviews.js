@@ -107,7 +107,7 @@ router.post('/:unit/create', async function (req, res) {
  * @returns {JSON} Responds with the updated review in JSON format
  * @throws {500} If an error occurs whilst updating a review.
  */
-router.put('/:reviewId/update', async function (req, res) {
+router.put('/update/:reviewId', async function (req, res) {
     // TODO: Code here (Riki)
 });
 
@@ -120,7 +120,7 @@ router.put('/:reviewId/update', async function (req, res) {
  * @returns {JSON} Responds with the deleted review in JSON format
  * @throws {500} If an error occurs whilst deleting the review.
  */
-router.delete('/:reviewID/delete', async function (req, res) {
+router.delete('/delete/:reviewId', async function (req, res) {
     // TODO: Code here (Riki)
 })
 
