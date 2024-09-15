@@ -2,11 +2,20 @@
 Schema and Model for a review on the platform
 */
 
+// Module Imports
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+
+// Unit Schema
 const unitSchema = new Schema({
     // Unit code
-    unitCode: {type: String, required: true, unique: true, index: true},
+    unitCode: {
+        type: String, 
+        required: true, 
+        unique: true, 
+        index: true,
+        set: value => value.toLowerCase()
+    },
 
     // Name of the unit
     name: {type: String, required: true},
@@ -30,5 +39,6 @@ const unitSchema = new Schema({
     avgContentRating: {type: Number, default: 0, min: 0, max: 5}
 });
 
+// Export the Unit model
 const Unit = mongoose.model('Unit', unitSchema);
 module.exports = Unit;

@@ -2,9 +2,11 @@
 Schema and Model for a review on the platform
 */
 
+// Module Imports
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Review Schema
 const reviewSchema = new Schema({
     // Review title
     title: {type: String, required: true},
@@ -31,8 +33,9 @@ const reviewSchema = new Schema({
     description: {type: String, required: true},
 
     // Reference to the unit being reviewed
-    unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true}
+    unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true} //! Change required to true 
 });
 
+// Export the Review model
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;
