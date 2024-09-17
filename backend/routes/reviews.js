@@ -108,7 +108,24 @@ router.post('/:unit/create', async function (req, res) {
  * @throws {500} If an error occurs whilst updating a review.
  */
 router.put('/update/:reviewId', async function (req, res) {
-    // TODO: Code here (Riki)
+    try {
+        const updatedReview = await Review.findByIdAndUpdate(
+            // Find using parsed MongoDB ObjectID
+            req.params.reviewId,
+            // Update with the json body being sent
+            req.body
+        );
+
+        // Error if review doesn't exist in db
+        if (!updatedReview) {
+            res.status(500).json({error: "Review not found"});
+        }
+
+        res.status(200).json({message: "Review successfully updated"});
+    }
+    catch (error) {
+        res.status(500).json({error: `Error while updating review: ${error.message}`});
+    }
 });
 
 /**
@@ -121,7 +138,19 @@ router.put('/update/:reviewId', async function (req, res) {
  * @throws {500} If an error occurs whilst deleting the review.
  */
 router.delete('/delete/:reviewId', async function (req, res) {
-    // TODO: Code here (Riki)
+    try {
+        const review = await Review.findByIdAndDelete(req.params.reviewId);
+
+        // Throw error if review doesn't exist
+        if (!review) {
+            return res.status(500).json({error: "Review not found"});
+        }
+
+        res.status(200).json({message: "Review successfully deleted"});
+    }
+    catch (error) {
+        res.status(500).json({error: `Error while deleting review: ${error.message}`});
+    }
 })
 
 

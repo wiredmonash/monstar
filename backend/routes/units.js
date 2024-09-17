@@ -73,7 +73,23 @@ router.post('/create', async function (req, res) {
  * @throws {500} If an error occurs
  */
 router.delete('/delete/:unitcode', async function (req, res) {
-    // TODO: Code here (Riki)
+    try {
+        const unit = await Unit.findOneAndDelete({
+            unitCode: req.params.unitcode
+        });
+
+        if (!unit) {
+            return res.status(500).json({error: "Unit not found"});
+        }
+
+        // Using code 200 instead of 204 so I can send success message
+        return res.status(200).json({message: "Unit successfully deleted"});
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: `Error occured while deleting unit: ${error.message}`
+        });
+    }
 });
 
 /**
