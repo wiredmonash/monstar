@@ -4,10 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 
-// Auth
-const bodyParser= require('body-parser');
-const bcrypt = require('bcrypt');
-
 // Router Imports 
 const UnitRouter = require('./routes/units');
 const ReviewRouter = require('./routes/reviews');
