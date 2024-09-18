@@ -103,7 +103,35 @@ router.delete('/delete/:unitcode', async function (req, res) {
  * @throws {500} If some error occurs
  */
 router.put('/update/:unitCode', async function (req, res) {
-    // TODO: Code Here (Nevis)
+    try {
+        // Finding the unit
+        const unit = await Unit.findOne({unitCode: req.params.unitCode})
+
+        if (!unit) {    // If the unit doesn't exist, return an error
+            return res.status(404).json({
+                error: "Unit not found!"
+            })
+        }
+
+        const result = await Unit.updateOne({   // Update the unit if it exists
+            unitCode: req.params.unitCode
+        },
+            {
+                $set: {
+                    name: req.body.unit_name || unit.name,  // Fallback in case the data hasn't been provided
+                    description: req.body.unit_description || unit.description
+                }
+            })
+
+        return res.status(200).json({   // Success
+            message: "Unit updated successfully!"
+        })
+    }
+    catch (error) {
+        return res.status(500).json({   // Error handling
+            error: `An error occurred while updating the unit: ${error.message}`
+        })
+    }
 });
 
 // Export the router
