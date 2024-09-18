@@ -86,7 +86,7 @@ router.post('/login', async function (req, res) {
     try {
         const { username, password } = req.body;
 
-        const user = User.findOne({ username });
+        const user = await User.findOne({ username });
 
         if (!user) {
             return res.status(400).json({error: "Invalid username or password"});
@@ -109,6 +109,30 @@ router.post('/login', async function (req, res) {
 });
 
 
+/**
+ * ! DELETE Remove a User from the database
+ * 
+ * Deletes a User from the database
+ * 
+ * @async
+ * @returns {JSON} Responds with a success message in JSON
+ * @throws {500} If an error occurs
+ * @throws {404} User not found error
+ */
+router.delete('/delete/:username', async function (req, res) {
+    try {
+        const user = await User.findOneAndDelete({username: req.params.username});
+
+        if (!user) {
+            return res.status(404).json({error: "User not found"});
+        }
+
+        return res.status(200).json({message: "User successfully deleted"});
+    }
+    catch (error) {
+        return res.status(500).json({error: `Error occured while deleting user: ${error.message}`});
+    }
+});
 
 
 module.exports = router;
