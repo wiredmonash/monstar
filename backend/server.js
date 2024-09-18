@@ -4,16 +4,21 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 
+// Auth
+const bodyParser= require('body-parser');
+const bcrypt = require('bcrypt');
+
 // Router Imports 
 const UnitRouter = require('./routes/units');
 const ReviewRouter = require('./routes/reviews');
+const AuthRouter = require('./routes/auth');
 
 // === Middleware ===
 app.use(cors());
 app.use(express.json());
 
 // === Connect to MongoDB ===
-const url = 'mongodb://localhost:27017/unit-review';
+const url = 'mongodb://127.0.0.1:27017/unit-review-dev';
 async function connect(url) { await mongoose.connect(url); }
 connect(url)
     .then(console.log('Connected to MongoDB Database'))
@@ -22,6 +27,7 @@ connect(url)
 // === Routes ===
 app.use('/api/v1/units', UnitRouter);
 app.use('/api/v1/reviews', ReviewRouter);
+app.use('/api/v1/auth', AuthRouter);
 
 // === Debugging Root Route ===
 app.get('/', (req, res) => {
