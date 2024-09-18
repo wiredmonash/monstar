@@ -11,7 +11,7 @@ const router = express.Router();
 /**
  * GET Get All Reviews
  * 
- * Gets all reviews from the database. 
+ * Gets all reviews from the database with an optional filter in the req.body
  * 
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
@@ -20,7 +20,7 @@ const router = express.Router();
 router.get('/', async function (req, res) {
     try {
         // Find all the reviews
-        const reviews = await Review.find({});
+        const reviews = await Review.find(req.body);
 
         // Respond 200 with JSON list containing all reviews
         return res.status(200).json(reviews);
@@ -30,6 +30,7 @@ router.get('/', async function (req, res) {
         return res.status(200).json({ error: `An error occurred while getting all reviews: ${error.message}` });
     }
 });
+
 
 
 /**
