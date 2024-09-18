@@ -43,6 +43,14 @@ router.get('/', async function (req, res) {
  */
 router.post('/create', async function (req, res) {
     try {
+        const existingUnit = await Unit.findOne({
+            unitCode: req.body.unit_code.toLowerCase()
+        });
+
+        if (existingUnit) {
+            return res.status(400).json({error: "Unit already exists"})
+        }
+
         // Create the Unit
         const unit = new Unit({
             unitCode:       req.body.unit_code.toLowerCase(),

@@ -31,8 +31,6 @@ router.get('/', async function (req, res) {
     }
 });
 
-
-
 /**
  * GET Get All Reviews by Unit
  * 
@@ -41,10 +39,37 @@ router.get('/', async function (req, res) {
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
+ * @throws {404} If the unit is not found in the database.
  */
 router.get('/:unit', async function (req, res) {
-    // TODO: Code here (Louis)
+    try {
+        // Get the unit code from the request parameters and convert it to lowercase
+        const unitCode = req.params.unit.toLowerCase();
+        //console.log(`Fetching reviews for unit: ${unitCode}`);
+
+        // Find the unit in the database by its unit code
+        const unitDoc = await Unit.findOne({ unitCode: unitCode });
+
+        // If the unit is not found, return a 404 error
+        if (!unitDoc) {
+            console.error(`Unit with code ${unitCode} not found`);
+            return res.status(404).json({ error: `Unit with code ${unitCode} not found` });
+        }
+
+        // Find all reviews associated with this unit
+        const reviews = await Review.find({ unit: unitDoc._id });
+        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
+
+        // Return the list of reviews with a 200 OK status
+        return res.status(200).json(reviews);
+    } catch (error) {
+        // Handle any errors that occur during the process
+        console.error(`An error occurred: ${error.message}`);
+        return res.status(500).json({ error: `An error occurred while fetching reviews: ${error.message}` });
+    }
 });
+
+
 
 
 /**

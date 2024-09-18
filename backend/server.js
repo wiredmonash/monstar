@@ -26,9 +26,9 @@ app.use('/api/v1/reviews', ReviewRouter);
 app.use('/api/v1/auth', AuthRouter);
 
 // === Debugging Root Route ===
-app.get('/', (req, res) => {
-    return res.status(200).json({ msg : "Hello frontend... From backend." });
-});
+// app.get('/', (req, res) => {
+//     return res.status(200).json({ msg : "Hello frontend... From backend." });
+// });
 
 // === Start Server ===
 const PORT = 8080;
