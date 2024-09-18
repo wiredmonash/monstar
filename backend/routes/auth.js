@@ -135,4 +135,43 @@ router.delete('/delete/:username', async function (req, res) {
 });
 
 
+/**
+ * ! PUT Update a User's details
+ *  
+ * Updates User's username and/or password
+ * 
+ * @async
+ * @returns {JSON} Responds with status 200 and success message
+ * @throws {404} If the Unit is not found
+ * @throws {500} If some error occurs
+ */
+router.put('/update/:username', async function (req, res) {
+    try {
+        const user = await User.findOne({username: req.params.username});
+        if (!user) {
+            return res.status(404).json({error: "User not found"});
+        }
+
+        const { username, password} = req.body;
+
+        if (username) {
+            user.username = username;
+        }
+
+        if (password) {
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            user.password = hashedPassword;
+        }
+
+        await user.save();
+
+        return res.status(200).json({message: "User details successfully updated"});
+    }
+    catch (error) {
+        return res.status(500).json({error: `Error updating user details: ${error.message}`});
+    }
+});
+
+
 module.exports = router;
