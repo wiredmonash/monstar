@@ -71,6 +71,7 @@ router.post('/:unit/create', async function (req, res) {
             title:              req.body.review_title,
             semester:           req.body.review_semester,
             grade:              req.body.review_grade,
+            year:               req.body.review_year,
             overallRating:      req.body.review_overall_rating,
             relevancyRating:    req.body.review_relevancy_rating,
             facultyRating:      req.body.review_faculty_rating,
