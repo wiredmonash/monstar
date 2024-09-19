@@ -1,0 +1,55 @@
+.navbar {
+    background-color: #e7d8f1;
+    padding: 1rem;
+  }
+  
+  .navbar-toggler {
+    border: none; /*Get rid of existing border*/
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .offcanvas {
+    width: 250px;
+    background-color: #f8f9fa;
+  }
+  
+  .offcanvas-header {
+    padding: 1rem;
+    font-size: 1.25rem;
+  }
+  
+  
+  .offcanvas-body ul {
+    padding-left: 0;
+    list-style: none;
+  }
+  
+  .offcanvas-body li {
+    margin: 1rem 0;
+  }
+  
+  .offcanvas-body li a {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    display: block; /* Ensures the background color covers the full width */
+    padding: 0.4rem 1rem; /* Adds padding for spacing */
+    margin: 0.5rem 0; /* Adds margin between buttons */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+    border-radius: 15px; /* Rounded corners */
+    text-decoration: none; /* Removes underline */
+  }
+  
+  .offcanvas-body li a:hover {
+    color: #fff; /* Changes text color on hover */
+    background-color: #333; /* Adds background color on hover */
+    text-decoration: none; /* Removes underline */
+  }
+  
+  .lni-menu {
+    font-size: 25px;
+  }

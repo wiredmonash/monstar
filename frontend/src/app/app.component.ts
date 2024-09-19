@@ -3,10 +3,15 @@ import { RouterOutlet } from '@angular/router';
 // API Service
 import { ApiService } from '../api.service';
 
+// Component imports
+import { NavbarComponent } from './navbar/navbar.component';
+import { FooterComponent } from './footer/footer.component';
+import { FaqComponent } from './faq/faq.component';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, FaqComponent],
   providers: [ApiService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
