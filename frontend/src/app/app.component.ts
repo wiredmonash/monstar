@@ -4,14 +4,14 @@ import { RouterOutlet } from '@angular/router';
 import { ApiService } from '../api.service';
 
 // Component imports
-import { NavbarComponent } from './navbar/navbar.component';
-import { FooterComponent } from './footer/footer.component';
-import { FaqComponent } from './faq/faq.component';
+import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { FooterComponent } from './shared/components/footer/footer.component';
+import { HomeComponent } from './routes/home/home.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, FaqComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, HomeComponent],
   providers: [ApiService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

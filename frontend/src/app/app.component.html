@@ -1,16 +1,17 @@
 <div class="wrapper">
-    <header>
-      <app-navbar></app-navbar>
-    </header>
+  <!-- Navbar -->
+  <header>
+    <app-navbar></app-navbar>
+  </header>
   
-    <main class="content">
-      <!-- Your main content goes here -->
-      <app-faq></app-faq>
-      <h3>Message from the backend: {{message}}</h3>
-    </main>
+  <!-- Main Content -->
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
   
-    <footer>
-      <app-footer></app-footer>
-    </footer>
+  <!-- Footer -->
+  <footer>
+    <app-footer></app-footer>
+  </footer>
 </div>
   
