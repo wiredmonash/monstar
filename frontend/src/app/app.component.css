@@ -1,82 +1,22 @@
-body {
-  background-color: #fffefe;
-  height: 700px;
+/* ! Ensure the html and body elements occupy full height */
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
-.navbar {
-  background-color: #e7d8f1;
-  padding: 1rem;
-}
-
-.navbar-toggler {
-  border: none; /*Get rid of existing border*/
-}
-
-.navbar-brand {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.offcanvas {
-  width: 250px;
-  background-color: #f8f9fa;
-}
-
-.offcanvas-header {
-  padding: 1rem;
-  font-size: 1.25rem;
-}
-
-
-.offcanvas-body ul {
-  padding-left: 0;
-  list-style: none;
-}
-
-.offcanvas-body li {
-  margin: 1rem 0;
-}
-
-.offcanvas-body li a {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.offcanvas-body li a:hover {
-  color: #000;
-  text-decoration: underline;
-}
-
-.lni-menu {
-  font-size: 25px;
-}
-
-/* Footer */
-.footer {
-  background-color: #f0f0f0;
-  padding: 10px 30px;
+/* ! Make the wrapper a flex container */
+.wrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
 }
 
-.footer .social-icons {
-  display: flex;
-  align-items: center;
+/* ! Allow the content area to grow and fill space */
+.content {
+  flex: 1;
 }
 
-.footer .social-icons a {
-  color: #333;
-  text-decoration: none;
-  margin-right: 10px;
-}
-
-.footer .social-icons i {
-  font-size: 1.5rem;
-}
-
-.footer .detail {
-  text-align: left;
+/* ! Optional styling for the footer */
+footer {
+  background-color: #f1f1f1;
 }
