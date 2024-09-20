@@ -1,0 +1,36 @@
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid d-flex justify-content-center position-relative">
+
+            <!-- Sidebar button -->
+            <button class="navbar-toggler d-block" type="button" data-bs-toggle="offcanvas" 
+            data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <!-- Website Name, also redirects to the home page -->
+            <a class="navbar-brand mx-auto" routerLink="/homepage">MonSTAR</a>
+            
+        </div>
+    </nav>
+
+
+    <!-- Sidebar-->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+        <!-- Sidebar header -->
+        <div class="offcanvas-header">
+            <h5 id="offcanvasSidebarLabel">Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+
+        <!-- Sidebar buttons -->
+        <div class="offcanvas-body">
+            <ul>
+                <!-- Takes us to the Unit List page -->
+                <li><a routerLink="/unit-list">Browse Units</a></li>
+                <li><a href="#">Write a Review</a></li>
+                <li><a href="#">Terms and Conditions</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>  

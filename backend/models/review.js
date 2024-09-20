@@ -14,6 +14,9 @@ const reviewSchema = new Schema({
     // Semester taken
     semester: {type: Number, required: true, min: 1, max: 2},
 
+    // Year taken
+    year: {type: Number, required: true},
+
     // Grade obtained for unit
     grade: {type: Number, min: 0, max: 100},
 

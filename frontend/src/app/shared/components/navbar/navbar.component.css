@@ -1,0 +1,89 @@
+/* ! Top Navigation Bar */
+.navbar {
+  /* Light purple background colour */
+  background-color: #e7d8f1;
+  /* Adds padding around the navbar */
+  padding: 1rem;
+}
+
+/* ! Hamburger Menu Button */ 
+.navbar-toggler {
+  /* Removes the default border of the button */
+  border: none; 
+  /* Increases the size of the button */ 
+  font-size: 2rem;
+  /* Minimal padding for the button */
+  padding: 0rem;
+}
+
+/* ! Website Title (MonSTAR) in the Center of the Navbar  */ 
+.navbar-brand {
+  /* Increases the font size of the brand name */
+  font-size: 1.5rem;
+  /* Makes the brand name bold */
+  font-weight: bold;
+}
+
+/* ! Sidebar (Offcanvas) */ 
+.offcanvas {
+  /* Sets the width of the sidebar */ 
+  width: 250px;
+  /* White background color for the sidebar */ 
+  background-color: #f8f9fa;
+  /* Sidebar slide in and out animation */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* ! Sidebar Header */ 
+.offcanvas-header {
+  /* Adds padding around the header */
+  padding: 1rem;
+  /* Increases the font size of the header text */
+  font-size: 1.25rem;
+}
+
+/* ! Sidebar Body Styles (Unordered List) */
+.offcanvas-body ul {
+  /* Removes default padding from the list */
+  padding-left: 0;
+  /* Removes default list bullets */ 
+  list-style: none;
+}
+
+/* ! Sidebar List Item Styles */
+.offcanvas-body li {
+  /* Adds vertical space between each list item */
+  margin: 1rem 0;
+}
+
+/* ! Sidebar Links */
+.offcanvas-body li a {
+  /* Sets font size for sidebar links */
+  font-size: 17px;
+  /* Makes sidebar link text bold */
+  font-weight: bold;
+  /* Sets the default text colour */ 
+  color: #333;
+  /* Ensures the background color covers the full width */
+  display: block; 
+  /* Adds padding for spacing */
+  padding: 0.4rem 1rem; 
+  /* Adds margin between buttons */
+  margin: 0.5rem 0; 
+  /* Smooth transition */
+  transition: background-color 0.3s ease, color 0.3s ease; 
+  /* Rounded corners */
+  border-radius: 15px; 
+  /* Removes underline */
+  text-decoration: none; 
+}
+
+/* * Sidebar Link Hover Effect */
+.offcanvas-body li a:hover {
+  /* Changes text color on hover */
+  color: #fff; 
+  /* Adds background color on hover */
+  background-color: #333; 
+  /* Removes underline */
+  text-decoration: none; 
+}

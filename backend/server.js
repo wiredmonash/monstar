@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 
 // Router Imports 
 const UnitRouter = require('./routes/units');
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // === Connect to MongoDB ===
-const url = 'mongodb://localhost:27017/unit-review';
+const url = process.env.MONGODB_CONN_STRING;
 async function connect(url) { await mongoose.connect(url); }
 connect(url)
     .then(console.log('Connected to MongoDB Database'))
@@ -24,9 +25,9 @@ app.use('/api/v1/units', UnitRouter);
 app.use('/api/v1/reviews', ReviewRouter);
 
 // === Debugging Root Route ===
-app.get('/', (req, res) => {
-    return res.status(200).json({ msg : "Hello frontend... From backend." });
-});
+// app.get('/', (req, res) => {
+//     return res.status(200).json({ msg : "Hello frontend... From backend." });
+// });
 
 // === Start Server ===
 const PORT = 8080;

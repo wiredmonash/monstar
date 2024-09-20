@@ -1,140 +1,22 @@
-/* General */
-body {
-  background-color: #e9d8f2; /* Light lavender background */
-  height: 100vh; /* Ensure body takes full viewport height */
+/* ! Ensure the html and body elements occupy full height */
+html, body {
+  height: 100%;
+  margin: 0;
 }
 
-.navbar {
-  background-color: #e7d8f1; /* Slightly lighter lavender for navbar */
-  padding: 1rem;
-}
-
-.navbar-toggler {
-  border: none; /* Remove the border around the navbar button */
-}
-
-.navbar-brand {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-/* Sidebar (Offcanvas) */
-.offcanvas {
-  width: 250px;
-  background-color: #f8f9fa;
-}
-
-.offcanvas-header {
-  padding: 1rem;
-  font-size: 1.25rem;
-}
-
-.offcanvas-body ul {
-  padding-left: 0;
-  list-style: none;
-}
-
-.offcanvas-body li {
-  margin: 1rem 0;
-}
-
-.offcanvas-body li a {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.offcanvas-body li a:hover {
-  color: #000;
-  text-decoration: underline;
-}
-
-/* Placeholder for Graphic Section */
-.graphic-box {
-  width: 100%;
-  max-width: 800px;
-  height: 300px;
-  border: 2px solid #000;
-  background-color: #fff; /* Placeholder background for graphic */
+/* ! Make the wrapper a flex container */
+.wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+  flex-direction: column;
+  min-height: 100vh; /* Full viewport height */
 }
 
-.explore-button {
-  padding: 10px 30px;
-  background-color: #dec0e9;
-  border: none;
-  color: #000;
-  font-size: 1.25rem;
-  cursor: pointer;
+/* ! Allow the content area to grow and fill space */
+.content {
+  flex: 1;
 }
 
-.explore-button:hover {
-  background-color: #c4a1d5;
-}
-
-/* FAQ Section Styling */
-
-/* Simplified Heading for FAQ Section */
-.faq-heading {
-    font-family: Arial, sans-serif; /* Generic sans-serif font */
-    font-size: 2rem; /* Adjusted size */
-    font-weight: bold;
-    color: #4f1d96; /* Dark purple */
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-/* Accordion Button Styling */
-.custom-accordion-button {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #000; /* Black text */
-    background-color: transparent; /* Remove background */
-    border: none; /* No border */
-}
-
-.custom-accordion-button:focus {
-    box-shadow: none; /* Remove default box shadow */
-}
-
-.accordion-item {
-    border-bottom: 1px solid #e0e0e0; /* Thin bottom border for separation */
-}
-
-.accordion-button::after {
-    font-size: 1rem; /* Smaller arrow */
-}
-
-.accordion-body {
-    font-size: 1rem;
-    color: #333; /* Darker gray for body text */
-}
-
-/* Add subtle hover effect for accordion headers */
-.custom-accordion-button:hover {
-    text-decoration: underline;
-    color: #4f1d96; /* Purple on hover */
-}
-
-/* Footer */
-.footer {
-  background-color: #e9d8f2;
-  padding: 20px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.875rem;
-}
-
-.footer .social-icons {
-  display: flex;
-  align-items: center;
-}
-
+<<<<<<< HEAD
 .footer .social-icons a {
   color: #333;
   text-decoration: none;
@@ -159,4 +41,9 @@ body {
 .footer a:hover {
   color: #000;
   text-decoration: underline;
+=======
+/* ! Optional styling for the footer */
+footer {
+  background-color: #f1f1f1;
+>>>>>>> ba2364eaf5326a42809d7fe1e8447544159c382f
 }
