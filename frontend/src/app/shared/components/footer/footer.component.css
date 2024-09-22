@@ -1,0 +1,15 @@
+/* Footer */
+.footer {
+  background-color: #f0f0f0;
+  font-size: 15px;
+}
+
+.footer .container{
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.footer a {
+  color: #333;
+  text-decoration: none;
+}
