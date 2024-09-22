@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 
 // Router Imports 
 const UnitRouter = require('./routes/units');
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // === Connect to MongoDB ===
-const url = 'mongodb://localhost:27017/unit-review';
+const url = process.env.MONGODB_CONN_STRING;
 async function connect(url) { await mongoose.connect(url); }
 connect(url)
     .then(console.log('Connected to MongoDB Database'))
