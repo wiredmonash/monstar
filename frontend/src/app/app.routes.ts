@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 // Component Imports
 import { HomeComponent } from './routes/home/home.component';
 import { UnitListComponent } from './routes/unit-list/unit-list.component';
-import { UnitReviewHeaderComponent } from './shared/components/unit-review-header/unit-review-header.component'; 
+import { UnitReviewHeaderComponent } from './unit-review-header/unit-review-header.component';
 
 export const routes: Routes = [
     // Homepage
