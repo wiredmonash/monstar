@@ -1,11 +1,9 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>MonSTAR</title>
 
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
@@ -13,170 +11,71 @@
 </head>
 
 <body>
+    <div class="wrapper">
+        <!-- Navbar Component -->
+        <header>
+            <app-navbar></app-navbar>
+        </header>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid d-flex justify-content-center position-relative">
-            <button class="navbar-toggler d-block" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar">
-                <i class="lni lni-menu"></i>
-            </button>
-            <a class="navbar-brand mx-auto" href="#">MonSTAR</a> <!-- Single MonSTAR Title Here -->
-        </div>
-    </nav>
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Placeholder for Graphic with Explore Button -->
+            <div class="container d-flex justify-content-center my-5">
+                <div class="graphic-box">
+                    <button class="explore-button">Explore</button>
+                </div>
+            </div>
 
-    <!-- Sidebar -->
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
-        <div class="offcanvas-header">
-            <h5 id="offcanvasSidebarLabel">Menu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="list-unstyled">
-                <li><a href="#" class="nav-link">Browse Units</a></li>
-                <li><a href="#" class="nav-link">Write a Review</a></li>
-                <li><a href="#" class="nav-link">Terms and Conditions</a></li>
-                <li><a href="#" class="nav-link">Contact Us</a></li>
-            </ul>
-        </div>
+            <!-- FAQs Section -->
+            <div class="container my-5">
+                <!-- FAQs Heading -->
+                <h2 class="faq-heading text-center my-4">FAQs</h2>
+
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                What is MonSTAR?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                            data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                MonSTAR is an online platform designed for Monash University’s Faculty of IT students to browse, review, and share feedback on academic units, helping others make informed decisions.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Repeat the rest of the FAQ items as needed -->
+                    <!-- ... -->
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                How do I report inappropriate content?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                            data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                If you encounter inappropriate content, you can report it using the "Report" button next to the review. Our team will review the report and take necessary action.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Component -->
+        <footer>
+            <app-footer></app-footer>
+        </footer>
     </div>
-
-    <!-- Placeholder for Graphic with Explore Button -->
-    <div class="container d-flex justify-content-center my-5">
-        <div class="graphic-box">
-            <button class="explore-button">Explore</button>
-        </div>
-    </div>
-
-    <!-- FAQs Section -->
-    <div class="container my-5">
-        <!-- FAQs Heading -->
-        <h2 class="faq-heading text-center my-4">FAQs</h2> <!-- Updated to Arial with no symbols -->
-
-        <div class="accordion" id="faqAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        What is MonSTAR?
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-                    data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        MonSTAR is an online platform designed for Monash University’s Faculty of IT students to browse, review, and share feedback on academic units, helping others make informed decisions.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        How do I submit a review?
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                    data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        You can submit a review by clicking the "Write a Review" option in the menu. Simply enter the unit details and your feedback. Make sure your review follows the community guidelines.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Are the reviews anonymous?
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-                    data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Yes, all reviews submitted on MonSTAR are anonymous to promote honest and unbiased feedback from students.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFour">
-                    <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                        Can I edit or delete my review?
-                    </button>
-                </h2>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-                    data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        Yes, you can edit or delete your review by accessing the "My Reviews" section after logging into your account.
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFive">
-                    <button class="accordion-button collapsed custom-accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                        How do I report inappropriate content?
-                    </button>
-                </h2>
-                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
-                    data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        If you encounter inappropriate content, you can report it using the "Report" button next to the review. Our team will review the report and take necessary action.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="social-icons">
-                <a href="https://www.facebook.com/WiredMonash" target="_blank"><i class="lni lni-facebook-filled"></i></a>
-                <a href="https://www.instagram.com/wiredmonash/" target="_blank"><i class="lni lni-instagram"></i></a>
-                <a href="https://x.com/WiredMonash" target="_blank"><i class="lni lni-twitter-original"></i></a>
-                <a href="https://discord.com/invite/FgvmFXeBSS" target="_blank"><i class="lni lni-discord"></i></a>
-                <a href="https://www.linkedin.com/company/wired-monash/" target="_blank"><i class="lni lni-linkedin-original"></i></a>
-                <a href="https://www.youtube.com/@wiredmonash" target="_blank"><i class="lni lni-youtube"></i></a>
-                
-                <!-- WIRED website icon -->
-                <a href="https://wired.org.au/" target="_blank">
-                    <img src="assets/wired-logo.svg" alt="WIRED Website" style="height: 25px; margin-left: 10px;">
-                </a> <!-- Removed duplicate "OUR WEBSITE" -->
-            </div>
-            <div class="detail">
-                © 2024 Faculty of Information Technology Society (WIRED).<br>
-                WIRED is a registered academic club with Monash Clubs and Societies<br>
-                and a registered not-for-profit with the ACNC.<br>
-                Faculty of Information Technology Students Society ABN: 74 334 022 660
-            </div>
-        </div>
-    </footer>
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
-=======
-<div class="wrapper">
-  <!-- Navbar -->
-  <header>
-    <app-navbar></app-navbar>
-  </header>
-  
-  <!-- Main Content -->
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
-  
-  <!-- Footer -->
-  <footer>
-    <app-footer></app-footer>
-  </footer>
-</div>
-  
->>>>>>> ba2364eaf5326a42809d7fe1e8447544159c382f

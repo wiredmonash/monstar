@@ -1,49 +1,18 @@
-/* ! Ensure the html and body elements occupy full height */
+/* Ensure the html and body elements occupy full height */
 html, body {
   height: 100%;
   margin: 0;
 }
 
-/* ! Make the wrapper a flex container */
+/* Make the wrapper a flex container */
 .wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Full viewport height */
 }
 
-/* ! Allow the content area to grow and fill space */
+/* Allow the content area to grow and fill space */
 .content {
   flex: 1;
 }
 
-<<<<<<< HEAD
-.footer .social-icons a {
-  color: #333;
-  text-decoration: none;
-  margin-right: 10px;
-}
-
-.footer .social-icons i {
-  font-size: 1.5rem;
-}
-
-.footer .detail {
-  text-align: left;
-  font-size: 0.875rem;
-  color: #333;
-}
-
-.footer a {
-  color: #333;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: #000;
-  text-decoration: underline;
-=======
-/* ! Optional styling for the footer */
-footer {
-  background-color: #f1f1f1;
->>>>>>> ba2364eaf5326a42809d7fe1e8447544159c382f
-}
