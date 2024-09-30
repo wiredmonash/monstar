@@ -1,0 +1,26 @@
+.unit-overview-header {
+    background-color: #D9A9E6; /* Light purple background */
+    border-radius: 10px;
+}
+
+.unit-overview-header h2 {
+    color: #000; /* Black text color for heading */
+}
+
+.unit-overview-header p {
+    margin: 0;
+}
+
+.text-warning {
+    font-size: 20px; /* Size for stars */
+}
+
+.unit-overview-header .btn-outline-primary {
+    background-color: #fff;
+    border-color: #007bff;
+}
+
+.unit-overview-header .btn-outline-secondary {
+    background-color: #fff;
+    border-color: #6c757d;
+}
