@@ -1,10 +1,10 @@
 /* Footer */
 .footer {
   background-color: #f0f0f0;
-  font-size: 15px;
+  font-size: 18px;
 }
 
-.footer .container{
+.footer .container {
   padding-top: 30px;
   padding-bottom: 30px;
 }
@@ -12,4 +12,40 @@
 .footer a {
   color: #333;
   text-decoration: none;
+}
+
+/* Socials */
+.header-text {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+#social-icons {
+  text-align: center;
+}
+
+#social-icons a {
+  margin-right: 5px;
+  margin-left: 5px;
+  font-size: 20px;
+}
+
+#social-icons a:hover {
+  color: darkgray;
+}
+
+/* Detail */
+#detail {
+  text-align: center;
+}
+
+#detail a {
+  text-decoration: underline;
+  text-decoration-style: solid;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
+#detail a:hover {
+  text-decoration-thickness: 3px;
 }
