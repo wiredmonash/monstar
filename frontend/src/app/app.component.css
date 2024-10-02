@@ -16,34 +16,7 @@ html, body {
   flex: 1;
 }
 
-<<<<<<< HEAD
-.footer .social-icons a {
-  color: #333;
-  text-decoration: none;
-  margin-right: 10px;
-}
-
-.footer .social-icons i {
-  font-size: 1.5rem;
-}
-
-.footer .detail {
-  text-align: left;
-  font-size: 0.875rem;
-  color: #333;
-}
-
-.footer a {
-  color: #333;
-  text-decoration: none;
-}
-
-.footer a:hover {
-  color: #000;
-  text-decoration: underline;
-=======
 /* ! Optional styling for the footer */
 footer {
   background-color: #f1f1f1;
->>>>>>> ba2364eaf5326a42809d7fe1e8447544159c382f
 }
