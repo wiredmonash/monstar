@@ -11,5 +11,5 @@ export const routes: Routes = [
     // Unit List 
     { path: "unit-list", component: UnitListComponent },
     // Unit Review Header
-    { path: "unit-review-header", component: UnitReviewHeaderComponent } // New route
+    { path: "unit-review-header", component: UnitReviewHeaderComponent } 
 ];
