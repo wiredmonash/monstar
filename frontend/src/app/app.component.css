@@ -16,3 +16,7 @@ html, body {
   flex: 1;
 }
 
+/* ! Optional styling for the footer */
+footer {
+  background-color: #f1f1f1;
+}
