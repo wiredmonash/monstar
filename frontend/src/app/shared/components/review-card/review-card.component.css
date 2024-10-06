@@ -1,0 +1,85 @@
+.review-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #d3a7d3; /* Adjusted to match the purple tone */
+    border-radius: 20px;
+    padding: 20px;
+    color: #000;
+}
+
+.review-card h5 {
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+/* Sub-category stars */
+.stars {
+    display: flex;
+    justify-content: space-between; /* Aligns stars to the container edges */
+    width: 100%; /* Ensures the stars div stretches to the full width of its container */
+}
+
+
+.stars i {
+    color: #000;
+    font-size: 24px;
+}
+
+.stars .filled {
+    color: #000; /* Filled stars black */
+}
+
+
+/* Overall stars */
+.stars-overall i {
+    color: #000;
+    font-size: 30px;
+}
+
+.stars-overall .filled {
+    color: #000;
+}
+
+.thumbs-up {
+    font-size: 1.5rem;
+}
+
+.more-link {
+    color: #6c757d;
+    text-decoration: underline;
+}
+
+h6 {
+    font-weight: bold;
+    color: #000;
+}
+
+.review-card .border-end {
+    border-right: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+
+p{
+    color: #000;
+    margin-bottom: 7px;
+    padding-top: 10px;
+}
+
+h5{
+    margin-bottom: 0px;
+    padding-bottom: 5px;
+    padding-right: 15px;
+    color: #000;
+    font-size: 21px;
+}
+
+/* Container Padding */
+.container {
+    max-width: 1100px;
+}
+ .review{
+    padding-top: 10px;
+    margin-bottom: 0;
+ }
+
+ 
