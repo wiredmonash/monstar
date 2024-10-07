@@ -7,7 +7,7 @@ import { ApiService } from '../api.service';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { HomeComponent } from './routes/home/home.component';
-import { UnitReviewHeaderComponent } from './unit-review-header/unit-review-header.component';
+import { UnitReviewHeaderComponent } from './shared/components/unit-review-header/unit-review-header.component';
 
 
 @Component({
