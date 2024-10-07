@@ -1,0 +1,6 @@
+<!-- Shows all the reviews from the backend -->
+<div class="unit-overview-container">
+    @for (review of reviews; track $index) {
+        <app-review-card [review]="review"></app-review-card>
+    }
+</div>

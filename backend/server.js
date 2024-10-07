@@ -34,7 +34,7 @@ app.use('/api/v1/auth', AuthRouter);
 // === Start Server ===
 const PORT = process.env.PORT || 8080; // default to port 8080 if no port specified
 app.listen(PORT, (error) => {
-    if (error) 
+    if (error)
         console.log(error);
 
     console.log(`Server running on port ${PORT}`);
