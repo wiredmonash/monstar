@@ -1,17 +1,17 @@
-/* ! Ensure the html and body elements occupy full height */
+/* Ensure the html and body elements occupy full height */
 html, body {
   height: 100%;
   margin: 0;
 }
 
-/* ! Make the wrapper a flex container */
+/* Make the wrapper a flex container */
 .wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Full viewport height */
 }
 
-/* ! Allow the content area to grow and fill space */
+/* Allow the content area to grow and fill space */
 .content {
   flex: 1;
 }
