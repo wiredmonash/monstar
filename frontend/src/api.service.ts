@@ -21,4 +21,9 @@ export class ApiService {
   getAllReviewsGET() {
     return this.http.get(`${this.url}/reviews`);
   }
+
+  // * GET Get Unit by UnitCode
+  getUnitByUnitcodeGET(unitcode: string) {
+    return this.http.get(`${this.url}/units/${unitcode}`);
+  }
 }

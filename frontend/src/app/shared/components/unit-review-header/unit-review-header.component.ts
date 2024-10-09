@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component'; 
 import { FooterComponent } from '../footer/footer.component'; 
 
@@ -10,5 +10,5 @@ import { FooterComponent } from '../footer/footer.component';
   styleUrls: ['./unit-review-header.component.css'] 
 })
 export class UnitReviewHeaderComponent {
-
+  @Input() unit: any;
 }

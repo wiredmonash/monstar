@@ -2,8 +2,8 @@
     <div class="row align-items-center">
       <!-- Unit Title -->
       <div class="col-md-3 unit-title-container">
-        <h1 class="fw-bold unit-title">FIT1045</h1>
-        <p class="unit-subtitle">Intro to programming</p>
+        <h1 class="fw-bold unit-title">{{ unit.unitCode }} </h1>
+        <p class="unit-subtitle">{{ unit.name }}</p>
       </div>
   
       <!-- Vertical Divider -->
@@ -13,13 +13,14 @@
   
       <!-- Overall Rating -->
       <div class="col-md-2 overall-rating-container text-center">
-        <h2 class="fw-bold overall-rating-title">4.0 <span class="fs-6">out of 5.0</span></h2>
+        <h2 class="fw-bold overall-rating-title">{{ unit.avgOverallRating }}<span class="fs-6">out of 5.0</span></h2>
         <div class="stars">
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star"></i>
+          @for (star of [1,2,3,4,5]; track $index) {
+            <i class="bi text-dark" 
+                [class.bi-star-fill]="star <= unit.overallRating"
+                [class.bi-star]="star > unit.overallRating"
+            ></i>
+          }
         </div>
         <p>100 reviews</p>
       </div>
@@ -30,26 +31,28 @@
           <div class="text-left smaller-section">
             <p>Content</p>
             <div>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
+              @for (star of [1,2,3,4,5]; track $index) {
+                <i class="bi smaller-stars" 
+                    [class.bi-star-fill]="star <= unit.avgContentRating"
+                    [class.bi-star]="star > unit.avgContentRating"
+                ></i>
+              }
             </div>
-            <p>5.0</p>
+            <p>{{ unit.avgContentRating }}</p>
           </div>
   
           <!-- Teaching Team Section -->
           <div class="text-left smaller-section mt-2">
             <p>Teaching Team</p>
             <div>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star smaller-stars"></i>
+              @for (star of [1,2,3,4,5]; track $index) {
+                <i class="bi smaller-stars" 
+                    [class.bi-star-fill]="star <= unit.avgFacultyRating"
+                    [class.bi-star]="star > unit.avgFacultyRating"
+                ></i>
+              }
             </div>
-            <p>4.0</p>
+            <p>{{ unit.avgFacultyRating }}</p>
           </div>
         </div>
   
@@ -57,13 +60,14 @@
         <div class="text-left smaller-section">
           <p>Relevancy</p>
           <div>
-            <i class="bi bi-star-fill smaller-stars"></i>
-            <i class="bi bi-star-fill smaller-stars"></i>
-            <i class="bi bi-star-fill smaller-stars"></i>
-            <i class="bi bi-star smaller-stars"></i>
-            <i class="bi bi-star smaller-stars"></i>
+            @for (star of [1,2,3,4,5]; track $index) {
+              <i class="bi smaller-stars" 
+                  [class.bi-star-fill]="star <= unit.avgRelevancyRating"
+                  [class.bi-star]="star > unit.avgRelevancyRating"
+              ></i>
+            }
           </div>
-          <p>3.0</p>
+          <p>{{ unit.avgRelevancyRating }}</p>
         </div>
       </div>
     </div>
