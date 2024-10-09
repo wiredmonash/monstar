@@ -21,12 +21,11 @@
 .vr {
   border-left: 2px solid #555;
   height: 200px;
-  transform: translate(150px, 30px); /* Shifts the divider down by 20px and right by 20px */
+  transform: translate(150px, 30px); 
 }
 
-/* Shift the overall rating section to the left */
 .overall-rating-container {
-  transform: translate(80px, 10px); /* Shift entire section */
+  transform: translate(80px, 10px); 
 }
 
 /* Overall Rating Section */
@@ -36,10 +35,10 @@
   transform: translate(-20px);
 }
 
-/* Add space between the stars */
+
 .stars {
-  display: flex; /* Use flexbox to make the stars layout consistent */
-  gap: 10px; /* Set gap between stars */
+  display: flex; 
+  gap: 10px; 
 }
 
 .stars i {
@@ -61,17 +60,17 @@
 
 /* Space the rating number from the label using transform */
 .label-with-rating .rating-number {
-  transform: translateX(140px); /* Adjust the X value to control the space */
+  transform: translateX(140px); 
 }
 
 /* Specific styling for Content section */
 .content-rating {
-  color: #000; /* Example color for content section */
+  color: #000; 
 }
 
 .content-rating .stars {
   display: flex;
-  gap: 10px; /* Adjust star gap for content rating */
+  gap: 10px; 
 }
 
 .content-rating .label-with-rating {
@@ -81,13 +80,13 @@
 
 /* Specific styling for Relevancy section */
 .relevancy-rating {
-  color: #000; /* Example color for relevancy section */
+  color: #000; 
   transform: translateX(40px);
 }
 
 .relevancy-rating .stars {
   display: flex;
-  gap: 10px; /* Adjust star gap for relevancy rating */
+  gap: 10px; 
 }
 
 .relevancy-rating .label-with-rating {
@@ -96,17 +95,17 @@
 }
 
 .relevancy-rating .rating-number {
-  transform: translateX(125px); /* Adjust the X value to control the space */
+  transform: translateX(125px); 
 }
 
 /* Specific styling for Teaching Team section */
 .teaching-team-rating {
-  color: #000; /* Example color for teaching team section */
+  color: #000; 
 }
 
 .teaching-team-rating .stars {
   display: flex;
-  gap: 10px; /* Adjust star gap for teaching team rating */
+  gap: 10px; 
 }
 
 .teaching-team-rating .label-with-rating {
@@ -115,7 +114,7 @@
 }
 
 .teaching-team-rating .rating-number {
-  transform: translateX(80px); /* Adjust the X value to control the space */
+  transform: translateX(80px); 
 }
 
 .smaller-section p {
@@ -145,7 +144,7 @@
   border-radius: 5px;
   margin-bottom: 0;
   transform: translateX(-20px);
-  width: 150px; /* Adjust the width of the buttons here */
+  width: 150px; /
 }
 
 /* Dropdown Menu */
