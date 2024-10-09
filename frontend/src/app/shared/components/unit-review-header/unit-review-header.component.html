@@ -1,100 +1,107 @@
 <div class="unit-overview">
-    <div class="row align-items-center">
-      <!-- Unit Title -->
-      <div class="col-md-3 unit-title-container">
-        <h1 class="fw-bold unit-title">FIT1045</h1>
-        <p class="unit-subtitle">Intro to programming</p>
+  <div class="row align-items-center">
+    <!-- Unit Title -->
+    <div class="col-md-3 unit-title-container">
+      <h1 class="fw-bold unit-title">FIT1045</h1>
+      <p class="unit-subtitle">Intro to programming</p>
+    </div>
+
+    <!-- Vertical Divider -->
+    <div class="col-md-1 p-0">
+      <div class="vr"></div>
+    </div>
+
+    <!-- Overall Rating -->
+    <div class="col-md-2 overall-rating-container text-center">
+      <h2 class="fw-bold overall-rating-title">4.0 <span class="fs-6">out of 5.0</span></h2>
+      <div class="stars">
+        <i class="bi bi-star-fill text-dark"></i>
+        <i class="bi bi-star-fill text-dark"></i>
+        <i class="bi bi-star-fill text-dark"></i>
+        <i class="bi bi-star-fill text-dark"></i>
+        <i class="bi bi-star"></i>
       </div>
-  
-      <!-- Vertical Divider -->
-      <div class="col-md-1 p-0">
-        <div class="vr"></div>
+      <p>100 reviews</p>
+    </div>
+
+    <!-- Ratings: Content, Relevancy, and Teaching Team -->
+    <div class="col-md-4 d-flex p-0 ratings-section">
+      <div class="d-flex flex-column me-3">
+        <!-- Content Section -->
+        <div class="text-left smaller-section content-rating">
+          <div class="label-with-rating">
+            <p>Content</p>
+            <p class="rating-number">5.0</p>
+          </div>
+          <div class="stars smaller-stars">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </div>
+        </div>
+
+        <!-- Teaching Team Section -->
+        <div class="text-left smaller-section teaching-team-rating mt-2">
+          <div class="label-with-rating">
+            <p>Teaching Team</p>
+            <p class="rating-number">4.0</p>
+          </div>
+          <div class="stars smaller-stars">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star"></i>
+          </div>
+        </div>
       </div>
-  
-      <!-- Overall Rating -->
-      <div class="col-md-2 overall-rating-container text-center">
-        <h2 class="fw-bold overall-rating-title">4.0 <span class="fs-6">out of 5.0</span></h2>
-        <div class="stars">
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star-fill text-dark"></i>
-          <i class="bi bi-star-fill text-dark"></i>
+
+      <!-- Relevancy Section -->
+      <div class="text-left smaller-section relevancy-rating">
+        <div class="label-with-rating">
+          <p>Relevancy</p>
+          <p class="rating-number">3.0</p>
+        </div>
+        <div class="stars smaller-stars">
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star-fill"></i>
+          <i class="bi bi-star"></i>
           <i class="bi bi-star"></i>
         </div>
-        <p>100 reviews</p>
-      </div>
-  
-      <!-- Ratings: Content, Relevancy, and Teaching Team -->
-      <div class="col-md-4 d-flex p-0 ratings-section">
-        <div class="d-flex flex-column me-3">
-          <div class="text-left smaller-section">
-            <p>Content</p>
-            <div>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-            </div>
-            <p>5.0</p>
-          </div>
-  
-          <!-- Teaching Team Section -->
-          <div class="text-left smaller-section mt-2">
-            <p>Teaching Team</p>
-            <div>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star-fill smaller-stars"></i>
-              <i class="bi bi-star smaller-stars"></i>
-            </div>
-            <p>4.0</p>
-          </div>
-        </div>
-  
-        <!-- Relevancy Section -->
-        <div class="text-left smaller-section">
-          <p>Relevancy</p>
-          <div>
-            <i class="bi bi-star-fill smaller-stars"></i>
-            <i class="bi bi-star-fill smaller-stars"></i>
-            <i class="bi bi-star-fill smaller-stars"></i>
-            <i class="bi bi-star smaller-stars"></i>
-            <i class="bi bi-star smaller-stars"></i>
-          </div>
-          <p>3.0</p>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Write a Review, Sort by, and Filter Section -->
-    <div class="row mt-3 d-flex justify-content-end">
-      <!-- Write a Review Button -->
-      <div class="col-auto">
-        <button class="btn btn-outline-white">
-          <i class="bi bi-pencil"></i> Write a review
-        </button>
-      </div>
-      <!-- Sort By Dropdown -->
-      <div class="col-auto">
-        <div class="dropdown">
-          <button class="btn btn-outline-dark dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            Sort by 
+
+        <!-- Write a Review Button under Relevancy -->
+        <div class="mt-3">
+          <button class="btn btn-outline-white">
+            <i class="bi bi-pencil"></i> Write a review
           </button>
-          <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-            <li><a class="dropdown-item" href="#">Recent</a></li>
-            <li><a class="dropdown-item" href="#">Rating</a></li>
-          </ul>
         </div>
-      </div>
-  
-      <!-- Filter Button -->
-      <div class="col-auto">
-        <button class="btn btn-outline-dark">
-          <i class="bi bi-sliders"></i> Filter
-        </button>
       </div>
     </div>
   </div>
-  
+
+  <!-- Sort By and Filter Section -->
+  <div class="row mt-3 d-flex justify-content-end">
+    <!-- Sort By Dropdown -->
+    <div class="col-auto">
+      <div class="dropdown">
+        <button class="btn btn-outline-dark sort-by-btn dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Sort by
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+          <li><a class="dropdown-item" href="#">Recent</a></li>
+          <li><a class="dropdown-item" href="#">Rating</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Filter Button -->
+    <div class="col-auto">
+      <button class="btn btn-outline-dark filter-btn">
+        <i class="bi bi-sliders"></i> Filter
+      </button>
+    </div>
+  </div>
+</div>
