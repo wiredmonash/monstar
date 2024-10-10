@@ -31,6 +31,32 @@ router.get('/', async function (req, res) {
     }
 });
 
+/**
+ * ! GET Get Unit by Unitcode
+ * 
+ * Gets a unit by unitcode
+ * 
+ * @async
+ * @returns {JSON} Responds with the unit and its details in JSON format
+ * @throws {500} If an error occurs whilst getting the singular unit from the database
+ */
+router.get('/:unitcode', async function (req, res) {
+    try {
+        // Find the unit
+        const unit = await Unit.findOne({ unitCode: req.params.unitcode });
+
+        // 404 Unit does not exist 
+        if (!unit) 
+            return res.status(404).json({ error: 'Unit not found'});
+
+        // Respond 200 with JSON of the singular unit
+        return res.status(200).json(unit);
+    }   
+    catch (error) {
+        return res.status(500).json({ error: `An error occured whilst getting the singular unit: ${error.message}`});
+    }
+});
+
 
 /**
  * ! POST Create a Unit

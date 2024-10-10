@@ -27,10 +27,18 @@
         <div class="offcanvas-body">
             <ul>
                 <!-- Takes us to the Unit List page -->
-                <li><a routerLink="/unit-list">Browse Units</a></li>
-                <li><a href="#">Write a Review</a></li>
-                <li><a href="#">Terms and Conditions</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a routerLink="/unit-list" data-bs-dismiss="offcanvas">Browse Units</a></li>
+                <li><a href="#" data-bs-dismiss="offcanvas">Write a Review</a></li>
+                <li><a href="#" data-bs-dismiss="offcanvas">Terms and Conditions</a></li>
+                <li><a href="#" data-bs-dismiss="offcanvas">Contact Us</a></li>
+            </ul>
+
+            <!-- ! DEBUGGING ROUTES -->
+            <br/>
+            <h5 style="color:red">Debugging Routes</h5>
+            <ul>
+                <!-- Takes us to the Unit List page -->
+                <li><a routerLink="/unit-overview" data-bs-dismiss="offcanvas" style="color:red">GET Get All Reviews</a></li>
             </ul>
         </div>
     </div>  

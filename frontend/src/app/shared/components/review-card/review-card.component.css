@@ -5,6 +5,7 @@
     border-radius: 20px;
     padding: 20px;
     color: #000;
+    position: relative; /* Ensures absolute positioning works inside this card */
 }
 
 .review-card h5 {
@@ -44,6 +45,14 @@
     font-size: 1.5rem;
 }
 
+.thumbs-container {
+    position: absolute;
+    bottom: 15px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+}
+
 .more-link {
     color: #6c757d;
     text-decoration: underline;
@@ -57,7 +66,6 @@ h6 {
 .review-card .border-end {
     border-right: 2px solid rgba(0, 0, 0, 0.2);
 }
-
 
 p{
     color: #000;
@@ -79,6 +87,7 @@ h5{
 }
  .review{
     padding-top: 10px;
+    padding-bottom: 20px;
     margin-bottom: 0;
  }
 

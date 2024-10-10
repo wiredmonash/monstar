@@ -1,63 +1,72 @@
 <div class="container mt-5">
-    <div class="row review-card">
+    <div class="row review-card position-relative">
 
         <!-- Left Side (Anonymous, Semester, Overall Rating) -->
         <div class="col-md-4 border-end">
-            <h5>Anonymous</h5>
-            <p class="mb-1"><strong>Semester Taken:</strong> Semester 1 2024</p>
-            <p><strong>Grade:</strong> 80</p>
+            <!-- Author -->
+            <h5>{{ review.author || 'Anonymous' }}</h5>
+            <!-- Semester Taken -->
+            <p class="mb-1"><strong>Semester Taken:</strong> {{ review.semester }}</p>
+            <!-- Grade -->
+            <p><strong>Grade:</strong> {{ review.grade }}</p>
 
-            <!-- Overall Rating and Stars -->
+            <!-- Overall Rating -->
             <h5 class="d-flex justify-content-between">
                 <span>Overall</span>
-                <span>4/5</span>
+                <span>{{ review.overallRating }}/5</span>
             </h5>
+            <!-- Stars -->
             <div class="d-flex justify-content-center">
                 <div class="stars-overall">
-                    <i class="bi bi-star-fill filled mx-3"></i>
-                    <i class="bi bi-star-fill filled mx-3"></i>
-                    <i class="bi bi-star-fill filled mx-3"></i>
-                    <i class="bi bi-star-fill filled mx-3"></i>
-                    <i class="bi bi-star mx-3"></i>
+                    @for (star of [1,2,3,4,5]; track $index) {
+                        <i class="bi mx-3" 
+                            [class.bi-star-fill]="star <= review.overallRating"
+                            [class.bi-star]="star > review.overallRating"
+                        ></i>
+                    }
                 </div>
             </div>
         </div>
 
         <!-- Right Side (Review Heading, Categories, Stars, Description) -->
         <div class="col-md-8 px-4"> 
-            <h5>Heading of the Review</h5>
+            <!-- Review Heading -->
+            <h5>{{ review.heading }}</h5>
             <div class="row mb-2">
                 <!-- Content Category -->
                 <div class="col-md-4">
+                    <!-- Content Rating -->
                     <div class="d-flex justify-content-between">
                         <h6 class="mb-0">Content</h6>
-                        <p class="mb-0">5/5</p>
+                        <p class="mb-0">{{ review.contentRating }}/5</p>
                     </div>
+                    <!-- Stars for ConentRating -->
                     <div class="d-flex justify-content-center">
                         <div class="stars">
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
+                            @for (star of [1,2,3,4,5]; track $index) {
+                                <i class="bi mx-2" 
+                                    [class.bi-star-fill]="star <= review.contentRating"
+                                    [class.bi-star]="star > review.contentRating"
+                                ></i>
+                            }
                         </div>
                     </div>
-                    
                 </div>
 
                 <!-- Relevancy Category -->
                 <div class="col-md-4">
                     <div class="d-flex justify-content-between">
                         <h6 class="mb-0">Relevancy</h6>
-                        <p class="mb-0">5/5</p>
+                        <p class="mb-0">{{ review.relevancyRating}}/5</p>
                     </div>
                     <div class="d-flex justify-content-center">
                         <div class="stars">
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
+                            @for (star of [1,2,3,4,5]; track $index) {
+                                <i class="bi mx-2" 
+                                    [class.bi-star-fill]="star <= review.relevancyRating"
+                                    [class.bi-star]="star > review.relevancyRating"
+                                ></i>
+                            }
                         </div>
                     </div>
                 </div>
@@ -65,30 +74,28 @@
                 <!-- Teaching Team Category -->
                 <div class="col-md-4">
                     <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">Teaching Team</h6>
-                        <p class="mb-0">5/5</p>
+                        <h6 class="mb-0">Faculty</h6>
+                        <p class="mb-0">{{ review.facultyRating }}/5</p>
                     </div>
                     <div class="d-flex justify-content-center">
                         <div class="stars">
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
-                            <i class="bi bi-star-fill filled mx-2"></i>
+                            @for (star of [1,2,3,4,5]; track $index) {
+                                <i class="bi mx-2" 
+                                    [class.bi-star-fill]="star <= review.facultyRating"
+                                    [class.bi-star]="star > review.facultyRating"
+                                ></i>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Review Description -->
-            <p class="review">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat.
-            </p>
+            <p class="review">{{ review.description }}</p>
 
             <!-- Thumbs Up and Like Count -->
-            <div class="d-flex justify-content-end align-items-center">
-                <span class="me-2">12</span>
+            <div class="thumbs-container">
+                <span class="me-2">{{ review.likes }}</span>
                 <i class="bi bi-hand-thumbs-up thumbs-up"></i>
             </div>
         </div>
