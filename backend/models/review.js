@@ -37,6 +37,8 @@ const reviewSchema = new Schema({
 
     // Reference to the unit being reviewed
     unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true} //! Change required to true 
+}, {
+    timestamps: true
 });
 
 // Export the Review model

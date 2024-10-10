@@ -97,8 +97,10 @@
           Sort by
         </button>
         <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-          <li><a class="dropdown-item" href="#">Recent</a></li>
-          <li><a class="dropdown-item" href="#">Rating</a></li>
+          <!-- The different criteria for sorting the reviews (event handler called on click) -->
+          <li><button class="dropdown-item" (click)="onSort('recent')">Recent</button></li> 
+          <li><button class="dropdown-item" (click)="onSort('lowest-rating')">Lowest Rating</button></li> 
+          <li><button class="dropdown-item" (click)="onSort('highest-rating')">Highest Rating</button></li> 
         </ul>
       </div>
     </div>

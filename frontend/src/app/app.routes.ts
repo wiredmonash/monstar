@@ -8,10 +8,10 @@ import { UnitOverviewComponent } from './routes/unit-overview/unit-overview.comp
 
 export const routes: Routes = [
     // Homepage
-    { path: "homepage", component: HomeComponent },
+    { path: "", component: HomeComponent },
     // Unit List 
     { path: "unit-list", component: UnitListComponent },
 
-    //! DEBUGGING ROUTES
+    //! DEBUGGING ROUTES (Currently shows just FIT1045)
     { path: 'unit-overview', component: UnitOverviewComponent}
 ];

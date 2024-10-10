@@ -156,7 +156,11 @@ router.put('/update/:unitcode', async function (req, res) {
             {
             $set: {
                 name: req.body.unit_name || unit.name,
-                description: req.body.unit_description || unit.description
+                description: req.body.unit_description || unit.description,
+                avgOverallRating: req.body.avgOverallRating || unit.avgOverallRating,
+                avgContentRating: req.body.avgContentRating || unit.avgContentRating,
+                avgFacultyRating: req.body.avgFacultyRating || unit.avgFacultyRating,
+                avgRelevancyRating: req.body.avgRelevancyRating || unit.avgRelevancyRating
             }
         })
 

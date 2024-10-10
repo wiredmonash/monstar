@@ -17,15 +17,27 @@ export class UnitOverviewComponent implements OnInit {
   // Stores the reviews
   reviews: any[] = [];
 
-  constructor (private apiService: ApiService) { }
 
+  constructor (
+    private apiService: ApiService
+  ) { }
+
+
+  // * Runs on initialisation
   ngOnInit(): void {
-    this.getAllReviews();
-    this.getUnitByUnitcode();
+    this.getUnitByUnitcode('fit1045'); // Get the fit1045 unit
+    this.getAllReviews('fit1045'); // Get the reviews
   }
 
-  getAllReviews() {
-    this.apiService.getAllReviewsGET().subscribe(
+
+  /**
+   * * Fetches all reviews from the API and stores them in the component.
+   *
+   * This method calls the API to retrieve all the reviews and stores the fetched reviews in the `reviews` property.
+   * It also logs the response to the console for debugging purposes.
+   */
+  getAllReviews(unitCode?: any) {
+    this.apiService.getAllReviewsGET(unitCode).subscribe(
       (reviews: any) => {
         // Store the fetched reviews 
         this.reviews = reviews;
@@ -40,8 +52,16 @@ export class UnitOverviewComponent implements OnInit {
     );
   }
 
-  getUnitByUnitcode() {
-    this.apiService.getUnitByUnitcodeGET('fit1045').subscribe(
+  /**
+   * * Fetches the unit by its unit code and stores it in the component.
+   *
+   * This method calls the API to retrieve the unit details for a specific unit code ('fit1045'),
+   * and stores the resulting unit data in the `unit` property.
+   * 
+   * Logs the success or error response to the console.
+   */
+  getUnitByUnitcode(unit: string) {
+    this.apiService.getUnitByUnitcodeGET(unit).subscribe(
       (unit: any) => {
         // Store the unit
         this.unit = unit;
@@ -54,5 +74,43 @@ export class UnitOverviewComponent implements OnInit {
         console.log('ERROR DURING: GET Get Unit by Unitcode');
       }
     );
+  }
+
+
+  /**
+   * * Sorts the reviews array based on the specified criteria
+   * 
+   * @param {string} criteria - The criteria to sort the reviews by.
+   * 
+   * Criteria options
+   * - 'recent': Sorts the reviews by most recent first based on `createdAt` property.
+   * - 'lowest-rating': Sorts the reviews by the lowest rating (`overallRating`) first.
+   * - 'highest-rating': Sorts the reviews by the highest rating (`overallRating`) first.
+   */
+  sortReviews(criteria: string) {
+    // ? Debug log: Sorting reviews message
+    console.log('Sorting reviews', criteria);
+
+    // Criterion
+    switch (criteria) {
+      // Sorting by most recent
+      case 'recent':
+        this.reviews.sort((a,b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateB.getTime() - dateA.getTime(); // Most recent first
+        });
+        break;
+
+      // Sorting by lowest rating
+      case 'lowest-rating':
+        this.reviews.sort((a, b) => a.overallRating - b.overallRating);
+        break;
+
+      // Sorting by highest rating
+      case 'highest-rating':
+        this.reviews.sort((a, b) => b.overallRating - a.overallRating);
+        break;
+    }
   }
 }

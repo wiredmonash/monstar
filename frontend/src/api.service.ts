@@ -10,16 +10,11 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // GET http://localhost:8080/ Testing server connection
-  getMessage() {
-    return this.http.get(`${this.url}/`);
-  }
-
-  // TODO: Add more API Calls here... E.g. getUnits(), getReview(), createReview(), ...
-
-  // * GET Get All Reviews
-  getAllReviewsGET() {
-    return this.http.get(`${this.url}/reviews`);
+  // * GET Get All Reviews (optionally by Unit)
+  getAllReviewsGET(unitcode?: string) {
+    // If the unit parameter is provided, we get all reviews by unit, if not get all the reviews.
+    const url = unitcode ? `${this.url}/reviews/${unitcode}` : `${this.url}/reviews`;
+    return this.http.get(url);
   }
 
   // * GET Get Unit by UnitCode
