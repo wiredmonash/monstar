@@ -4,6 +4,8 @@
   background-color: #d3a7d3;
   /* Adds padding around the navbar */
   padding: 1rem;
+  /* Set to relative to handle absolute positioning of toggler */
+  position: relative;
 }
 
 /* ! Hamburger Menu Button */ 
@@ -14,6 +16,8 @@
   font-size: 2rem;
   /* Minimal padding for the button */
   padding: 0rem;
+  /* Ensure it remains visible on all screen sizes */
+  display: block;
 }
 
 /* ! Website Title (MonSTAR) in the Center of the Navbar  */ 
@@ -22,6 +26,11 @@
   font-size: 1.5rem;
   /* Makes the brand name bold */
   font-weight: bold;
+  /* Center the text */
+  text-align: center;
+  /* Ensure it's centered in its container */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ! Sidebar (Offcanvas) */ 

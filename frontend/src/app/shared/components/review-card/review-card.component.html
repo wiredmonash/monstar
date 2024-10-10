@@ -1,5 +1,5 @@
 <div class="container mt-5">
-    <div class="row review-card">
+    <div class="row review-card position-relative">
 
         <!-- Left Side (Anonymous, Semester, Overall Rating) -->
         <div class="col-md-4 border-end">
@@ -94,7 +94,7 @@
             <p class="review">{{ review.description }}</p>
 
             <!-- Thumbs Up and Like Count -->
-            <div class="d-flex justify-content-end align-items-center">
+            <div class="thumbs-container">
                 <span class="me-2">{{ review.likes }}</span>
                 <i class="bi bi-hand-thumbs-up thumbs-up"></i>
             </div>
