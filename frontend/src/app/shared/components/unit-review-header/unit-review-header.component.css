@@ -1,72 +1,157 @@
 /* General Styling */
 .unit-overview {
-    background-color: #d6a6e7;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  /* Unit Title and Subtitle */
-  .unit-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-  }
-  
-  .unit-subtitle {
-    font-size: 1.2rem;
-    color: #666;
-  }
-  
-  /* Vertical Divider */
-  .vr {
-    border-left: 2px solid #555;
-    height: 100px;
-  }
-  
-  /* Overall Rating Section */
-  .overall-rating-container h2 {
-    font-size: 2.3rem;
-  }
-  
-  .stars i {
-    font-size: 1.8rem;
-  }
-  
-  /* Ratings Section for Content, Relevancy, and Teaching Team */
-  .ratings-section {
-    gap: 30px;
-  }
-  
-  .smaller-section p {
-    margin: 0;
-    font-size: 1.2rem;
-  }
-  
-  .smaller-stars {
-    font-size: 1.5rem;
-  }
-  
-  /* Buttons */
-  .btn-outline-white {
-    background-color: #fff;
-    border: 1px solid #333;
-    color: #333;
-    padding: 6px 12px;
-    font-size: 16px;
-    border-radius: 5px;
-  }
-  
-  .btn-outline-dark {
-    padding: 6px 12px;
-    font-size: 16px;
-    border-radius: 5px;
-  }
-  
-  /* Dropdown Menu */
-  .dropdown-menu {
-    padding: 0;
-  }
-  
-  .dropdown-item {
-    padding: 10px 15px;
-  }
-  
+  background-color: #d3a7d3; 
+  border-radius: 5px;
+}
+
+/* Unit Title and Subtitle */
+.unit-title {
+  font-size: 4.0rem; 
+  transform: translateX(150px);
+}
+
+.unit-subtitle {
+  font-size: 2.0rem;
+  color: #666;
+  margin-bottom: 0;
+  transform: translateX(150px);
+}
+
+/* Vertical Divider */
+.vr {
+  border-left: 2px solid #555;
+  height: 200px;
+  transform: translate(150px, 30px); 
+}
+
+.overall-rating-container {
+  transform: translate(80px, 10px); 
+}
+
+/* Overall Rating Section */
+.overall-rating-container h2 {
+  font-size: 3.8rem;
+  margin-bottom: 5px;
+  transform: translate(-20px);
+}
+
+
+.stars {
+  display: flex; 
+  gap: 10px; 
+}
+
+.stars i {
+  font-size: 2.5rem;
+}
+
+/* Ratings Section for Content, Relevancy, and Teaching Team */
+.ratings-section {
+  gap: 30px;
+  transform: translate(150px, 30px);
+}
+
+/* Align text and rating numbers side by side */
+.label-with-rating {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Space the rating number from the label using transform */
+.label-with-rating .rating-number {
+  transform: translateX(140px); 
+}
+
+/* Specific styling for Content section */
+.content-rating {
+  color: #000; 
+}
+
+.content-rating .stars {
+  display: flex;
+  gap: 10px; 
+}
+
+.content-rating .label-with-rating {
+  display: flex;
+  align-items: center;
+}
+
+/* Specific styling for Relevancy section */
+.relevancy-rating {
+  color: #000; 
+  transform: translateX(40px);
+}
+
+.relevancy-rating .stars {
+  display: flex;
+  gap: 10px; 
+}
+
+.relevancy-rating .label-with-rating {
+  display: flex;
+  align-items: center;
+}
+
+.relevancy-rating .rating-number {
+  transform: translateX(125px); 
+}
+
+/* Specific styling for Teaching Team section */
+.teaching-team-rating {
+  color: #000; 
+}
+
+.teaching-team-rating .stars {
+  display: flex;
+  gap: 10px; 
+}
+
+.teaching-team-rating .label-with-rating {
+  display: flex;
+  align-items: center;
+}
+
+.teaching-team-rating .rating-number {
+  transform: translateX(80px); 
+}
+
+.smaller-section p {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.smaller-stars {
+  font-size: 1.0rem;
+}
+
+/* Buttons */
+.btn-outline-white {
+  background-color: #fff;
+  border: 1px solid #333;
+  color: #333;
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 0;
+  transform: translateY(10px);
+}
+
+.btn-outline-dark {
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  margin-bottom: 0;
+  transform: translateX(-20px);
+  width: 150px; 
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  padding: 0;
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+}
