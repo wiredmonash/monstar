@@ -21,16 +21,16 @@ const reviewSchema = new Schema({
     grade: {type: Number, min: 0, max: 100},
 
     // Overall rating given to the unit
-    overallRating: {type: Number, required: true, min: 1, max: 5},
+    overallRating: {type: Number, required: true, min: 0, max: 5},
 
     // Relevancy rating
-    relevancyRating: {type: Number, required: true, min: 1, max: 5},
+    relevancyRating: {type: Number, required: true, min: 0, max: 5},
 
     // Faculty rating
-    facultyRating: {type: Number, required: true, min: 1, max: 5},
+    facultyRating: {type: Number, required: true, min: 0, max: 5},
 
     // Content rating
-    contentRating: {type: Number, required: true, min: 1, max: 5},
+    contentRating: {type: Number, required: true, min: 0, max: 5},
 
     // Review body text
     description: {type: String, required: true},

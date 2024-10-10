@@ -1,0 +1,72 @@
+/* General Styling */
+.unit-overview {
+    background-color: #d6a6e7;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  /* Unit Title and Subtitle */
+  .unit-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+  .unit-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+  }
+  
+  /* Vertical Divider */
+  .vr {
+    border-left: 2px solid #555;
+    height: 100px;
+  }
+  
+  /* Overall Rating Section */
+  .overall-rating-container h2 {
+    font-size: 2.3rem;
+  }
+  
+  .stars i {
+    font-size: 1.8rem;
+  }
+  
+  /* Ratings Section for Content, Relevancy, and Teaching Team */
+  .ratings-section {
+    gap: 30px;
+  }
+  
+  .smaller-section p {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  
+  .smaller-stars {
+    font-size: 1.5rem;
+  }
+  
+  /* Buttons */
+  .btn-outline-white {
+    background-color: #fff;
+    border: 1px solid #333;
+    color: #333;
+    padding: 6px 12px;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  .btn-outline-dark {
+    padding: 6px 12px;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  /* Dropdown Menu */
+  .dropdown-menu {
+    padding: 0;
+  }
+  
+  .dropdown-item {
+    padding: 10px 15px;
+  }
+  
