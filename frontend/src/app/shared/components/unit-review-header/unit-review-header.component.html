@@ -24,7 +24,15 @@
           ></i>
         }
       </div>
-      <p>{{ unit.reviews.length }} reviews</p>
+      @if (unit.reviews.length > 1) {
+        <p>{{ unit.reviews.length }} reviews</p>
+      } 
+      @else if (unit.reviews.length == 1) {
+        <p>{{ unit.reviews.length }} review</p>
+      }
+      @else if (unit.reviews.length <= 0) {
+        <p>No reviews</p>
+      }
     </div>
 
     <!-- Ratings: Content, Relevancy, and Teaching Team -->

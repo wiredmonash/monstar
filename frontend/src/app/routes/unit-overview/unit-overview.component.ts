@@ -42,6 +42,10 @@ export class UnitOverviewComponent implements OnInit {
         // Store the fetched reviews 
         this.reviews = reviews;
 
+        // Update the reviews property in the unit object
+        if (this.unit)
+          this.unit.reviews = this.reviews;
+
         // ? Debug log: Success
         console.log('GET Get All Reviews', reviews);
       },

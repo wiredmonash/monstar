@@ -166,16 +166,25 @@ router.put('/update/:reviewId', async function (req, res) {
  */
 router.delete('/delete/:reviewId', async function (req, res) {
     try {
-        const review = await Review.findByIdAndDelete(req.params.reviewId);
+        // Find the Review
+        const review = await Review.findById(req.params.reviewId);
 
-        // Throw error if review doesn't exist
-        if (!review) {
-            return res.status(500).json({error: "Review not found"});
-        }
+        // Throw error if Review doesn't exist
+        if (!review)
+            return res.status(404).json({error: "Review not found"});
 
+        // Removing the review from the Unit's `reviews` array
+        const unitId = review.unit;
+        await Unit.findByIdAndUpdate(unitId, { $pull : { reviews: req.params.reviewId } } );
+
+        // Delete the Review
+        await Review.findByIdAndDelete(req.params.reviewId); 
+
+        // Respond 200 and json with success message
         res.status(200).json({message: "Review successfully deleted"});
     }
     catch (error) {
+        // Respond 500 and error message
         res.status(500).json({error: `Error while deleting review: ${error.message}`});
     }
 })

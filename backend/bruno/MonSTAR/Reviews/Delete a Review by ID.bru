@@ -1,0 +1,15 @@
+meta {
+  name: Delete a Review by ID
+  type: http
+  seq: 3
+}
+
+delete {
+  url: http://localhost:8080/api/v1/reviews/delete/:reviewId
+  body: none
+  auth: none
+}
+
+params:path {
+  reviewId: 670793d1c6974c9cfccab970
+}
