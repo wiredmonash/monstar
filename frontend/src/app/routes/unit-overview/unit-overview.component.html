@@ -1,9 +1,17 @@
 <!-- The Unit Header -->
-<app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)"></app-unit-review-header>
+<div class="unit-header-container">
+    <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)"></app-unit-review-header>
+</div>
 
 <!-- Shows all the reviews from the backend -->
-<div class="unit-overview-container">
+<div class="reviews-container">
     @for (review of reviews; track $index) {
         <app-review-card [review]="review"></app-review-card>
     }
 </div>
+
+@if (reviews.length > 0) {
+    <h3 class="text-center mb-5">You have reached the end...</h3>
+} @else {
+    <h3 class="text-center">No reviews for this unit...</h3>
+}

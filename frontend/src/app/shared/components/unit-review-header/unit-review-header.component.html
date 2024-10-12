@@ -1,5 +1,5 @@
 <div class="unit-overview">
-  <div class="row align-items-center">
+  <div class="row align-items-center ">
     <!-- Unit Info -->
     <div class="col-md-3 unit-title-container">
       <!-- Unit Code -->
@@ -38,7 +38,7 @@
           </div>
           <div class="stars smaller-stars">
             @for (star of [1,2,3,4,5]; track $index) {
-              <i class="bi" 
+              <i class="bi text-dark" 
                   [class.bi-star-fill]="star <= unit.avgContentRating"
                   [class.bi-star]="star > unit.avgContentRating"
               ></i>
@@ -82,7 +82,7 @@
   </div>
 
   <!-- Sort By and Filter Section -->
-  <div class="row mt-3 d-flex justify-content-end">
+  <div class="row d-flex justify-content-end buttons-container">
     <!-- Write a Review Button -->
     <div class="col-auto">
       <button class="btn btn-outline-white filter-btn">

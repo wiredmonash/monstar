@@ -1,132 +1,148 @@
-/* General Styling */
+@import '../../../_variables.scss';
+
+// General Styling 
 .unit-overview {
-  background-color: #d3a7d3; 
-  border-radius: 5px;
+  background-color: #ce7fce;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: $poppins;
 }
 
-/* Unit Title and Subtitle */
+// Title
 .unit-title {
+  margin-top: 50px;
   font-size: 4.0rem; 
   transform: translateX(150px);
 }
 
+// Subtitle
 .unit-subtitle {
   font-size: 2.0rem;
-  color: #666;
+  color: #535353;
   margin-bottom: 0;
   transform: translateX(150px);
 }
 
-/* Vertical Divider */
+// Vertical Divider
 .vr {
   border-left: 2px solid #555;
   height: 200px;
   transform: translate(150px, 30px); 
 }
 
+// Overall Rating Container
 .overall-rating-container {
   transform: translate(80px, 10px); 
+
+  h2 {
+    font-size: 3.8rem;
+    margin-bottom: 5px;
+    transform: translate(-20px);
+  }
+  
+  p {
+    transform: translate(-20px);
+  }
 }
 
-/* Overall Rating Section */
-.overall-rating-container h2 {
-  font-size: 3.8rem;
-  margin-bottom: 5px;
-  transform: translate(-20px);
-}
-
-
+// Stars
 .stars {
   display: flex; 
   gap: 10px; 
+
+  i {
+    font-size: 2.5rem;
+  }
 }
 
-.stars i {
-  font-size: 2.5rem;
-}
-
-/* Ratings Section for Content, Relevancy, and Teaching Team */
+// Ratings Section for Content, Relevancy, and Teaching Team
 .ratings-section {
   gap: 30px;
   transform: translate(150px, 30px);
 }
 
-/* Align text and rating numbers side by side */
+// Align text and rating numbers side by side 
 .label-with-rating {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  
+  .rating-number {
+    transform: translateX(140px); 
+  }  
 }
 
-/* Space the rating number from the label using transform */
-.label-with-rating .rating-number {
-  transform: translateX(140px); 
+// Space the rating number from the label using transform 
+.content-rating { 
+  color: #000;
+
+  .stars {
+    display: flex;
+    gap: 10px; 
+  }
+
+  .label-with-rating {
+    display: flex;
+    align-items: center;
+  }
 }
 
-/* Specific styling for Content section */
-.content-rating {
-  color: #000; 
-}
-
-.content-rating .stars {
-  display: flex;
-  gap: 10px; 
-}
-
-.content-rating .label-with-rating {
-  display: flex;
-  align-items: center;
-}
-
-/* Specific styling for Relevancy section */
+// Specific styling for Relevancy section
 .relevancy-rating {
   color: #000; 
   transform: translateX(40px);
+
+  .stars {
+    display: flex;
+    gap: 10px; 
+  }
+
+  .label-with-rating {
+    display: flex;
+    align-items: center;
+  }
+
+  .rating-number {
+    transform: translateX(125px); 
+  }
 }
 
-.relevancy-rating .stars {
-  display: flex;
-  gap: 10px; 
-}
-
-.relevancy-rating .label-with-rating {
-  display: flex;
-  align-items: center;
-}
-
-.relevancy-rating .rating-number {
-  transform: translateX(125px); 
-}
-
-/* Specific styling for Teaching Team section */
+// Specific styling for Teaching Team section
 .teaching-team-rating {
   color: #000; 
+
+  .stars {
+    display: flex;
+    gap: 10px; 
+  }
+
+  .label-with-rating {
+    display: flex;
+    align-items: center;
+  }
+
+  .rating-number {
+    transform: translateX(83px); 
+  }
 }
 
-.teaching-team-rating .stars {
-  display: flex;
-  gap: 10px; 
+// Smaller section
+.smaller-section {
+  p {
+    margin: 0;
+    font-size: 1.2rem;
+  }
 }
 
-.teaching-team-rating .label-with-rating {
-  display: flex;
-  align-items: center;
-}
-
-.teaching-team-rating .rating-number {
-  transform: translateX(80px); 
-}
-
-.smaller-section p {
-  margin: 0;
-  font-size: 1.2rem;
-}
-
+// Smaller stars
 .smaller-stars {
   font-size: 1.0rem;
 }
 
-/* Buttons */
+// Buttons
+.buttons-container {
+  padding-top: 60px;
+}
+
 .btn-outline-white {
   background-color: #fff;
   border: 1px solid #333;
@@ -136,6 +152,11 @@
   border-radius: 5px;
   margin-bottom: 0;
   transform: translateX(-20px);
+
+  &:hover {
+    background-color: black;
+    color: white;
+  }
 }
 
 .btn-outline-dark {
@@ -147,7 +168,7 @@
   width: 150px; 
 }
 
-/* Dropdown Menu */
+// Dropdown menu
 .dropdown-menu {
   padding: 0;
 }
@@ -155,3 +176,4 @@
 .dropdown-item {
   padding: 10px 15px;
 }
+

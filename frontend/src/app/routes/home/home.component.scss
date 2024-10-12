@@ -1,29 +1,35 @@
+@import '../../_variables.scss';
+
 .FAQ {
   text-align: center;
 }
 
-/* Placeholder for Graphic Section */
+// Placeholder for Graphic Section
 .graphic-box {
   width: 100%;
   max-width: 800px;
   height: 300px;
   border: 2px solid #000;
-  background-color: #fff; /* Placeholder background for graphic */
+  border-radius: 15px; // Curved edges
+  background-color: #eeecea; /* Placeholder background for graphic */
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
 }
 
+// Explore button
 .explore-button {
   padding: 10px 30px;
-  background-color: #dec0e9;
+  background-color: $primary-color;
   border: none;
+  border-radius: 15px;
   color: #000;
+  font-family: $poppins;
   font-size: 1.25rem;
   cursor: pointer;
-}
 
-.explore-button:hover {
-  background-color: #c4a1d5;
+  &:hover {
+    background-color: $primary-color-hover;
+  }
 }

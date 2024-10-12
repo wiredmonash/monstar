@@ -1,7 +1,9 @@
+@import '../../../_variables.scss';
+
 /* ! Top Navigation Bar */
 .navbar {
   /* Light purple background colour */
-  background-color: #d3a7d3;
+  background-color: $primary-color;
   /* Adds padding around the navbar */
   padding: 1rem;
   /* Set to relative to handle absolute positioning of toggler */
@@ -24,8 +26,8 @@
 .navbar-brand {
   /* Increases the font size of the brand name */
   font-size: 1.5rem;
-  /* Makes the brand name bold */
-  font-weight: bold;
+  font-family: $poppins;
+  font-weight: 500;
   /* Center the text */
   text-align: center;
   /* Ensure it's centered in its container */
@@ -35,64 +37,44 @@
 
 /* ! Sidebar (Offcanvas) */ 
 .offcanvas {
-  /* Sets the width of the sidebar */ 
   width: 250px;
-  /* White background color for the sidebar */ 
   background-color: #f8f9fa;
-  /* Sidebar slide in and out animation */
   transition: transform 0.2s ease-in-out;
 }
 
 /* ! Sidebar Header */ 
 .offcanvas-header {
-  /* Adds padding around the header */
   padding: 1rem;
-  /* Increases the font size of the header text */
   font-size: 1.25rem;
 }
 
 /* ! Sidebar Body Styles (Unordered List) */
-.offcanvas-body ul {
-  /* Removes default padding from the list */
-  padding-left: 0;
-  /* Removes default list bullets */ 
-  list-style: none;
-}
+.offcanvas-body { 
+  
+  ul {
+    padding-left: 0;
+    list-style: none;
+  }
 
-/* ! Sidebar List Item Styles */
-.offcanvas-body li {
-  /* Adds vertical space between each list item */
-  margin: 1rem 0;
-}
+  li {
+    margin: 1rem 0;
+  }
 
-/* ! Sidebar Links */
-.offcanvas-body li a {
-  /* Sets font size for sidebar links */
-  font-size: 17px;
-  /* Makes sidebar link text bold */
-  font-weight: bold;
-  /* Sets the default text colour */ 
-  color: #333;
-  /* Ensures the background color covers the full width */
-  display: block; 
-  /* Adds padding for spacing */
-  padding: 0.4rem 1rem; 
-  /* Adds margin between buttons */
-  margin: 0.5rem 0; 
-  /* Smooth transition */
-  transition: background-color 0.3s ease, color 0.3s ease; 
-  /* Rounded corners */
-  border-radius: 15px; 
-  /* Removes underline */
-  text-decoration: none; 
-}
+  li a {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    display: block; 
+    padding: 0.4rem 1rem; 
+    margin: 0.5rem 0; 
+    transition: background-color 0.3s ease, color 0.3s ease; 
+    border-radius: 15px; 
+    text-decoration: none; 
+  }
 
-/* * Sidebar Link Hover Effect */
-.offcanvas-body li a:hover {
-  /* Changes text color on hover */
-  color: #fff; 
-  /* Adds background color on hover */
-  background-color: #333; 
-  /* Removes underline */
-  text-decoration: none; 
+  li a:hover {
+    color: #fff; 
+    background-color: #333; 
+    text-decoration: none; 
+  }
 }

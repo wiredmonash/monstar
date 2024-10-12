@@ -1,3 +1,5 @@
+@import './_variables.scss';
+
 /* Ensure the html and body elements occupy full height */
 html, body {
   height: 100%;
@@ -9,14 +11,10 @@ html, body {
   display: flex;
   flex-direction: column;
   min-height: 100vh; /* Full viewport height */
+  background-color: $bg-light-color;
 }
 
 /* Allow the content area to grow and fill space */
 .content {
   flex: 1;
-}
-
-/* ! Optional styling for the footer */
-footer {
-  background-color: #f1f1f1;
 }
