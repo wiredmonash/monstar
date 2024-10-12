@@ -16,7 +16,7 @@ import { UnitReviewHeaderComponent } from './shared/components/unit-review-heade
   imports: [RouterOutlet, NavbarComponent, FooterComponent, HomeComponent, UnitReviewHeaderComponent], 
   providers: [ApiService],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'] // Fixed the typo from 'styleUrl' to 'styleUrls'
+  styleUrls: ['./app.component.scss'] // Fixed the typo from 'styleUrl' to 'styleUrls'
 })
 export class AppComponent {
   title = 'frontend';

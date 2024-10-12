@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [NavbarComponent, FooterComponent, CommonModule], 
   templateUrl: './unit-review-header.component.html',
-  styleUrls: ['./unit-review-header.component.css'] 
+  styleUrls: ['./unit-review-header.component.scss'] 
 })
 export class UnitReviewHeaderComponent {
   // Input property to receive the unit data from the parent component

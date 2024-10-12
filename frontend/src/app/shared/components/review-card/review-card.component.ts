@@ -5,7 +5,7 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './review-card.component.html',
-  styleUrl: './review-card.component.css'
+  styleUrl: './review-card.component.scss'
 })
 export class ReviewCardComponent {
   // Accept review data from the parent component

@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './unit-list.component.html',
-  styleUrl: './unit-list.component.css'
+  styleUrl: './unit-list.component.scss'
 })
 export class UnitListComponent {
 

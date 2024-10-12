@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../api.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-unit-overview',
   standalone: true,
   imports: [ReviewCardComponent, UnitReviewHeaderComponent],
   templateUrl: './unit-overview.component.html',
-  styleUrl: './unit-overview.component.css'
+  styleUrl: './unit-overview.component.scss'
 })
 export class UnitOverviewComponent implements OnInit {
   // TODO: This will store the unit that we are currently showing 
