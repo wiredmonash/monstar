@@ -1,10 +1,12 @@
 @import '../../_variables.scss';
 
+// * FAQ Title
 .FAQ {
   text-align: center;
+  padding-bottom: 20px;
 }
 
-// Placeholder for Graphic Section
+// * Placeholder for Graphic Section
 .graphic-box {
   width: 100%;
   max-width: 800px;
@@ -18,7 +20,7 @@
   position: relative;
 }
 
-// Explore button
+// * Explore button
 .explore-button {
   padding: 10px 30px;
   background-color: $primary-color;
@@ -29,7 +31,28 @@
   font-size: 1.25rem;
   cursor: pointer;
 
+  transition: background-color 0.2s ease-in-out; // Smooth transition for background color
+
   &:hover {
     background-color: $primary-color-hover;
+  }
+}
+
+// * Accordion
+::ng-deep .p-accordion {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); // Slight shadow 
+  border-radius: 10px; // Adds rounded corners to enhance the floaty effect
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; // Adds smooth transition for box-shadow
+
+  // On mouse hover
+  &:hover {
+    box-shadow: 0 8px 16px rgba(226, 136, 226, 0.25), 0 10px 24px rgba(226, 136, 226, 0.25); // Purple and larger shadow on hover
+    transform: translateY(-3px); // Slight upward movement on hover to emphasize floating effect
+  }  
+
+  // Header link
+  .p-accordion-header-link {
+    // White background color
+    background-color: #ffffff !important; 
   }
 }

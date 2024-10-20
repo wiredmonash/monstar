@@ -2,11 +2,21 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component'; 
 import { FooterComponent } from '../footer/footer.component'; 
 import { CommonModule } from '@angular/common';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-unit-review-header',
   standalone: true,
-  imports: [NavbarComponent, FooterComponent, CommonModule], 
+  imports: [
+    NavbarComponent, 
+    FooterComponent, 
+    CommonModule, 
+    DialogModule, 
+    ButtonModule, 
+    InputTextModule
+  ], 
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'] 
 })
@@ -25,5 +35,11 @@ export class UnitReviewHeaderComponent {
   onSort(criteria: string) {
     console.log('Sorting by: ', criteria);
     this.sortBy.emit(criteria);
+  }
+
+  visible: boolean = false;
+
+  showDialog() {
+    this.visible = true;
   }
 }
