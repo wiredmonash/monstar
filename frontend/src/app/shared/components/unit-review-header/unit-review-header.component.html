@@ -1,3 +1,5 @@
+<!-- UnitHeaderComponent | PARENT: UnitOverviewComponent -->
+
 <div class="unit-overview">
   <div class="row align-items-center ">
     <!-- Unit Info -->
@@ -24,6 +26,7 @@
           ></i>
         }
       </div>
+      <!-- Number of total reviews -->
       @if (unit.reviews.length > 1) {
         <p>{{ unit.reviews.length }} reviews</p>
       } 
@@ -122,24 +125,5 @@
   </div>
 </div>
 
-<!-- ! TESTING THE POPUP REVIEW (For Ricky to work with) -->
-<!-- This should be a separate component. -->
-<!-- This is shown when the visible variable is set to true -->
-<!-- Some styling changes need to be made... -->
-<!-- Some of the fields are too large and there is too much padding, use scss to fix this. -->
-<!-- Also change the stuff to be more relevant for writing a review instead of profile :-) -->
-<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-  <span class="p-text-secondary block mb-5">Update your information.</span>
-  <div class="flex align-items-center gap-3 mb-3">
-      <label for="username" class="font-semibold w-6rem">Username</label>
-      <input pInputText id="username" class="flex-auto" autocomplete="off" />
-  </div>
-  <div class="flex align-items-center gap-3 mb-5">
-      <label for="email" class="font-semibold w-6rem">Email</label>
-      <input pInputText id="email" class="flex-auto" autocomplete="off" />
-  </div>
-  <div class="flex justify-content-end gap-2">
-      <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
-      <p-button label="Save" (onClick)="visible = false" />
-  </div>
-</p-dialog>
+<!-- CHILD: Pop up write review -->
+<app-write-review-unit [unit]="unit"></app-write-review-unit>

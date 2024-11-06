@@ -1,0 +1,36 @@
+<p-dialog header="Review for {{unit.unitCode | uppercase}}" [modal]="true" [(visible)]="visible" [style]="{ width: '30rem' }">
+  <span class="p-text-secondary block mb-3">Write your review and give your ratings</span>
+
+  <!-- Review description -->
+  <div class="flex flex-column mb-4">
+      <label for="reviewDescription" class="font-semibold mb-2">Description</label>
+      <textarea pInputTextarea id="reviewDescription" rows="5" class="w-full" autocomplete="off" placeholder="Write your review here..."></textarea>
+  </div>
+
+  <!-- Star ratings -->
+  <div class="flex flex-column gap-3 mb-4">
+    <!-- Content rating -->
+    <div class="flex align-items-center">
+    <label for="contentRating" class="font-semibold w-8rem">Content</label>
+    <p-rating [(ngModel)]="contentRating" stars="5" id="contentRating" class="ml-3"></p-rating>
+    </div>
+
+    <!-- Relevancy Rating -->
+    <div class="flex align-items-center">
+    <label for="relevancyRating" class="font-semibold w-8rem">Relevancy</label>
+    <p-rating [(ngModel)]="relevancyRating" stars="5" id="relevancyRating" class="ml-3"></p-rating>
+    </div>
+
+    <!-- Teaching Team Rating -->
+    <div class="flex align-items-center">
+    <label for="facultyRating" class="font-semibold w-8rem">Teaching Team</label>
+    <p-rating [(ngModel)]="facultyRating" stars="5" id="facultyRating" class="ml-3"></p-rating>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="secondary" (click)="closeDialog()"></p-button>
+    <p-button label="Post" (click)="closeDialog()"></p-button>
+  </div>
+</p-dialog>

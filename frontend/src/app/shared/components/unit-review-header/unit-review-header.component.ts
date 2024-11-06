@@ -1,22 +1,30 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component'; 
 import { FooterComponent } from '../footer/footer.component'; 
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { RatingModule } from 'primeng/rating';
+import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-unit-review-header',
   standalone: true,
   imports: [
-    NavbarComponent, 
-    FooterComponent, 
-    CommonModule, 
-    DialogModule, 
-    ButtonModule, 
-    InputTextModule
-  ], 
+    NavbarComponent,
+    FooterComponent,
+    CommonModule,
+    DialogModule,
+    ButtonModule,
+    InputTextModule,
+    RatingModule,
+    WriteReviewUnitComponent,
+    DropdownModule,
+    FormsModule,
+], 
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'] 
 })
@@ -27,6 +35,8 @@ export class UnitReviewHeaderComponent {
   // Output property to emit sorting criteria to the partent component (UnitOverviewComponent)
   @Output() sortBy = new EventEmitter<string>();
 
+  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
+  
   /**
    * Handles the sorting action and emits the chosen criteria to the parent component.
    *
@@ -37,9 +47,9 @@ export class UnitReviewHeaderComponent {
     this.sortBy.emit(criteria);
   }
 
-  visible: boolean = false;
-
+  // Shows the write-review
   showDialog() {
-    this.visible = true;
+    if (this.writeReviewDialog) 
+      this.writeReviewDialog.openDialog();
   }
 }
