@@ -35,8 +35,12 @@ export class UnitReviewHeaderComponent {
   // Output property to emit sorting criteria to the partent component (UnitOverviewComponent)
   @Output() sortBy = new EventEmitter<string>();
 
+  // Emits that the user has added a review
+  @Output() reviewAdded = new EventEmitter<void>();
+
+  // Our child component write-review-unit.component
   @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
-  
+
   /**
    * Handles the sorting action and emits the chosen criteria to the parent component.
    *
@@ -51,5 +55,9 @@ export class UnitReviewHeaderComponent {
   showDialog() {
     if (this.writeReviewDialog) 
       this.writeReviewDialog.openDialog();
+  }
+
+  handleReviewPosted() {
+    this.reviewAdded.emit();
   }
 }

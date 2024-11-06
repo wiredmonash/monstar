@@ -5,6 +5,11 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
+import { ApiService } from '../../../../api.service';
+import { Router } from '@angular/router';
+import { Review } from '../../models/review.model';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @Component({
   selector: 'app-write-review-unit',
@@ -15,7 +20,9 @@ import { RatingModule } from 'primeng/rating';
     DialogModule,
     ButtonModule,
     InputTextModule,
+    InputTextareaModule,
     RatingModule,
+    DropdownModule,
   ],
   templateUrl: './write-review-unit.component.html',
   styleUrl: './write-review-unit.component.scss'
@@ -27,16 +34,79 @@ export class WriteReviewUnitComponent {
   // Input property to receive the visible boolean data from the parent component
   @Input() visible: boolean = false;
 
-  // Ratings
-  contentRating: Number = 0;
-  relevancyRating: Number = 0; 
-  facultyRating: Number = 0;
+  // Event to notify that the review was posted
+  @Output() reviewPosted = new EventEmitter<void>(); 
 
+  // Review object and it's properties
+  review: Review = new Review();
+
+  // List of years to choose from
+  yearOptions: Array<{ label: string; value: number }> = [];
+scrollbar: any;
+
+
+  constructor (
+    private apiService: ApiService,
+  ) {
+    this.initialiseYearOptions();
+  }
+
+
+  // Opens the dialog
   openDialog() {
     this.visible = true;
   }
 
+  // Closes the dialog
   closeDialog() {
     this.visible = false;
+  }
+
+  // Posts the review to the backend
+  postReview() {
+    // Checking if unit is assigned to us
+    if (!this.unit) {
+      console.error('Unit data not available.');
+      return;
+    }
+
+    // Ensure all defaults are set in the review object
+    this.review.ensureDefaults();
+
+    // Validating values
+    if (!this.review.isValid()) {
+      console.error('Please fill out all fields before submitting the review, and please check your values.')
+      return;
+    }
+
+    // Calculate the overall rating
+    this.review.calcOverallRating();
+
+    // Send the review using the API service
+    this.apiService.createReviewForUnitPOST(this.unit.unitCode, this.review).subscribe({
+      next: (response) => {
+        // Log that we created a review with response
+        console.log('Review created successfully:', response);
+
+        // Close the pop up write review
+        this.closeDialog();
+
+        // Emit that we posted the review
+        this.reviewPosted.emit();
+
+        // Reset form after successful submission
+        this.review = new Review();
+      },
+      error: (error) => { 
+        // Give an error if unsuccessful
+        console.error('Error creating review:', error);
+      }
+    });
+  }
+
+  private initialiseYearOptions(): void {
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= currentYear - 10; i--)
+      this.yearOptions.push({ label: i.toString(), value: i });
   }
 }

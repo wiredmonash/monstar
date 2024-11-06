@@ -117,4 +117,9 @@ export class UnitOverviewComponent implements OnInit {
         break;
     }
   }
+
+  refreshReviews() {
+    if (this.unit && this.unit.unitCode)
+      this.getAllReviews(this.unit.unitCode);
+  }
 }

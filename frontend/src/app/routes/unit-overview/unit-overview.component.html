@@ -1,6 +1,6 @@
 <!-- CHILD: UnitHeaderComponent -->
 <div class="unit-header-container">
-    <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)"></app-unit-review-header>
+    <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)" (reviewAdded)="refreshReviews()"></app-unit-review-header>
 </div>
 
 <!-- Shows all the reviews from the backend -->
