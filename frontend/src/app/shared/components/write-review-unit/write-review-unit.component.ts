@@ -42,27 +42,37 @@ export class WriteReviewUnitComponent {
 
   // List of years to choose from
   yearOptions: Array<{ label: string; value: number }> = [];
-scrollbar: any;
 
 
-  constructor (
-    private apiService: ApiService,
-  ) {
+  // Constructor that initialises the year options also gives us the ApiService.
+  constructor (private apiService: ApiService) {
     this.initialiseYearOptions();
   }
 
 
-  // Opens the dialog
+  // Opens the create review dialog
   openDialog() {
     this.visible = true;
   }
 
-  // Closes the dialog
+  // Closes the create review dialog
   closeDialog() {
     this.visible = false;
   }
 
-  // Posts the review to the backend
+  /**
+   * * Posts the Review (to the backend)
+   * 
+   * This method checks if:
+   * - we are currently creating a review FOR a unit.
+   * - we have default values for the review.
+   * - we have valid values for the review.
+   * 
+   * Also calculates the overallRating using the Review model's calcOverallRating
+   * helper method.
+   * 
+   * @subscribes apiService.createReviewForUnitPOST
+   */
   postReview() {
     // Checking if unit is assigned to us
     if (!this.unit) {
@@ -104,6 +114,14 @@ scrollbar: any;
     });
   }
 
+  /**
+   * Creates the multiple previous years from current year.
+   * Pushes the values to the yearOptions array.
+   * 
+   * This is used for the year dropdown option.
+   * 
+   * @private
+   */
   private initialiseYearOptions(): void {
     const currentYear = new Date().getFullYear();
     for (let i = currentYear; i >= currentYear - 10; i--)

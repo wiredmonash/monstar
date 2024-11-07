@@ -42,7 +42,7 @@ export class UnitReviewHeaderComponent {
   @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
 
   /**
-   * Handles the sorting action and emits the chosen criteria to the parent component.
+   * * Handles the sorting action and emits the chosen criteria to the parent component.
    *
    * @param {string} criteria - The criteria to sort by, such as 'recent', 'highest-rating', or 'lowest-rating'.
    */
@@ -51,12 +51,13 @@ export class UnitReviewHeaderComponent {
     this.sortBy.emit(criteria);
   }
 
-  // Shows the write-review
+  // Shows the dialog the write a review
   showDialog() {
     if (this.writeReviewDialog) 
       this.writeReviewDialog.openDialog();
   }
 
+  // Emits the reviewAdded signal to be received by unit-overview component.
   handleReviewPosted() {
     this.reviewAdded.emit();
   }

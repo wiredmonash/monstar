@@ -6,7 +6,7 @@
             <!-- Title -->
             <h5>{{ review.title || 'No Title' }}</h5>
             <!-- User -->
-            <p>By {{ review.author || 'Anonymous' }} ({{review.year}})</p>
+            <p>By {{ review.author || 'Anonymous' }} <span class="review-year">(taken in {{review.year}})</span></p>
 
             <!-- Overall Rating -->
             <h5 class="d-flex justify-content-between">
