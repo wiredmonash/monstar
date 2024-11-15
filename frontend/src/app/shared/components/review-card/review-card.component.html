@@ -3,17 +3,14 @@
 
         <!-- Left Side (Anonymous, Semester, Overall Rating) -->
         <div class="col-md-4 border-end">
-            <!-- Author -->
-            <h5>{{ review.author || 'Anonymous' }}</h5>
-            <!-- Semester Taken -->
-            <p class="mb-1"><strong>Semester Taken:</strong> {{ review.semester }}</p>
-            <!-- Grade -->
-            <p><strong>Grade:</strong> {{ review.grade }}</p>
+            <!-- Title -->
+            <h5>{{ review.title || 'No Title' }}</h5>
+            <!-- User -->
+            <p>By {{ review.author || 'Anonymous' }} <span class="review-year">(taken in {{review.year}})</span></p>
 
             <!-- Overall Rating -->
             <h5 class="d-flex justify-content-between">
                 <span>Overall</span>
-                <span>{{ review.overallRating }}/5</span>
             </h5>
             <!-- Stars -->
             <div class="d-flex justify-content-center">
@@ -91,7 +88,17 @@
             </div>
 
             <!-- Review Description -->
-            <p class="review">{{ review.description }}</p>
+            <p class="review">
+                {{ expanded ? review.description : (review.description | slice:0:150) + (review.description.length > 150 ? '...' : '') }}
+            </p>
+
+            <!-- Expand/Collapse Button -->
+            @if (review.description.length > 150) {
+                <button class="btn btn-link p-0" (click)="toggleExpand()">
+                    <i [class]="expanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
+                    {{ expanded ? 'Show Less' : 'Show More' }}
+                </button>
+            }
 
             <!-- Thumbs Up and Like Count -->
             <div class="thumbs-container">

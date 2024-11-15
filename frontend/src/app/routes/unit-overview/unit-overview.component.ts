@@ -7,7 +7,10 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-unit-overview',
   standalone: true,
-  imports: [ReviewCardComponent, UnitReviewHeaderComponent],
+  imports: [
+    ReviewCardComponent, 
+    UnitReviewHeaderComponent
+  ],
   templateUrl: './unit-overview.component.html',
   styleUrl: './unit-overview.component.scss'
 })
@@ -123,5 +126,10 @@ export class UnitOverviewComponent implements OnInit {
         this.reviews.sort((a, b) => b.overallRating - a.overallRating);
         break;
     }
+  }
+
+  refreshReviews() {
+    if (this.unit && this.unit.unitCode)
+      this.getAllReviews(this.unit.unitCode);
   }
 }

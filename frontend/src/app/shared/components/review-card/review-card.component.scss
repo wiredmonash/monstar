@@ -61,6 +61,16 @@
   align-items: center;
 }
 
+.btn-link {
+  font-size: 1rem;
+  color: #000;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .more-link {
   color: #6c757d;
   text-decoration: underline;
@@ -75,6 +85,10 @@ p {
   color: #000;
   margin-bottom: 7px;
   padding-top: 10px;
+}
+
+.review-year {
+  color: #474b4f;
 }
 
 // Heading 5 
