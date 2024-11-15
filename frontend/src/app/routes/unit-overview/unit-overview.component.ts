@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../api.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-unit-overview',
@@ -14,7 +15,7 @@ import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-h
   styleUrl: './unit-overview.component.scss'
 })
 export class UnitOverviewComponent implements OnInit {
-  // TODO: This will store the unit that we are currently showing 
+  // This will store the unit that we are currently showing
   unit: any = null;
 
   // Stores the reviews
@@ -22,14 +23,20 @@ export class UnitOverviewComponent implements OnInit {
 
 
   constructor (
-    private apiService: ApiService
+    private apiService: ApiService,
+    private route: ActivatedRoute,
   ) { }
 
 
   // * Runs on initialisation
   ngOnInit(): void {
-    this.getUnitByUnitcode('fit1045'); // Get the fit1045 unit
-    this.getAllReviews('fit1045'); // Get the reviews
+    // Get unit code from the route parameters
+    const unitCode = this.route.snapshot.paramMap.get('unitcode');
+
+    if (unitCode) {
+      this.getUnitByUnitcode(unitCode); // Get the unit
+      this.getAllReviews(unitCode); // Get the reviews
+    }
   }
 
 

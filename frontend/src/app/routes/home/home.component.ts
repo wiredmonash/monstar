@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
 
 @Component({
@@ -9,5 +10,11 @@ import { AccordionModule } from 'primeng/accordion';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+  // Inject router in the constructor
+  constructor (private router: Router) { }
 
+  // Method to navigate to the unit list page
+  exploreUnits() {
+    this.router.navigate(['/unit-list']);
+  }
 }

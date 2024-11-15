@@ -24,6 +24,11 @@ export class ApiService {
     return this.http.get(`${this.url}/units/${unitcode}`);
   }
 
+  // * GET Get All Units
+  getAllUnits(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/units`);
+  }
+    
   // * POST Create a Review for a Unit
   createReviewForUnitPOST(unitcode: string, review: Review): Observable<any> {
     return this.http.post(`${this.url}/reviews/${unitcode}/create`, { 
