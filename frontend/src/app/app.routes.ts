@@ -11,7 +11,6 @@ export const routes: Routes = [
     { path: "", component: HomeComponent },
     // Unit List 
     { path: "unit-list", component: UnitListComponent },
-
-    //! DEBUGGING ROUTES (Currently shows just FIT1045)
-    { path: 'unit-overview', component: UnitOverviewComponent}
+    // Unit Overview
+    { path: 'unit-overview/:unitcode', component: UnitOverviewComponent}
 ];

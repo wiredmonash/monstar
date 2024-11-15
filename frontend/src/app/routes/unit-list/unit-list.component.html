@@ -1,3 +1,7 @@
-<p>This will have the "Unit List" page from Miro Board</p>
-
-<p-button label="Submit" icon="pi pi-check" [raised]="true" [rounded]="true"></p-button>
+<div class="unit-list-container">
+  @for (unit of units; track $index) {
+  <div class="unit-card-wrapper">
+    <app-unit-card [unit]="unit"></app-unit-card>
+  </div>
+  }
+</div>

@@ -6,23 +6,21 @@
 }
 
 .hover-card:hover {
-    width: 20rem;
-    border-radius: 10px;
     background-color: #f0f0f0; /* Light gray background on hover */
     transform: scale(1.02); /* Slight zoom effect */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Darker shadow */
 }
 
-.code{
+.code {
     font-weight: bold;
     font-size: 25px;
     letter-spacing: 0.2px;
 }
-.heading{
+.heading {
     font-size: 15px;
     height: 2rem;
 }
-.review{
+.review {
     font-size: 14px;
     padding-top: 5px;
 }
