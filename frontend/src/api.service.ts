@@ -19,7 +19,27 @@ export class ApiService {
     return this.http.get(url);
   }
 
-  // * GET Get Unit by UnitCode
+  // * PATCH Like Review by ID
+  likeReviewPATCH(id: string): Observable<any> {
+    return this.http.patch(`${this.url}/reviews/like/${id}`, {});
+  }
+
+  // * PATCH Un-Like Review by ID
+  unlikeReviewPATCH(id: string): Observable<any> {
+    return this.http.patch(`${this.url}/reviews/unlike/${id}`, {});
+  }
+
+  // * PATCH Dislike a Review by ID
+  dislikeReviewPATCH(id: string): Observable<any> {
+    return this.http.patch(`${this.url}/reviews/dislike/${id}`, {});
+  }
+
+  // * PATCH Un-Dislike a Review by ID
+  undislikeReviewPATCH(id: string): Observable<any> {
+    return this.http.patch(`${this.url}/reviews/undislike/${id}`, {});
+  }
+
+  // * GET Get Unit by Unitcode
   getUnitByUnitcodeGET(unitcode: string): Observable<any> {
     return this.http.get(`${this.url}/units/${unitcode}`);
   }

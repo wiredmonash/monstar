@@ -22,13 +22,18 @@ export class UnitOverviewComponent implements OnInit {
   reviews: any[] = [];
 
 
+  // Injects ApiService and ActivatedRoute
   constructor (
     private apiService: ApiService,
     private route: ActivatedRoute,
   ) { }
 
 
-  // * Runs on initialisation
+  /** 
+   * * Runs on initialisation
+   * 
+   * Gets the unitcode from the URL param and uses it to get the unit and reviews.
+   */ 
   ngOnInit(): void {
     // Get unit code from the route parameters
     const unitCode = this.route.snapshot.paramMap.get('unitcode');
@@ -128,8 +133,14 @@ export class UnitOverviewComponent implements OnInit {
     }
   }
 
+  /**
+   * This method is called finally after a few event emittors going from:
+   * write-review-unit (emits reviewPosted) -> unit-review-header (emits reviewAdded) -> unit-overview
+   */
   refreshReviews() {
-    if (this.unit && this.unit.unitCode)
-      this.getAllReviews(this.unit.unitCode);
+    if (this.unit && this.unit.unitCode) {
+      this.getAllReviews(this.unit.unitCode);     // Get all the reviews again. 
+      this.getUnitByUnitcode(this.unit.unitCode); // Get the unit again for updated avg ratings.
+    }
   }
 }

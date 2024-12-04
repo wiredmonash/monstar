@@ -100,10 +100,12 @@
                 </button>
             }
 
-            <!-- Thumbs Up and Like Count -->
+            <!-- Thumbs Buttons and Like Count -->
             <div class="thumbs-container">
-                <span class="me-2">{{ review.likes }}</span>
-                <i class="bi bi-hand-thumbs-up thumbs-up"></i>
+                <span class="me-2">{{ likes }}</span>
+                <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="like()"></i>
+                <span class="me-2 ml-3">{{ dislikes }}</span>
+                <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="dislike()"></i>
             </div>
         </div>
     </div>

@@ -35,6 +35,12 @@ const reviewSchema = new Schema({
     // Review body text
     description: {type: String, required: true},
 
+    // Likes
+    likes: {type: Number, min: 0, default: 0},
+
+    // Dislikes
+    dislikes: {type: Number, min: 0, default: 0},
+
     // Reference to the unit being reviewed
     unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true} //! Change required to true 
 }, {
