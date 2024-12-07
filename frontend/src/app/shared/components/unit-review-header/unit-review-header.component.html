@@ -17,7 +17,7 @@
 
     <!-- Overall Rating -->
     <div class="col-md-2 overall-rating-container text-center">
-      <h2 class="fw-bold overall-rating-title">{{ unit.avgOverallRating }} <span class="fs-5">out of 5</span></h2>
+      <h2 class="fw-bold overall-rating-title">{{ unit.avgOverallRating | decimal }} <span class="fs-5">out of 5</span></h2>
       <div class="stars">
         @for (star of [1,2,3,4,5]; track $index) {
           <i class="bi text-dark" 
@@ -45,7 +45,7 @@
         <div class="text-left smaller-section content-rating">
           <div class="label-with-rating">
             <p>Content</p>
-            <p class="rating-number">{{ unit.avgContentRating }}</p>
+            <p class="rating-number">{{ unit.avgContentRating | decimal }}</p>
           </div>
           <div class="stars smaller-stars">
             @for (star of [1,2,3,4,5]; track $index) {
@@ -61,7 +61,7 @@
         <div class="text-left smaller-section teaching-team-rating mt-2">
           <div class="label-with-rating">
             <p>Teaching Team</p>
-            <p class="rating-number">{{ unit.avgFacultyRating }}</p>
+            <p class="rating-number">{{ unit.avgFacultyRating | decimal }}</p>
           </div>
           <div class="stars smaller-stars">
             @for (star of [1,2,3,4,5]; track $index) {
@@ -78,7 +78,7 @@
       <div class="text-left smaller-section relevancy-rating">
         <div class="label-with-rating">
           <p>Relevancy</p>
-          <p class="rating-number">{{ unit.avgRelevancyRating }}</p>
+          <p class="rating-number">{{ unit.avgRelevancyRating | decimal }}</p>
         </div>
         <div class="stars smaller-stars">
           @for (star of [1,2,3,4,5]; track $index) {

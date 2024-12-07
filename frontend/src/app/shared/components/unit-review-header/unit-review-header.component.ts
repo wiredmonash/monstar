@@ -9,13 +9,12 @@ import { RatingModule } from 'primeng/rating';
 import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
+import { DecimalPipe } from '../../pipes/decimal.pipe';
 
 @Component({
   selector: 'app-unit-review-header',
   standalone: true,
   imports: [
-    NavbarComponent,
-    FooterComponent,
     CommonModule,
     DialogModule,
     ButtonModule,
@@ -24,6 +23,7 @@ import { FormsModule } from '@angular/forms';
     WriteReviewUnitComponent,
     DropdownModule,
     FormsModule,
+    DecimalPipe
 ], 
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'] 

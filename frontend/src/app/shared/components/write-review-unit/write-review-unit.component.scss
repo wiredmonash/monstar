@@ -1,1 +1,10 @@
 /* Custom scrollbar for PrimeNG dropdown */
+.justify-start {
+    margin-right: auto;
+}
+
+:host {
+    ::ng-deep .toast-override {
+        font-family: 'Fira Code'
+    }
+}

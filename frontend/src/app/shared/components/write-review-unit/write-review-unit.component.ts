@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { Review } from '../../models/review.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-write-review-unit',
@@ -23,6 +25,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     InputTextareaModule,
     RatingModule,
     DropdownModule,
+    ToastModule,
+  ],
+  providers: [
+    MessageService
   ],
   templateUrl: './write-review-unit.component.html',
   styleUrl: './write-review-unit.component.scss'
@@ -44,11 +50,13 @@ export class WriteReviewUnitComponent {
   yearOptions: Array<{ label: string; value: number }> = [];
 
 
-  // Constructor that initialises the year options also gives us the ApiService.
-  constructor (private apiService: ApiService) {
+  // Constructor that initialises the year options also injects ApiService and MessageService
+  constructor (
+    private apiService: ApiService,
+    private messageService: MessageService
+  ) {
     this.initialiseYearOptions();
   }
-
 
   // Opens the create review dialog
   openDialog() {
@@ -104,12 +112,18 @@ export class WriteReviewUnitComponent {
         // Emit that we posted the review
         this.reviewPosted.emit();
 
+        // Show success toast 
+        this.messageService.add({ severity: 'success', summary: 'Review submitted!', detail: 'Review has been published publicly' });
+
         // Reset form after successful submission
         this.review = new Review();
       },
       error: (error) => { 
         // Give an error if unsuccessful
         console.error('Error creating review:', error);
+
+        // Show error toast 
+        this.messageService.add({ severity: 'error', summary: 'Failed to submit review :(', detail: 'An error occurred' });
       }
     });
   }

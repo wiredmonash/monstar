@@ -1,10 +1,11 @@
+<p-toast styleClass="toast-override" [life]="10000000"></p-toast>
 <p-dialog header="Review for {{unit.unitCode | uppercase}}" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
   <span class="p-text-secondary block mb-3">Write your review and give your ratings</span>
 
   <!-- Review title -->
   <div class="flex flex-column mb-4">
     <label for="reviewTitle" class="font-semibold mb-2">Title</label>
-    <input pInputText id="reviewTitle" [(ngModel)]="review.title" class="w-full" autocomplete="off" placeholder="Title of your review..." />
+    <input pInputText id="reviewTitle" [(ngModel)]="review.title" class="w-full" autocomplete="off"/>
   </div>
 
   <!-- Review description -->
@@ -13,36 +14,38 @@
       <textarea rows="5" pInputTextarea [(ngModel)]="review.description" style="resize: none;" id="reviewDescription" class="w-full" autocomplete="off" placeholder="Write your review here..."></textarea>
   </div>
 
-  <!-- Year Taken -->
-  <div class="flex flex-column mb-4">
-    <label for="yearTaken" class="font-semibold mb-2">Year Taken</label>
-    <p-dropdown 
-      [options]="yearOptions" 
-      [(ngModel)]="review.year"
-      id="yearTaken" 
-      class="w-full" 
-      placeholder="Select Year"
-    ></p-dropdown>
-  </div>
-
-  <!-- Star ratings -->
-  <div class="flex flex-column gap-3 mb-4">
-    <!-- Content rating -->
-    <div class="flex align-items-center">
-    <label for="contentRating" class="font-semibold w-8rem">Content</label>
-    <p-rating [(ngModel)]="review.contentRating" stars="5" id="contentRating" class="ml-3"></p-rating>
+  <!-- Year Taken --> 
+  <div class="flex flex-row justify-content-end">
+    <div class="flex flex-column justify-start mb-4">
+      <label for="yearTaken" class="font-semibold mb-2">Year Taken</label>
+      <p-dropdown 
+        [options]="yearOptions" 
+        [(ngModel)]="review.year"
+        id="yearTaken" 
+        class="w-full" 
+        placeholder="Select Year"
+      ></p-dropdown>
     </div>
 
-    <!-- Relevancy Rating -->
-    <div class="flex align-items-center">
-    <label for="relevancyRating" class="font-semibold w-8rem">Relevancy</label>
-    <p-rating [(ngModel)]="review.relevancyRating" stars="5" id="relevancyRating" class="ml-3"></p-rating>
-    </div>
+    <!-- Star ratings -->
+    <div class="flex flex-column gap-3 mb-4">
+      <!-- Content rating -->
+      <div class="flex align-items-center">
+      <label for="contentRating" class="font-semibold w-8rem">Content</label>
+      <p-rating [(ngModel)]="review.contentRating" stars="5" id="contentRating" class="ml-3"></p-rating>
+      </div>
 
-    <!-- Teaching Team Rating -->
-    <div class="flex align-items-center">
-    <label for="facultyRating" class="font-semibold w-8rem">Teaching Team</label>
-    <p-rating [(ngModel)]="review.facultyRating" stars="5" id="facultyRating" class="ml-3"></p-rating>
+      <!-- Relevancy Rating -->
+      <div class="flex align-items-center">
+      <label for="relevancyRating" class="font-semibold w-8rem">Relevancy</label>
+      <p-rating [(ngModel)]="review.relevancyRating" stars="5" id="relevancyRating" class="ml-3"></p-rating>
+      </div>
+
+      <!-- Teaching Team Rating -->
+      <div class="flex align-items-center">
+      <label for="facultyRating" class="font-semibold w-8rem">Teaching Team</label>
+      <p-rating [(ngModel)]="review.facultyRating" stars="5" id="facultyRating" class="ml-3"></p-rating>
+      </div>
     </div>
   </div>
 

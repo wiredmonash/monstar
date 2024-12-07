@@ -1,10 +1,11 @@
 // ! You can add global styles to this file, and also import other style files
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css' layer(bootstrap);
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css" layer(bootstrap);
-@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css" layer(primeng);
-//@import "../node_modules/primeng/resources/themes/viva-dark/theme.css" layer(primeng);
-@import "../node_modules/primeng/resources/primeng.css" layer(primeng);
 @import "../node_modules/primeicons/primeicons.css" layer(primeng);
+//@import "../node_modules/primeng/resources/themes/lara-light-blue/theme.css" layer(primeng);
+@import "../node_modules/primeng-sass-theme/themes/aura/aura-light/purple/theme.scss" layer(primeng);
+//@import "../node_modules/primeng/resources/themes/viva-dark/theme.css" layer(primeng);
+@import "../node_modules/primeng/resources/primeng.min.css" layer(primeng);
 @import "../node_modules/primeflex/primeflex.css" layer(primeng);
 
 html, body {
