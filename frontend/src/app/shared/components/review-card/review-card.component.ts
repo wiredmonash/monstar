@@ -1,8 +1,9 @@
-import { SlicePipe } from '@angular/common';
+import { CommonModule, NgOptimizedImage, SlicePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../../../api.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AvatarModule } from 'primeng/avatar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-review-card',
@@ -10,28 +11,27 @@ import { AvatarModule } from 'primeng/avatar';
   imports: [
     SlicePipe,
     AvatarModule,
+    CommonModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './review-card.component.html',
   styleUrl: './review-card.component.scss',
   animations: [
-    // Hover effect for whole review card
-    trigger('hoverEffect', [
+    trigger('fadeInOut', [
       state(
-        'default',
+        'hidden',
         style({
-          transform: 'scale(1)',
-          boxShadow: '0px 4px 8px rgba(0,0,0,0.2)'
+          opacity: 0
         })
       ),
       state(
-        'hovered',
+        'visible',
         style({
-          transform: 'scale(1.025)',
-          boxShadow: '0px 8px 16px rgba(0,0,0,0.3)'
+          opacity: 1
         })
       ),
-      transition('default <=> hovered', animate('200ms ease-in-out')),
-    ]),
+      transition('hidden <=> visible', animate('300ms ease-in-out'))
+    ])
   ]
 })
 export class ReviewCardComponent implements OnInit {
@@ -53,14 +53,9 @@ export class ReviewCardComponent implements OnInit {
 
   // Delete button visibility state
   deleteButtonState: 'visible' | 'hidden' = 'hidden';
+
   // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
   @Output() reviewDeleted = new EventEmitter<void>();
-
-  // Hover state
-  hoverState: 'default' | 'hovered' = 'default';
-
-  // Loading state for review content
-  isLoading: boolean = true;
 
   // Injects the ApiService 
   constructor(
@@ -73,12 +68,6 @@ export class ReviewCardComponent implements OnInit {
     this.dislikes = this.review.dislikes;
     console.log('likes:', this.likes);
     console.log('dislikes:', this.dislikes);
-  }
-
-  // Hover state manager
-  onHover(isHovered: boolean): void { 
-    this.hoverState = isHovered ? 'hovered' : 'default';
-    this.deleteButtonState = isHovered ? 'visible' : 'hidden';
   }
 
   // Deletes a review from the database using API Service
