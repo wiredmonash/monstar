@@ -63,4 +63,9 @@ export class ApiService {
       review_description: review.description
     });
   }
+
+  // * DELETE Delete a Review by ID
+  deleteReviewByIdDELETE(id: string): Observable<any> {
+    return this.http.delete(`${this.url}/reviews/delete/${id}`);
+  }
 }

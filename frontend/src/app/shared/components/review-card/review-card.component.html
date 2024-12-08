@@ -1,112 +1,120 @@
-<div class="container mt-5">
-    <div class="row review-card position-relative">
-
-        <!-- Left Side (Anonymous, Semester, Overall Rating) -->
-        <div class="col-md-4 border-end">
-            <!-- Title -->
-            <h5>{{ review.title || 'No Title' }}</h5>
-            
-            <!-- User -->
-            <p>By {{ review.author || 'Anonymous' }} <span class="review-year">(taken in {{review.year}})</span></p>
-
-            <!-- Overall Rating -->
-            <h5 class="d-flex justify-content-between">
-                <span>Overall</span>
-            </h5>
-            <!-- Stars -->
-            <div class="d-flex justify-content-center">
-                <div class="stars-overall">
-                    @for (star of [1,2,3,4,5]; track $index) {
-                        <i class="bi mx-3" 
-                            [class.bi-star-fill]="star <= review.overallRating"
-                            [class.bi-star]="star > review.overallRating"
-                        ></i>
-                    }
-                </div>
+<p-toast></p-toast>
+<div class="container mt-5" (mouseover)="showDeleteButton()" (mouseout)="hideDeleteButton()">
+    <div class="review-card position-relative">
+        @if (deleteButtonVisible) {
+            <div class="delete-button" (click)="deleteReview()">
+                <i class="pi pi-times-circle"></i>
             </div>
-        </div>
+        }
 
-        <!-- Right Side (Review Heading, Categories, Stars, Description) -->
-        <div class="col-md-8 px-4"> 
-            <!-- Review Heading -->
-            <h5>{{ review.heading }}</h5>
-            <div class="row mb-2">
-                <!-- Content Category -->
-                <div class="col-md-4">
-                    <!-- Content Rating -->
-                    <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">Content</h6>
-                        <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.contentRating }}</h6>
-                    </div>
-                    <!-- Stars for ConentRating -->
-                    <div class="d-flex justify-content-center">
-                        <div class="stars mr-3">
-                            @for (star of [1,2,3,4,5]; track $index) {
-                                <i class="bi mx-2" 
-                                    [class.bi-star-fill]="star <= review.contentRating"
-                                    [class.bi-star]="star > review.contentRating"
-                                ></i>
-                            }
-                        </div>
-                    </div>
-                </div>
+        <div class="row">
+            <!-- Left Side (Anonymous, Semester, Overall Rating) -->
+            <div class="col-md-4 border-end">
+                <!-- Title -->
+                <h5>{{ review.title || 'No Title' }}</h5>
+                
+                <!-- User -->
+                <p>By {{ review.author || 'Anonymous' }} <span class="review-year">(taken in {{review.year}})</span></p>
 
-                <!-- Relevancy Category -->
-                <div class="col-md-4">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">Relevancy</h6>
-                        <h6 class="mb-0 mr-3" style="font-weight: normal;">{{review.relevancyRating}}</h6>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <div class="stars mr-3">
-                            @for (star of [1,2,3,4,5]; track $index) {
-                                <i class="bi mx-2" 
-                                    [class.bi-star-fill]="star <= review.relevancyRating"
-                                    [class.bi-star]="star > review.relevancyRating"
-                                ></i>
-                            }
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Teaching Team Category -->
-                <div class="col-md-4">
-                    <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">Faculty</h6>
-                        <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6>
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <div class="stars mr-3">
-                            @for (star of [1,2,3,4,5]; track $index) {
-                                <i class="bi mx-2" 
-                                    [class.bi-star-fill]="star <= review.facultyRating"
-                                    [class.bi-star]="star > review.facultyRating"
-                                ></i>
-                            }
-                        </div>
+                <!-- Overall Rating -->
+                <h5 class="d-flex justify-content-between">
+                    <span>Overall</span>
+                </h5>
+                <!-- Stars -->
+                <div class="d-flex justify-content-center">
+                    <div class="stars-overall">
+                        @for (star of [1,2,3,4,5]; track $index) {
+                            <i class="bi mx-3" 
+                                [class.bi-star-fill]="star <= review.overallRating"
+                                [class.bi-star]="star > review.overallRating"
+                            ></i>
+                        }
                     </div>
                 </div>
             </div>
 
-            <!-- Review Description -->
-            <p class="review">
-                {{ expanded ? review.description : (review.description | slice:0:150) + (review.description.length > 150 ? '...' : '') }}
-            </p>
+            <!-- Right Side (Review Heading, Categories, Stars, Description) -->
+            <div class="col-md-8 px-4"> 
+                <!-- Review Heading -->
+                <h5>{{ review.heading }}</h5>
+                <div class="row mb-2">
+                    <!-- Content Category -->
+                    <div class="col-md-4">
+                        <!-- Content Rating -->
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-0">Content</h6>
+                            <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.contentRating }}</h6>
+                        </div>
+                        <!-- Stars for ConentRating -->
+                        <div class="d-flex justify-content-center">
+                            <div class="stars mr-3">
+                                @for (star of [1,2,3,4,5]; track $index) {
+                                    <i class="bi mx-2" 
+                                        [class.bi-star-fill]="star <= review.contentRating"
+                                        [class.bi-star]="star > review.contentRating"
+                                    ></i>
+                                }
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Expand/Collapse Button -->
-            @if (review.description.length > 150) {
-                <button class="btn btn-link p-0" (click)="toggleExpand()">
-                    <i [class]="expanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
-                    {{ expanded ? 'Show Less' : 'Show More' }}
-                </button>
-            }
+                    <!-- Relevancy Category -->
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-0">Relevancy</h6>
+                            <h6 class="mb-0 mr-3" style="font-weight: normal;">{{review.relevancyRating}}</h6>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <div class="stars mr-3">
+                                @for (star of [1,2,3,4,5]; track $index) {
+                                    <i class="bi mx-2" 
+                                        [class.bi-star-fill]="star <= review.relevancyRating"
+                                        [class.bi-star]="star > review.relevancyRating"
+                                    ></i>
+                                }
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Thumbs Buttons and Like Count -->
-            <div class="thumbs-container">
-                <span class="me-2">{{ likes }}</span>
-                <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="like()"></i>
-                <span class="me-2 ml-3">{{ dislikes }}</span>
-                <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="dislike()"></i>
+                    <!-- Teaching Team Category -->
+                    <div class="col-md-4">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-0">Faculty</h6>
+                            <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <div class="stars mr-3">
+                                @for (star of [1,2,3,4,5]; track $index) {
+                                    <i class="bi mx-2" 
+                                        [class.bi-star-fill]="star <= review.facultyRating"
+                                        [class.bi-star]="star > review.facultyRating"
+                                    ></i>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Description -->
+                <p class="review">
+                    {{ expanded ? review.description : (review.description | slice:0:150) + (review.description.length > 150 ? '...' : '') }}
+                </p>
+
+                <!-- Expand/Collapse Button -->
+                @if (review.description.length > 150) {
+                    <button class="btn btn-link p-0" (click)="toggleExpand()">
+                        <i [class]="expanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
+                        {{ expanded ? 'Show Less' : 'Show More' }}
+                    </button>
+                }
+
+                <!-- Thumbs Buttons and Like Count -->
+                <div class="thumbs-container">
+                    <span class="me-2">{{ likes }}</span>
+                    <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="like()"></i>
+                    <span class="me-2 ml-3">{{ dislikes }}</span>
+                    <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="dislike()"></i>
+                </div>
             </div>
         </div>
     </div>

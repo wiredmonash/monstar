@@ -1,12 +1,18 @@
 import { SlicePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../../../api.service';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-review-card',
   standalone: true,
   imports: [
     SlicePipe,
+    ToastModule,
+  ],
+  providers: [
+    MessageService
   ],
   templateUrl: './review-card.component.html',
   styleUrl: './review-card.component.scss',
@@ -28,8 +34,15 @@ export class ReviewCardComponent implements OnInit {
   // No. of dislikes
   dislikes: number = 0;
 
-  // Injects the ApiService 
-  constructor(private apiService: ApiService) { }
+  // Delete button visibility state
+  deleteButtonVisible: boolean = false;
+  @Output() reviewDeleted = new EventEmitter<void>();
+
+  // Injects the ApiService and MessageService 
+  constructor(
+    private apiService: ApiService,
+    private messageService: MessageService
+  ) { }
 
   ngOnInit(): void {
     // Get like and dislike count from review
@@ -37,6 +50,34 @@ export class ReviewCardComponent implements OnInit {
     this.dislikes = this.review.dislikes;
     console.log('likes:', this.likes);
     console.log('dislikes:', this.dislikes);
+  }
+
+  showDeleteButton() {
+    this.deleteButtonVisible = true;
+  }
+
+  hideDeleteButton() {
+    this.deleteButtonVisible = false;
+  }
+
+  deleteReview() {
+    // Call the api service method to delete a review
+    this.apiService.deleteReviewByIdDELETE(this.review._id).subscribe({
+      next: (message) => {
+        // Emit the event that we deleted a review
+        this.reviewDeleted.emit();
+
+        // Show toast
+        this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review: "${this.review.title}" has been deleted.` });
+
+        // ? Debug log
+        console.log(message);
+      },
+      error: (error) => {
+        // ? Debug log 
+        console.log(error);
+      }
+    });
   }
 
   // Method to toggle expand/collapse state

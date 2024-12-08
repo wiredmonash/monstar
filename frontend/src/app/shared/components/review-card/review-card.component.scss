@@ -15,6 +15,22 @@
     padding-top: 10px;
     font-weight: bold;
   }
+
+  .delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+
+    i {
+      font-size: 1.5rem;
+      color: #000;
+
+      &:hover {
+        color: white;
+      }
+    }
+  }
 }
 
 /* Sub-category stars */

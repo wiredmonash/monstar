@@ -3,13 +3,17 @@ import { ApiService } from '../../../api.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-unit-overview',
   standalone: true,
   imports: [
     ReviewCardComponent, 
-    UnitReviewHeaderComponent
+    UnitReviewHeaderComponent,
+  ],
+  providers: [
+    MessageService,
   ],
   templateUrl: './unit-overview.component.html',
   styleUrl: './unit-overview.component.scss'
@@ -26,6 +30,7 @@ export class UnitOverviewComponent implements OnInit {
   constructor (
     private apiService: ApiService,
     private route: ActivatedRoute,
+    private messageService: MessageService
   ) { }
 
 

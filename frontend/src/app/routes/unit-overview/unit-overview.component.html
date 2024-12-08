@@ -6,7 +6,7 @@
 <!-- Shows all the reviews from the backend -->
 <div class="reviews-container">
     @for (review of reviews; track $index) {
-        <app-review-card [review]="review"></app-review-card>
+        <app-review-card [review]="review" (reviewDeleted)="refreshReviews()"></app-review-card>
     }
 </div>
 
