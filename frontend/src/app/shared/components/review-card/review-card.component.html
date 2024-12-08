@@ -1,10 +1,22 @@
+<p-confirmPopup #confirmPopupRef>
+    <ng-template pTemplate="headless" let-message let-test>
+        <div class="border-round p-3">
+            <span>{{ message.message }}</span>
+            <div class="flex align-items-center gap-2 mt-3">
+                <p-button (click)="accept()" label="Delete" size="small" severity="danger"></p-button>
+                <p-button (click)="reject()" label="Cancel" [outlined]="true" size="small" severity="secondary"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmPopup>
+
 <!-- Review Card Component -->
 @if (review) {
     <!-- Container for the whole review card -->
     <div class="container mt-5 review-card-container" (mouseenter)="deleteButtonState='visible';" (mouseleave)="deleteButtonState='hidden';">
         <div class="review-card position-relative">
             <!-- Delete review button -->
-            <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="deleteReview()">
+            <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
                 <i class="pi pi-times-circle"></i>
             </div>
 

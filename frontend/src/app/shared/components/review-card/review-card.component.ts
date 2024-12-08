@@ -1,9 +1,12 @@
 import { CommonModule, NgOptimizedImage, SlicePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../api.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AvatarModule } from 'primeng/avatar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ConfirmPopup, ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ConfirmationService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-review-card',
@@ -13,6 +16,11 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     AvatarModule,
     CommonModule,
     ProgressSpinnerModule,
+    ConfirmPopupModule,
+    ButtonModule,
+  ],
+  providers: [
+    ConfirmationService,
   ],
   templateUrl: './review-card.component.html',
   styleUrl: './review-card.component.scss',
@@ -57,17 +65,37 @@ export class ReviewCardComponent implements OnInit {
   // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
   @Output() reviewDeleted = new EventEmitter<void>();
 
+  // Child that is the confirmation popup on deletion
+  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+
   // Injects the ApiService 
   constructor(
     private apiService: ApiService,
+    private confirmationService: ConfirmationService
   ) { }
 
+  // Runs on init
   ngOnInit(): void {
     // Get like and dislike count from review
     this.likes = this.review.likes;
     this.dislikes = this.review.dislikes;
     console.log('likes:', this.likes);
     console.log('dislikes:', this.dislikes);
+  }
+
+  // Choices on confirmation popup
+  accept() { this.confirmPopup.accept(); }
+  reject() { this.confirmPopup.reject(); }
+  // Subscribes to the confirmation service on deletion
+  confirmDeletion(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure?',
+      accept: () => {
+        this.deleteReview();
+      },
+      reject: () => { }
+    });
   }
 
   // Deletes a review from the database using API Service
