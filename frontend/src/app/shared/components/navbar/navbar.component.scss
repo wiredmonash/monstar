@@ -1,80 +1,40 @@
+// Importing variables
 @import '../../../_variables.scss';
 
-/* ! Top Navigation Bar */
+// * Top Navigation Bar
 .navbar {
-  /* Light purple background colour */
-  background-color: $primary-color;
-  /* Adds padding around the navbar */
-  padding: 1rem;
-  /* Set to relative to handle absolute positioning of toggler */
-  position: relative;
+  background-color: $primary-color; // Background color of the navbar
+  padding: 1rem; // Padding around the navbar
+  position: relative; // Set to relative to handle absolute position of toggler
 }
 
-/* ! Hamburger Menu Button */ 
+// * Hamburger Menu Button
 .navbar-toggler {
-  /* Removes the default border of the button */
-  border: none; 
-  /* Increases the size of the button */ 
-  font-size: 2rem;
-  /* Minimal padding for the button */
-  padding: 0rem;
-  /* Ensure it remains visible on all screen sizes */
-  display: block;
+  border: none; // Removes the default border of the button
+  font-size: 2rem; // Increases the size of the button
+  padding: 0rem; // Minimal padding for the button
+  display: block; // Ensure it remains visible on all screen sizes
 }
 
-/* ! Website Title (MonSTAR) in the Center of the Navbar  */ 
+// * Website Title (MonSTAR) in the Center of the Navbar
 .navbar-brand {
-  /* Increases the font size of the brand name */
-  font-size: 1.5rem;
+  font-size: 1.5rem; 
   font-family: $poppins;
   font-weight: 500;
-  /* Center the text */
   text-align: center;
-  /* Ensure it's centered in its container */
   margin-left: auto;
   margin-right: auto;
 }
 
-/* ! Sidebar (Offcanvas) */ 
-.offcanvas {
-  width: 250px;
-  background-color: #f8f9fa;
-  transition: transform 0.2s ease-in-out;
+// * Sidebar title
+.sidebar-title {
+  color: #000;
 }
 
-/* ! Sidebar Header */ 
-.offcanvas-header {
-  padding: 1rem;
-  font-size: 1.25rem;
+// * Prevents user selection
+.prevent-select {
+  -webkit-user-select: none; // Safari
+  -ms-user-select: none; // IE 10 and IE 11
+  user-select: none; // Standard syntax 
 }
 
-/* ! Sidebar Body Styles (Unordered List) */
-.offcanvas-body { 
-  
-  ul {
-    padding-left: 0;
-    list-style: none;
-  }
-
-  li {
-    margin: 1rem 0;
-  }
-
-  li a {
-    font-size: 17px;
-    font-weight: bold;
-    color: #333;
-    display: block; 
-    padding: 0.4rem 1rem; 
-    margin: 0.5rem 0; 
-    transition: background-color 0.3s ease, color 0.3s ease; 
-    border-radius: 15px; 
-    text-decoration: none; 
-  }
-
-  li a:hover {
-    color: #fff; 
-    background-color: #333; 
-    text-decoration: none; 
-  }
-}
