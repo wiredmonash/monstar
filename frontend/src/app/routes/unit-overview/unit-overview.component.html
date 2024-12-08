@@ -1,3 +1,6 @@
+<!-- Toast for on deletion of review -->
+<p-toast></p-toast>
+
 <!-- CHILD: UnitHeaderComponent -->
 <div class="unit-header-container">
     <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)" (reviewAdded)="refreshReviews()"></app-unit-review-header>
@@ -6,7 +9,7 @@
 <!-- Shows all the reviews from the backend -->
 <div class="reviews-container">
     @for (review of reviews; track $index) {
-        <app-review-card [review]="review" (reviewDeleted)="refreshReviews()"></app-review-card>
+        <app-review-card [review]="review" (reviewDeleted)="refreshReviews('delete')"></app-review-card>
     }
 </div>
 

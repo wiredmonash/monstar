@@ -4,6 +4,7 @@ import { ReviewCardComponent } from "../../shared/components/review-card/review-
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-unit-overview',
@@ -11,6 +12,7 @@ import { MessageService } from 'primeng/api';
   imports: [
     ReviewCardComponent, 
     UnitReviewHeaderComponent,
+    ToastModule,
   ],
   providers: [
     MessageService,
@@ -142,10 +144,15 @@ export class UnitOverviewComponent implements OnInit {
    * This method is called finally after a few event emittors going from:
    * write-review-unit (emits reviewPosted) -> unit-review-header (emits reviewAdded) -> unit-overview
    */
-  refreshReviews() {
+  refreshReviews(toast?: string) {
     if (this.unit && this.unit.unitCode) {
       this.getAllReviews(this.unit.unitCode);     // Get all the reviews again. 
       this.getUnitByUnitcode(this.unit.unitCode); // Get the unit again for updated avg ratings.
+
+      if (toast == 'delete') {
+        // Show toast
+        this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review has been deleted.` });
+      }
     }
   }
 }

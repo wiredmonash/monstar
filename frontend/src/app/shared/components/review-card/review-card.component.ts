@@ -1,18 +1,12 @@
 import { SlicePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../../../api.service';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-review-card',
   standalone: true,
   imports: [
     SlicePipe,
-    ToastModule,
-  ],
-  providers: [
-    MessageService
   ],
   templateUrl: './review-card.component.html',
   styleUrl: './review-card.component.scss',
@@ -38,10 +32,9 @@ export class ReviewCardComponent implements OnInit {
   deleteButtonVisible: boolean = false;
   @Output() reviewDeleted = new EventEmitter<void>();
 
-  // Injects the ApiService and MessageService 
+  // Injects the ApiService 
   constructor(
     private apiService: ApiService,
-    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -66,9 +59,6 @@ export class ReviewCardComponent implements OnInit {
       next: (message) => {
         // Emit the event that we deleted a review
         this.reviewDeleted.emit();
-
-        // Show toast
-        this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review: "${this.review.title}" has been deleted.` });
 
         // ? Debug log
         console.log(message);
