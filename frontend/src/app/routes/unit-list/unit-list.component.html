@@ -1,7 +1,14 @@
-<div class="unit-list-container">
-  @for (unit of units; track $index) {
-  <div class="unit-card-wrapper">
-    <app-unit-card [unit]="unit"></app-unit-card>
+@if (units.length > 0) {
+  <div class="unit-list-container">
+    @for (unit of units; track $index) {
+    <div class="unit-card-wrapper">
+      <app-unit-card [unit]="unit"></app-unit-card>
+    </div>
+    }
   </div>
-  }
-</div>
+} @else {
+  <!-- Loading spinner if no units -->
+  <div class="d-flex justify-content-center mt-4">
+    <p-progressSpinner/>
+  </div>
+}

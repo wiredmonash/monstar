@@ -6,24 +6,60 @@
   background-color: $primary-color; // Background color of the navbar
   padding: 1rem; // Padding around the navbar
   position: relative; // Set to relative to handle absolute position of toggler
-}
 
-// * Hamburger Menu Button
-.navbar-toggler {
-  border: none; // Removes the default border of the button
-  font-size: 2rem; // Increases the size of the button
-  padding: 0rem; // Minimal padding for the button
-  display: block; // Ensure it remains visible on all screen sizes
-}
+  // * Hamburger Menu Button
+  .hamburger-menu {
+    border: none; // Removes the default border of the button
+    padding: 0rem; // Minimal padding for the button
+    display: block; // Ensure it remains visible on all screen sizes
+    transform: scale(1.5);
+    user-select: none;
 
-// * Website Title (MonSTAR) in the Center of the Navbar
-.navbar-brand {
-  font-size: 1.5rem; 
-  font-family: $poppins;
-  font-weight: 500;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+    i {
+      transition: transform 0.3s ease-in-out;
+
+      &:focus {
+        outline: none;
+        box-shadow: none;
+      }
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  // * Website Title (MonSTAR) in the Center of the Navbar
+  .navbar-brand {
+    font-size: 1.5rem; 
+    font-family: $poppins;
+    font-weight: 500;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  // * Profile Button
+  .profile {
+    border: none;
+    padding: 0rem;
+    display: block;
+    transform: scale(1.5);
+    user-select: none;
+
+    i {
+      transition: transform 0.3s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
 }
 
 // * Sidebar title

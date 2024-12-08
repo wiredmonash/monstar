@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UnitCardComponent } from "../../shared/components/unit-card/unit-card.component";
 import { ApiService } from '../../../api.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-unit-list',
   standalone: true,
   imports: [
     UnitCardComponent,
+    ProgressSpinnerModule,
   ],
   templateUrl: './unit-list.component.html',
   styleUrl: './unit-list.component.scss'
