@@ -5,6 +5,7 @@ import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-h
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-unit-overview',
@@ -13,6 +14,7 @@ import { ToastModule } from 'primeng/toast';
     ReviewCardComponent, 
     UnitReviewHeaderComponent,
     ToastModule,
+    ProgressSpinnerModule,
   ],
   providers: [
     MessageService,
@@ -27,6 +29,8 @@ export class UnitOverviewComponent implements OnInit {
   // Stores the reviews
   reviews: any[] = [];
 
+  // Loading state for reviews
+  reviewsLoading: boolean = true;
 
   // Injects ApiService and ActivatedRoute
   constructor (
@@ -67,6 +71,9 @@ export class UnitOverviewComponent implements OnInit {
         // Update the reviews property in the unit object
         if (this.unit)
           this.unit.reviews = this.reviews;
+
+        // Not loading anymore
+        this.reviewsLoading = false;
 
         // ? Debug log: Success
         console.log('GET Get All Reviews', reviews);
@@ -146,6 +153,7 @@ export class UnitOverviewComponent implements OnInit {
    */
   refreshReviews(toast?: string) {
     if (this.unit && this.unit.unitCode) {
+      this.reviewsLoading = true;                 // Set the loading state to true again.
       this.getAllReviews(this.unit.unitCode);     // Get all the reviews again. 
       this.getUnitByUnitcode(this.unit.unitCode); // Get the unit again for updated avg ratings.
 

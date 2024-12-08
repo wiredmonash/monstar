@@ -7,11 +7,18 @@
 </div>
 
 <!-- Shows all the reviews from the backend -->
-<div class="reviews-container">
-    @for (review of reviews; track $index) {
-        <app-review-card [review]="review" (reviewDeleted)="refreshReviews('delete')"></app-review-card>
-    }
-</div>
+@if (!reviewsLoading) {
+    <div class="reviews-container">
+        @for (review of reviews; track $index) {
+            <app-review-card [review]="review" (reviewDeleted)="refreshReviews('delete')"></app-review-card>
+        }
+    </div>
+} @else {
+    <!-- Show loading spinner -->
+    <div class="spinner-container">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+}
 
 @if (reviews.length > 0) {
     <h3 class="text-center mb-5">You have reached the end...</h3>

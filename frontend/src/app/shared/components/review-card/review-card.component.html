@@ -1,10 +1,19 @@
-<div class="container mt-5" (mouseover)="showDeleteButton()" (mouseout)="hideDeleteButton()">
-    <div class="review-card position-relative">
-        @if (deleteButtonVisible) {
-            <div class="delete-button" (click)="deleteReview()">
-                <i class="pi pi-times-circle"></i>
-            </div>
-        }
+<!-- Review Card Component -->
+
+<div 
+    class="container mt-5" 
+    (mouseover)="onHover(true);" 
+    (mouseout)="onHover(false);"
+>
+    <div class="review-card position-relative" [@hoverEffect]="hoverState">
+        <!-- Delete review button -->
+        <div 
+            class="delete-button" 
+            [@fadeInOut]="deleteButtonState" 
+            (click)="deleteReview()"
+        >
+            <i class="pi pi-times-circle"></i>
+        </div>
 
         <div class="row">
             <!-- Left Side (Anonymous, Semester, Overall Rating) -->
@@ -13,7 +22,16 @@
                 <h5>{{ review.title || 'No Title' }}</h5>
                 
                 <!-- User -->
-                <p>By {{ review.author || 'Anonymous' }} <span class="review-year">(taken in {{review.year}})</span></p>
+                <p class="d-flex align-items-center">
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" 
+                        alt="Profile Picture"
+                        class="mr-2 profile-picture"
+                        loading="lazy"
+                    />
+                    <span>{{ review.author || 'Anonymous' }}</span>
+                    <span class="review-year">(taken in {{review.year}})</span>
+                </p>
 
                 <!-- Overall Rating -->
                 <h5 class="d-flex justify-content-between">
@@ -42,7 +60,7 @@
                         <!-- Content Rating -->
                         <div class="d-flex justify-content-between">
                             <h6 class="mb-0">Content</h6>
-                            <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.contentRating }}</h6>
+                            <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.contentRating }}</h6> -->
                         </div>
                         <!-- Stars for ConentRating -->
                         <div class="d-flex justify-content-center">
@@ -61,7 +79,7 @@
                     <div class="col-md-4">
                         <div class="d-flex justify-content-between">
                             <h6 class="mb-0">Relevancy</h6>
-                            <h6 class="mb-0 mr-3" style="font-weight: normal;">{{review.relevancyRating}}</h6>
+                            <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{review.relevancyRating}}</h6> -->
                         </div>
                         <div class="d-flex justify-content-center">
                             <div class="stars mr-3">
@@ -79,7 +97,7 @@
                     <div class="col-md-4">
                         <div class="d-flex justify-content-between">
                             <h6 class="mb-0">Faculty</h6>
-                            <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6>
+                            <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6> -->
                         </div>
                         <div class="d-flex justify-content-center">
                             <div class="stars mr-3">

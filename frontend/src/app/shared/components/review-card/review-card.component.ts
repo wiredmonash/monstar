@@ -1,15 +1,38 @@
 import { SlicePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../../../api.service';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-review-card',
   standalone: true,
   imports: [
     SlicePipe,
+    AvatarModule,
   ],
   templateUrl: './review-card.component.html',
   styleUrl: './review-card.component.scss',
+  animations: [
+    // Hover effect for whole review card
+    trigger('hoverEffect', [
+      state(
+        'default',
+        style({
+          transform: 'scale(1)',
+          boxShadow: '0px 4px 8px rgba(0,0,0,0.2)'
+        })
+      ),
+      state(
+        'hovered',
+        style({
+          transform: 'scale(1.025)',
+          boxShadow: '0px 8px 16px rgba(0,0,0,0.3)'
+        })
+      ),
+      transition('default <=> hovered', animate('200ms ease-in-out')),
+    ]),
+  ]
 })
 export class ReviewCardComponent implements OnInit {
   // Accept review data from the parent component
@@ -29,8 +52,15 @@ export class ReviewCardComponent implements OnInit {
   dislikes: number = 0;
 
   // Delete button visibility state
-  deleteButtonVisible: boolean = false;
+  deleteButtonState: 'visible' | 'hidden' = 'hidden';
+  // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
   @Output() reviewDeleted = new EventEmitter<void>();
+
+  // Hover state
+  hoverState: 'default' | 'hovered' = 'default';
+
+  // Loading state for review content
+  isLoading: boolean = true;
 
   // Injects the ApiService 
   constructor(
@@ -45,14 +75,13 @@ export class ReviewCardComponent implements OnInit {
     console.log('dislikes:', this.dislikes);
   }
 
-  showDeleteButton() {
-    this.deleteButtonVisible = true;
+  // Hover state manager
+  onHover(isHovered: boolean): void { 
+    this.hoverState = isHovered ? 'hovered' : 'default';
+    this.deleteButtonState = isHovered ? 'visible' : 'hidden';
   }
 
-  hideDeleteButton() {
-    this.deleteButtonVisible = false;
-  }
-
+  // Deletes a review from the database using API Service
   deleteReview() {
     // Call the api service method to delete a review
     this.apiService.deleteReviewByIdDELETE(this.review._id).subscribe({
