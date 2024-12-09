@@ -1,12 +1,13 @@
 <div class="hover-card">
   <p-card
+    class="unit-card"
     [style]="{ width: '20rem', height: '15rem', 'padding-right': '2em', 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"
     (click)="onCardClick()"
   >
-    <p class="code">{{ unit?.unitCode ? (unit.unitCode | uppercase) : 'N/A' }}</p>
+    <p class="unit-code">{{ unit?.unitCode ? (unit.unitCode | uppercase) : 'N/A' }}</p> 
     <p-rating [(ngModel)]="averageRating" [readonly]="true" [cancel]="false"></p-rating>
       
-    <p class="review">{{ unit?.reviews?.length || 0 }} reviews</p>
-    <p class="heading">{{ unit?.name || 'No Title' }}</p>
+    <p class="reviews">{{ unit?.reviews?.length || 0 }} reviews</p>
+    <p class="unit-name">{{ unit?.name || 'No Title' }}</p>
   </p-card>
 </div>

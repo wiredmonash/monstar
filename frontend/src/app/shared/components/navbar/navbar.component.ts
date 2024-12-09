@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, ViewChild } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
@@ -6,9 +6,11 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
-import { Ripple, RippleModule } from 'primeng/ripple';
+import { RippleModule } from 'primeng/ripple';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { StyleClassModule } from 'primeng/styleclass';
+import { DialogModule } from 'primeng/dialog';
+import { ProfileComponent } from '../profile/profile.component';
 
 @Component({
   selector: 'app-navbar',
@@ -20,7 +22,9 @@ import { StyleClassModule } from 'primeng/styleclass';
     RippleModule,
     StyleClassModule,
     AvatarModule,
-  ],
+    DialogModule,
+    ProfileComponent,
+],
   providers: [
     provideAnimations(),
   ],
@@ -28,13 +32,35 @@ import { StyleClassModule } from 'primeng/styleclass';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+  // Reference to the sidebar child
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
+  // Visibility state of the sidebar
+  sidebarVisible: boolean = false;
+
+  // Title of the profile dialog
+  profileDialogTitle: string = '';
+  // Visibility state of the profile dialog
+  profileDialogVisible: boolean = false;
+
+  /**
+   * Closes the sidebar
+   */
   closeCallback(e: any): void {
     this.sidebarRef.close(e);
   }
 
-  sidebarVisible: boolean = false;
+  /**
+   * Shows the profile dialog
+   */
+  showProfileDialog() {
+    this.profileDialogVisible = true;
+  }
 
-
+  /**
+   * Updates the profile dialog title (called on titleChangeEvent from profile.component)
+   */
+  updateProfileDialogTitle(title: string) {
+    this.profileDialogTitle = title;
+  }
 }
