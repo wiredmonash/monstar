@@ -1,0 +1,15 @@
+meta {
+  name: Delete a Unit
+  type: http
+  seq: 6
+}
+
+delete {
+  url: http://localhost:8080/api/v1/units/delete/:unitcode
+  body: none
+  auth: none
+}
+
+params:path {
+  unitcode: fit1045
+}

@@ -1,14 +1,68 @@
-@if (units.length > 0) {
-  <div class="unit-list-container">
-    @for (unit of units; track $index) {
-    <div class="unit-card-wrapper">
-      <app-unit-card [unit]="unit"></app-unit-card>
+<div class="toolbar-container">
+  <p-toolbar class="toolbar" styleClass="shadow-2" [style]="{ 'border-radius': '3rem' }">
+    <!-- Start group -->
+    <div class="p-toolbar-group-start">
+        <!-- <p-button icon="pi pi-filter" class="mr-2"/>
+        <p-button icon="pi pi-print" class="mr-2"/>
+        <p-button icon="pi pi-upload" /> -->
     </div>
-    }
-  </div>
-} @else {
-  <!-- Loading spinner if no units -->
-  <div class="d-flex justify-content-center mt-4">
+
+    <!-- Center group -->
+    <div class="p-toolbar-group-center">
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText placeholder="Search" [style]="{ 'border-radius': '3rem' }" [(ngModel)]="search" (input)="filterUnits()" />
+        </span>
+    </div>
+
+    <!-- End group -->
+    <div class="p-toolbar-group-end">
+
+    </div>
+  </p-toolbar>
+</div>
+
+<!-- Loading spinner if loading -->
+@if (loading) {
+  <div class="d-flex justify-content-center mt-4 loading-spinner">
     <p-progressSpinner/>
   </div>
+} 
+<!-- The list of units shown in grid format -->
+@else if (filteredUnits.length > 0) {
+  <div class="unit-list-container">
+    @for (unit of filteredUnits; track $index) {
+      <div class="unit-card-wrapper">
+        <app-unit-card [unit]="unit"></app-unit-card>
+      </div>
+    }
+  </div>
+} 
+<!-- No units match search query -->
+@else {
+  <div class="no-results-container">
+    <img
+      src='https://www.cambridge.org/elt/blog/wp-content/uploads/2019/07/Sad-Face-Emoji.png'
+      width="128px"
+      height="128px"
+      alt="No results"
+    />
+    <h4 class="text-center mt-3 mb-5">No units match your search query.</h4>
+  </div>
 }
+
+<!-- Paginator -->
+<div class="flex align-items-center justify-content-center paginator-container">
+  <div class="flex-1">
+      <p-paginator 
+        (onPageChange)="onPageChange($event)" 
+        [first]="first" 
+        [rows]="rows" 
+        [totalRecords]="totalRecords" 
+        [rowsPerPageOptions]="[20, 40, 60]" 
+        [showFirstLastIcon]="false" 
+        styleClass="shadow-2"
+        [style]="{ 'border-radius': '3rem' }"
+      ></p-paginator>
+  </div>
+</div>

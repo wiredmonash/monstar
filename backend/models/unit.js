@@ -1,13 +1,21 @@
-/* 
-Schema and Model for a review on the platform
-*/
-
 // Module Imports
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Nested requisites schema
+const RequisiteSchema = new Schema({
+    NumReq: {
+        type: Number,
+        required: false,
+    },
+    units: {
+        type: [String],
+        required: false,
+    },
+});
+
 // Unit Schema
-const unitSchema = new Schema({
+const UnitSchema = new Schema({
     // Unit code
     unitCode: {
         type: String, 
@@ -26,7 +34,6 @@ const unitSchema = new Schema({
     // Description of the unit
     description: {
         type: String, 
-        required: true
     },
 
     // List of reviews for the unit
@@ -65,9 +72,64 @@ const unitSchema = new Schema({
         default: 0, 
         min: 0, 
         max: 5
-    }
+    },
+
+    level: {
+        type: Number,
+        required: true
+    },
+
+    creditPoints: {
+        type: Number,
+        required: true
+    },
+
+    school: {
+        type: String,
+        required: true
+    },
+
+    academicOrg: {
+        type: String,
+        required: true
+    },
+
+    scaBand: {
+        type: String,
+        required: true
+    },
+
+    requisites: {
+        permission: { 
+            type: Boolean, 
+            default: false 
+        },
+        prohibitions: {
+            type: [String],
+            required: false
+        },
+        corequisites: {
+            type: [RequisiteSchema],
+            required: false
+        },
+        prerequisites: {
+            type: [RequisiteSchema],
+            required: false
+        },
+        cpRequired: { 
+            type: Number, 
+            default: 0 
+        }
+    },
+
+    offerings: [{
+        location: { type: String, required: true },
+        mode: { type: String, required: true },
+        name: { type: String, required: true },
+        period: { type: String, required: true }
+    }]
 });
 
 // Export the Unit model
-const Unit = mongoose.model('Unit', unitSchema);
+const Unit = mongoose.model('Unit', UnitSchema);
 module.exports = Unit;

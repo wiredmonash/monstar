@@ -41,12 +41,23 @@ export class ApiService {
 
   // * GET Get Unit by Unitcode
   getUnitByUnitcodeGET(unitcode: string): Observable<any> {
-    return this.http.get(`${this.url}/units/${unitcode}`);
+    return this.http.get(`${this.url}/units/unit/${unitcode}`);
   }
 
   // * GET Get All Units
   getAllUnits(): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}/units`);
+  }
+
+  // * GET Get Units Filtered
+  getUnitsFilteredGET(offset: number, limit: number, search: string = ''): Observable<any[]> {
+    const params = {
+      offset: offset.toString(),
+      limit: limit.toString(),
+      search,
+    }
+
+    return this.http.get<any[]>(`${this.url}/units/filter`, { params })
   }
     
   // * POST Create a Review for a Unit

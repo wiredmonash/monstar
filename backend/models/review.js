@@ -1,7 +1,3 @@
-/* 
-Schema and Model for a review on the platform
-*/
-
 // Module Imports
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
@@ -42,7 +38,7 @@ const reviewSchema = new Schema({
     dislikes: {type: Number, min: 0, default: 0},
 
     // Reference to the unit being reviewed
-    unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true} //! Change required to true 
+    unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true} 
 }, {
     timestamps: true
 });

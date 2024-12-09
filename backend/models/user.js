@@ -1,7 +1,3 @@
-/*
-Schema and Model for a user in the application
-*/
-
 // Module Imports
 const mongoose = require('mongoose');
 const { Schema } = mongoose;

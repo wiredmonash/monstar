@@ -40,7 +40,7 @@ router.get('/', async function (req, res) {
  * @returns {JSON} Responds with the unit and its details in JSON format
  * @throws {500} If an error occurs whilst getting the singular unit from the database
  */
-router.get('/:unitcode', async function (req, res) {
+router.get('/unit/:unitcode', async function (req, res) {
     try {
         // Find the unit
         const unit = await Unit.findOne({ unitCode: req.params.unitcode });
@@ -54,6 +54,44 @@ router.get('/:unitcode', async function (req, res) {
     }   
     catch (error) {
         return res.status(500).json({ error: `An error occured whilst getting the singular unit: ${error.message}`});
+    }
+});
+
+/**
+ * ! GET Get Units Filtered
+ * 
+ * Gets all units based on filter
+ * 
+ * @async
+ * @returns {JSON} Responds with a list of all units based on the filter in JSON format.
+ * @throws {500} If an error occurs whilst fetching units from the database.
+ */
+router.get('/filter', async function (req, res) {
+    try {
+        const { offset = 0, limit = 10, search = '' } = req.query;
+
+        // Filter units based on the search query
+        const query = search ? { unitCode: { $regex: search, $options: 'i' } } : {}; 
+
+        // Get total count for pagination
+        const total = await Unit.countDocuments(query);
+
+        // Get paginated units
+        const units = await Unit.find(query)
+            .skip(Number(offset))
+            .limit(Number(limit))
+            .populate('reviews');
+
+        // If no units are found, return an appropriate response
+        if (!units.length) {
+            return res.status(404).json({ error: 'No units match the given query' });
+        }
+        
+        // Respond with the units and total count
+        return res.status(200).json({ units, total });
+    } 
+    catch (error) {
+        return res.status(500).json({ error: `Error fetching units: ${error.message}` });
     }
 });
 
@@ -96,6 +134,52 @@ router.post('/create', async function (req, res) {
     }
 });
 
+/**
+ * ! POST Create Units in Bulk
+ * 
+ * Creates multiple units based on the input JSON data.
+ * 
+ * @async
+ * @param {JSON} req.body - Contains the JSON data for multiple units.
+ * @returns {JSON} Success or error messages.
+ */
+router.post('/create-bulk', async function (req, res) {
+    try {
+        const unitData = req.body;
+        const results = []
+
+        for (const [unitCode, unitDetails] of Object.entries(unitData)) {
+            const existingUnit = await Unit.findOne({ unitCode: unitCode.toLowerCase() });
+
+            if (existingUnit) {
+                results.push({ unitCode, status: 'Skipped', message: 'Unit already exists' });
+                continue;
+            }
+
+            const unit = new Unit({
+                unitCode: unitCode.toLowerCase(),
+                name: unitDetails.title,
+                description: unitDetails.description || '',
+                level: unitDetails.level,
+                creditPoints: parseInt(unitDetails.credit_points, 10),
+                school: unitDetails.school,
+                academicOrg: unitDetails.academic_org,
+                scaBand: unitDetails.sca_band,
+                requisites: unitDetails.requisites,
+                offerings: unitDetails.offerings
+            });
+
+            await unit.save();
+            results.push({ unitCode, status: 'Created' });
+        }
+
+        // Respond with the results
+        return res.status(201).json({ message: 'Bulk creation completed', results });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `An error occurred whilst creating the units: ${error.message}` });
+    }
+});
 
 /**
  * ! DELETE Remove a Unit

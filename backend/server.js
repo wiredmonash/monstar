@@ -12,7 +12,8 @@ const AuthRouter = require('./routes/auth');
 
 // === Middleware ===
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
+app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
@@ -32,7 +33,7 @@ app.use('/api/v1/auth', AuthRouter);
 // });
 
 // === Start Server ===
-const PORT = process.env.PORT || 8080; // default to port 8080 if no port specified
+const PORT = process.env.PORT || 8080;                                          // Default to 8080 if no port specified
 app.listen(PORT, (error) => {
     if (error)
         console.log(error);

@@ -1,13 +1,41 @@
+$max-width: 1200px;
+$gap: 20px;
+$padding: 40px;
+
 .unit-list-container {
     display: grid;
-    gap: 20px;
+    gap: $gap;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    padding: 40px;
-    max-width: 1200px;
+    padding: $padding;
+    max-width: $max-width;
     margin: 0 auto; // center the content on the page
 }
 
 .unit-card-wrapper {
     display: flex;
     justify-content: center;
+}
+
+.toolbar-container {
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: 0 2rem;
+    padding-top: 10px;
+}
+
+.paginator-container {
+    max-width: $max-width;
+    margin: 0 auto;
+    padding: 0 2rem;
+    padding-bottom: 20px;
+}
+
+.no-results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    padding-top: 20px;
 }
