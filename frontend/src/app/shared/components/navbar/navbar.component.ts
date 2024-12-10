@@ -80,11 +80,17 @@ export class NavbarComponent {
    */
   authStateChange(state: string) {
     if (state == 'signed up') {
-      // Close the profile dialog
-      this.profileDialogVisible = false;
+      // Show info toast 
+      this.messageService.add({ severity: 'info', summary: 'Signed Up', detail: 'You have signed up, now you must confirm your email!' });
+    }
 
-      // Show toast 
-      this.messageService.add({ severity: 'success', summary: 'Signed Up & Logged in!', detail: 'You have signed up & logged in.' });
+    if (state == 'logged in') {
+      // Show success toast
+      this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You have logged in!'});
+    }
+
+    if (state == 'logged out') {
+      this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You have logged out!'});
     }
   }
 }

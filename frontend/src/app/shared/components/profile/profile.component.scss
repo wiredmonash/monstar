@@ -24,6 +24,19 @@
         p-button {
             margin-top: 0.75rem;
         }
+
+        p {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .p-button-link { 
+            display: inline-flex;
+            align-items: center;
+            font-weight: bold;
+        }
     }
   
     .middle {
@@ -56,6 +69,10 @@
             transform: scale(1.35);
         }
     }
+}
+
+.p-button-link {
+    padding-top: 20px;
 }
 
 .gsi-material-button {

@@ -28,9 +28,11 @@ import { Avatar, AvatarModule } from 'primeng/avatar';
 })
 export class ProfileComponent implements OnInit {
   // All user auth states
-  state: 'logged in' | 'signed up' | 'logged out' = 'logged out';
+  // TODO: 'signed out' means that the sign up page will show, 
+  // TODO: 'logged out' means that the login page will show first.
+  state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'signed out';
 
-  // Event for when the title is changed
+  // Event to emit to the navbar to change the title of the dialog
   @Output() titleChangeEvent = new EventEmitter<string>();
 
   // Event for when the user logs in
@@ -50,13 +52,8 @@ export class ProfileComponent implements OnInit {
 
   // Profile menu items
   profileMenuItems: MenuItem[] = [];
-
-  selectedMenuItem: string | undefined = 'Details';
-
-  // * Emits to navbar to change the title of the dialog
-  changeTitle(title: string) {
-    this.titleChangeEvent.emit(title);
-  }
+  // Profile menu state
+  profileMenuState: 'details' | 'reviews' = 'details';
 
   // * Change title on initialisation
   ngOnInit(): void {
@@ -68,12 +65,16 @@ export class ProfileComponent implements OnInit {
           {
             label: 'Details',
             icon: 'pi pi-user',
-            command: () => {}
+            command: () => {
+              this.profileMenuState = 'details';
+            }
           },
           {
             label: 'Reviews',
             icon: 'pi pi-upload',
-            command: () => {}
+            command: () => {
+              this.profileMenuState = 'reviews';
+            }
           },
           {
             separator: true
@@ -81,12 +82,7 @@ export class ProfileComponent implements OnInit {
           {
             label: 'Logout',
             icon: 'pi pi-sign-out',
-            command: () => {
-              this.state = 'logged out';
-              console.log('Logged out! STATE:', this.state);
-              this.titleChangeEvent.emit('Sign Up');
-              this.stateChangeEvent.emit(this.state);
-            }
+            command: () => { this.logout(); }
           }
         ]
       }
@@ -94,9 +90,22 @@ export class ProfileComponent implements OnInit {
 
     
     // Changing dialog title based on state
-    if (this.state == 'signed up') { this.changeTitle('Profile'); }
-    else if (this.state == 'logged in') { this.changeTitle('Profile'); }
-    else if (this.state == 'logged out') { this.changeTitle('Sign Up'); }
+    if (this.state == 'signed up') { this.titleChangeEvent.emit('Profile'); }
+    else if (this.state == 'logged in') { this.titleChangeEvent.emit('Profile'); }
+    else if (this.state == 'signed out') { this.titleChangeEvent.emit('Sign Up'); }
+    else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
+  }
+
+  // * Confirms the user
+  confirm() {
+    // Change pseudo state to 'logged in'
+    this.state = 'logged in';
+
+    // Change the title of the dialog
+    this.titleChangeEvent.emit('Profile');
+
+    // Emit state change to navbar
+    this.stateChangeEvent.emit(this.state);
   }
 
   // * Signs Up the User
@@ -109,14 +118,14 @@ export class ProfileComponent implements OnInit {
         // Change state to logged in 
         this.state = 'signed up';
 
-        // Change the title of the dialog
-        this.changeTitle('Profile');
+        // Emit change title of the dialog
+        this.titleChangeEvent.emit('Confirmation');
 
-        // Output state change
+        // Emit state change to navbar
         this.stateChangeEvent.emit(this.state);
 
         // ? Debug log
-        console.log('Signed up & Logged In! STATE:', this.state);
+        console.log('Signed up | STATE:', this.state);
       } else {
         // ? Debug log
         console.log('Passwords do not match.');
@@ -133,5 +142,24 @@ export class ProfileComponent implements OnInit {
     }
 
 
+  }
+
+  login() {
+
+  }
+
+
+  logout() {
+    // Change pseudo state to 'logged out'
+    this.state = 'logged out';
+
+    // Change the title of the navbar
+    this.titleChangeEvent.emit('Sign Up');
+
+    // Emit state change to navbar
+    this.stateChangeEvent.emit(this.state);
+
+    // ? Debug log
+    console.log('Logged out! STATE:', this.state);
   }
 }
