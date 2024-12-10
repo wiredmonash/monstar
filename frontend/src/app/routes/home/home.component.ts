@@ -10,10 +10,10 @@ import { AccordionModule } from 'primeng/accordion';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  // Inject router in the constructor
+  // * Inject router
   constructor (private router: Router) { }
 
-  // Method to navigate to the unit list page
+  // * Method to navigate to the unit list page
   exploreUnits() {
     this.router.navigate(['/unit-list']);
   }

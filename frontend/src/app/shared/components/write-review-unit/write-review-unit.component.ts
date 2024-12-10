@@ -50,7 +50,7 @@ export class WriteReviewUnitComponent {
   yearOptions: Array<{ label: string; value: number }> = [];
 
 
-  // Constructor that initialises the year options also injects ApiService and MessageService
+  // * Constructor that initialises the year options also injects ApiService and MessageService
   constructor (
     private apiService: ApiService,
     private messageService: MessageService
@@ -58,12 +58,12 @@ export class WriteReviewUnitComponent {
     this.initialiseYearOptions();
   }
 
-  // Opens the create review dialog
+  // * Opens the create review dialog
   openDialog() {
     this.visible = true;
   }
 
-  // Closes the create review dialog
+  // * Closes the create review dialog
   closeDialog() {
     this.visible = false;
   }
@@ -129,10 +129,10 @@ export class WriteReviewUnitComponent {
   }
 
   /**
-   * Creates the multiple previous years from current year.
-   * Pushes the values to the yearOptions array.
+   * * Creates the multiple previous years from current year.
    * 
-   * This is used for the year dropdown option.
+   * - Pushes the values to the yearOptions array.
+   * - This is used for the year dropdown option.
    * 
    * @private
    */

@@ -15,14 +15,14 @@
         p-floatLabel {
 
             input {
-                transform: translateX(-12px);
-                width: 110%;
+                width: 100%;
                 box-sizing: border-box;
+                margin-right: 20px;
             }
         }
 
         p-button {
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
     }
   
@@ -56,14 +56,14 @@
             transform: scale(1.35);
         }
     }
-  }
-
-
+}
 
 .gsi-material-button {
+    user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    appearance: none;
     -webkit-appearance: none;
     background-color: WHITE;
     background-image: none;

@@ -1,28 +1,64 @@
+<!-- Logged out state will show the sign up page -->
 @if (state === 'logged out') {
     <div class="signup-form">
         <!-- Sign Up Form -->
         <div class="left">
-            <div class="email">
+            <!-- Email input -->
+            <div class="email-container">
                 <p-floatLabel>
-                    <input id="email" pInputText type="text" />
+                    <input id="email" 
+                        pInputText 
+                        class="{{inputEmailInvalid}}"
+                        type="text" 
+                        [(ngModel)]="inputEmail" 
+                        (onFocus)="inputEmailInvalid = ''"
+                        aria-labelledby="email-help"
+                    />
                     <label for="email">Monash Email</label>
                 </p-floatLabel>
+                @if (inputEmailInvalid != '') {
+                    <small id="email-help" style="background-color: rgb(248, 113, 113);">Email invalid (enter Monash email)</small>
+                } @else {
+                    <small id="email-help">e.g. abcd0001&#64;student.monash.edu</small>
+                }
             </div>
 
-            <div class="password">
+            <!-- Password input-->
+            <div class="password-container mt-1">
                 <p-floatLabel>
-                    <p-password id="password" type="password" [toggleMask]="true" />
+                    <p-password id="password" 
+                        type="password" 
+                        class="{{inputPasswordsInvalid}}"
+                        [toggleMask]="true" 
+                        [(ngModel)]="inputPassword"
+                        (onFocus)="inputPasswordsInvalid = ''"
+                    />
                     <label for="password">Password</label>
                 </p-floatLabel>
             </div>
 
-            <div class="confirm-password">
+            <!-- Confirm password input -->
+            <div class="confirm-password-container mt-1">
                 <p-floatLabel>
-                    <p-password id="confirmPassword" type="password" [toggleMask]="true" [disabled]="true" [feedback]="false" />
-                    <label for="confirmPassword">Confirm Password</label>
+                    <p-password id="confirm-password" 
+                        type="password" 
+                        class="{{inputPasswordsInvalid}}"
+                        [toggleMask]="true" 
+                        [disabled]="inputPassword == '' ? true : false" 
+                        [feedback]="false" 
+                        [(ngModel)]="inputPassword2"
+                        (onFocus)="inputPasswordsInvalid = ''"
+                        aria-labelledby="confirm-password-help"
+                    />
+                    <label for="confirm-password">Confirm Password</label>
                 </p-floatLabel>
+                @if (inputPasswordsInvalid != '') {
+                    <small id="confirm-password-help" style="background-color: rgb(248, 113, 113);">Passwords do not match!</small>
+                } @else {
+                    <small id="confirm-password-help">Retype your password to confirm.</small>
+                }
             </div>
-            <p-button label="Sign Up" icon="pi pi-user-plus" styleClass="w-10rem mx-auto"></p-button>
+            <p-button label="Sign Up" icon="pi pi-user-plus" styleClass="w-10rem mx-auto" (click)="signup()"></p-button>
         </div>
 
         <!-- Divider -->
@@ -32,7 +68,7 @@
             </p-divider>
         </div>
 
-        <!-- Other Action -->
+        <!-- "Sign in Monash Gmail" Button -->
         <div class="right">
             <button class="gsi-material-button">
                 <div class="gsi-material-button-state"></div>
@@ -46,8 +82,8 @@
                     <path fill="none" d="M0 0h48v48H0z"></path>
                     </svg>
                 </div>
-                <span class="gsi-material-button-contents">Sign in with Google</span>
-                <span style="display: none;">Sign in with Google</span>
+                <span class="gsi-material-button-contents">Sign in Monash Gmail</span>
+                <span style="display: none;">Sign in Monash Gmail</span>
                 </div>
             </button>
         </div>
@@ -55,9 +91,15 @@
 }
 
 @else if (state === 'signed up') {
-
+    <!-- TODO: THIS SHOULD TAKE YOU TO CONFIRMATION NOT PROFILE -->
+    <div class="profile">
+        <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
+    </div>
 }
 
+<!-- Logged in state will show the profile -->
 @else if (state === 'logged in') {
-
+    <div class="profile">
+        <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
+    </div>
 }

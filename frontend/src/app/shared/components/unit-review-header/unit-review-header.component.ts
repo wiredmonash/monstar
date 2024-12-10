@@ -51,13 +51,13 @@ export class UnitReviewHeaderComponent {
     this.sortBy.emit(criteria);
   }
 
-  // Shows the dialog the write a review
+  // * Shows the dialog to write a review
   showDialog() {
     if (this.writeReviewDialog) 
       this.writeReviewDialog.openDialog();
   }
 
-  // Emits the reviewAdded signal to be received by unit-overview component.
+  // * Emits the reviewAdded signal to be received by unit-overview component.
   handleReviewPosted() {
     this.reviewAdded.emit();
   }

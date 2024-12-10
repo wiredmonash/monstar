@@ -25,6 +25,7 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './review-card.component.html',
   styleUrl: './review-card.component.scss',
   animations: [
+    // Fade in out animation for delete button
     trigger('fadeInOut', [
       state(
         'hidden',
@@ -68,25 +69,30 @@ export class ReviewCardComponent implements OnInit {
   // Child that is the confirmation popup on deletion
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
-  // Injects the ApiService 
+  // * Injects the ApiService & confirmationService
   constructor(
     private apiService: ApiService,
     private confirmationService: ConfirmationService
   ) { }
 
-  // Runs on init
+  /**
+   * * Runs on initialisation
+   * 
+   * - Sets the likes and dislikes count for the review
+   */
   ngOnInit(): void {
     // Get like and dislike count from review
     this.likes = this.review.likes;
     this.dislikes = this.review.dislikes;
-    console.log('likes:', this.likes);
-    console.log('dislikes:', this.dislikes);
   }
 
-  // Choices on confirmation popup
+  // * Choices on confirmation popup (either delete or cancel)
   accept() { this.confirmPopup.accept(); }
   reject() { this.confirmPopup.reject(); }
-  // Subscribes to the confirmation service on deletion
+
+  /**
+   * * Subscribes to the confirmation service on deletion
+   */
   confirmDeletion(event: Event) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
@@ -99,6 +105,12 @@ export class ReviewCardComponent implements OnInit {
   }
 
   // Deletes a review from the database using API Service
+  /**
+   * * Deletes a review from the DB using API Service Method
+   * 
+   * This deletes a review by it's MongoDB ID. If successful, it emits the 
+   * reviewDeleted event so that 'unit-overview' can refresh the reviews.
+   */
   deleteReview() {
     // Call the api service method to delete a review
     this.apiService.deleteReviewByIdDELETE(this.review._id).subscribe({
@@ -116,12 +128,16 @@ export class ReviewCardComponent implements OnInit {
     });
   }
 
-  // Method to toggle expand/collapse state
+  /**
+   * * Method to toggle the expand/collapse state 
+   */
   toggleExpand() {
     this.expanded = !this.expanded;
   }
 
-  // Method to toggle liked state
+  /**
+   * * Toggles the liked state
+   */
   like() {
     // If we have disliked and now we liked.
     if (this.disliked && !this.liked) { 
@@ -151,7 +167,9 @@ export class ReviewCardComponent implements OnInit {
     }
   }
 
-  // Method to toggle the dislike state
+  /**
+   * * Toggles the dislike state
+   */
   dislike() {
     // if we have liked and now we disliked 
     if (this.liked && !this.disliked) { 
@@ -181,7 +199,7 @@ export class ReviewCardComponent implements OnInit {
     }
   }
 
-  // Call the API service method to like the review
+  // * Call the API service method to like the review
   callLikeService() {
     this.apiService.likeReviewPATCH(this.review._id).subscribe({
       next: (updatedReview) => {
@@ -194,7 +212,7 @@ export class ReviewCardComponent implements OnInit {
     });
   }
 
-  // Call the API service method to un-like the review
+  // * Call the API service method to un-like the review
   callUnLikeService() {
     this.apiService.unlikeReviewPATCH(this.review._id).subscribe({
       next: (updatedReview) => {
@@ -207,7 +225,7 @@ export class ReviewCardComponent implements OnInit {
     });
   }
 
-  // Call the API service method to dislike the review
+  // * Call the API service method to dislike the review
   callDislikeService() {
     this.apiService.dislikeReviewPATCH(this.review._id).subscribe({
       next: (updatedReview) => {
@@ -220,7 +238,7 @@ export class ReviewCardComponent implements OnInit {
     });
   }
 
-  // Call the API service method to un-dislike the review
+  // * Call the API service method to un-dislike the review
   callUnDislikeService() {
     this.apiService.undislikeReviewPATCH(this.review._id).subscribe({
       next: (updatedReview) => {

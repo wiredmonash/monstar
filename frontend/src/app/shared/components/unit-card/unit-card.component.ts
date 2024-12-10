@@ -27,7 +27,7 @@ export class UnitCardComponent {
   constructor(private router: Router) { }
 
   /**
-   * Gets the average overall rating of the unit rounded to the nearest integer.
+   * * Gets the average overall rating of the unit rounded to the nearest integer.
    * 
    * @returns {number} The rounded average rating, or 0 if no reviews are available.
    */

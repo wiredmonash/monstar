@@ -13,7 +13,7 @@ import { UnitReviewHeaderComponent } from './shared/components/unit-review-heade
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, HomeComponent, UnitReviewHeaderComponent], 
+  imports: [RouterOutlet, NavbarComponent, FooterComponent], 
   providers: [ApiService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'] // Fixed the typo from 'styleUrl' to 'styleUrls'

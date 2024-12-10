@@ -26,15 +26,22 @@ import { PaginatorModule } from 'primeng/paginator';
   styleUrl: './unit-list.component.scss'
 })
 export class UnitListComponent implements OnInit {
-  units: any[] = []; // Array to hold the full list of units from the backend
-  filteredUnits: any[] = []; // Array to hold the filtered list of units
+  // Array to hold the full list of units from the backend
+  units: any[] = []; 
+  // Array to hold the filtered list of units
+  filteredUnits: any[] = []; 
 
-  search: string = ''; // String to hold the current search
+  // String to hold the current search
+  search: string = ''; 
 
-  first: number = 0;
-  rows: number = 10;
-  totalRecords: number = 0;
+  // Current page
+  first: number = 0; 
+  // Number of unit cards shown on the page
+  rows: number = 20; 
+  // Total number of unit cards
+  totalRecords: number = 0; 
 
+  // Loading state of unit cards
   loading: boolean = true;
 
   /**
@@ -54,7 +61,7 @@ export class UnitListComponent implements OnInit {
   }
 
   /**
-   * * Fetch all units from the backend and update the units array.
+   * * Fetch all units from the backend and update the units array. (NOT USED)
    * 
    * Utlises the ApiService to make an HTTP GET request.
    */
