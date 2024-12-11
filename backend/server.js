@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 // Router Imports 
@@ -11,9 +12,26 @@ const ReviewRouter = require('./routes/reviews');
 const AuthRouter = require('./routes/auth');
 
 // === Middleware ===
-app.use(cors());
+app.use(cors({ 
+        origin: 'http://localhost:4200',
+        credentials: true 
+    })
+);
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
 app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
+app.use(cookieParser());
+
+// Response handler middlware
+app.use((obj, req, res, next) => {
+    const statusCode = obj.status || 500;
+    const message = obj.message || "Internal server error";
+    return res.status(statusCode, {
+        success: [200, 201, 204].some(a => a === obj.status) ? true : false,
+        status: statusCode,
+        message: message,
+        data: obj.data
+    })
+});
 
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;

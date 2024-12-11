@@ -1,0 +1,18 @@
+meta {
+  name: Create a User
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8080/api/v1/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "jfer0043",
+    "password": "123"
+  }
+}

@@ -1,6 +1,6 @@
 import { CommonModule, NgOptimizedImage, SlicePipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ApiService } from '../../../../api.service';
+import { ApiService } from '../../services/api.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AvatarModule } from 'primeng/avatar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';

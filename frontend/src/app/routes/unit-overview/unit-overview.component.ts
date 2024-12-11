@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../api.service';
+import { ApiService } from '../../shared/services/api.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
 import { ActivatedRoute } from '@angular/router';

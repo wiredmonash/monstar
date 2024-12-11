@@ -2,6 +2,7 @@
 @if (state === 'signed out' || state === 'logged out') {
     
     <div class="signup-form">
+        <!-- Signup form -->
         @if (state === 'signed out') {
             <!-- Sign Up Form -->
             <div class="left">
@@ -74,6 +75,8 @@
                 </p>
             </div>
         }
+
+        <!-- Login form -->
         @else if (state === 'logged out') {
             <!-- Login Form -->
             <div class="left">
@@ -102,6 +105,7 @@
                             type="password" 
                             class="{{inputPasswordsInvalid}}"
                             [toggleMask]="true" 
+                            [feedback]="false"
                             [(ngModel)]="inputPassword"
                             (onFocus)="inputPasswordsInvalid = ''"
                         />
@@ -156,8 +160,7 @@
 <!-- Confirmation after signing up -->
 @else if (state === 'signed up') {
     <div class="confirmation">
-        <!-- Test button that confirms sign up -->
-        <p-button (click)="confirm()">Confirm Sign Up</p-button>
+        To be able to log in you must verify your email, check your inbox for the email you registered with. 
     </div>
 }
 

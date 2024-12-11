@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
-import { ApiService } from '../../../../api.service';
+import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { Review } from '../../models/review.model';
 import { DropdownModule } from 'primeng/dropdown';

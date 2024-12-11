@@ -9,7 +9,7 @@ const Unit = require('../models/unit');
 const router = express.Router();
 
 /**
- * GET Get All Reviews
+ * ! GET Get All Reviews
  * 
  * Gets all reviews from the database with an optional filter in the req.body
  * 
@@ -32,7 +32,7 @@ router.get('/', async function (req, res) {
 });
 
 /**
- * GET Get All Reviews by Unit
+ * ! GET Get All Reviews by Unit
  * 
  * Gets all reviews for a unit from the database.
  * 
@@ -70,7 +70,7 @@ router.get('/:unit', async function (req, res) {
 });
 
 /**
- * POST Create a Review for Unit
+ * ! POST Create a Review for Unit
  * 
  * Creates a Review for a specific Unit
  * 
@@ -141,7 +141,7 @@ router.post('/:unit/create', async function (req, res) {
 });
 
 /**
- * PUT Update a Review by MongoDB ID
+ * ! PUT Update a Review by MongoDB ID
  * 
  * Allows us to update the Review (e.g. Title, Grade Obtained, Ratings, ...)
  * 
@@ -189,7 +189,7 @@ router.put('/update/:reviewId', async function (req, res) {
 });
 
 /**
- * DELETE Delete a Review by MongoDB ID
+ * ! DELETE Delete a Review by MongoDB ID
  * 
  * Deletes a Review (also removes the review from the Unit's `reviews` array)
  * 
@@ -255,7 +255,7 @@ router.delete('/delete/:reviewId', async function (req, res) {
 })
 
 /**
- * PATCH Like a Review
+ * ! PATCH Like a Review
  * 
  * Increments the `likes` field for a specific review by it's ID.
  * 
@@ -286,7 +286,7 @@ router.patch('/like/:reviewId', async function (req, res) {
 });
 
 /**
- * PATCH Un-Like a Review
+ * ! PATCH Un-Like a Review
  * 
  * Decrements the `likes` field for a specific review by it's ID.
  * 
@@ -317,7 +317,7 @@ router.patch('/unlike/:reviewId', async function (req, res) {
 });
 
 /**
- * PATCH Dislike a Review
+ * ! PATCH Dislike a Review
  * 
  * Increments the `dislikes` field for a specific review by its ID.
  * 
@@ -348,7 +348,7 @@ router.patch('/dislike/:reviewId', async function (req, res) {
 })
 
 /**
- * PATCH Un-Dislike a Review
+ * ! PATCH Un-Dislike a Review
  * 
  * Decrements the `dislikes` field for a specific review by its ID.
  * 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UnitCardComponent } from "../../shared/components/unit-card/unit-card.component";
-import { ApiService } from '../../../api.service';
+import { ApiService } from '../../shared/services/api.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToolbarModule } from 'primeng/toolbar';
 import { SplitButtonModule } from 'primeng/splitbutton';
