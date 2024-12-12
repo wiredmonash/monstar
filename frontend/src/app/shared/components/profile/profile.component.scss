@@ -69,12 +69,40 @@
             transform: scale(1.35);
         }
     }
+
+    .p-button-link {
+        padding-top: 20px;
+    }
 }
 
-.p-button-link {
-    padding-top: 20px;
+
+.profile {
+    // Row format
+    display: flex;
+    align-items: left;
+    flex-direction: row;    
+    gap: 1rem;
+
+    .update-details {
+        display: flex;
+        align-items: left;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .avatar-card { 
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    }
 }
 
+
+// SIGN IN WITH GOOGLE STUFF
 .gsi-material-button {
     user-select: none;
     -moz-user-select: none;

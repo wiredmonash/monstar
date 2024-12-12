@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
@@ -42,10 +42,16 @@ export class NavbarComponent {
   // Visibility state of the sidebar
   sidebarVisible: boolean = false;
 
+  // Saves the profile state
+  profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' = 'signed out';
   // Title of the profile dialog
   profileDialogTitle: string = '';
   // Visibility state of the profile dialog
   profileDialogVisible: boolean = false;
+
+  // ! Event emitter for closing the dialog  THIS COULD CAUSE LAG ()_() !!!!!!!!!
+  @Output() profileDialogCloseEvent = new EventEmitter<'logged out' | 'logged in' | 'signed out' | 'signed up'>();
+
 
   // ! Injects MessageService
   constructor (
@@ -57,6 +63,19 @@ export class NavbarComponent {
    */
   closeCallback(e: any): void {
     this.sidebarRef.close(e);
+  }
+
+  /**
+   * * On close of the dialog
+   */
+  onDialogClose(event: Event) {
+    // If the user is in the signed up state, meaning the profile dialog shows
+    // 'Verify your email', then if we close the dialog the profile dialog 
+    // will show the login page next time it is opened.
+    if (this.profileState == 'signed up') {
+      this.profileDialogCloseEvent.emit('logged out');
+      this.profileState = 'logged out';
+    }
   }
 
   /**
@@ -78,19 +97,21 @@ export class NavbarComponent {
   /**
    * * Called when the profile auth state is changed.
    */
-  authStateChange(state: string) {
-    if (state == 'signed up') {
-      // Show info toast 
-      this.messageService.add({ severity: 'info', summary: 'Signed Up', detail: 'You have signed up, now you must confirm your email!' });
-    }
+  authStateChange(state: 'logged out' | 'logged in' | 'signed out' | 'signed up') {
+    this.profileState = state;
 
-    if (state == 'logged in') {
-      // Show success toast
-      this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You have logged in!'});
-    }
+    switch (state) {
+      case 'signed up':
+        this.messageService.add({ severity: 'info', summary: 'Signed Up', detail: 'You have signed up, now you must confirm your email!' });
+        break;
 
-    if (state == 'logged out') {
-      this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You have logged out!'});
+      case 'logged in':
+        this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!'});
+        break;
+
+      case 'logged out':
+        this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You have logged out!'});
+        break;
     }
   }
 }

@@ -1,8 +1,20 @@
 <p-toast></p-toast>
 
 <!-- Profile Dialog -->
-<p-dialog [(visible)]="profileDialogVisible" header="{{profileDialogTitle}}" [draggable]="false" [modal]="true" [resizable]="false" [style]="{ 'width': '75rem' }">
+<p-dialog 
+  [(visible)]="profileDialogVisible" 
+  header="{{profileDialogTitle}}" 
+  [draggable]="false" 
+  [modal]="true" 
+  [resizable]="false" 
+  [style]="{ 'width': '75rem' }"
+  [closeOnEscape]="profileDialogTitle == 'Verify your email' ? false : true" 
+>
+  <ng-template pTemplate="closeicon">
+    <i class="pi pi-times" (click)="onDialogClose($event)"></i>
+  </ng-template>
   <app-profile 
+    [state]="this.profileState"
     (titleChangeEvent)="updateProfileDialogTitle($event)"
     (stateChangeEvent)="authStateChange($event)"
   ></app-profile>

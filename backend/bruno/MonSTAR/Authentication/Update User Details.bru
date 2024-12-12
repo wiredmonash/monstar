@@ -6,10 +6,18 @@ meta {
 
 put {
   url: http://localhost:8080/api/v1/auth/update/:username
-  body: none
+  body: json
   auth: none
 }
 
 params:path {
   username: 
+}
+
+body:json {
+  // Details to update below
+  {
+    "username": "",
+    "password": ""
+  }
 }

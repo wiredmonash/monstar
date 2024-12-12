@@ -1,9 +1,11 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import confetti from 'canvas-confetti';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { AuthService } from '../../shared/services/auth.service';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-verified',
@@ -12,7 +14,11 @@ import { AuthService } from '../../shared/services/auth.service';
     CardModule,
     ButtonModule,
     RouterLink,
+    ToastModule
   ], 
+  providers: [
+    MessageService
+  ],
   templateUrl: './verified.component.html',
   styleUrls: ['./verified.component.scss'],
 })
@@ -21,37 +27,50 @@ export class VerifiedComponent implements OnInit {
   verificationMessage: string = '';
   verificationSuccess: boolean = false;
 
-  // Inject ActivatedRoute & AuthService
+  // ! Inject ActivatedRoute, AuthService & MessageService
   constructor (
     private activatedRoute: ActivatedRoute, 
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService
   ) {}
 
+  /**
+   * * Runs on initialisation
+   * 
+   * Gets the token from the route parameter, then verifies the user using the
+   * token.
+   */
   ngOnInit(): void {
     // Get the token from the :token route parameter
     const token = this.activatedRoute.snapshot.paramMap.get('token');
 
     // Verify the token if it exists
-    if (token)
-      this.verifyEmail(token);
+    if (token) this.verifyEmail(token);
   }
 
   /**
-   * Call backend to verify the email
+   * * Calls backend to verify the email
+   * 
+   * @param {string} token The token to verify the user with
    */
   verifyEmail(token: string): void {
     this.authService.verifyAndLogin(token).subscribe(
       (response) => {
         this.verificationSuccess = true;
-        this.verificationMessage = 'Email successfully verified!'
+        this.verificationMessage = 'Email successfully verified!';
+        this.messageService.add({ severity: 'success', summary: 'Email verified!', detail: 'You have verified your email!' });
         this.launchConfettiContinuously();
 
         // ? Debug log user
-        console.log('User logged in');
+        console.log('verified.component.ts: verify and login successful!');
       },
       (error) => {
         this.verificationSuccess = false;
-        this.verificationMessage = error.error?.message || 'An error occured during verification.'
+        this.verificationMessage = error.error?.message || 'An error occured during verification.';
+        this.messageService.add({ severity: 'error', summary: 'Email verification failed.', detail: 'Email verification failed, try again.' });
+
+        // ? Debug log error 
+        console.log('verified.component.ts: verify and login failed');
       }
     );
   }

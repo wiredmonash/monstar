@@ -24,7 +24,7 @@ const router = express.Router();
 router.post('/register', async function (req, res) {
     try {
         // Get values from json request
-        const { email, password} = req.body;
+        const { email, password } = req.body;
 
         // Find and check if user already exists
         const existingUser = await User.findOne({email});
@@ -39,8 +39,6 @@ router.post('/register', async function (req, res) {
 
         // Create and save new user
         const newUser = new User({ email, password: hashedPassword, verificationToken });
-
-        // Save the new user in the DB
         await newUser.save();
 
         // Send the verification email
@@ -312,6 +310,7 @@ router.put('/update/:email', async function (req, res) {
  * ! Validates User
  * 
  * Checks if the user has the access_token in their cookies to keep session.
+ * The payload also contains the user's data.
  * 
  * @returns {JSON} Responds with status 200 and json containing message and decoded user data.
  * @throws {401} If the user is not authenticated and has no access token
@@ -333,6 +332,7 @@ router.get('/validate', async function (req, res) {
         // Find and store the user without storing the password
         const user = await User.findById(decoded.id, 'email username reviews admin profileImg');
 
+        // User not found error case
         if (!user)
             return res.status(404).json({ message: 'User not found' });
 

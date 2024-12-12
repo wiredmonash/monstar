@@ -1,6 +1,5 @@
 <!-- Signed out state will show the sign up page -->
 @if (state === 'signed out' || state === 'logged out') {
-    
     <div class="signup-form">
         <!-- Signup form -->
         @if (state === 'signed out') {
@@ -61,8 +60,17 @@
                         <small id="confirm-password-help">Retype your password to confirm.</small>
                     }
                 </div>
-                <p-button label="Sign Up" icon="pi pi-user-plus" styleClass="w-10rem mx-auto" (click)="signup()"></p-button>
 
+                <!-- Sign Up Button -->
+                <p-button 
+                    label="Sign Up" 
+                    icon="pi pi-user-plus" 
+                    styleClass="w-10rem mx-auto"
+                    [loading]="signingUp"
+                    (click)="signup()"
+                />
+
+                <!-- Switch to login -->
                 <p>Already have an account? 
                     <a 
                         pButton 
@@ -168,5 +176,31 @@
 @else if (state === 'logged in') {
     <div class="profile">
         <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
+        <p-divider layout="vertical"></p-divider>
+        <div class="update-details">
+            <h4>Your Details</h4>
+            <p-card class="avatar-card m-0" [style]="{ overflow: 'hidden', }">
+                <p class="d-flex align-items-center p-0">
+                    <!-- Profile picture -->
+                    <img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" 
+                        alt="Profile Picture"
+                        class="mr-2 avatar"
+                    />
+                    <!-- Username -->
+                    <span>jfer0043</span>
+                </p>
+                Total reviews
+            </p-card>
+            <p-floatLabel>
+                <input pInputText id="username" />
+                <label for="username" [style]="">New Username</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input pInputText id="password" />
+                <label for="password">New Password</label>
+            </p-floatLabel>
+            <p-button label="Update Details" styleClass="padding-top: 2rem;"></p-button>
+        </div>
     </div>
 }
