@@ -1,8 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-
-// Allows us to go to different routes
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -29,7 +25,6 @@ import { ToastModule } from 'primeng/toast';
     ToastModule
   ],
   providers: [
-    provideAnimations(),
     MessageService
   ],
   templateUrl: './navbar.component.html',
@@ -41,6 +36,9 @@ export class NavbarComponent {
 
   // Visibility state of the sidebar
   sidebarVisible: boolean = false;
+
+  // Username for the sidebar
+  username: string = '';
 
   // Saves the profile state
   profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' = 'signed out';
@@ -107,10 +105,12 @@ export class NavbarComponent {
 
       case 'logged in':
         this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!'});
+        this.username = 'jfer0043';
         break;
 
       case 'logged out':
-        this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You have logged out!'});
+        this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You are logged out!'});
+        this.username = 'Login (Guest)';
         break;
     }
   }

@@ -1,16 +1,13 @@
-import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MenuItem, MessageService } from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { ToastModule } from 'primeng/toast';
 import { MenuModule } from 'primeng/menu';
-import { Avatar, AvatarModule } from 'primeng/avatar';
-import { User } from '../../models/user.model';
+import { AvatarModule } from 'primeng/avatar';
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CardModule } from 'primeng/card';
@@ -35,7 +32,7 @@ import { CardModule } from 'primeng/card';
 })
 export class ProfileComponent implements OnInit {
   // All user auth states can be inputted by parent as well
-  @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'signed out';
+  @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'logged out';
 
   // Event to emit to the navbar to change the title of the dialog
   @Output() titleChangeEvent = new EventEmitter<string>();
@@ -112,7 +109,9 @@ export class ProfileComponent implements OnInit {
           {
             label: 'Logout',
             icon: 'pi pi-sign-out',
-            command: () => { this.logout(); }
+            command: () => { 
+              this.logout(); 
+            }
           }
         ]
       }
@@ -130,8 +129,8 @@ export class ProfileComponent implements OnInit {
 
   // * Signs Up the User
   signup() {
-    // Signing up
     this.signingUp = true;
+    this.inputEmailInvalid = '';
 
     // Trim input email whitespace and store as new variable
     var email = this.inputEmail.replace(/^\s+|\s+$/gm,'');
@@ -151,6 +150,8 @@ export class ProfileComponent implements OnInit {
           (error: HttpErrorResponse) => {
             this.signingUp = false;
 
+            console.log(error.status); // TODO THIS IS HOW WE GET THE STATUS CODE.
+
             // ? Debug log error on signed up
             console.error('Sign up failed:', error.error);
           }
@@ -158,6 +159,8 @@ export class ProfileComponent implements OnInit {
       } else {
         this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
         this.signingUp = false;
+        this.inputPassword = '';
+        this.inputPassword2 = '';
 
         // ? Debug log
         console.log('Passwords do not match.');
@@ -165,6 +168,7 @@ export class ProfileComponent implements OnInit {
     } else {
       this.inputEmailInvalid = 'ng-invalid ng-dirty';
       this.signingUp = false;
+      this.inputEmail = '';
 
       // ? Debug log
       console.log('Not a monash email', this.inputEmail);
@@ -192,6 +196,8 @@ export class ProfileComponent implements OnInit {
       (error: HttpErrorResponse) => {
         this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
         this.loggingIn = false;
+
+        // TODO: Check the status and type of error and add functionality for those.
 
         // ? Debug log error on login
         console.error('Login failed:', error.error);
