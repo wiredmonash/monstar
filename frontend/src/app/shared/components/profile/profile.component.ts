@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,8 @@ import { AvatarModule } from 'primeng/avatar';
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CardModule } from 'primeng/card';
+import { Subscription } from 'rxjs';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-profile',
@@ -30,7 +32,7 @@ import { CardModule } from 'primeng/card';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   // All user auth states can be inputted by parent as well
   @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'logged out';
 
@@ -39,6 +41,11 @@ export class ProfileComponent implements OnInit {
 
   // Event to emit to the navbar when our state changes
   @Output() stateChangeEvent = new EventEmitter<'logged in' | 'signed up' | 'logged out' | 'signed out'>();
+
+  // Input to listen for dialogClosedEvent 
+  @Input() dialogClosedEvent!: EventEmitter<void>;
+  // Stores the subscription to this dialogClosedEvent
+  private dialogClosedSubscription!: Subscription;
 
   // Current input value for the email
   inputEmail: string = '';
@@ -50,7 +57,7 @@ export class ProfileComponent implements OnInit {
   // Current input value for confirm password
   inputPassword2: string = '';
   // Invalid state for both passwords input
-  inputPasswordsInvalid: '' | 'ng-invalid ng-dirty' = ''
+  inputPasswordsInvalid: '' | 'ng-invalid ng-dirty' = '';
 
   // Signing up state
   signingUp: boolean = false;
@@ -60,13 +67,27 @@ export class ProfileComponent implements OnInit {
   // Profile menu items
   profileMenuItems: MenuItem[] = [];
   // Profile menu state
-  profileMenuState: 'details' | 'reviews' = 'details';
+  profileMenuState: 'details' | 'reviews' | 'settings' = 'details';
 
+  // Update username input from details page
+  inputUpdateUsername: string | undefined = undefined;
+  // Update password input from details page
+  inputUpdatePassword: string = '';
+
+  // Stores the subscription for currentUser from AuthService
+  userSubscription: Subscription = new Subscription();
+
+  // Stores the user
+  user: User | null = null;
+  // Outputs user change to parent
+  @Output() userChangeEvent = new EventEmitter<User | null>();
+
+  // ! Injects AuthService
   constructor (private authService: AuthService) { }
 
   // * Change title on initialisation
   ngOnInit(): void {
-    // Validate session and change state accordingly
+    // ! Validate session and change state accordingly
     setTimeout(() => {
       this.authService.validateSession().subscribe(
         (response) => {
@@ -84,7 +105,24 @@ export class ProfileComponent implements OnInit {
       );
     }, 500); // Wait for 500ms to let the cookie propagate.
 
-    // Set profile menu items
+    // ! Subscribe to current user
+    this.userSubscription = this.authService.getCurrentUser().subscribe(
+      (currentUser: User | null) => {
+        // Store the current user
+        this.user = currentUser;
+
+        // Set the current username in the update username field in details page
+        this.inputUpdateUsername = this.user?.username;
+
+        // Output to parent the updated current user
+        this.userChangeEvent.emit(this.user);
+
+        // ? Debug log change of current user
+        console.log('profile.component | Current User:', this.user);
+      }
+    );
+
+    // ! Set profile menu items
     this.profileMenuItems = [
       {
         label: 'User: jfer0043',
@@ -104,6 +142,13 @@ export class ProfileComponent implements OnInit {
             }
           },
           {
+            label: 'Settings',
+            icon: 'pi pi-cog',
+            command: () => {
+              this.profileMenuState = 'settings';
+            }
+          },
+          {
             separator: true
           },
           {
@@ -117,6 +162,12 @@ export class ProfileComponent implements OnInit {
       }
     ];
 
+    // ! Subscribe to the dialogClosedEvent
+    this.dialogClosedSubscription = this.dialogClosedEvent.subscribe(() => {
+      console.log('profile.component: Dialog closed');
+      this.inputUpdateUsername = this.user?.username;
+    });
+
     // Changing dialog title based on state
     if (this.state == 'signed up') { this.titleChangeEvent.emit('Verify your email'); }
     else if (this.state == 'logged in') { this.titleChangeEvent.emit('Profile'); }
@@ -124,8 +175,12 @@ export class ProfileComponent implements OnInit {
     else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
   }
 
-  // TODO: Get current user
-
+  // * Runs on removal of this component
+  ngOnDestroy(): void {
+    // Clean up subscriptions to avoid memory leaks
+    if (this.userSubscription) { this.userSubscription.unsubscribe(); }
+    if (this.dialogClosedSubscription) { this.dialogClosedSubscription.unsubscribe(); }
+  }
 
   // * Signs Up the User
   signup() {
@@ -226,5 +281,45 @@ export class ProfileComponent implements OnInit {
         console.error('Logout failed:', error.error);
       }
     );
+  }
+
+  // * Updates user details
+  updateDetails() {
+    const updatePayload: { username?: string, password?: string } = {};
+
+    if (this.inputUpdateUsername && this.inputUpdatePassword !== this.user?.username) {
+      updatePayload.username = this.inputUpdateUsername;
+    }
+
+    if (this.inputUpdatePassword) {
+      updatePayload.password = this.inputUpdatePassword;
+    }
+
+    if (Object.keys(updatePayload).length === 0) {
+      console.log('No fields to update');
+      return;
+    }
+
+    if (this.user?.email)
+      this.authService.updateDetails(this.user.email, updatePayload.username, updatePayload.password).subscribe(
+        (response) => {
+          // Set the updated username for our user
+          if (updatePayload.username) {
+            this.user!.username = updatePayload.username;
+          }
+
+          // Reset the fieldsk
+          this.inputUpdateUsername = this.user?.username || '';
+          this.inputUpdatePassword = '';
+
+          // TODO: Show toast 
+
+          // Show success message
+          console.log('Details updated successfully', response);
+        },
+        (error) => {
+          console.error('Error updating details', error);
+        }
+      )
   }
 }

@@ -92,4 +92,9 @@ export class AuthService {
       })
     );
   }
+
+  // * Update user details
+  updateDetails(oldEmail: string, username?: string, password?: string) {
+    return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password });
+  }
 }

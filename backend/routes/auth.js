@@ -260,11 +260,10 @@ router.post('/logout', async function (req, res) {
     }
 });
 
-
 /**
  * ! PUT Update a User's details
  *  
- * Updates User's email and/or password
+ * Updates User's username and/or password
  * 
  * @async
  * @returns {JSON} Responds with status 200 and success message
@@ -274,23 +273,22 @@ router.post('/logout', async function (req, res) {
 router.put('/update/:email', async function (req, res) {
     try {
         // Get the user by email from the DB
-        const user = await User.findOne({email: req.params.email});
+        const user = await User.findOne({ email: req.params.email });
 
         // If the user doesn't exist in the DB return status 404 not found
         if (!user)
             return res.status(404).json({error: "User not found"});
 
         // Get the updated email and/or password from the request body
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
-        // If email was provided in the request body, update it.
-        if (email)
-            user.email = email;
+        // If username was provided in the request body, update it.
+        if (username)
+            user.username = username;
 
         // If password was provided in the request body, hash it and update it.
         if (password) {
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            const hashedPassword = await bcrypt.hash(password, 10);
             user.password = hashedPassword;
         }
 
@@ -298,7 +296,7 @@ router.put('/update/:email', async function (req, res) {
         await user.save();
 
         // Return status 200 for successful update of user details
-        return res.status(200).json({message: "User details successfully updated"});
+        return res.status(200).json({message: "User details successfully updated" });
     }
     catch (error) {
         // Handle general errors

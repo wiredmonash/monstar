@@ -185,30 +185,33 @@
     <div class="profile">
         <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
         <p-divider layout="vertical"></p-divider>
-        <div class="update-details">
-            <h4>Your Details</h4>
-            <p-card class="avatar-card m-0" [style]="{ overflow: 'hidden', }">
-                <p class="d-flex align-items-center p-0">
-                    <!-- Profile picture -->
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" 
-                        alt="Profile Picture"
-                        class="mr-2 avatar"
-                    />
-                    <!-- Username -->
-                    <span>jfer0043</span>
-                </p>
-                Total reviews
-            </p-card>
-            <p-floatLabel>
-                <input pInputText id="username" />
-                <label for="username" [style]="">New Username</label>
-            </p-floatLabel>
-            <p-floatLabel>
-                <input pInputText id="password" />
-                <label for="password">New Password</label>
-            </p-floatLabel>
-            <p-button label="Update Details" styleClass="padding-top: 2rem;"></p-button>
-        </div>
+
+        <!-- Details-->
+        @if (profileMenuState === 'details') {
+            <div class="update-details">
+                <h4>Your Details</h4>
+                <p-card class="avatar-card m-0" [style]="{ overflow: 'hidden', }">
+                    <p class="d-flex align-items-center p-0">
+                        <!-- Profile picture -->
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" 
+                            alt="Profile Picture"
+                            class="mr-2 avatar"
+                        />
+                        <!-- Username -->
+                        <span>{{ user?.username || 'No User' }}</span>
+                    </p>
+                </p-card>
+                <p-floatLabel>
+                    <input pInputText id="username" [(ngModel)]="inputUpdateUsername" />
+                    <label for="username">Update your Username</label>
+                </p-floatLabel>
+                <p-floatLabel>
+                    <input pInputText id="password" [(ngModel)]="inputUpdatePassword" />
+                    <label for="password">New Password</label>
+                </p-floatLabel>
+                <p-button label="Update Details" styleClass="padding-top: 2rem;" (onClick)="updateDetails()"></p-button>
+            </div>
+        }
     </div>
 }

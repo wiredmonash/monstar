@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ProfileComponent } from '../profile/profile.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-navbar',
@@ -34,6 +35,9 @@ export class NavbarComponent {
   // Reference to the sidebar child
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
+  // ! Event emitter for closing the dialog  THIS COULD CAUSE LAG ()_() !!!!!!!!!
+  @Output() dialogClosedEvent = new EventEmitter<void>();
+
   // Visibility state of the sidebar
   sidebarVisible: boolean = false;
 
@@ -47,8 +51,8 @@ export class NavbarComponent {
   // Visibility state of the profile dialog
   profileDialogVisible: boolean = false;
 
-  // ! Event emitter for closing the dialog  THIS COULD CAUSE LAG ()_() !!!!!!!!!
-  @Output() profileDialogCloseEvent = new EventEmitter<'logged out' | 'logged in' | 'signed out' | 'signed up'>();
+  // Current user
+  user: User | null = null;
 
 
   // ! Injects MessageService
@@ -66,12 +70,14 @@ export class NavbarComponent {
   /**
    * * On close of the dialog
    */
-  onDialogClose(event: Event) {
+  onDialogClose() {
+    // Emit to children that we closed the dialog
+    this.dialogClosedEvent.emit();
+
     // If the user is in the signed up state, meaning the profile dialog shows
     // 'Verify your email', then if we close the dialog the profile dialog 
     // will show the login page next time it is opened.
     if (this.profileState == 'signed up') {
-      this.profileDialogCloseEvent.emit('logged out');
       this.profileState = 'logged out';
     }
   }
@@ -81,15 +87,6 @@ export class NavbarComponent {
    */
   showProfileDialog() {
     this.profileDialogVisible = true;
-  }
-
-  /**
-   * * Updates the profile dialog title (called on titleChangeEvent from profile.component)
-   * 
-   * @param title - The new title of the profile dialog
-   */
-  updateProfileDialogTitle(title: string) {
-    this.profileDialogTitle = title;
   }
 
   /**

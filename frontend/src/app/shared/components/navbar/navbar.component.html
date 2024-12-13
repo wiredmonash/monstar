@@ -8,17 +8,18 @@
   [modal]="true" 
   [resizable]="false" 
   [style]="{ 'width': '75rem' }"
-  [closeOnEscape]="profileDialogTitle == 'Verify your email' ? false : true" 
+  [closeOnEscape]="profileState == 'signed up' ? false : true"
+  (onHide)="onDialogClose()"
 >
-  <ng-template pTemplate="closeicon">
-    <i class="pi pi-times" (click)="onDialogClose($event)"></i>
-  </ng-template>
   <app-profile 
-    [state]="this.profileState"
-    (titleChangeEvent)="updateProfileDialogTitle($event)"
+    [state]="profileState"
+    [dialogClosedEvent]="dialogClosedEvent"
+    (userChangeEvent)="user = $event"
+    (titleChangeEvent)="profileDialogTitle = $event"
     (stateChangeEvent)="authStateChange($event)"
   ></app-profile>
 </p-dialog>
+
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
@@ -57,7 +58,7 @@
             <!-- Avatar -->
             <p-avatar image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" shape="circle" />
             <!-- Username -->
-            <span class="font-bold mb-1 ml-2">{{ username || 'Login (Guest)' }}</span>
+            <span class="font-bold mb-1 ml-2">{{ user?.username || 'Login (Guest)' }}</span>
           </a>
           <hr class="mx-3 border-top-1 border-none surface-border"/>
         </div>
