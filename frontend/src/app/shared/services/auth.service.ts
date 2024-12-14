@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
@@ -7,8 +7,12 @@ import { User } from '../models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
+  // URL for backend endpoints
   private url = 'http://localhost:8080/api/v1/auth';
+
+  // Stores the current user as behaviour subject of type User (nullable)
   private currentUser = new BehaviorSubject<User | null>(null);
+
 
   // Set current user helper method
   setCurrentUser(user: User) {
@@ -22,7 +26,7 @@ export class AuthService {
 
 
   // ! Injects HttpClient
-  constructor(private http: HttpClient) { }
+  constructor (private http: HttpClient) { }
 
 
   // * Register a user
@@ -38,7 +42,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin);
+        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -68,7 +72,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin);
+        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -84,7 +88,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin);
+        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -96,5 +100,14 @@ export class AuthService {
   // * Update user details
   updateDetails(oldEmail: string, username?: string, password?: string) {
     return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password });
+  }
+
+  // * Upload avatar
+  uploadAvatar(file: File, email: string): Observable<{ profileImg: string }> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    formData.append('email', email);
+
+    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, formData);
   }
 }

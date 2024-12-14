@@ -1,3 +1,7 @@
+// Variables
+$avatar-size: 64px;
+
+// Sign Up and Login Forms
 .signup-form {
     display: flex;
     align-items: center;
@@ -75,8 +79,7 @@
     }
 }
 
-
-
+// Profile 
 .profile {
     // Row format
     display: flex;
@@ -84,21 +87,61 @@
     flex-direction: row;    
     gap: 1rem;
 
+    // Update details page
     .update-details {
         display: flex;
         align-items: left;
         flex-direction: column;
         gap: 2rem;
+
+        // Update details title
+        .title {
+            padding-top: 1rem;
+            line-height: 0px;
+        }
+
+        // Update details submission button
+        .update-details-button {
+            display: flex;
+            justify-content: flex-end;
+        }
     }
 
+    // Avatar card
     .avatar-card { 
+        position: relative;
 
         .avatar {
-            width: 64px;
-            height: 64px;
+            width: $avatar-size;
+            height: $avatar-size;
             border-radius: 50%;
             object-fit: cover;
+            transition: all 0.3s ease-in-out;
+            position: relative;
         }
+
+        .avatar-overlay {
+            position: absolute;
+            width: $avatar-size;
+            height: $avatar-size;
+            background-color: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+
+            .upload-icon {
+                font-size: 24px;
+                color: white;
+                opacity: 0.8;
+            }
+
+            &:hover { 
+                opacity: 1;
+            }
+        }        
     }
 }
 

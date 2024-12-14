@@ -4,6 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const multer = require('multer');
+const { storage, cloudinary } = require('../utils/cloudinary');
+const upload = multer({ storage });
 require('dotenv').config();
 
 // Model imports
@@ -305,11 +308,12 @@ router.put('/update/:email', async function (req, res) {
 });
 
 /**
- * ! Validates User
+ * ! GET Validates User
  * 
  * Checks if the user has the access_token in their cookies to keep session.
  * The payload also contains the user's data.
  * 
+ * @async
  * @returns {JSON} Responds with status 200 and json containing message and decoded user data.
  * @throws {401} If the user is not authenticated and has no access token
  * @throws {403} If the given access_token is invalid
@@ -341,6 +345,49 @@ router.get('/validate', async function (req, res) {
         // Invalid access token error
         return res.status(403).json({ message: 'Invalid token' });
     }
+});
+
+/**
+ * ! POST Upload Avatar
+ * 
+ * Uploads the given avatar to cloudinary via middlware, and then assigns the 
+ * avatar as user's profileImg
+ * 
+ * @async
+ * @returns {JSON} Responds with status 200 and json containing the success message and profileImg URL
+ * @throws {404} If the user is not found
+ * @throws {500} Internal server errors
+ */
+router.post('/upload-avatar', upload.single('avatar'), async function (req, res) {
+    try {
+        // Get the user by email
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user)
+            return res.status(404).json({ error: 'User not found' });
+
+        // If the user already has a profile image, remove it from Cloudinary
+        if (user.profileImg) {
+            // Extract the public id from the existing cloudinary URL
+            const urlParts = user.profileImg.split('/');
+            const fileName = urlParts[urlParts.length - 1].split('.')[0]; // Extract the file name without its extension.
+            const publicId = `user_avatars/${fileName}`;
+
+            // Delete the old avatar
+            await cloudinary.uploader.destroy(publicId);
+        }
+
+        // Save the Cloudinary URL as the user's avatar
+        user.profileImg = req.file.path; // Cloudinary URL for the uploaded image
+        await user.save();
+
+        // Respond with status 200 and json containing success message and profile image
+        return res.status(200).json({ message: 'Avatar uploaded successfully', profileImg: user.profileImg });
+    }
+    catch (error) { 
+        return res.status(500).json({ error: `Error uploading avatar: ${error.message}` });
+    }  
 });
 
 

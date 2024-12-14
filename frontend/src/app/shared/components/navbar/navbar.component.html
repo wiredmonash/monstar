@@ -17,6 +17,7 @@
     (userChangeEvent)="user = $event"
     (titleChangeEvent)="profileDialogTitle = $event"
     (stateChangeEvent)="authStateChange($event)"
+    (createToast)="handleToastEvent($event)"
   ></app-profile>
 </p-dialog>
 
@@ -52,11 +53,15 @@
         </div>
 
         <!-- User Profile -->
-        <div class="">
+        <div class="user">
           <hr class="mx-3 border-top-1 border-none surface-border" />
           <a pRipple (click)="closeCallback($event); showProfileDialog()" class="m-3 flex align-items-center cursor-pointer p-3 gap-2 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple" style="text-decoration: none;">
             <!-- Avatar -->
-            <p-avatar image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" shape="circle" />
+            <img
+              [src]="user?.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'" 
+              alt="Profile Picture"
+              class="mr-1 avatar"
+            >
             <!-- Username -->
             <span class="font-bold mb-1 ml-2">{{ user?.username || 'Login (Guest)' }}</span>
           </a>

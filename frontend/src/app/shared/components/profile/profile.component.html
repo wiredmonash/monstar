@@ -186,32 +186,58 @@
         <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
         <p-divider layout="vertical"></p-divider>
 
-        <!-- Details-->
-        @if (profileMenuState === 'details') {
-            <div class="update-details">
-                <h4>Your Details</h4>
-                <p-card class="avatar-card m-0" [style]="{ overflow: 'hidden', }">
-                    <p class="d-flex align-items-center p-0">
-                        <!-- Profile picture -->
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" 
-                            alt="Profile Picture"
-                            class="mr-2 avatar"
-                        />
-                        <!-- Username -->
-                        <span>{{ user?.username || 'No User' }}</span>
-                    </p>
-                </p-card>
-                <p-floatLabel>
-                    <input pInputText id="username" [(ngModel)]="inputUpdateUsername" />
-                    <label for="username">Update your Username</label>
-                </p-floatLabel>
-                <p-floatLabel>
-                    <input pInputText id="password" [(ngModel)]="inputUpdatePassword" />
-                    <label for="password">New Password</label>
-                </p-floatLabel>
-                <p-button label="Update Details" styleClass="padding-top: 2rem;" (onClick)="updateDetails()"></p-button>
-            </div>
+        @if (user) {
+            <!-- Details-->
+            @if (profileMenuState === 'details') {
+                @if (!profileLoading) {
+                    <div class="update-details">
+                        <!-- Details title -->
+                        <h4 class="title">Your Details</h4>
+
+                        <!-- Avatar and username card -->
+                        <p-card class="avatar-card m-0" [style]="{ overflow: 'hidden', }">
+                            <div class="d-flex align-items-center p-0">
+
+                                <!-- Profile picture -->
+                                <img
+                                    [src]="user.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'" 
+                                    alt="Profile Picture"
+                                    class="mr-3 avatar"
+                                >
+
+                                <!-- Avatar upload overlay (hidden by default) -->
+                                <div class="avatar-overlay" (click)="uploadAvatar()" pTooltip="Upload (5 MB)" tooltipPosition="top">
+                                    <i class="pi pi-upload upload-icon"></i>
+                                </div>
+
+                                <!-- Username -->
+                                <span>{{ user.username || 'No User' }}</span>
+                            </div>
+                        </p-card>
+
+                        <!-- Update username input -->
+                        <p-floatLabel>
+                            <input pInputText id="username" [(ngModel)]="inputUpdateUsername" />
+                            <label for="username">Update your Username</label>
+                        </p-floatLabel>
+
+                        <!-- Update password input -->
+                        <p-floatLabel>
+                            <input pInputText id="password" [(ngModel)]="inputUpdatePassword" />
+                            <label for="password">New Password</label>
+                        </p-floatLabel>
+
+                        <!-- Submit changes to update details -->
+                        <p-button label="Update Details" class="update-details-button" styleClass="padding-top: 2rem;" (onClick)="updateDetails()"></p-button>
+                    </div>
+                } @else {
+                    <!-- Loading when the profileLoading is true -->
+                    <p-progressSpinner class="mx-auto"></p-progressSpinner>
+                }
+            }
+        } @else {
+            <!-- Loading when no user assigned yet -->
+            <p-progressSpinner class="mx-auto"></p-progressSpinner>
         }
     </div>
 }

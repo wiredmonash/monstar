@@ -17,7 +17,7 @@ const userSchema = new Schema({
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
 
     // Profile picture
-    profileImage: { type: String, required: false },
+    profileImg: { type: String, required: false },
 
     // Admin
     admin: { type: Boolean, default: false },

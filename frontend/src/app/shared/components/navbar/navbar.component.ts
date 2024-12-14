@@ -111,4 +111,11 @@ export class NavbarComponent {
         break;
     }
   }
+
+  /**
+   * * Method to create a toast
+   */
+  handleToastEvent(event: { severity: string, summary: string, detail: string }) {
+    this.messageService.add({ severity: event.severity, summary: event.summary, detail: event.detail });
+  }
 }
