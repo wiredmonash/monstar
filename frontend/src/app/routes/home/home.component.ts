@@ -4,6 +4,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
 import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
 import { DividerModule } from 'primeng/divider';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,8 @@ import { DividerModule } from 'primeng/divider';
     AccordionModule,
     CarouselModule,
     UnitCardComponent,
-    DividerModule
+    DividerModule,
+    ButtonModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
