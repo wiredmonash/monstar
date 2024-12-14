@@ -52,6 +52,7 @@
     transform: scale(1.5);
     user-select: none;
 
+    // Hover effect for pi-user-plus
     i {
       transition: transform 0.3s ease-in-out;
 
@@ -67,12 +68,12 @@
   color: #000;
 }
 
+// * Sidebar avatar
 .avatar {
   width: 48px;
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  transition: all 0.3s ease-in-out;
   position: relative;
 }
 

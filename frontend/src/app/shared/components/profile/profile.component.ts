@@ -82,7 +82,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // Profile menu
   profileMenuItems: MenuItem[] = [];
-  profileMenuState: 'details' | 'reviews' | 'settings' = 'details';
+  profileMenuState: 'details' | 'reviews' | 'friends' | 'settings' = 'details';
 
   // Updating username and password
   inputUpdateUsername: string | undefined = undefined;
@@ -145,9 +145,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
           },
           {
             label: 'Reviews',
-            icon: 'pi pi-upload',
+            icon: 'pi pi-address-book',
             command: () => {
               this.profileMenuState = 'reviews';
+            }
+          },
+          {
+            label: 'Friends',
+            icon: 'pi pi-users',
+            command: () => {
+              this.profileMenuState = 'friends';
             }
           },
           {

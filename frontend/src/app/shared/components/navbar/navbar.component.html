@@ -35,7 +35,15 @@
 
     <!-- Profile -->
     <div class="profile position-absolute end-0 mr-2" type="button" (click)="showProfileDialog()">
-      <i class="pi pi-user"></i>
+      @if (user) {
+        <!-- Avatar shown if logged in -->
+        <div class="profile-pic pt-1" style="transform: scale(0.9);" pTooltip="Profile">
+          <p-avatar [image]="user.profileImg" shape="circle"></p-avatar>
+        </div>
+      } @else {
+        <!-- Icon shown if not logged in -->
+        <i class="pi pi-user-plus" pTooltip="Sign In"></i>
+      }
     </div>
   </div>
 </nav>

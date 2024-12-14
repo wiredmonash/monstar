@@ -1,16 +1,53 @@
-<div class="content container my-5">
-  <!-- Placeholder for Graphic with Explore Button -->
-  <div class="container d-flex justify-content-center my-5">
-    <div class="graphic-box">
-      <button class="explore-button" (click)="exploreUnits()">Explore</button>
-    </div>
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="hero-content">
+    <h1 class="prevent-select">Welcome to MonSTAR</h1>
+    <p class="prevent-select">Browse, Review, and Share Feedback on Monash University Units</p>
+    
+    <button class="explore-button" (click)="exploreUnits()">Explore Units</button>
   </div>
+</div>
+
+<!-- Shooting Stars -->
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+<span></span>
+
+<!-- Centered Content -->
+<div class="content container mb-5">
+  <!-- Divider -->
+  <p-divider [style]="{ 'margin-bottom': '3rem' }"></p-divider>
+
+  <!-- Popular Units Carousel -->
+  <p-carousel 
+    [value]="popularUnits"
+    [numVisible]="3"
+    [numScroll]="3"
+    [circular]="true"
+    [autoplayInterval]="4500"
+    [responsiveOptions]="responsiveOptions"
+    styleClass="custom-carousel"
+  >
+    <ng-template let-unit pTemplate="item">
+      <app-unit-card
+        class="unit-card" 
+        [unit]="unit"
+      ></app-unit-card>
+    </ng-template>
+  </p-carousel>
+
+  <!-- Divider -->
+  <p-divider [style]="{ 'margin-bottom': '3rem' }"></p-divider>
 
   <!-- FAQ Title -->
-  <h2 class="FAQ">
-    <span style="color: rgb(36, 36, 117);">&gt;</span>FAQ<span style="color: rgb(36, 36, 117);">_</span>
-    <!-- Only the > and _ are dark purple -->
-  </h2>
+  <h2 class="FAQ">FAQ</h2>
   <p-accordion [multiple]="true">
     <p-accordionTab header="What is MonSTAR?">
         <p>

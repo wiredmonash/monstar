@@ -10,6 +10,7 @@ import { ProfileComponent } from '../profile/profile.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-navbar',
@@ -23,7 +24,8 @@ import { User } from '../../models/user.model';
     AvatarModule,
     DialogModule,
     ProfileComponent,
-    ToastModule
+    ToastModule,
+    TooltipModule
   ],
   providers: [
     MessageService

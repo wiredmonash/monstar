@@ -3,10 +3,11 @@
     border-radius: 10px;
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; /* Smooth transition */
     cursor: pointer;
+    margin: auto;
 
     &:hover {
         transform: scale(1.02); 
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+        box-shadow: 0 8px 16px rgba(226, 136, 226, 0.25), 0 10px 24px rgba(226, 136, 226, 0.25); // Purple and larger shadow on hover
     }
 }
 

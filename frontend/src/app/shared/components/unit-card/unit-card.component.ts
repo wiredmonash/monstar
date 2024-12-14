@@ -23,6 +23,8 @@ export class UnitCardComponent {
   // Stores the data of the unit
   @Input() unit: any;
 
+  @Input() applyMarginLeft = false;
+
   // Injects Router
   constructor(private router: Router) { }
 

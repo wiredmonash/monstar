@@ -183,7 +183,10 @@
 <!-- Logged in state will show the profile -->
 @else if (state === 'logged in') {
     <div class="profile">
+        <!-- Profile leftside menu -->
         <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
+
+        <!-- Divider -->
         <p-divider layout="vertical"></p-divider>
 
         @if (user) {
