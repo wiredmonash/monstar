@@ -1,6 +1,7 @@
 // Module Imports
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const { cloudinary } = require('../utils/cloudinary');
 
 // Model imports
 const Review = require('./review.js');
@@ -45,7 +46,17 @@ userSchema.pre('save', function (next) {
 userSchema.pre('findOneAndDelete', async function (next) {
     const user = await this.model.findOne(this.getFilter());
     if (user) {
+        // Delete the associated reviews
         await Review.deleteMany({ author: user._id });
+
+        // Delete profile image from Cloudinary
+        if (user.profileImg) {
+            const urlParts = user.profileImg.split('/');
+            const fileName = urlParts[urlParts.length - 1].split('.')[0];
+            const publicId = `user_avatars/${fileName}`;
+
+            cloudinary.uploader.destroy(publicId);
+        }
     }
     next();
 })
