@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
@@ -42,7 +42,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
+        const user = new User(response.data._id, response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -72,7 +72,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
+        const user = new User(response.data._id, response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -88,7 +88,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
+        const user = new User(response.data._id, response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
         this.currentUser.next(user);
 
         // ? Debug log

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
 import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -19,17 +20,8 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
-  popularUnits = [
-    { unitCode: 'FIT1045', name: 'Introduction to Programming' },
-    { unitCode: 'FIT1008', name: 'Data Structures and Algorithms' },
-    { unitCode: 'FIT3171', name: 'Database' },
-    { unitCode: 'FIT2095', name: 'Full-Stack Development' },
-    { unitCode: 'FIT1045', name: 'Introduction to Programming' },
-    { unitCode: 'FIT1008', name: 'Data Structures and Algorithms' },
-    { unitCode: 'FIT3171', name: 'Database' },
-    { unitCode: 'FIT2095', name: 'Full-Stack Development' },
-  ];
+export class HomeComponent implements OnInit {
+  popularUnits: any = [];
 
   responsiveOptions = [
     {
@@ -44,8 +36,29 @@ export class HomeComponent {
     }
   ];  
 
-  // * Inject router
-  constructor (private router: Router) { }
+  // * Inject Router & ApiService
+  constructor (
+    private router: Router,
+    private apiService: ApiService
+  ) { }
+
+  // * Runs on init
+  ngOnInit(): void {
+    this.getPopularUnits();
+  }
+
+  // * Get popular units
+  getPopularUnits() {
+    this.apiService.getPopularUnitsGET().subscribe({
+      next: (response: any) => {
+        this.popularUnits = response;
+        console.log('Home | Popular units:', response);
+      },
+      error: (error) => {
+        console.log('Home | Error getting popular units:', error.error);
+      }
+    })
+  }
 
   // * Method to navigate to the unit list page
   exploreUnits() {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Review } from '../models/review.model';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +49,11 @@ export class ApiService {
     return this.http.get<any[]>(`${this.url}/units`);
   }
 
+  // * GET Get Popular Units
+  getPopularUnitsGET(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.url}/units/popular`);
+  }
+
   // * GET Get Units Filtered
   getUnitsFilteredGET(offset: number, limit: number, search: string = ''): Observable<any[]> {
     const params = {
@@ -57,7 +62,7 @@ export class ApiService {
       search,
     }
 
-    return this.http.get<any[]>(`${this.url}/units/filter`, { params })
+    return this.http.get<any[]>(`${this.url}/units/filter`, { params });
   }
     
   // * POST Create a Review for a Unit
@@ -71,8 +76,20 @@ export class ApiService {
       review_relevancy_rating: review.relevancyRating,
       review_faculty_rating: review.facultyRating,
       review_content_rating: review.contentRating,
-      review_description: review.description
-    });
+      review_description: review.description,
+      review_author: review.author
+    }).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('AuthService | Successfully created review:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('AuthService | Error whilst creating review:', error.error);
+        }
+      })
+    );
   }
 
   // * DELETE Delete a Review by ID

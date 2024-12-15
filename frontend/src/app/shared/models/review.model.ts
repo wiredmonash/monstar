@@ -1,3 +1,6 @@
+import { User } from "./user.model";
+import { Types } from "mongoose";
+
 export class Review {
   title: string;
   semester: number;
@@ -8,6 +11,7 @@ export class Review {
   facultyRating: number;
   contentRating: number;
   description: string;
+  author: Types.ObjectId | null;
 
   constructor () {
     this.title = '';
@@ -19,6 +23,7 @@ export class Review {
     this.facultyRating = 0;
     this.contentRating = 0;
     this.description = '';
+    this.author = null;
   }
 
   // Validates the values

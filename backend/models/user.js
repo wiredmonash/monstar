@@ -2,6 +2,9 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Model imports
+const Review = require('./review.js');
+
 // User Schema
 const userSchema = new Schema({
     // Email
@@ -37,6 +40,15 @@ userSchema.pre('save', function (next) {
 
     next();
 });
+
+// Middlware to cascade delete reviews when a user is deleted
+userSchema.pre('findOneAndDelete', async function (next) {
+    const user = await this.model.findOne(this.getFilter());
+    if (user) {
+        await Review.deleteMany({ author: user._id });
+    }
+    next();
+})
 
 // Export User model
 const User = mongoose.model('User', userSchema);

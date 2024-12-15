@@ -32,6 +32,47 @@ router.get('/', async function (req, res) {
 });
 
 /**
+ * ! GET Get Popular Units
+ * 
+ * Gets the ten most popular units
+ * 
+ * @async
+ * @throws {JSON} Responds with a list of popular units in JSON format.
+ * @throws {500} If an error occurs whilst fetching units from the database.
+ */
+router.get('/popular', async function (req, res) {
+    try {
+        // Fetch the ten most popular units
+        const popularUnits = await Unit.aggregate([
+            {
+                $addFields: {
+                    reviewCount: { $size: "$reviews" } // Calculate the number of reviews
+                }
+            },
+            {
+                $sort: { reviewCount: -1 } // Sort by the number of reviews in descending order
+            },
+            {
+                $limit: 10 // Limit the results to top 10 units
+            },
+        ]);
+
+        // Populate the reviews field for the resulting units
+        const populatedUnits = await Unit.populate(popularUnits, {
+            path: 'reviews',
+            select: 'title description overallRating relevancyRating facultyRating contentRating likes dislikes'
+        });
+
+        // Respond with the popular units
+        return res.status(200).json(populatedUnits);
+    }
+    catch (error) {
+        // Handle general errors
+        res.status(500).json({ message: 'An error occured while fetching popular units.' });
+    }
+});
+
+/**
  * ! GET Get Unit by Unitcode
  * 
  * Gets a unit by unitcode

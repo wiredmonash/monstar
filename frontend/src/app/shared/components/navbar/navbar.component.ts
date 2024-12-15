@@ -49,7 +49,7 @@ export class NavbarComponent {
   // Saves the profile state
   profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' = 'signed out';
   // Title of the profile dialog
-  profileDialogTitle: string = '';
+  profileDialogTitle: string = 'Sign Up';
   // Visibility state of the profile dialog
   profileDialogVisible: boolean = false;
 

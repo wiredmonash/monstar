@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-write-review-unit',
@@ -39,6 +40,9 @@ export class WriteReviewUnitComponent {
 
   // Input property to receive the visible boolean data from the parent component
   @Input() visible: boolean = false;
+
+  // Input property to receive the current user data from the parent component
+  @Input() user: User | null = null;
 
   // Event to notify that the review was posted
   @Output() reviewPosted = new EventEmitter<void>(); 
@@ -82,6 +86,12 @@ export class WriteReviewUnitComponent {
    * @subscribes apiService.createReviewForUnitPOST
    */
   postReview() {
+    // Checking if user is logged in
+    if (!this.user) {
+      console.error('User data not available.');
+      return;
+    }
+
     // Checking if unit is assigned to us
     if (!this.unit) {
       console.error('Unit data not available.');
@@ -97,14 +107,20 @@ export class WriteReviewUnitComponent {
       return;
     }
 
+    // Set review author user
+    this.review.author = this.user._id;
+
+    // ? Debug log
+    console.log('Posting review:', this.review);
+
     // Calculate the overall rating
     this.review.calcOverallRating();
 
     // Send the review using the API service
     this.apiService.createReviewForUnitPOST(this.unit.unitCode, this.review).subscribe({
       next: (response) => {
-        // Log that we created a review with response
-        console.log('Review created successfully:', response);
+        // Update the user's reviews array
+        this.user?.reviews.push(response._id);
 
         // Close the pop up write review
         this.closeDialog();
@@ -119,9 +135,6 @@ export class WriteReviewUnitComponent {
         this.review = new Review();
       },
       error: (error) => { 
-        // Give an error if unsuccessful
-        console.error('Error creating review:', error);
-
         // Show error toast 
         this.messageService.add({ severity: 'error', summary: 'Failed to submit review :(', detail: 'An error occurred' });
       }

@@ -1,5 +1,7 @@
-<!-- UnitHeaderComponent | PARENT: UnitOverviewComponent -->
+<!-- Toast -->
+<p-toast></p-toast>
 
+<!-- UnitHeaderComponent | PARENT: UnitOverviewComponent -->
 <div class="unit-overview">
   <div class="row align-items-center ">
     <!-- Unit Info -->
@@ -126,4 +128,4 @@
 </div>
 
 <!-- CHILD: Pop up write review -->
-<app-write-review-unit [unit]="unit" (reviewPosted)="handleReviewPosted()"></app-write-review-unit>
+<app-write-review-unit [unit]="unit" [user]="user" (reviewPosted)="handleReviewPosted()"></app-write-review-unit>

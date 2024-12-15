@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component'; 
 import { FooterComponent } from '../footer/footer.component'; 
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,10 @@ import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user.model';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -23,12 +27,17 @@ import { DecimalPipe } from '../../pipes/decimal.pipe';
     WriteReviewUnitComponent,
     DropdownModule,
     FormsModule,
-    DecimalPipe
-], 
+    DecimalPipe,
+    ToastModule
+  ], 
+  providers: [
+    MessageService
+  ],
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'] 
 })
-export class UnitReviewHeaderComponent {
+export class UnitReviewHeaderComponent implements OnInit {
+
   // Input property to receive the unit data from the parent component
   @Input() unit: any;
 
@@ -40,6 +49,25 @@ export class UnitReviewHeaderComponent {
 
   // Our child component write-review-unit.component
   @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
+
+  user: User | null = null;
+
+  constructor (
+    private authService: AuthService,
+    private messageService: MessageService
+  ) { }
+
+  /**
+   * * Runs on Init
+   */
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (currentUser: User | null) => {
+        this.user = currentUser;
+        console.log('UnitReviewHeader | Current User:', this.user);
+      }
+    })
+  }
 
   /**
    * * Handles the sorting action and emits the chosen criteria to the parent component.
@@ -53,7 +81,11 @@ export class UnitReviewHeaderComponent {
 
   // * Shows the dialog to write a review
   showDialog() {
-    if (this.writeReviewDialog) 
+    if (this.user == null) {
+      this.messageService.add({ severity: 'warn', summary: 'Not Logged In!', detail: 'You must be logged in to write a review.' });
+    }
+
+    if (this.writeReviewDialog && this.user)
       this.writeReviewDialog.openDialog();
   }
 

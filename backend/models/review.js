@@ -38,7 +38,10 @@ const reviewSchema = new Schema({
     dislikes: {type: Number, min: 0, default: 0},
 
     // Reference to the unit being reviewed
-    unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true} 
+    unit: {type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true},
+
+    // Reference to the user who wrote the review
+    author: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 }, {
     timestamps: true
 });

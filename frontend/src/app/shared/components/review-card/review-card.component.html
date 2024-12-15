@@ -30,12 +30,12 @@
                     <p class="d-flex align-items-center">
                         <!-- Profile picture -->
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s" 
+                            [src]="review.author.profileImg"
                             alt="Profile Picture"
                             class="mr-2 profile-picture"
                         />
                         <!-- Username -->
-                        <span>{{ review.author || 'Anonymous' }}</span>
+                        <span>{{ review.author.username || 'Anonymous' }}</span>
                         <span class="review-year">(taken in {{review.year}})</span>
                     </p>
 

@@ -4,6 +4,7 @@ const express = require('express');
 // Model Imports
 const Review = require('../models/review');
 const Unit = require('../models/unit');
+const User = require('../models/user');
 
 // Router instance
 const router = express.Router();
@@ -20,7 +21,7 @@ const router = express.Router();
 router.get('/', async function (req, res) {
     try {
         // Find all the reviews
-        const reviews = await Review.find(req.body);
+        const reviews = await Review.find(req.body).populate('author');
 
         // Respond 200 with JSON list containing all reviews
         return res.status(200).json(reviews);
@@ -57,7 +58,7 @@ router.get('/:unit', async function (req, res) {
         }
 
         // Find all reviews associated with this unit
-        const reviews = await Review.find({ unit: unitDoc._id });
+        const reviews = await Review.find({ unit: unitDoc._id }).populate('author');
         // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
 
         // Return the list of reviews with a 200 OK status
@@ -100,6 +101,7 @@ router.post('/:unit/create', async function (req, res) {
             facultyRating:      req.body.review_faculty_rating,
             contentRating:      req.body.review_content_rating,
             description:        req.body.review_description,
+            author:             req.body.review_author,
             unit:               unitDoc._id
         });
 
@@ -109,6 +111,13 @@ router.post('/:unit/create', async function (req, res) {
         // Save the Review's MongoID in the Unit's `reviews` array
         await Unit.findByIdAndUpdate(
             unitDoc._id,
+            { $push: { reviews: review._id } },
+            { new: true, runValidators: true }
+        );
+
+        // Save the Review's MongoID in the User's `reviews` array
+        await User.findByIdAndUpdate(
+            req.body.review_author,
             { $push: { reviews: review._id } },
             { new: true, runValidators: true }
         );
