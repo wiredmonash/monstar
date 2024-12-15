@@ -12,49 +12,112 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // * GET Get All Reviews (optionally by Unit)
+  /**
+   * * GET Get All Reviews
+   * 
+   * Retrieves all reviews or reviews for a specific unit if unit code is provided.
+   * 
+   * @param {string} [unitcode] The unit code of the unit (optional)
+   * @returns {Observable<any>} An observable containing the reviews data
+   */
   getAllReviewsGET(unitcode?: string): Observable<any> {
     // If the unit parameter is provided, we get all reviews by unit, if not get all the reviews.
     const url = unitcode ? `${this.url}/reviews/${unitcode}` : `${this.url}/reviews`;
     return this.http.get(url);
   }
 
-  // * PATCH Like Review by ID
+  /**
+   * * PATCH Like Review by ID
+   * 
+   * Adds a like to a review by its ID.
+   * 
+   * @param {string} id The ID of the review
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
   likeReviewPATCH(id: string): Observable<any> {
     return this.http.patch(`${this.url}/reviews/like/${id}`, {});
   }
 
-  // * PATCH Un-Like Review by ID
+  /**
+   * * PATCH Unlike Review by ID
+   * 
+   * Removes a like from a review by its ID.
+   * 
+   * @param {string} id The ID of the review
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
   unlikeReviewPATCH(id: string): Observable<any> {
     return this.http.patch(`${this.url}/reviews/unlike/${id}`, {});
   }
 
-  // * PATCH Dislike a Review by ID
+  /**
+   * * PATCH Dislike a Review by ID
+   * 
+   * Adds a dislike to a review by its ID.
+   * 
+   * @param {string} id The ID of the review
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
   dislikeReviewPATCH(id: string): Observable<any> {
     return this.http.patch(`${this.url}/reviews/dislike/${id}`, {});
   }
 
-  // * PATCH Un-Dislike a Review by ID
+  /**
+   * * PATCH Un-Dislike a Review by ID
+   * 
+   * Removes a dislike from a review by its ID.
+   * 
+   * @param {string} id The ID of the review
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
   undislikeReviewPATCH(id: string): Observable<any> {
     return this.http.patch(`${this.url}/reviews/undislike/${id}`, {});
   }
 
-  // * GET Get Unit by Unitcode
+  /**
+   * * GET Get Unit by Unitcode
+   * 
+   * Retrieves a unit by its unit code.
+   * 
+   * @param {string} unitcode The unit code of the unit
+   * @returns {Observable<any>} An observable containing the unit data
+   */
   getUnitByUnitcodeGET(unitcode: string): Observable<any> {
     return this.http.get(`${this.url}/units/unit/${unitcode}`);
   }
 
-  // * GET Get All Units
+  /**
+   * * GET Get All Units
+   * 
+   * Retrieves all units.
+   * 
+   * @returns {Observable<any[]>} An observable containing an array of all units
+   */
   getAllUnits(): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}/units`);
   }
 
-  // * GET Get Popular Units
+  /**
+   * * GET Get Popular Units
+   * 
+   * Retrieves the most popular units.
+   * 
+   * @returns {Observable<any[]>} An observable containing an array of popular units
+   */
   getPopularUnitsGET(): Observable<any[]> {
     return this.http.get<any[]>(`${this.url}/units/popular`);
   }
 
-  // * GET Get Units Filtered
+  /**
+   * * GET Get Units Filtered
+   * 
+   * Retrieves units based on the provided filters.
+   * 
+   * @param {number} offset The offset for pagination
+   * @param {number} limit The limit for pagination
+   * @param {string} [search=''] The search query for filtering units
+   * @returns {Observable<any[]>} An observable containing an array of filtered units
+   */
   getUnitsFilteredGET(offset: number, limit: number, search: string = ''): Observable<any[]> {
     const params = {
       offset: offset.toString(),
@@ -65,7 +128,15 @@ export class ApiService {
     return this.http.get<any[]>(`${this.url}/units/filter`, { params });
   }
     
-  // * POST Create a Review for a Unit
+  /**
+   * * POST Create a Review for a Unit
+   * 
+   * Creates a new review for a unit.
+   * 
+   * @param {string} unitcode The unit code of the unit
+   * @param {Review} review The review object containing review details
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
   createReviewForUnitPOST(unitcode: string, review: Review): Observable<any> {
     return this.http.post(`${this.url}/reviews/${unitcode}/create`, { 
       review_title: review.title,
@@ -92,7 +163,14 @@ export class ApiService {
     );
   }
 
-  // * DELETE Delete a Review by ID
+  /**
+   * * DELETE Delete a Review by ID
+   * 
+   * Deletes a review by its ID.
+   * 
+   * @param {string} id The ID of the review
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
   deleteReviewByIdDELETE(id: string): Observable<any> {
     return this.http.delete(`${this.url}/reviews/delete/${id}`);
   }

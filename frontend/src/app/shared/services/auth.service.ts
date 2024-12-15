@@ -29,12 +29,29 @@ export class AuthService {
   constructor (private http: HttpClient) { }
 
 
-  // * Register a user
+  /**
+   * * Register a user
+   * 
+   * Registers a user with the provided email and password.
+   * 
+   * @param {string} email The email of the user.
+   * @param {string} password The password of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
   register(email: string, password: string): Observable<any> {
     return this.http.post(`${this.url}/register`, { email, password });
   }
 
-  // * Login a user and set current user
+  /**
+   * * Login a user and set current user
+   * 
+   * Logs in a user with the provided email and password.
+   * Also sets the current user for the frontend.
+   * 
+   * @param {string} email The email of the user.
+   * @param {string} password The password of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
   login(email: string, password: string): Observable<any> {
     return this.http.post(`${this.url}/login`, 
       { email, password },
@@ -51,7 +68,13 @@ export class AuthService {
     );
   }
 
-  // * Logout a user
+  /**
+   * * Logout the user
+   * 
+   * Logs out the current user and clears the current user data for the frontend.
+   * 
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
   logout(): Observable<any> {
     return this.http.post(`${this.url}/logout`, {}, 
       { withCredentials: true }
@@ -65,7 +88,13 @@ export class AuthService {
     );
   }
 
-  // * Validate session for user
+  /**
+   * * Validate the user's session
+   * 
+   * Validates the current user's session and updates the current user data.
+   * 
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
   validateSession(): Observable<any> {
     return this.http.get(`${this.url}/validate`, 
       { withCredentials: true }
@@ -81,7 +110,15 @@ export class AuthService {
     );
   }
 
-  // * Verify and login the user
+  /**
+   * * Verify and login the user
+   * 
+   * Verifies the user's email using the provided token and logs them in.
+   * Also sets the current user for the frontend.
+   * 
+   * @param token The token to verify the user's email
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
   verifyAndLogin(token: string): Observable<any> {
     return this.http.get(`${this.url}/verify-email/${token}`, 
       { withCredentials: true }
@@ -97,12 +134,29 @@ export class AuthService {
     );
   }
 
-  // * Update user details
+  /**
+   * * Update user details
+   * 
+   * Updates the user's details such as username and password.
+   * 
+   * @param {string} oldEmail The current email of the user.
+   * @param {string} [username] The new username for the user.
+   * @param {string} [password] The new password for the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
   updateDetails(oldEmail: string, username?: string, password?: string) {
     return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password });
   }
 
-  // * Upload avatar
+  /**
+   * * Upload avatar
+   * 
+   * Uploads a new avatar for the user.
+   * 
+   * @param {string} file the avatar file to upload.
+   * @param {string} email The email of the user.
+   * @returns {Observable<{ profileImg: string }>} an observable containing updated profile image URL.
+   */
   uploadAvatar(file: File, email: string): Observable<{ profileImg: string }> {
     const formData = new FormData();
     formData.append('avatar', file);
