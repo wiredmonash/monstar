@@ -10,8 +10,11 @@ export class ApiService {
   // The URL of where the API Server is located
   private url = 'http://localhost:8080/api/v1';
 
+
+  // ! Inject HttpClient
   constructor(private http: HttpClient) { }
 
+  
   /**
    * * GET Get All Reviews
    * 

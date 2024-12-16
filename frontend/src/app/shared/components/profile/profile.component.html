@@ -13,14 +13,22 @@
                             class="{{inputEmailInvalid}}"
                             type="text" 
                             [(ngModel)]="inputEmail" 
-                            (focus)="inputEmailInvalid = ''"
+                            (focus)="
+                                inputEmailInvalid = '';
+                                signupUserAlreadyExistsMessageState = false;
+                            "
                             aria-labelledby="email-help"
                         />
                         <label for="email">Monash Email</label>
                     </p-floatLabel>
+                    
                     @if (inputEmailInvalid != '') {
                         <small id="email-help" style="background-color: rgb(248, 113, 113);">Email invalid (enter Monash email)</small>
-                    } @else {
+                    } 
+                    @else if (signupUserAlreadyExistsMessageState) {
+                        <small id="email-help" style="background-color: rgb(248, 113, 113);">User with that email already exists.</small>
+                    }
+                    @else {
                         <small id="email-help">e.g. abcd0001&#64;student.monash.edu</small>
                     }
                 </div>
@@ -96,7 +104,7 @@
                             class="{{inputEmailInvalid}}"
                             type="text" 
                             [(ngModel)]="inputEmail" 
-                            (onFocus)="inputEmailInvalid = ''"
+                            (focus)="inputEmailInvalid = '';"
                             aria-labelledby="email-help"
                         />
                         <label for="email">Monash Email</label>
@@ -119,6 +127,9 @@
                         />
                         <label for="password">Password</label>
                     </p-floatLabel>
+                    @if (inputPasswordsInvalid != '') {
+                        <small id="password-help" style="background-color: rgb(248, 113, 113);">Invalid email or password</small>
+                    }
                 </div>
 
                 <!-- Login Submission -->

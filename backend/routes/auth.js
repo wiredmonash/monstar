@@ -30,9 +30,9 @@ router.post('/register', async function (req, res) {
         const { email, password } = req.body;
 
         // Find and check if user already exists
-        const existingUser = await User.findOne({email});
+        const existingUser = await User.findOne({ email });
         if (existingUser)
-            return res.status(400).json({error: "User already exists/Email exists"});
+            return res.status(400).json({ error: "User already exists/Email exists" });
         
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,7 +49,7 @@ router.post('/register', async function (req, res) {
         await sendVerificationEmail(email, verificationUrl);
 
         // Return status 201 for succesfull creation of a new user
-        return res.status(201).json({message: "User successfully registered"});
+        return res.status(201).json({ message: "User successfully registered" });
     }
     catch (error) {
         // Handle general errors

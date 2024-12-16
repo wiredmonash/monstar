@@ -76,6 +76,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // Invalid state for both passwords input
   inputPasswordsInvalid: '' | 'ng-invalid ng-dirty' = '';
 
+  // User already exists message state
+  signupUserAlreadyExistsMessageState: boolean = false;
+
   // Signing up and logging in state
   signingUp: boolean = false;
   loggingIn: boolean = false;
@@ -182,6 +185,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.dialogClosedSubscription = this.dialogClosedEvent.subscribe(() => {
       console.log('Profile | Dialog closed event');
       this.inputUpdateUsername = this.user?.username;
+      this.inputEmail = '';
+      this.inputPassword = '';
+      this.inputPassword2 = '';
     });
 
     // Changing dialog title based on state
@@ -197,10 +203,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.inputEmailInvalid = '';
 
     // Trim input email whitespace and store as new variable
-    var email = this.inputEmail.replace(/^\s+|\s+$/gm,'');
+    var email = this.inputEmail.trim();
 
-    if (email.endsWith('@student.monash.edu')) {
+    // Regular expression to validate authcate and email
+    const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
+
+    // Check if the email matches the regular expression
+    if (emailRegex.test(email)) {
+      // Check if the passwords match
       if (this.inputPassword == this.inputPassword2) {
+        // Subscribe to the register AuthService, passing in email and password
         this.authService.register(email, this.inputPassword).subscribe({
           next: (response) => {
             this.state = 'signed up';
@@ -208,34 +220,51 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.stateChangeEvent.emit(this.state);
             this.signingUp = false;
 
+            // Clear the input fields
+            this.inputEmail = '';
+            this.inputPassword = '';
+            this.inputPassword2 = '';
+
             // ? Debug log success
             console.log('Profile | Signed up successfuly!', response);
           },
           error: (error: HttpErrorResponse) => {
             this.signingUp = false;
-
-            console.log(error.status); // TODO THIS IS HOW WE GET THE STATUS CODE.
+            
+            // If the error status is 400, the user already exists
+            if (error.status == 400)
+              this.signupUserAlreadyExistsMessageState = true;
 
             // ? Debug log error on signed up
             console.error('Profile | Sign up failed:', error.error);
           }
         });
-      } else {
+      } 
+      // If the passwords don't match
+      else {
         this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
         this.signingUp = false;
+
+        // Clear passwords
         this.inputPassword = '';
         this.inputPassword2 = '';
 
         // ? Debug log
         console.log('Profile | Passwords do not match.');
       }
-    } else {
+    } 
+    // If the email is invalid
+    else {
       this.inputEmailInvalid = 'ng-invalid ng-dirty';
       this.signingUp = false;
+
+      // Clear form
       this.inputEmail = '';
+      this.inputPassword = '';
+      this.inputPassword2 = '';
 
       // ? Debug log
-      console.log('Profile | Not a monash email', this.inputEmail);
+      console.log('Profile | Not a monash email');
     }
   }
 
@@ -244,30 +273,54 @@ export class ProfileComponent implements OnInit, OnDestroy {
     this.loggingIn = true;
 
     // Trim input email whitespace and store as new variable
-    var email = this.inputEmail.replace(/^\s+|\s+$/gm,'');
+    var email = this.inputEmail.trim();
 
-    // Uses auth service to call the login api
-    this.authService.login(email, this.inputPassword).subscribe({
-      next: (response) => {
-        // Change state to logged in
-        this.state = 'logged in';
-        this.titleChangeEvent.emit('Profile');
-        this.stateChangeEvent.emit(this.state);
-        this.loggingIn = false;
+    // Regular expression to validate authcate and email
+    const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
 
-        // ? Debug log success
-        console.log('Profile | Logged in succesfully!', response);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
-        this.loggingIn = false;
+    // Check if emails ends with monash email
+    if (emailRegex.test(email)) {
+      // Uses auth service to call the login api
+      this.authService.login(email, this.inputPassword).subscribe({
+        next: (response) => {
+          // Change state to logged in
+          this.state = 'logged in';
+          this.titleChangeEvent.emit('Profile');
+          this.stateChangeEvent.emit(this.state);
+          this.loggingIn = false;
 
-        // TODO: Check the status and type of error and add functionality for those.
+          // Clear the input fields
+          this.inputEmail = '';
+          this.inputPassword = '';
 
-        // ? Debug log error on login
-        console.error('Profile | Login failed:', error.error);
-      }
-    });
+          // ? Debug log success
+          console.log('Profile | Logged in succesfully!', response);
+        },
+        error: (error: HttpErrorResponse) => {
+          // Wrong password or email
+          this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
+          this.loggingIn = false;
+          
+          // Clear the password
+          this.inputPassword = '';
+
+          // ? Debug log error on login
+          console.error('Profile | Login failed:', error.error);
+        }
+      });
+    } 
+    // If the email is invalid
+    else {
+      this.inputEmailInvalid = 'ng-invalid ng-dirty';
+      this.loggingIn = false;
+      this.inputEmail = '';
+
+      // Clear the password
+      this.inputPassword = '';
+
+      // ? Debug log
+      console.log('Profile | Not a valid monash email', this.inputEmail);
+    }
   }
 
   // * Logs out user
