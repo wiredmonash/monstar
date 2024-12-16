@@ -58,7 +58,6 @@ CLOUDINARY_URL=''
 monstar/
 ├── backend/               # Contains server-side code
 ├── frontend/              # Contains client-side code
-├── package.json           # Project metadata and dependencies
 └── README.md              # Project documentation
 ```
 
