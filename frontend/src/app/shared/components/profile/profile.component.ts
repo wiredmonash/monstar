@@ -304,6 +304,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
           // Clear the password
           this.inputPassword = '';
 
+          // TODO: Check for 401 Unauthorized status code when invalid email or password
+
+          // TODO: Check for 403 Forbidden status code when user is not verified yet
+
           // ? Debug log error on login
           console.error('Profile | Login failed:', error.error);
         }
