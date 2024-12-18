@@ -55,7 +55,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // Event to emit to the navbar to create a toast
   @Output() createToast = new EventEmitter<{ severity: string, summary: string, detail: string }>();
 
-  // Input to listen for dialogClosedEvent 
+  // Input to listen for dialogClosedEvent
   @Input() dialogClosedEvent!: EventEmitter<void>;
 
   // Stores the subscription to this dialogClosedEvent
@@ -80,6 +80,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isEmailInputValid: boolean = true;
   // Password input validity status
   isPasswordsInputValid: boolean = true;
+  // User input validity status
+  isUsernameInputValid: boolean = true;
 
   // Signing up and logging in state
   signingUp: boolean = false;
@@ -175,8 +177,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
           {
             label: 'Logout',
             icon: 'pi pi-sign-out',
-            command: () => { 
-              this.logout(); 
+            command: () => {
+              this.logout();
             }
           }
         ]
@@ -234,7 +236,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           },
           error: (error: HttpErrorResponse) => {
             this.signingUp = false;
-            
+
             // If the error status is 400, the user already exists
             if (error.status == 400)
               this.isUserSignUpDuplicate = true;
@@ -243,7 +245,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             console.error('Profile | Sign up failed:', error.error);
           }
         });
-      } 
+      }
       // If the passwords don't match
       else {
         this.isPasswordsInputValid = false;
@@ -256,7 +258,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // ? Debug log
         console.log('Profile | Passwords do not match.');
       }
-    } 
+    }
     // If the email is invalid
     else {
       this.isEmailInputValid = false;
@@ -307,7 +309,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           // Wrong password or email
           this.isPasswordsInputValid = false;
           this.loggingIn = false;
-          
+
           // Clear the password
           this.inputPassword = '';
 
@@ -324,7 +326,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           console.error('Profile | Login failed:', error.error);
         }
       });
-    } 
+    }
     // If the email is invalid
     else {
       this.isEmailInputValid = false;
@@ -369,6 +371,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Define the empty payload
     const updatePayload: { username?: string, password?: string } = {};
 
+    const usernameRegex = /^[a-zA-Z0-9]{1,20}$/;
+
     // Adding username to payload if given and changed
     if (this.inputUpdateUsername && this.inputUpdateUsername !== this.user?.username)
         updatePayload.username = this.inputUpdateUsername;
@@ -384,33 +388,49 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
 
     // Updates the user's username and/or password using AuthService
-    if (this.user.email)
-      this.authService.updateDetails(this.user.email, updatePayload.username, updatePayload.password).subscribe({
-        next: (response) => {
-          // Set the updated username for our user
-          if (updatePayload.username && this.user) {
-            this.user.username = updatePayload.username;
+    if (usernameRegex.test(updatePayload.username || this.user.username)) {
+      if (this.user.email)
+        this.authService.updateDetails(this.user.email, updatePayload.username, updatePayload.password).subscribe({
+          next: (response) => {
+            // Set the updated username for our user
+            if (updatePayload.username && this.user) {
+              this.user.username = updatePayload.username;
+            }
+
+            // Reset the fields
+            this.inputUpdateUsername = this.user?.username || '';
+            this.inputUpdatePassword = '';
+
+            // Show success toast
+            this.createToast.emit({
+              severity: 'success',
+              summary: 'Updated details!',
+              detail: 'You have updated your details'
+            });
+
+            // ? Debug log show success
+            console.log('Profile | Details updated successfully', response);
+          },
+          error: (error) => {
+            // Show error toast
+            this.createToast.emit({
+              severity: 'error',
+              summary: 'Error Updating Details',
+              detail: 'Some error occurred whilst updating details'
+            });
+
+            // ? Debug log show error message
+            console.error('Profile | Error updating details', error);
           }
-
-          // Reset the fields
-          this.inputUpdateUsername = this.user?.username || '';
-          this.inputUpdatePassword = '';
-
-          // Show success toast
-          this.createToast.emit({ severity: 'success', summary: 'Updated details!', detail: 'You have updated your details' });
-
-          // ? Debug log show success
-          console.log('Profile | Details updated successfully', response);
-        },
-        error: (error) => {
-          // Show error toast
-          this.createToast.emit({ severity: 'error', summary: 'Error Updating Details', detail: 'Some error occurred whilst updating details' });
-
-          // ? Debug log show error message
-          console.error('Profile | Error updating details', error);
-        }
-    });
-  }
+        });
+    }
+    else {
+      this.isUsernameInputValid = false;
+      this.inputUpdateUsername = '';
+      this.inputUpdatePassword = '';
+      console.log('Profile | Not a valid username')
+    }
+    }
 
   // * User can upload their avatar
   uploadAvatar() {
