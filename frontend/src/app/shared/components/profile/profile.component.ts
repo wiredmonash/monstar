@@ -66,18 +66,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // Current input value for the email
   inputEmail: string = '';
-  // Invalid state for email input
-  inputEmailInvalid: '' | 'ng-invalid ng-dirty' = '';
 
   // Current input value for the password
   inputPassword: string = '';
   // Current input value for confirm password
   inputPassword2: string = '';
-  // Invalid state for both passwords input
-  inputPasswordsInvalid: '' | 'ng-invalid ng-dirty' = '';
 
-  // User already exists message state
-  signupUserAlreadyExistsMessageState: boolean = false;
+  // Email input of duplicate nature status
+  isUserSignUpDuplicate: boolean = false;
+  // Email input is verified status
+  isEmailInputVerified: boolean = true;
+  // Email input validity status
+  isEmailInputValid: boolean = true;
+  // Password input validity status
+  isPasswordsInputValid: boolean = true;
 
   // Signing up and logging in state
   signingUp: boolean = false;
@@ -200,7 +202,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // * Signs Up the User
   signup() {
     this.signingUp = true;
-    this.inputEmailInvalid = '';
+    this.isEmailInputValid = true;
+    this.isPasswordsInputValid = true;
+    this.isUserSignUpDuplicate = false;
 
     // Trim input email whitespace and store as new variable
     var email = this.inputEmail.trim();
@@ -233,7 +237,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             
             // If the error status is 400, the user already exists
             if (error.status == 400)
-              this.signupUserAlreadyExistsMessageState = true;
+              this.isUserSignUpDuplicate = true;
 
             // ? Debug log error on signed up
             console.error('Profile | Sign up failed:', error.error);
@@ -242,7 +246,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       } 
       // If the passwords don't match
       else {
-        this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
+        this.isPasswordsInputValid = false;
         this.signingUp = false;
 
         // Clear passwords
@@ -255,7 +259,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } 
     // If the email is invalid
     else {
-      this.inputEmailInvalid = 'ng-invalid ng-dirty';
+      this.isEmailInputValid = false;
       this.signingUp = false;
 
       // Clear form
@@ -271,6 +275,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // * Logs in user
   login() {
     this.loggingIn = true;
+    this.isEmailInputValid = true;
+    this.isEmailInputVerified = true;
+    this.isPasswordsInputValid = true;
 
     // Trim input email whitespace and store as new variable
     var email = this.inputEmail.trim();
@@ -298,11 +305,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           // Wrong password or email
-          this.inputPasswordsInvalid = 'ng-invalid ng-dirty';
+          this.isPasswordsInputValid = false;
           this.loggingIn = false;
           
           // Clear the password
           this.inputPassword = '';
+
+          // ? Check for 404 Not Found status code when user not found???
+
+          // Check for 403 Forbidden status code when user is not verified yet
+          if (error.status == 403) {
+            this.isEmailInputValid = true;
+            this.isPasswordsInputValid = true;
+            this.isEmailInputVerified = false;
+          }
 
           // ? Debug log error on login
           console.error('Profile | Login failed:', error.error);
@@ -311,7 +327,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     } 
     // If the email is invalid
     else {
-      this.inputEmailInvalid = 'ng-invalid ng-dirty';
+      this.isEmailInputValid = false;
       this.loggingIn = false;
       this.inputEmail = '';
 
