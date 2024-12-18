@@ -44,7 +44,7 @@ export class NavbarComponent {
   sidebarVisible: boolean = false;
 
   // Username for the sidebar
-  username: string = '';
+  username: string | undefined = '';
 
   // Saves the profile state
   profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' = 'signed out';
@@ -104,7 +104,7 @@ export class NavbarComponent {
 
       case 'logged in':
         this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!'});
-        this.username = 'jfer0043';
+        this.username = this.user?.username;
         break;
 
       case 'logged out':

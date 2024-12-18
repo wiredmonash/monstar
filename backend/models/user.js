@@ -28,9 +28,14 @@ const userSchema = new Schema({
 
     // Email verified status
     verified: { type: Boolean, default: false },
-
     // Email verification token
-    verificationToken: { type: String, required: false }
+    verificationToken: { type: String, required: false },
+    // Email verification token expiration
+    verificationTokenExpires: { type: Date, required: false },
+    // Number of verification emails sent
+    verificationEmailsSent: { type: Number, default: 0 },
+    // Timestamp of the last verification email sent
+    lastVerificationEmail: { type: Date, required: false },
 });
 
 // Middleware to set default username as authcate from email
