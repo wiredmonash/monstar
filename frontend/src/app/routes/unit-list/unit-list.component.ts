@@ -8,6 +8,8 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
+import { SkeletonModule } from 'primeng/skeleton';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-unit-list',
@@ -20,7 +22,9 @@ import { PaginatorModule } from 'primeng/paginator';
     SplitButtonModule,
     InputTextModule,
     FormsModule,
-    PaginatorModule
+    PaginatorModule,
+    SkeletonModule,
+    CommonModule
   ],
   templateUrl: './unit-list.component.html',
   styleUrl: './unit-list.component.scss'
@@ -43,6 +47,10 @@ export class UnitListComponent implements OnInit {
 
   // Loading state of unit cards
   loading: boolean = true;
+  testing: boolean = true;
+
+  // Skeletons for loading state
+  skeletons: any[] = new Array(6);
 
   /**
    * * Constructor

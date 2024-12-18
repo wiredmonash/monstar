@@ -22,10 +22,15 @@
   </p-toolbar>
 </div>
 
+
 <!-- Loading spinner if loading -->
 @if (loading) {
-  <div class="d-flex justify-content-center mt-4 loading-spinner">
-    <p-progressSpinner/>
+  <div class="unit-list-container">
+    <ng-container class="unit-card-wrapper">
+      <ng-container *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+        <p-skeleton width="20rem" height="15rem" styleClass="ml-4 mr-6 mb-6 mx-auto"/>
+      </ng-container>
+    </ng-container>
   </div>
 } 
 <!-- The list of units shown in grid format -->
@@ -45,6 +50,7 @@
     <h4 class="text-center mt-3 mb-5">No units match your search query.</h4>
   </div>
 }
+
 
 <!-- Paginator -->
 <div class="flex align-items-center justify-content-center paginator-container">
