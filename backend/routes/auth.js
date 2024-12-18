@@ -176,18 +176,18 @@ router.post('/login', async function (req, res) {
 
         // If there is no user of that email in the DB return status 400
         if (!user)
+            return res.status(404).json({ error: "User not found" });
+
+        // Check if the passwords match
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        // If they don't match we send status 401
+        if (!passwordMatch) 
             return res.status(401).json({ error: "Invalid email or password" });
 
         // Check if the user has verified their email
         if (!user.verified)
             return res.status(403).json({ error: 'Email not verified. Please check yuor inbox to verify your email.' });
-
-        // Check if the passwords match
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        // If they don't match we send status 400
-        if (!passwordMatch) 
-            return res.status(401).json({ error: "Invalid email or password" });
 
         // Create json web token
         const token = jwt.sign(
