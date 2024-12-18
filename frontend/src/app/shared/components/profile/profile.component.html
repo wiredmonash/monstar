@@ -241,7 +241,7 @@
 
                         <!-- Update username input -->
                         <p-floatLabel>
-                            <input pInputText id="username" [(ngModel)]="inputUpdateUsername" />
+                            <input pInputText id="username" [(ngModel)]="inputUpdateUsername" (focus)="isUsernameInputValid = true;"/>
                             <label for="username">Update your Username</label>
                         </p-floatLabel>
 
