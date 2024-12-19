@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -80,6 +81,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isEmailInputValid: boolean = true;
   // Password input validity status
   isPasswordsInputValid: boolean = true;
+  // Email verification sent capped status
+  isVerifyEmailSentCapped: boolean = false;
   // User input validity status
   isUsernameInputValid: boolean = true;
 
@@ -100,7 +103,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
 
   // ! Injects AuthService
-  constructor (private authService: AuthService) { }
+  constructor (
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) { }
 
 
   // * Change title on initialisation
@@ -126,6 +132,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       next: (currentUser: User | null) => {
         // Store the current user
         this.user = currentUser;
+
+        if (this.user?.verified) {
+          this.state = 'logged in';
+          this.titleChangeEvent.emit('Profile');
+          this.stateChangeEvent.emit(this.state); 
+        }
 
         // Set the current username in the update username field in details page
         this.inputUpdateUsername = this.user?.username;
@@ -238,8 +250,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.signingUp = false;
 
             // If the error status is 400, the user already exists
-            if (error.status == 400)
+            if (error.status == 400) {
               this.isUserSignUpDuplicate = true;
+              this.createToast.emit({ severity: 'warn', summary: 'User already exists', detail: 'User already exists, please login.' });
+            }
 
             // ? Debug log error on signed up
             console.error('Profile | Sign up failed:', error.error);
@@ -313,13 +327,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
           // Clear the password
           this.inputPassword = '';
 
-          // ? Check for 404 Not Found status code when user not found???
+          // Check for 429 Too Many Requests status code when user is rate limited
+          if (error.status == 429) {
+            this.isVerifyEmailSentCapped = true;
+            this.createToast.emit({ severity: 'warn', summary: '429 Too Many Requests', detail: "We have sent you too many emails at this time." });
+          }
 
           // Check for 403 Forbidden status code when user is not verified yet
           if (error.status == 403) {
             this.isEmailInputValid = true;
             this.isPasswordsInputValid = true;
             this.isEmailInputVerified = false;
+            this.createToast.emit({ severity: 'warn', summary: 'Email not verified', detail: 'Please verify your email before logging in' });
           }
 
           // ? Debug log error on login

@@ -15,47 +15,6 @@ const User = require('../models/user');
 // Router instance
 const router = express.Router();
 
-/**
- * ! POST Create a User
- * 
- * Creates a new User and adds it to the database.
- * 
- * @async
- * @returns {JSON} Responds with the created unit in JSON format
- * @throws {500} If an error occurs whilst creating a unit
- */
-router.post('/register', async function (req, res) {
-    try {
-        // Get values from json request
-        const { email, password } = req.body;
-
-        // Find and check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser)
-            return res.status(400).json({ error: "User already exists/Email exists" });
-        
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Generate a verification token
-        const verificationToken = crypto.randomBytes(32).toString('hex');
-
-        // Create and save new user
-        const newUser = new User({ email, password: hashedPassword, verificationToken });
-        await newUser.save();
-
-        // Send the verification email
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
-        await sendVerificationEmail(email, verificationUrl);
-
-        // Return status 201 for succesfull creation of a new user
-        return res.status(201).json({ message: "User successfully registered" });
-    }
-    catch (error) {
-        // Handle general errors
-        return res.status(500).json({ error: `An error occured while created the User: ${error.message}` });
-    }
-});
 // Function to send the verification email
 async function sendVerificationEmail (email, verificationUrl) {
     // Transport settings
@@ -83,6 +42,52 @@ async function sendVerificationEmail (email, verificationUrl) {
 }
 
 /**
+ * ! POST Create a User
+ * 
+ * Creates a new User and adds it to the database.
+ * 
+ * @async
+ * @returns {JSON} Responds with the created unit in JSON format
+ * @throws {500} If an error occurs whilst creating a unit
+ */
+router.post('/register', async function (req, res) {
+    try {
+        // Get values from json request
+        const { email, password } = req.body;
+
+        // Find and check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser)
+            return res.status(400).json({ error: "User already exists/Email exists" });
+        
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Generate a verification token
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+
+        // Set the expiration time for the verification token (24 hours from now)
+        const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+
+        // Create and save new user
+        const newUser = new User({ email, password: hashedPassword, verificationToken, verificationTokenExpires });
+        await newUser.save();
+
+        // Send the verification email
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+        await sendVerificationEmail(email, verificationUrl);
+
+        // Return status 201 for succesfull creation of a new user
+        return res.status(201).json({ message: "User successfully registered" });
+    }
+    catch (error) {
+        // Handle general errors
+        return res.status(500).json({ error: `An error occured while created the User: ${error.message}` });
+    }
+});
+
+
+/**
  * ! GET Verify Email
  * 
  * Endpoint that verifies the token when the user clicks the link in their mail.
@@ -102,9 +107,14 @@ router.get('/verify-email/:token', async function (req, res) {
         if (!user)
             return res.status(400).json({ error: 'Invalid or expired verification token' });
 
+        // Check if the verification token has expired
+        if (user.verificationTokenExpires < Date.now())
+            return res.status(400).json({ error: 'Verification token has expired' });
+
         // Mark the user as verified and remove the token
         user.verified = true;
         user.verificationToken = undefined;
+        user.verificationTokenExpires = undefined;
         await user.save();
 
         // Generate a new json web token
@@ -164,6 +174,11 @@ router.get('/', async function (req, res) {
  * 
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
+ * @throws {404} When the user is not found
+ * @throws {401} When the password is incorrect
+ * @throws {429} When the user has reached the daily limit of verification emails
+ * @throws {429} When the user has requested a verification email within the cooldown period
+ * @throws {403} When the user has not verified their email
  * @throws {500} If an error occurs whilst creating a unit
  */
 router.post('/login', async function (req, res) {
@@ -186,8 +201,46 @@ router.post('/login', async function (req, res) {
             return res.status(401).json({ error: "Invalid email or password" });
 
         // Check if the user has verified their email
-        if (!user.verified)
-            return res.status(403).json({ error: 'Email not verified. Please check yuor inbox to verify your email.' });
+        if (!user.verified) {
+            const now = Date.now();
+            const fiveMinutes = 30; // 5 minutes in milliseconds
+            const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+            // Check if the user has reached the daily limit
+            if (user.verificationEmailsSent >= 3 && (now - user.lastVerificationEmail) < oneDay) 
+                return res.status(429).json({ error: 'You have reached the maximum number of verification emails for today. Please try again tomorrow.' });
+
+            // Check if the cooldown period has passed
+            if (user.lastVerificationEmail && (now - user.lastVerificationEmail) < fiveMinutes)
+                return res.status(429).json({ error: 'Please wait a 5 minutes before requesting another verification email.' });
+
+            // Generate a new verification token
+            const verificationToken = crypto.randomBytes(32).toString('hex');
+
+            // Set the expiration time for the verification token (24 hours from now)
+            const verificationTokenExpires = now + 24 * 60 * 60 * 1000;
+
+            // Update the user's verification token
+            user.verificationToken = verificationToken;
+            user.verificationTokenExpires = verificationTokenExpires;
+            user.lastVerificationEmail = now;
+
+            // Increment the number of verification emails sent
+            if ((now - user.lastVerificationEmail) >= oneDay)
+                user.verificationEmailsSent = 1; // Reset count if it's a new day
+            else
+                user.verificationEmailsSent += 1; // Increment count if it's the same
+
+            // Save the user
+            await user.save();
+
+            // Send the verification email
+            const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+            await sendVerificationEmail(email, verificationUrl);
+            
+            // Respond with status 403 and error message 
+            return res.status(403).json({ error: 'Email not verified. Please check your inbox to verify your email.' });
+        }
 
         // Create json web token
         const token = jwt.sign(

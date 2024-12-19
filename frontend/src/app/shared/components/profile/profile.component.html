@@ -99,14 +99,18 @@
                 <!-- Email input -->
                 <div class="email-container">
                     <p-floatLabel>
-                        <input id="email"
-                            pInputText
-                            class="{{ (isEmailInputValid || isEmailInputVerified) ? '' : 'ng-invalid ng-dirty' }}"
-                            type="text"
-                            [(ngModel)]="inputEmail"
+                        <input id="email" 
+                            pInputText 
+                            class="{{ 
+                                ((isEmailInputValid || isEmailInputVerified) ? '' : 'ng-invalid ng-dirty') ||
+                                (isVerifyEmailSentCapped ? 'ng-invalid ng-dirty' : '')
+                            }}"
+                            type="text" 
+                            [(ngModel)]="inputEmail" 
                             (focus)="
                                 isEmailInputVerified = true;
                                 isEmailInputValid = true;
+                                isVerifyEmailSentCapped = false;
                             "
                             aria-labelledby="email-help"
                         />
@@ -118,6 +122,9 @@
                     @else if (!isEmailInputVerified) {
                         <small id="email-help" style="background-color: rgb(248, 113, 113);">User not verified, check your email.</small>
                     }
+                    @else if (isVerifyEmailSentCapped) {
+                        <small id="email-help" style="background-color: rgb(248, 113, 113);">Too many requests, please wait a while.</small>
+                    }
                 </div>
 
                 <!-- Password input-->
@@ -126,18 +133,20 @@
                         <p-password id="password"
                             type="password"
                             class="{{
-                                isPasswordsInputValid ? '' : 'ng-invalid ng-dirty'
+                                (isPasswordsInputValid ? '' : 'ng-invalid ng-dirty') ||
+                                (isVerifyEmailSentCapped ? 'ng-invalid ng-dirty' : '')
                             }}"
                             [toggleMask]="true"
                             [feedback]="false"
                             [(ngModel)]="inputPassword"
                             (onFocus)="
                                 isPasswordsInputValid = true;
+                                isVerifyEmailSentCapped = false;
                             "
                         />
                         <label for="password">Password</label>
                     </p-floatLabel>
-                    @if (!isPasswordsInputValid) {
+                    @if (!isPasswordsInputValid && !isVerifyEmailSentCapped) {
                         <small id="password-help" style="background-color: rgb(248, 113, 113);">Invalid email or password</small>
                     }
                 </div>
