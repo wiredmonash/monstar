@@ -15,10 +15,12 @@
     <!-- Container for the whole review card -->
     <div class="container mt-5 review-card-container" (mouseenter)="deleteButtonState='visible';" (mouseleave)="deleteButtonState='hidden';">
         <div class="review-card position-relative">
-            <!-- Delete review button -->
-            <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
-                <i class="pi pi-times-circle"></i>
-            </div>
+            <!-- Delete review button shows only if the current user is the author of this review -->
+            @if (currentUser?.email == review.author.email) {
+                <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
+                    <i class="pi pi-times-circle"></i>
+                </div>
+            }
 
             <div class="row">
                 <!-- Left Side (Anonymous, Semester, Overall Rating) -->

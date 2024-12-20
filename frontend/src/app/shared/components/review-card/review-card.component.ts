@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage, SlicePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AvatarModule } from 'primeng/avatar';
@@ -7,6 +7,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ConfirmPopup, ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-review-card',
@@ -43,7 +46,7 @@ import { ButtonModule } from 'primeng/button';
     ])
   ]
 })
-export class ReviewCardComponent implements OnInit {
+export class ReviewCardComponent implements OnInit, OnDestroy {
   // Accept review data from the parent component
   @Input() review: any; 
 
@@ -69,9 +72,15 @@ export class ReviewCardComponent implements OnInit {
   // Child that is the confirmation popup on deletion
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
+  // Stores current user by subscribing to AuthService
+  currentUser: User | null = null;
+  // Stores the subscription for currentUser from AuthService
+  private userSubscription: Subscription = new Subscription();
+
   // * Injects the ApiService & confirmationService
   constructor(
     private apiService: ApiService,
+    private authService: AuthService,
     private confirmationService: ConfirmationService
   ) { }
 
@@ -84,7 +93,27 @@ export class ReviewCardComponent implements OnInit {
     // Get like and dislike count from review
     this.likes = this.review.likes;
     this.dislikes = this.review.dislikes;
+
+    // Subscribe to the current user from auth service
+    this.userSubscription = this.authService.getCurrentUser().subscribe({
+      next: (currentUser: User | null) => {
+        this.currentUser = currentUser;
+
+        // ? Debug log change of current user
+        console.log('ReviewCard | Current User:', this.currentUser);
+      }
+    });
   }
+
+  /**
+   * * Runs on destroy
+   * 
+   * Unsubscribes from the currentUser subscription
+   */
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
+  }
+  
 
   // * Choices on confirmation popup (either delete or cancel)
   accept() { this.confirmPopup.accept(); }
