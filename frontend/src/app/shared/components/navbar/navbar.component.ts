@@ -98,17 +98,11 @@ export class NavbarComponent {
     this.profileState = state;
 
     switch (state) {
-      case 'signed up':
-        this.messageService.add({ severity: 'info', summary: 'Signed Up', detail: 'You have signed up, now you must confirm your email!' });
-        break;
-
       case 'logged in':
-        this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!'});
         this.username = this.user?.username;
         break;
 
       case 'logged out':
-        this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You are logged out!'});
         this.username = 'Login (Guest)';
         break;
     }
