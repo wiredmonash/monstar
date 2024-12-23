@@ -16,12 +16,64 @@ $padding: 40px;
     justify-content: center;
 }
 
+// Toolbar container
 .toolbar-container {
     max-width: $max-width;
     margin: 0 auto;
     padding: 0 2rem;
     padding-top: 10px;
+
+    // Toolbar styles
+    .p-toolbar {
+        display: flex;
+        justify-content: space-between;
+        width: 100%
+    }
+
+    // Start and end groups
+    .p-toolbar-group-start,
+    .p-toolbar-group-end {
+        flex: 1;
+    }
+
+    // Center group
+    .p-toolbar-group-center {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+    }
+
+    // End group
+    .p-toolbar-group-end {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .dropdown-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .search-badge, .sortby-badge{
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgb(83, 83, 83);
+        color: white;
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+    }
 }
+
+
+
+
+
+
+
 
 .paginator-container {
     max-width: $max-width;

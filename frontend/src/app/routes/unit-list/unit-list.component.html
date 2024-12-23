@@ -2,22 +2,47 @@
   <p-toolbar class="toolbar" styleClass="shadow-2" [style]="{ 'border-radius': '3rem' }">
     <!-- Start group -->
     <div class="p-toolbar-group-start">
-        <!-- <p-button icon="pi pi-filter" class="mr-2"/>
-        <p-button icon="pi pi-print" class="mr-2"/>
-        <p-button icon="pi pi-upload" /> -->
+        <!-- Sortby dropdown  -->
+        <div class="dropdown-container">
+          <p-dropdown
+            #sortByDropdown
+            id="sortByDropdown"
+            [options]="['Alphabetic', 'Most Reviews', 'Highest Overall', 'Lowest Overall']"
+            [(ngModel)]="sortBy"
+            [editable]="true"
+            placeholder="Sort By"
+            [style]="{'border-radius': '3rem', 'width': '13rem', 'height': '2.25rem' }"
+            (onFocus)="isSortByFocused = true;"
+            (onBlur)="isSortByFocused = false;"
+          />
+          <!-- Badge to show keyboard shortcut -->
+          @if (!isSortByFocused) { <span class="sortby-badge">(CTRL)+F</span> }
+        </div>
     </div>
 
     <!-- Center group -->
     <div class="p-toolbar-group-center">
         <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input pInputText placeholder="Search" [style]="{ 'border-radius': '3rem' }" [(ngModel)]="search" (input)="filterUnits()" />
+            <!-- Search bar with icon that changes -->
+            <i class="pi" [ngClass]="{ 'pi-search': !loading, 'pi-spinner pi-spin': loading }"></i>
+            <input 
+              id="searchInput"
+              pInputText 
+              placeholder="Search" 
+              [style]="{ 'border-radius': '3rem', 'width': '15rem', 'height': '2.5rem', 'font-size': '1rem' }"
+              [(ngModel)]="search" 
+              (input)="filterUnits()"
+              (focus)="isSearchFocused = true;"
+              (blur)="isSearchFocused = false;"
+            />
+            <!-- Badge to show keyboard shortcut -->
+            @if (!isSearchFocused) { <span class="search-badge">(CTRL)+K</span> }
         </span>
     </div>
 
     <!-- End group -->
     <div class="p-toolbar-group-end">
-
+      
     </div>
   </p-toolbar>
 </div>

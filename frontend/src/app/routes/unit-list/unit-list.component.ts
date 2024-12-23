@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UnitCardComponent } from "../../shared/components/unit-card/unit-card.component";
 import { ApiService } from '../../shared/services/api.service';
@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
+import { Dropdown } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-unit-list',
@@ -51,6 +52,17 @@ export class UnitListComponent implements OnInit {
 
   // Skeletons for loading state
   skeletons: any[] = new Array(6);
+
+  // Sort by dropdown reference
+  @ViewChild('sortByDropdown') sortByDropdown!: Dropdown;
+  // Is sort by dropdown focused?
+  isSortByFocused: boolean = false;
+  // Is search bar focused?
+  isSearchFocused: boolean = false;
+
+  // NgModel value for the sort by dropdown (default: Alphabetic)
+  sortBy: string = 'Alphabetic'; 
+  
 
   /**
    * * Constructor
@@ -138,5 +150,33 @@ export class UnitListComponent implements OnInit {
     this.first = event.first;
     this.rows = event.rows;
     this.fetchPaginatedUnits();
+  }
+
+
+  /**
+   * * Handles focusing via keybinds
+   */
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    // Focuses on search bar
+    if (event.ctrlKey && event.key === 'k') {
+      event.preventDefault();
+      const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+      if (searchInput)
+        searchInput.focus();
+    }
+    // Focuses on sort by dropdown
+    if (event.ctrlKey && event.key === 'f') {
+      event.preventDefault();
+      if (this.sortByDropdown)
+        this.sortByDropdown.focus();
+    }
+    // Unfocuses on all
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      const activeElement = document.activeElement as HTMLElement;
+      if (activeElement)
+        activeElement.blur();
+    }
   }
 }
