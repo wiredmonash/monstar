@@ -31,8 +31,6 @@ import { Dropdown } from 'primeng/dropdown';
   styleUrl: './unit-list.component.scss'
 })
 export class UnitListComponent implements OnInit {
-  // Array to hold the full list of units from the backend
-  units: any[] = []; 
   // Array to hold the filtered list of units
   filteredUnits: any[] = []; 
 
@@ -77,32 +75,13 @@ export class UnitListComponent implements OnInit {
    * This method is used to trigger data fetching when the component loads.
    */
   ngOnInit(): void {
-    this.fetchPaginatedUnits(); // Fetches all the units from the backend
-  }
+    // Retrieve the sortBy state from local storage
+    const savedSortBy = localStorage.getItem('sortBy');
+    if (savedSortBy) 
+      this.sortBy = savedSortBy;
 
-  /**
-   * * Fetch all units from the backend and update the units array. (NOT USED)
-   * 
-   * Utlises the ApiService to make an HTTP GET request.
-   */
-  fetchAllUnits() {
-    this.loading = true;
-    this.apiService.getAllUnits().subscribe({
-      next: (response: any[]) => {
-        // On successful response, assign data to units array.
-        this.units = response;
-        this.totalRecords = response.length;
-        this.filteredUnits = this.units;
-
-        this.loading = false;
-
-        console.log('Fetched all units:', this.units);
-      },
-      error: (error) => {
-        // Log an error if something goes wrong while fetching units.
-        console.error('Error fetching units:', error);
-      }
-    });
+    // Fetches the paginated units from the backend
+    this.fetchPaginatedUnits(); 
   }
 
   /**
@@ -114,7 +93,7 @@ export class UnitListComponent implements OnInit {
     const searchLower = this.search.toLowerCase();
     this.loading = true;
   
-    this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower).subscribe({
+    this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy).subscribe({
       next: (response: any) => {
         this.filteredUnits = response.units;
         this.totalRecords = response.total;
@@ -152,18 +131,28 @@ export class UnitListComponent implements OnInit {
     this.fetchPaginatedUnits();
   }
 
-
   /**
    * * Handles focusing via keybinds
+   * 
+   * - CTRL + K: Focuses on search bar
+   * - CTRL + F: Focuses on sort by dropdown
+   * - Escape: Unfocuses all elements
+   * 
+   * @HostListener 
+   * @param event Keyboard event
    */
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
+    // Search bar html element
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+
     // Focuses on search bar
     if (event.ctrlKey && event.key === 'k') {
       event.preventDefault();
-      const searchInput = document.getElementById('searchInput') as HTMLInputElement;
-      if (searchInput)
+      if (searchInput) {
         searchInput.focus();
+        this.sortByDropdown.hide(); // We hide the dropdown if we focus on the search bar.
+      }
     }
     // Focuses on sort by dropdown
     if (event.ctrlKey && event.key === 'f') {
@@ -178,5 +167,16 @@ export class UnitListComponent implements OnInit {
       if (activeElement)
         activeElement.blur();
     }
+  }
+
+  /**
+   * * Handles changes on sortBy dropdown change
+   * 
+   * - Saves the sortBy option to localStorage
+   * - Fetches paginated units again to refresh
+   */
+  onSortByChange() {
+    localStorage.setItem('sortBy', this.sortBy);
+    this.fetchPaginatedUnits();
   }
 }
