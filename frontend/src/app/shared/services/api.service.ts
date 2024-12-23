@@ -121,11 +121,12 @@ export class ApiService {
    * @param {string} [search=''] The search query for filtering units
    * @returns {Observable<any[]>} An observable containing an array of filtered units
    */
-  getUnitsFilteredGET(offset: number, limit: number, search: string = ''): Observable<any[]> {
+  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic'): Observable<any[]> {
     const params = {
       offset: offset.toString(),
       limit: limit.toString(),
       search,
+      sort
     }
 
     return this.http.get<any[]>(`${this.url}/units/filter`, { params });

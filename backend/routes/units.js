@@ -109,7 +109,7 @@ router.get('/unit/:unitcode', async function (req, res) {
  */
 router.get('/filter', async function (req, res) {
     try {
-        const { offset = 0, limit = 10, search = '' } = req.query;
+        const { offset = 0, limit = 10, search = '', sort = 'Alphabetic' } = req.query;
 
         // Filter units based on the search query
         const query = search ? { unitCode: { $regex: search, $options: 'i' } } : {}; 
@@ -117,11 +117,34 @@ router.get('/filter', async function (req, res) {
         // Get total count for pagination
         const total = await Unit.countDocuments(query);
 
+        // Determine the sort criteria
+        let sortCriteria;
+        switch (sort) {
+            case 'Alphabetic':
+                sortCriteria = { unitCode: 1 };
+                break;
+            case 'Most Reviews':
+                sortCriteria = { reviewCount: -1 };
+                break;
+            case 'Highest Overall':
+                sortCriteria = { avgOverallRating: -1 };
+                break;
+            case 'Lowest Overall':
+                sortCriteria = { avgOverallRating: 1 };
+                break;
+            default:
+                sortCriteria = { unitCode: 1 };
+        }
+
         // Get paginated units
-        const units = await Unit.find(query)
-            .skip(Number(offset))
-            .limit(Number(limit))
-            .populate('reviews');
+        const units = await Unit.aggregate([
+            { $match: query },
+            { $addFields: { reviewCount: { $size: "$reviews" } } },
+            { $sort: sortCriteria },
+            { $skip: Number(offset) },
+            { $limit: Number(limit) },
+            { $lookup: { from: 'reviews', localField: 'reviews', foreignField: '_id', as: 'reviews' } }
+        ]);
 
         // If no units are found, return an appropriate response
         if (!units.length) {

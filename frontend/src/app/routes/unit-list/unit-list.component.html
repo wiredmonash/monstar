@@ -12,6 +12,7 @@
             [editable]="true"
             placeholder="Sort By"
             [style]="{'border-radius': '3rem', 'width': '13rem', 'height': '2.25rem' }"
+            (onChange)="onSortByChange();"
             (onFocus)="isSortByFocused = true;"
             (onBlur)="isSortByFocused = false;"
           />
@@ -48,7 +49,7 @@
 </div>
 
 
-<!-- Loading spinner if loading -->
+<!-- Skeletons if loading -->
 @if (loading) {
   <div class="unit-list-container">
     <ng-container class="unit-card-wrapper">
