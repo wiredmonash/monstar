@@ -264,128 +264,91 @@ router.delete('/delete/:reviewId', async function (req, res) {
 })
 
 /**
- * ! PATCH Like a Review
+ * ! PATCH Toggle Like/Dislike a Review
  * 
- * Increments the `likes` field for a specific review by it's ID.
+ * Toggles the `likes` or `dislikes` field for a specific review by its ID. 
  * 
  * @async
  * @returns {JSON} Responds with the updated review in JSON format.
- * @throws {404} If the review is not found in the database.
+ * @throws {404} If the review or user is not found in the database.
  * @throws {500} If an error occurs while updating the review.
  */
-router.patch('/like/:reviewId', async function (req, res) {
+router.patch('/toggle-like-dislike/:reviewId', async function (req, res) {
     try {
-        // Find the review by ID and increment the likes count
-        const updatedReview = await Review.findByIdAndUpdate(
-            req.params.reviewId,
-            { $inc: { likes: 1 } },
-            { new: true }
-        );
+        const { userId, action } = req.body;
 
-        if (!updatedReview)
-            return res.status(404).json({ error: 'Review not found' });
+        // Find the review by ID
+        const review = await Review.findById(req.params.reviewId);
+        if (!review) return res.status(404).json({ error: 'Review not found' });
+
+        // Find the user by ID
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        if (action === 'like') {
+            if (user.likedReviews.includes(review._id)) {
+                // Unlike the review
+                review.likes--;
+                user.likedReviews.pull(review._id);
+            } else {
+                // Like the review
+                review.likes++;
+                user.likedReviews.push(review._id);
+
+                // If the user had disliked the review, remove the dislike
+                if (user.dislikedReviews.includes(review._id)) {
+                    review.dislikes--;
+                    user.dislikedReviews.pull(review._id);
+                }
+            }
+        } else if (action === 'dislike') {
+            if (user.dislikedReviews.includes(review._id)) {
+                // Undislike the review
+                review.dislikes--;
+                user.dislikedReviews.pull(review._id);
+            } else {
+                // Dislike the review
+                review.dislikes++;
+                user.dislikedReviews.push(review._id);
+
+                // If the user had liked the review, remove the like
+                if (user.likedReviews.includes(review._id)) {
+                    review.likes--;
+                    user.likedReviews.pull(review._id);
+                }
+            }
+        } else if (action === 'unlike') {
+            if (user.likedReviews.includes(review._id)) {
+                // Unlike the review
+                review.likes--;
+                user.likedReviews.pull(review._id);
+            } else {
+                return res.status(400).json({ error: 'Review not liked by user' });
+            }
+        } else if (action === 'undislike') {
+            if (user.dislikedReviews.includes(review._id)) {
+                // Undislike the review
+                review.dislikes--;
+                user.dislikedReviews.pull(review._id);
+            } else {
+                return res.status(400).json({ error: 'Review not disliked by user' });
+            }
+        } else {
+            return res.status(400).json({ error: 'Invalid action' });
+        }
+
+        // Save the updated review and user
+        await review.save();
+        await user.save();
 
         // Return the updated review
-        return res.status(200).json(updatedReview);
+        return res.status(200).json(review);
     }
     catch (error) {
         // Handle general errors
-        return res.status(500).json({ error: `An error occured while liking the review: ${error.message}` });
+        return res.status(500).json({ error: `An error occured while toggling like/dislike: ${error.message}` });
     }
 });
-
-/**
- * ! PATCH Un-Like a Review
- * 
- * Decrements the `likes` field for a specific review by it's ID.
- * 
- * @async
- * @returns {JSON} Responds with the updated review in JSON format.
- * @throws {404} If the review is not found in the database.
- * @throws {500} If an error occurs while updating the review.
- */
-router.patch('/unlike/:reviewId', async function (req, res) {
-    try {
-        // Find the review by ID and decrement the likes count
-        const updatedReview = await Review.findByIdAndUpdate(
-            req.params.reviewId,
-            { $inc: { likes: -1 } },
-            { new: true }
-        );
-
-        if (!updatedReview)
-            return res.status(404).json({ error: 'Review not found' });
-
-        // Return the updated review
-        return res.status(200).json(updatedReview);
-    }
-    catch (error) {
-        // Handle general errors
-        return res.status(500).json({ error: `An error occured while un-liking the review: ${error.message}` });
-    }
-});
-
-/**
- * ! PATCH Dislike a Review
- * 
- * Increments the `dislikes` field for a specific review by its ID.
- * 
- * @async
- * @returns {JSON} Responds with the updated review in JSON format.
- * @throws {404} If the review is not found in the database.
- * @throws {500} If an error occurs while updating the review.
- */
-router.patch('/dislike/:reviewId', async function (req, res) {
-    try {
-        // Find the review by ID and increment the dislikes count
-        const updatedReview = await Review.findByIdAndUpdate(
-            req.params.reviewId,
-            { $inc: { dislikes: 1 } },
-            { new: true }
-        );
-
-        if (!updatedReview)
-            return res.status(404).json({ error: 'Review not found' });
-        
-        // Return the updated review
-        return res.status(200).json(updatedReview);
-    }
-    catch (error) {
-        // Handle general errors
-        return res.status(500).json({ error: `An error occured while disliking the review: ${error.message}` });
-    }
-})
-
-/**
- * ! PATCH Un-Dislike a Review
- * 
- * Decrements the `dislikes` field for a specific review by its ID.
- * 
- * @async
- * @returns {JSON} Responds with the updated review in JSON format.
- * @throws {404} If the review is not found in the database.
- * @throws {500} If an error occurs while updating the review.
- */
-router.patch('/undislike/:reviewId', async function (req, res) {
-    try {
-        // Find the review by ID and decrement the dislikes count
-        const updatedReview = await Review.findByIdAndUpdate(
-            req.params.reviewId,
-            { $inc: { dislikes: -1 } },
-            { new: true }
-        );
-
-        if (!updatedReview)
-            return res.status(404).json({ error: 'Review not found' });
-        
-        // Return the updated review
-        return res.status(200).json(updatedReview);
-    }
-    catch (error) {
-        // Handle general errors
-        return res.status(500).json({ error: `An error occured while un-disliking the review: ${error.message}` });
-    }
-})
 
 // Export the router
 module.exports = router;

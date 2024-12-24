@@ -7,6 +7,23 @@
   padding: 1rem; // Padding around the navbar
   position: relative; // Set to relative to handle absolute position of toggler
 
+  // Shimmer effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.2) 10%,
+      rgba(255,255,255,0) 20%
+    );
+    animation: shimmer 4s infinite;
+  }
+
   // * Hamburger Menu Button
   .hamburger-menu {
     border: none; // Removes the default border of the button
@@ -60,6 +77,19 @@
         transform: scale(1.05);
       }
     }
+  }
+}
+
+// Shimmer keyframes
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150%);
+  }
+  50% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(150%);
   }
 }
 

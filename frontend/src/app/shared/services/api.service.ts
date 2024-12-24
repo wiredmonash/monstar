@@ -1,7 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Review } from '../models/review.model';
 import { Observable, tap } from 'rxjs';
+import { AuthService } from './auth.service';
+import { User } from '../models/user.model';
+import { Types } from 'mongoose';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +15,9 @@ export class ApiService {
 
 
   // ! Inject HttpClient
-  constructor(private http: HttpClient) { }
-
+  constructor(
+    private http: HttpClient,
+  ) { }
   
   /**
    * * GET Get All Reviews
@@ -30,51 +34,12 @@ export class ApiService {
   }
 
   /**
-   * * PATCH Like Review by ID
+   * * PATCH Toggle Like/Dislike a Review by ID
    * 
-   * Adds a like to a review by its ID.
-   * 
-   * @param {string} id The ID of the review
-   * @returns {Observable<any>} An observable containing the response from the server
+   * Toggles a like or dislike on a review by its ID.
    */
-  likeReviewPATCH(id: string): Observable<any> {
-    return this.http.patch(`${this.url}/reviews/like/${id}`, {});
-  }
-
-  /**
-   * * PATCH Unlike Review by ID
-   * 
-   * Removes a like from a review by its ID.
-   * 
-   * @param {string} id The ID of the review
-   * @returns {Observable<any>} An observable containing the response from the server
-   */
-  unlikeReviewPATCH(id: string): Observable<any> {
-    return this.http.patch(`${this.url}/reviews/unlike/${id}`, {});
-  }
-
-  /**
-   * * PATCH Dislike a Review by ID
-   * 
-   * Adds a dislike to a review by its ID.
-   * 
-   * @param {string} id The ID of the review
-   * @returns {Observable<any>} An observable containing the response from the server
-   */
-  dislikeReviewPATCH(id: string): Observable<any> {
-    return this.http.patch(`${this.url}/reviews/dislike/${id}`, {});
-  }
-
-  /**
-   * * PATCH Un-Dislike a Review by ID
-   * 
-   * Removes a dislike from a review by its ID.
-   * 
-   * @param {string} id The ID of the review
-   * @returns {Observable<any>} An observable containing the response from the server
-   */
-  undislikeReviewPATCH(id: string): Observable<any> {
-    return this.http.patch(`${this.url}/reviews/undislike/${id}`, {});
+  toggleLikeDislikeReviewPATCH(reviewId: string, userId: Types.ObjectId, action: 'like' | 'dislike' | 'unlike' | 'undislike'): Observable<any> {
+    return this.http.patch(`${this.url}/reviews/toggle-like-dislike/${reviewId}`, { userId: userId, action: action });
   }
 
   /**

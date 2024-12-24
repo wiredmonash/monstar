@@ -36,6 +36,11 @@ const userSchema = new Schema({
     verificationEmailsSent: { type: Number, default: 0 },
     // Timestamp of the last verification email sent
     lastVerificationEmail: { type: Date, required: false },
+
+    // Liked reviews
+    likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+    // Disliked reviews
+    dislikedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
 });
 
 // Middleware to set default username as authcate from email

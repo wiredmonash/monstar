@@ -135,10 +135,10 @@
 
                     <!-- Thumbs Buttons and Like Count -->
                     <div class="thumbs-container">
-                        <span class="me-2">{{ likes }}</span>
-                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="like()"></i>
-                        <span class="me-2 ml-3">{{ dislikes }}</span>
-                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="dislike()"></i>
+                        <span class="me-2">{{ review.likes }}</span>
+                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="toggleLike()"></i>
+                        <span class="me-2 ml-3">{{ review.dislikes }}</span>
+                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="toggleDislike()"></i>
                     </div>
                 </div>
             </div>
