@@ -251,7 +251,7 @@
                         <!-- Update username input -->
                         <ng-container class="input-container">
                             <p-floatLabel>
-                                <input pInputText id="username" [(ngModel)]="inputUpdateUsername" (focus)="isUsernameInputValid = true;"/>
+                                <input pInputText id="username" variant="filled" [(ngModel)]="inputUpdateUsername" (focus)="isUsernameInputValid = true;"/>
                                 <label for="username">Update your Username</label>
                             </p-floatLabel>
                         </ng-container>
@@ -262,8 +262,8 @@
 
                         <!-- Update password input -->
                         <p-floatLabel>
-                            <input pInputText id="password" [(ngModel)]="inputUpdatePassword" />
-                            <label for="password">New Password</label>
+                            <input pInputText id="password" variant="filled" type="password" [(ngModel)]="inputUpdatePassword" />
+                            <label for="password">New Password (optional)</label>
                         </p-floatLabel>
 
                         <!-- Submit changes to update details -->

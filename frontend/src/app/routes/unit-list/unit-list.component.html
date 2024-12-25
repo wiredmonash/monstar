@@ -11,6 +11,7 @@
             [(ngModel)]="sortBy"
             [editable]="true"
             placeholder="Sort By"
+            variant="filled"
             [style]="{'border-radius': '3rem', 'width': '13rem', 'height': '2.25rem' }"
             (onChange)="onSortByChange();"
             (onFocus)="isSortByFocused = true;"
@@ -30,7 +31,8 @@
               id="searchInput"
               pInputText 
               placeholder="Search" 
-              [style]="{ 'border-radius': '3rem', 'width': '15rem', 'height': '2.5rem', 'font-size': '1rem' }"
+              variant='filled'
+              [style]="{ 'border-radius': '3rem', 'width': '18rem', 'height': '2.5rem', 'font-size': '1rem' }"
               [(ngModel)]="search" 
               (input)="filterUnits()"
               (focus)="isSearchFocused = true;"
