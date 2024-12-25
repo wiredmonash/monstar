@@ -32,7 +32,13 @@ app.use((obj, req, res, next) => {
 
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
-async function connect(url) { await mongoose.connect(url); }
+async function connect(url) { 
+    await mongoose.connect(url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000
+    }); 
+}
 connect(url)
     .then(console.log('Connected to MongoDB Database'))
     .catch((error) => console.log(error));
