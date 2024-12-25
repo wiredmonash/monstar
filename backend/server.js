@@ -14,6 +14,9 @@ const AuthRouter = require('./routes/auth');
 
 // === Middleware ===
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
+})
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
 app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
