@@ -11,7 +11,7 @@ import { Types } from 'mongoose';
 })
 export class ApiService {
   // The URL of where the API Server is located
-  private url = 'http://localhost:8080/api/v1';
+  private url = '/api/v1';
 
 
   // ! Inject HttpClient
