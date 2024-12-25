@@ -2,6 +2,10 @@
     "version": 2,
     "builds": [
         {
+            "src": "frontend/dist/frontend/browser/(.*)",
+            "use": "@vercel/static"
+        },
+        {
             "src": "backend/server.js",
             "use": "@vercel/node"
         }
