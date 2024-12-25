@@ -2,29 +2,15 @@
     "version": 2,
     "builds": [
       {
-        "src": "frontend/dist/frontend/browser/(.*)",
-        "use": "@vercel/static"
-      },
-      {
         "src": "backend/server.js",
         "use": "@vercel/node"
       }
     ],
-    "rewrites": [
+    "routes": [
+      { "handle": "filesystem" },
       {
-        "source": "/(.*)",
-        "destination": "backend/server.js"
-      }
-    ],
-    "headers": [
-      {
-        "source": "/(.*)",
-        "headers": [
-          {
-            "key": "Content-Security-Policy",
-            "value": "default-src 'self' 'unsafe-inline' data:; img-src 'self' data:;"
-          }
-        ]
+        "src": "/(.*)",
+        "dest": "backend/server.js"
       }
     ]
-  }
+}
