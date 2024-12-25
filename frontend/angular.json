@@ -19,6 +19,7 @@
           "options": {
             "allowedCommonJsDependencies": ["mongoose"],
             "outputPath": "dist/frontend",
+            "baseHref": "/",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
