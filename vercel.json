@@ -1,37 +1,15 @@
 {
+    "version": 2,
     "builds": [
-      {
-        "src": "frontend/package.json",
-        "use": "@vercel/static-build",
-        "config": {
-          "distDir": "dist/frontend/browser"
+        {
+            "src": "backend/server.js",
+            "use": "@vercel/node"
         }
-      },
-      {
-        "src": "backend/server.js",
-        "use": "@vercel/node"
-      }
     ],
     "routes": [
-      {
-        "src": "/api/v1/auth/(.*)",
-        "dest": "/backend/server.js"
-      },
-      {
-        "src": "/api/v1/reviews/(.*)",
-        "dest": "/backend/server.js"
-      },
-      {
-        "src": "/api/v1/units/(.*)",
-        "dest": "/backend/server.js"
-      },
-      {
-        "src": "/api/v1/(.*)",
-        "dest": "/backend/server.js"
-      },
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
+        {
+            "src": "/(.*)",
+            "dest": "backend/server.js"
+        }
     ]
 }
