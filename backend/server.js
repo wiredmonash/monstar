@@ -37,8 +37,6 @@ app.use((obj, req, res, next) => {
 const url = process.env.MONGODB_CONN_STRING;
 async function connect(url) { 
     await mongoose.connect(url, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000
     }); 
 }
