@@ -175,7 +175,7 @@ export class AuthService {
    * @returns {Observable<any>} an observable containing the response from the server.
    */
   updateDetails(oldEmail: string, username?: string, password?: string) {
-    return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password });
+    return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password }, { withCredentials: true });
   }
 
   /**
@@ -192,6 +192,6 @@ export class AuthService {
     formData.append('avatar', file);
     formData.append('email', email);
 
-    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, formData);
+    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, formData, { withCredentials: true });
   }
 }
