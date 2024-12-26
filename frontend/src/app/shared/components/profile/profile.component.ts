@@ -145,6 +145,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Set the current username in the update username field in details page
         this.inputUpdateUsername = this.user?.username;
 
+        // Update the profile menu label with the new username
+        const userItem = this.profileMenuItems.find(item => item.label?.startsWith('User:'));
+        if (userItem) {
+          userItem.label = `User: ${this.user?.username || 'Guest'}`;
+        }
+
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
 
@@ -156,7 +162,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Set profile menu items
     this.profileMenuItems = [
       {
-        label: 'User: jfer0043',
+        label: `User: ${this.user?.username || 'Guest'}`,
         items: [
           {
             label: 'Details',
@@ -434,6 +440,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
             // Reset the fields
             this.inputUpdateUsername = this.user?.username || '';
             this.inputUpdatePassword = '';
+            
+            // Update the profile menu label with the new username
+            const userItem = this.profileMenuItems.find(item => item.label?.startsWith('User:'));
+            if (userItem) {
+              userItem.label = `User: ${this.user?.username || 'Guest'}`;
+            }
 
             // Show success toast
             this.createToast.emit({ severity: 'success', summary: 'Updated details!', detail: 'You have updated your details' });
