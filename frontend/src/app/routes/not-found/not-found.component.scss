@@ -1,0 +1,19 @@
+.card-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10rem;
+
+    .emoji {
+        transform: scale(4);
+        margin-bottom: 1.25rem;
+    }
+
+    .home-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 1.2rem;
+    }
+}
