@@ -39,7 +39,7 @@ export class ApiService {
    * Toggles a like or dislike on a review by its ID.
    */
   toggleLikeDislikeReviewPATCH(reviewId: string, userId: Types.ObjectId, action: 'like' | 'dislike' | 'unlike' | 'undislike'): Observable<any> {
-    return this.http.patch(`${this.url}/reviews/toggle-like-dislike/${reviewId}`, { userId: userId, action: action });
+    return this.http.patch(`${this.url}/reviews/toggle-like-dislike/${reviewId}`, { userId: userId, action: action }, { withCredentials: true });
   }
 
   /**
@@ -118,7 +118,7 @@ export class ApiService {
       review_content_rating: review.contentRating,
       review_description: review.description,
       review_author: review.author
-    }).pipe(
+    }, { withCredentials: true }).pipe(
       tap({
         next: (response) => {
           // ? Debug log

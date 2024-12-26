@@ -4,9 +4,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const multer = require('multer');
 const { storage, cloudinary } = require('../utils/cloudinary');
+const multer = require('multer');
 const upload = multer({ storage });
+const { verifyToken } = require('../utils/verify_token.js');
 require('dotenv').config();
 
 // Model imports
@@ -152,7 +153,7 @@ router.get('/verify-email/:token', async function (req, res) {
  * @returns {JSON} Responds with a list of all users in JSON format.
  * @throws {500} If an error occurs whilst fetching users from the database.
  */
-router.get('/', async function (req, res) {
+router.get('/', verifyToken, async function (req, res) {
     try {
         // Find all users
         const users = await User.find({});
@@ -272,12 +273,14 @@ router.post('/login', async function (req, res) {
  * 
  * Deletes a User from the database
  * 
+ * TODO: Make sure the user is an admin before deleting
+ * 
  * @async
  * @returns {JSON} Responds with a success message in JSON
  * @throws {500} If an error occurs
  * @throws {404} User not found error
  */
-router.delete('/delete/:email', async function (req, res) {
+router.delete('/delete/:email', verifyToken, async function (req, res) {
     try {
         // Get the user by email in the DB and delete them.
         const user = await User.findOneAndDelete({email: req.params.email});
@@ -303,7 +306,7 @@ router.delete('/delete/:email', async function (req, res) {
  * @async
  * @returns {JSON} Responds with a success message in JSON
  */
-router.post('/logout', async function (req, res) {
+router.post('/logout', verifyToken, async function (req, res) {
     try {
         // Clear the cookie
         res.clearCookie('access_token', { httpOnly: true, sameSite: 'strict' });
@@ -327,7 +330,7 @@ router.post('/logout', async function (req, res) {
  * @throws {404} If the Unit is not found
  * @throws {500} If some error occurs
  */
-router.put('/update/:email', async function (req, res) {
+router.put('/update/:email', verifyToken, async function (req, res) {
     try {
         // Get the user by email from the DB
         const user = await User.findOne({ email: req.params.email });
@@ -412,7 +415,7 @@ router.get('/validate', async function (req, res) {
  * @throws {404} If the user is not found
  * @throws {500} Internal server errors
  */
-router.post('/upload-avatar', upload.single('avatar'), async function (req, res) {
+router.post('/upload-avatar', verifyToken, upload.single('avatar'), async function (req, res) {
     try {
         // Get the user by email
         const { email } = req.body;

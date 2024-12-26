@@ -5,6 +5,9 @@ const express = require('express');
 const Unit = require('../models/unit');
 const Review = require('../models/review');
 
+// Function Imports
+const { verifyAdmin } = require('../utils/verify_token.js');
+
 // Router instance
 const router = express.Router();
 
@@ -165,11 +168,13 @@ router.get('/filter', async function (req, res) {
  * 
  * Creates a new Unit and adds it to the database.
  * 
+ * TODO: Only admin can do this
+ * 
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
  * @throws {500} If an error occurs whilst creating a unit
  */
-router.post('/create', async function (req, res) {
+router.post('/create', verifyAdmin, async function (req, res) {
     try {
         const existingUnit = await Unit.findOne({
             unitCode: req.body.unit_code.toLowerCase()
@@ -203,11 +208,13 @@ router.post('/create', async function (req, res) {
  * 
  * Creates multiple units based on the input JSON data.
  * 
+ * TOOD: Only admin can do this
+ * 
  * @async
  * @param {JSON} req.body - Contains the JSON data for multiple units.
  * @returns {JSON} Success or error messages.
  */
-router.post('/create-bulk', async function (req, res) {
+router.post('/create-bulk', verifyAdmin, async function (req, res) {
     try {
         const unitData = req.body;
         const results = []
@@ -255,7 +262,7 @@ router.post('/create-bulk', async function (req, res) {
  * @throws {500} If an error occurs
  * @throws {404} Unit not found error
  */
-router.delete('/delete/:unitcode', async function (req, res) {
+router.delete('/delete/:unitcode', verifyAdmin, async function (req, res) {
     try {
         // Find and delete the unit
         const unit = await Unit.findOneAndDelete({ unitCode: req.params.unitcode });

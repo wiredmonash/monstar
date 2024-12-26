@@ -6,6 +6,9 @@ const Review = require('../models/review');
 const Unit = require('../models/unit');
 const User = require('../models/user');
 
+// Function Imports
+const { verifyToken }= require('../utils/verify_token.js');
+
 // Router instance
 const router = express.Router();
 
@@ -80,7 +83,7 @@ router.get('/:unit', async function (req, res) {
  * @throws {404} If the Unit with the given unit code from parameter doesn't exist in DB
  * @throws {500} If an error occurs whilst creating a review.
  */
-router.post('/:unit/create', async function (req, res) {
+router.post('/:unit/create', verifyToken, async function (req, res) {
     try {
         // Get the unit code from parameter
         const unitCode = req.params.unit.toLowerCase();
@@ -273,7 +276,7 @@ router.delete('/delete/:reviewId', async function (req, res) {
  * @throws {404} If the review or user is not found in the database.
  * @throws {500} If an error occurs while updating the review.
  */
-router.patch('/toggle-like-dislike/:reviewId', async function (req, res) {
+router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req, res) {
     try {
         const { userId, action } = req.body;
 
