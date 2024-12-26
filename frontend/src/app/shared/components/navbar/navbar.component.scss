@@ -4,10 +4,11 @@
 // * Top Navigation Bar
 .navbar {
   background-color: $primary-color; // Background color of the navbar
-  padding: 1rem; // Padding around the navbar
+  padding: 0.35rem; // Padding around the navbar
   position: relative; // Set to relative to handle absolute position of toggler
 
-  // Shimmer effect
+
+  // ! Shimmer effect
   &::before {
     content: '';
     position: absolute;
@@ -69,13 +70,25 @@
     transform: scale(1.5);
     user-select: none;
 
-    // Hover effect for pi-user-plus
+    // ! Hover effect for pi-user-plus
     i {
       transition: transform 0.3s ease-in-out;
 
       &:hover {
         transform: scale(1.05);
       }
+    }
+
+    // * Badge for online status
+    .online-badge {
+      position: absolute;
+      bottom: 5px;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgb(58, 181, 58);
+      border: 1px solid white;
     }
   }
 }
@@ -96,6 +109,7 @@
 // * Sidebar title
 .sidebar-title {
   color: #000;
+  font-family: $poppins;
 }
 
 // * Sidebar avatar

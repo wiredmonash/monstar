@@ -25,10 +25,10 @@ import { Dropdown } from 'primeng/dropdown';
     FormsModule,
     PaginatorModule,
     SkeletonModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './unit-list.component.html',
-  styleUrl: './unit-list.component.scss'
+  styleUrl: './unit-list.component.scss',
 })
 export class UnitListComponent implements OnInit {
   // Array to hold the filtered list of units
@@ -60,7 +60,6 @@ export class UnitListComponent implements OnInit {
 
   // NgModel value for the sort by dropdown (default: Alphabetic)
   sortBy: string = 'Alphabetic'; 
-  
 
   /**
    * * Constructor

@@ -4,20 +4,7 @@
 .FAQ {
   text-align: center;
   padding-bottom: 20px;
-}
-
-// * Placeholder for Graphic Section
-.graphic-box {
-  width: 100%;
-  max-width: 800px;
-  height: 300px;
-  border: 2px solid #000;
-  border-radius: 15px; // Curved edges
-  background-color: #eeecea; /* Placeholder background for graphic */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+  font-family: $poppins;
 }
 
 // * Explore button
@@ -54,8 +41,9 @@
   align-items: center;
   text-align: center;
   color: #000;
+  font-family: $poppins;
   
-
+  // Shimmer effect
   &::before {
     content: '';
     position: absolute;
@@ -67,6 +55,7 @@
     animation: shimmer 3s infinite;
   }
 
+  // Shimmer effect keyframes
   @keyframes shimmer {
     0% {
       opacity: 0.1;
@@ -80,11 +69,8 @@
   }
 
   .hero-content {
-    position: relative; /* Ensures content is above the gradient */
-  }
-
-  .hero-content {
     max-width: 800px;
+    position: relative;
 
     h1 {
       font-size: 3rem;
@@ -139,7 +125,7 @@
   }
 }
 
-// * Shooting stars
+// ! Shooting stars
 span {
   position: absolute;
   top: 50%;

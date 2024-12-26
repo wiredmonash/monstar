@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
 import { TooltipModule } from 'primeng/tooltip';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'app-navbar',
@@ -25,7 +26,8 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     ProfileComponent,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    BadgeModule,
   ],
   providers: [
     MessageService

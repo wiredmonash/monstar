@@ -16,9 +16,12 @@
             (onChange)="onSortByChange();"
             (onFocus)="isSortByFocused = true;"
             (onBlur)="isSortByFocused = false;"
+            pTooltip="Sort units by"
+            tooltipPosition="bottom"
+            tooltipStyleClass="mt-2"
           />
           <!-- Badge to show keyboard shortcut -->
-          @if (!isSortByFocused) { <span class="sortby-badge">(CTRL)+F</span> }
+          @if (!isSortByFocused) { <span class="sortby-badge">CTRL+F</span> }
         </div>
     </div>
 
@@ -37,19 +40,20 @@
               (input)="filterUnits()"
               (focus)="isSearchFocused = true;"
               (blur)="isSearchFocused = false;"
+              pTooltip="Search for unitcode"
+              tooltipPosition="bottom"
             />
             <!-- Badge to show keyboard shortcut -->
-            @if (!isSearchFocused) { <span class="search-badge">(CTRL)+K</span> }
+            @if (!isSearchFocused) { <span class="search-badge">CTRL+K</span> }
         </span>
     </div>
 
     <!-- End group -->
     <div class="p-toolbar-group-end">
-      
+      <p-button icon="pi pi-filter" pTooltip="Advanced Filtering" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
     </div>
   </p-toolbar>
 </div>
-
 
 <!-- Skeletons if loading -->
 @if (loading) {
