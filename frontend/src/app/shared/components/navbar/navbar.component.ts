@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -63,6 +63,40 @@ export class NavbarComponent {
   constructor (
     private messageService: MessageService
   ) {}
+
+  /** 
+   * * Keybinds
+   * 
+   * - Open and close the profile dialog with CTRL + P
+   * - Open and close the sidebar with CTRL + S
+   */
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    // If the user presses 'p' then we open the profile dialog
+    if (event.ctrlKey && event.key === 'p') {
+      event.preventDefault();
+
+      if (!this.profileDialogVisible) {
+        this.showProfileDialog();
+        this.sidebarVisible = false;
+      } else {
+        this.profileDialogVisible = false;
+        this.onDialogClose();
+      }
+    }
+
+    // If the user presses 's' then we open the sidebar
+    if (event.ctrlKey && event.key === 's') {
+      event.preventDefault();
+
+      if (!this.sidebarVisible) {
+        this.sidebarVisible = true;
+        this.profileDialogVisible = false;
+      } else {
+        this.sidebarVisible = false;
+      }
+    }
+  }
 
   /**
    * * Closes the sidebar

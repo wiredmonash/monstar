@@ -136,6 +136,7 @@ export class UnitListComponent implements OnInit {
    * - CTRL + K: Focuses on search bar
    * - CTRL + F: Focuses on sort by dropdown
    * - Escape: Unfocuses all elements
+   * - Enter: Searches if focused on search bar 
    * 
    * @HostListener 
    * @param event Keyboard event
@@ -165,6 +166,11 @@ export class UnitListComponent implements OnInit {
       const activeElement = document.activeElement as HTMLElement;
       if (activeElement)
         activeElement.blur();
+    }
+    if (event.key == 'Enter') {
+      if (this.isSearchFocused && this.search) {
+        this.filterUnits();
+      }
     }
   }
 
