@@ -6,6 +6,7 @@ import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.c
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
 import { ApiService } from '../../shared/services/api.service';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-home',
@@ -15,14 +16,20 @@ import { ApiService } from '../../shared/services/api.service';
     CarouselModule,
     UnitCardComponent,
     DividerModule,
-    ButtonModule
+    ButtonModule,
+    SkeletonModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
+  // Loading status of popular units fetching
+  loading: boolean = true;
+
+  // Stores the popular units to be displayed on the home page
   popularUnits: any = [];
 
+  // Carousel responsive options
   responsiveOptions = [
     {
       breakpoint: '1198px',
@@ -49,8 +56,10 @@ export class HomeComponent implements OnInit {
 
   // * Get popular units
   getPopularUnits() {
+    this.loading = true;
     this.apiService.getPopularUnitsGET().subscribe({
       next: (response: any) => {
+        this.loading = false;
         this.popularUnits = response;
         console.log('Home | Popular units:', response);
       },
