@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { Subscription } from 'rxjs';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-review-card',
@@ -21,6 +22,7 @@ import { Subscription } from 'rxjs';
     ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
+    TooltipModule
   ],
   providers: [
     ConfirmationService,
@@ -174,6 +176,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
    */
   toggleLike() {
     if (!this.currentUser) return;
+    if (this.currentUser._id === this.review.author._id) return;
 
     const action = this.liked ? 'unlike' : 'like';
     this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({
@@ -208,6 +211,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
    */
   toggleDislike() {
     if (!this.currentUser) return;
+    if (this.currentUser._id === this.review.author._id) return;
 
     const action = this.disliked ? 'undislike' : 'dislike';
     this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({

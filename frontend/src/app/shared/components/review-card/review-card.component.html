@@ -135,10 +135,19 @@
 
                     <!-- Thumbs Buttons and Like Count -->
                     <div class="thumbs-container">
+                        <!-- Like button -->
                         <span class="me-2">{{ review.likes }}</span>
-                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="toggleLike()"></i>
+                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" 
+                            (click)="toggleLike()" 
+                            [pTooltip]="currentUser?._id === review.author._id ? 'Cant like yours :(' : ''"
+                            fitContent="true"
+                        ></i>
+                        <!-- Dislike button -->
                         <span class="me-2 ml-3">{{ review.dislikes }}</span>
-                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="toggleDislike()"></i>
+                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" 
+                            (click)="toggleDislike()"
+                            [pTooltip]="currentUser?._id === review.author._id ? 'Cant dislike yours :(' : ''"
+                        ></i>
                     </div>
                 </div>
             </div>
