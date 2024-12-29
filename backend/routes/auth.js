@@ -332,19 +332,24 @@ router.post('/logout', verifyToken, async function (req, res) {
  */
 router.put('/update/:email', verifyToken, async function (req, res) {
     try {
+        // Get the updated email and/or password from the request body
+        const { username, password } = req.body;
+
+        // Validate that either username or password is provided in the request body
+        if (!username && !password)
+            return res.status(400).json({ error: 'Either username or password is required to update' });
+
         // Get the user by email from the DB
         const user = await User.findOne({ email: req.params.email });
 
         // If the user doesn't exist in the DB return status 404 not found
         if (!user)
-            return res.status(404).json({error: "User not found"});
-
-        // Get the updated email and/or password from the request body
-        const { username, password } = req.body;
+            return res.status(404).json({ error: "User not found" });
 
         // If username was provided in the request body, update it.
-        if (username)
+        if (username) {
             user.username = username;
+        }
 
         // If password was provided in the request body, hash it and update it.
         if (password) {
@@ -352,15 +357,15 @@ router.put('/update/:email', verifyToken, async function (req, res) {
             user.password = hashedPassword;
         }
 
-        // Save the updates
+        // Save the updated user
         await user.save();
 
-        // Return status 200 for successful update of user details
-        return res.status(200).json({message: "User details successfully updated" });
+        // Return status 200 sending success message and updated user data
+        return res.status(200).json({ message: "User details successfully updated", username: user.username });
     }
     catch (error) {
-        // Handle general errors
-        return res.status(500).json({error: `Error updating user details: ${error.message}`});
+        // Handle general errors status 500
+        return res.status(500).json({ error: `Error updating user details: ${error.message}` });
     }
 });
 
