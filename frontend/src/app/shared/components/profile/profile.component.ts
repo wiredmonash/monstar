@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef, NgZone} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -16,6 +16,10 @@ import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute } from '@angular/router';
+
+declare var google: any;
+declare var gapi: any;
+
 
 @Component({
   selector: 'app-profile',
@@ -37,7 +41,9 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
+
   // All user auth states can be inputted by parent as well
   @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'logged out';
 
@@ -106,7 +112,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor (
     private authService: AuthService,
     private route: ActivatedRoute
-  ) { }
+  , private zone: NgZone) { }
 
 
   // * Change title on initialisation
@@ -220,7 +226,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
     else if (this.state == 'logged in') { this.titleChangeEvent.emit('Profile'); }
     else if (this.state == 'signed out') { this.titleChangeEvent.emit('Sign Up'); }
     else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
+
+    google.accounts.id.initialize({
+      client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
+      // callback: this.testHandleCredential,
+    })
+
   }
+
+  ngAfterViewInit(): void {
+    google.accounts.id.renderButton(
+      //get googleSignInButton on the document
+      this.googleSignInButton.nativeElement,
+      {
+        // Options go here, for example:
+        type: "standard",
+        shape: "rectangular",
+        theme: "outline",
+        text: "signin_with",
+        size: "large",
+        logo_alignment: "left",
+      }
+    );
+  };
 
   // * Signs Up the User
   signup() {
