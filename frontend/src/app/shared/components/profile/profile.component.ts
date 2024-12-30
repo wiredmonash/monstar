@@ -250,6 +250,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         text: "signup_with",
         size: "large",
         logo_alignment: "left",
+        width: "275"
       }
     );
     // uncommenting this enables the one-click sign in prompt in the corner
