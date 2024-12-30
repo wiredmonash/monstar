@@ -42,6 +42,7 @@ declare var gapi: any;
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  // used to get the google sign in button element
   @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
 
   // All user auth states can be inputted by parent as well
@@ -229,26 +230,39 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
     google.accounts.id.initialize({
       client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
-      // callback: this.testHandleCredential,
+      callback: this.onGoogleSignIn.bind(this),
     })
 
   }
 
   ngAfterViewInit(): void {
+    // https://developers.google.com/identity/gsi/web/guides/display-button#javascript
     google.accounts.id.renderButton(
-      //get googleSignInButton on the document
+      // get googleSignInButton on the document
+      // using document.getElementById() doesn't work for some reason
       this.googleSignInButton.nativeElement,
       {
         // Options go here, for example:
         type: "standard",
-        shape: "rectangular",
+        shape: "pill",
         theme: "outline",
-        text: "signin_with",
+        text: "signup_with",
         size: "large",
         logo_alignment: "left",
       }
     );
+    // uncommenting this enables the one-click sign in prompt in the corner
+    // google.accounts.id.prompt();
   };
+
+  handleGoogleSignIn(): void {
+    google.accounts.id.prompt();
+  }
+
+  onGoogleSignIn(res: any): void {
+    const credential = res.credential;
+    console.log("Google Sign In Successful, ID token:", credential);
+  }
 
   // * Signs Up the User
   signup() {
