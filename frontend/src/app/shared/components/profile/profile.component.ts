@@ -255,10 +255,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     // google.accounts.id.prompt();
   };
 
-  handleGoogleSignIn(): void {
-    google.accounts.id.prompt();
-  }
-
   onGoogleSignIn(res: any): void {
     const credential = res.credential;
     console.log("Google Sign In Successful, ID token:", credential);
