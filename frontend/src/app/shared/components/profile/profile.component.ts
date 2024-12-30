@@ -16,6 +16,7 @@ import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute } from '@angular/router';
+import { jwtDecode } from "jwt-decode";
 
 declare var google: any;
 declare var gapi: any;
@@ -257,7 +258,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onGoogleSignIn(res: any): void {
     const credential = res.credential;
+    const decodedCredential = jwtDecode(credential)
     console.log("Google Sign In Successful, ID token:", credential);
+    console.log("Decoded credential:", decodedCredential)
+
   }
 
   // * Signs Up the User
