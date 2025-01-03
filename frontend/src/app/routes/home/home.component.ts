@@ -7,6 +7,7 @@ import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
 import { ApiService } from '../../shared/services/api.service';
 import { SkeletonModule } from 'primeng/skeleton';
+import { Unit } from '../../shared/models/unit.model';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +28,7 @@ export class HomeComponent implements OnInit {
   loading: boolean = true;
 
   // Stores the popular units to be displayed on the home page
-  popularUnits: any = [];
+  popularUnits: Unit[] = [];
 
   // Carousel responsive options
   responsiveOptions = [
@@ -58,12 +59,34 @@ export class HomeComponent implements OnInit {
   getPopularUnits() {
     this.loading = true;
     this.apiService.getPopularUnitsGET().subscribe({
-      next: (response: any) => {
+      next: (response: Unit[]) => {
+        // Map the response data to Unit objects
+        this.popularUnits = response.map((unitData: any) => new Unit(
+          unitData.unitCode,
+          unitData.name,
+          unitData.description,
+          unitData.reviews,
+          unitData.avgOverallRating,
+          unitData.avgRelevancyRating,
+          unitData.avgFacultyRating,
+          unitData.avgContentRating,
+          unitData.level,
+          unitData.creditPoints,
+          unitData.school,
+          unitData.academicOrg,
+          unitData.scaBand,
+          unitData.requisites,
+          unitData.offerings
+        ));
+
+        // Not loading anymore
         this.loading = false;
-        this.popularUnits = response;
+
+        // ? Debug log success
         console.log('Home | Popular units:', response);
       },
       error: (error) => {
+        // ? Debug log error
         console.log('Home | Error getting popular units:', error.error);
       }
     })

@@ -10,7 +10,13 @@ import { FormsModule } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
-import { Dropdown } from 'primeng/dropdown';
+import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
+import { Unit } from '../../shared/models/unit.model';
 
 @Component({
   selector: 'app-unit-list',
@@ -26,13 +32,18 @@ import { Dropdown } from 'primeng/dropdown';
     PaginatorModule,
     SkeletonModule,
     CommonModule,
+    OverlayPanelModule,
+    InputSwitchModule,
+    DropdownModule,
+    MultiSelectModule,
+    FloatLabelModule,
   ],
   templateUrl: './unit-list.component.html',
   styleUrl: './unit-list.component.scss',
 })
 export class UnitListComponent implements OnInit {
   // Array to hold the filtered list of units
-  filteredUnits: any[] = []; 
+  filteredUnits: Unit[] = []; 
 
   // String to hold the current search
   search: string = ''; 
@@ -60,6 +71,30 @@ export class UnitListComponent implements OnInit {
 
   // NgModel value for the sort by dropdown (default: Alphabetic)
   sortBy: string = 'Alphabetic'; 
+
+  // Showing reviewed units
+  showReviewed: boolean = false;
+  // Showing unreviewed units
+  showUnreviewed: boolean = false;
+
+  // Choice of faculties
+  faculties: string[] = ['Art, Design and Architecture', 'Arts', 'Business and Economics', 'Education', 'Engineering', 'Information Technology', 'Law', 'Medicine, Nursing and Health Sciences', 'Pharmacy and Pharmaceutical Sciences', 'Science'];
+  selectedFaculty: any = null;
+
+  // Choice of semesters
+  semesters: string[] = ['First semester', 'Second semester', 'Summer semester A', 'Summer semester B', 'Research quarter 1', 'Research quarter 2', 'Research quarter 3', 'Research quarter 4', 'Winter semester', 'Full year', 'First semester (Northern)', 'Trimester 2', 'Second semester to First semester', 'Term 1', 'Term 2', 'Term 3', 'Trimester 3', 'Teaching period 3', 'Teaching period 4', 'Teaching period 5'];
+  selectedSemesters: any = null;
+
+  // Choice of campuses
+  campuses: string[] = ['Clayton', 'Caulfield', 'Malaysia', 'Overseas', 'Peninsula', 'City (Melbourne)', 'Alfred Hospital', 'Monash Online', 'Monash Medical Centre', 'Monash Law Chambers', 'Notting Hill', 'Parkville', 'Hudson Institute of Medical Research', 'Gippsland', 'Indonesia', 'Box Hill', 'Warragul', 'Prato', 'Suzhou (SEU)', 'Southbank', 'Moe'];
+  selectedCampuses: any = null;
+
+  ratings: number[] = [1,2,3,4,5];
+  selectedRating: number = 0;
+
+  hasPrerequisites: boolean = false;
+  tags: any[] = [];
+  selectedTags: any[] = [];
 
   /**
    * * Constructor
@@ -91,12 +126,38 @@ export class UnitListComponent implements OnInit {
   fetchPaginatedUnits() {
     const searchLower = this.search.toLowerCase();
     this.loading = true;
+
+    console.log('UnitList | Fetching units:', this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses);
   
-    this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy).subscribe({
+    this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
       next: (response: any) => {
-        this.filteredUnits = response.units;
+        // Map the response data to Unit objects
+        this.filteredUnits = response.units.map((unitData: any) => new Unit(
+          unitData.unitCode,
+          unitData.name,
+          unitData.description,
+          unitData.reviews,
+          unitData.avgOverallRating,
+          unitData.avgRelevancyRating,
+          unitData.avgFacultyRating,
+          unitData.avgContentRating,
+          unitData.level,
+          unitData.creditPoints,
+          unitData.school,
+          unitData.academicOrg,
+          unitData.scaBand,
+          unitData.requisites,
+          unitData.offerings
+        ));
+
+        // Update the total records
         this.totalRecords = response.total;
+
+        // Not loading anymore
         this.loading = false;
+
+        // ? Debug log success
+        console.log('UnitList | Fetched units:', this.filteredUnits);
       },
       error: (error) => {
         if (error.status == 404) {
@@ -127,6 +188,17 @@ export class UnitListComponent implements OnInit {
   onPageChange(event: any) {
     this.first = event.first;
     this.rows = event.rows;
+    this.fetchPaginatedUnits();
+  }
+
+  /**
+   * * Handles changes on sortBy dropdown change
+   * 
+   * - Saves the sortBy option to localStorage
+   * - Fetches paginated units again to refresh
+   */
+  onSortByChange() {
+    localStorage.setItem('sortBy', this.sortBy);
     this.fetchPaginatedUnits();
   }
 
@@ -172,16 +244,5 @@ export class UnitListComponent implements OnInit {
         this.filterUnits();
       }
     }
-  }
-
-  /**
-   * * Handles changes on sortBy dropdown change
-   * 
-   * - Saves the sortBy option to localStorage
-   * - Fetches paginated units again to refresh
-   */
-  onSortByChange() {
-    localStorage.setItem('sortBy', this.sortBy);
-    this.fetchPaginatedUnits();
   }
 }

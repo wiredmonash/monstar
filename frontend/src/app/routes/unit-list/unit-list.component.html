@@ -50,7 +50,80 @@
 
     <!-- End group -->
     <div class="p-toolbar-group-end">
-      <p-button icon="pi pi-filter" pTooltip="Advanced Filtering" [rounded]="true" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
+      <!-- Advanced filtering button with overlay panel -->
+      <p-button [icon]="loading ? 'pi pi-spinner pi-spin' : 'pi pi-filter'" (onClick)="op.toggle($event)" pTooltip="Advanced Filtering" [rounded]="true" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
+        <p-overlayPanel #op [dismissable]="true" [style]="{ 'width': '500px', 'margin-top': '1rem' }">
+          <div class="filter-options">
+            <!-- Show only reviewed units -->
+            <div class="filter-option">
+              <p-inputSwitch [(ngModel)]="showReviewed" (onChange)="filterUnits()" [style]="{ 'margin-right': '1rem' }"/>
+              <label for="showOnlyReviewed" class="p-mr-2" [style]="{ 'transform': 'translateY(-6px)' }">Show only reviewed</label>
+            </div>
+
+            <!-- Show only un-reviewed units -->
+            <div class="filter-option">
+              <p-inputSwitch [(ngModel)]="showUnreviewed" (onChange)="filterUnits()" [style]="{ 'margin-right': '1rem' }"/>
+              <label for="showOnlyUnreviewed" class="p-mr-2" [style]="{ 'transform': 'translateY(-6px)' }">Show only unreviewed</label>
+            </div>
+
+            <!-- Faculty -->
+            <div class="filter-option mt-4">
+              <p-floatLabel>
+                <p-multiSelect id="faculty" 
+                  [options]="faculties" 
+                  [style]="{ 'width': '100%' }" 
+                  [showClear]="true"
+                  [(ngModel)]="selectedFaculty" 
+                  (onChange)="filterUnits();"
+                  (onClear)="filterUnits();"
+                />
+                <label for="faculty">Faculty</label>
+              </p-floatLabel>
+            </div>
+
+            <!-- Semester Offered -->
+            <div class="filter-option mt-4">
+              <p-floatLabel>
+                <p-multiSelect id="semester" 
+                  [options]="semesters" 
+                  [style]="{ 'width': '100%' }" 
+                  [showClear]="true"
+                  [(ngModel)]="selectedSemesters" 
+                  (onChange)="filterUnits();"
+                  (onClear)="filterUnits();"
+                />
+                <label for="semester">Semester</label>
+              </p-floatLabel>
+            </div>
+
+            <!-- Campus -->
+            <div class="filter-option mt-4">
+              <p-floatLabel>
+                <p-multiSelect id="campus" 
+                  [options]="campuses" 
+                  [style]="{ 'width': '100%' }" 
+                  [showClear]="true"
+                  [(ngModel)]="selectedCampuses" 
+                  (onChange)="filterUnits();"
+                  (onClear)="filterUnits();"
+                />
+                <label for="campus">Campus</label>
+              </p-floatLabel>
+            </div>
+
+            <!-- Button to clear filters -->
+            <p-button 
+              *ngIf="selectedFaculty || selectedSemesters || selectedCampuses"
+              label="Clear Filters" 
+              icon="pi pi-times" 
+              styleClass="p-button-text p-button-rounded p-button-sm p-button-danger"
+              pTooltip="Clear all filters"
+              tooltipPosition="bottom"
+              [style]="{ 'margin-top': '1rem' }"
+              (onClick)="selectedFaculty = null; selectedSemesters = null; selectedCampuses = null; filterUnits();"
+            />
+          </div>
+        </p-overlayPanel>
     </div>
   </p-toolbar>
 </div>
