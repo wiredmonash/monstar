@@ -114,6 +114,26 @@ export class UnitListComponent implements OnInit {
     if (savedSortBy) 
       this.sortBy = savedSortBy;
 
+    // Retrieve the rows per page state from local storage
+    const savedRowsPerPage = localStorage.getItem('rowsPerPage');
+    if (savedRowsPerPage)
+      this.rows = JSON.parse(savedRowsPerPage);
+
+    // Retrieve the selected faculty from local storage
+    const savedFaculty = localStorage.getItem('selectedFaculty');
+    if (savedFaculty)
+      this.selectedFaculty = JSON.parse(savedFaculty);
+
+    // Retrieve the selected semesters from local storage
+    const savedSemesters = localStorage.getItem('selectedSemesters');
+    if (savedSemesters)
+      this.selectedSemesters = JSON.parse(savedSemesters);
+
+    // Retrieve the selected campuses from local storage
+    const savedCampuses = localStorage.getItem('selectedCampuses');
+    if (savedCampuses)
+      this.selectedCampuses = JSON.parse(savedCampuses);
+
     // Fetches the paginated units from the backend
     this.fetchPaginatedUnits(); 
   }
@@ -176,6 +196,11 @@ export class UnitListComponent implements OnInit {
    * * Updates the filteredUnits array based on the current search query
    */
   filterUnits() {
+    // Save to filters local storage
+    if (this.selectedFaculty) localStorage.setItem('selectedFaculty', JSON.stringify(this.selectedFaculty));
+    if (this.selectedSemesters) localStorage.setItem('selectedSemesters', JSON.stringify(this.selectedSemesters));
+    if (this.selectedCampuses) localStorage.setItem('selectedCampuses', JSON.stringify(this.selectedCampuses));
+  
     this.first = 0;
     this.fetchPaginatedUnits();
   }
@@ -188,6 +213,7 @@ export class UnitListComponent implements OnInit {
   onPageChange(event: any) {
     this.first = event.first;
     this.rows = event.rows;
+    localStorage.setItem('rowsPerPage', JSON.stringify(this.rows)); // Save the rows per page to localStorage
     this.fetchPaginatedUnits();
   }
 
