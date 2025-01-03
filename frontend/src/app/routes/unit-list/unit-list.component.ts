@@ -196,7 +196,11 @@ export class UnitListComponent implements OnInit {
    * * Updates the filteredUnits array based on the current search query
    */
   filterUnits() {
-    // Save to filters local storage
+    // Remove old local storage items
+    localStorage.removeItem('selectedFaculty');
+    localStorage.removeItem('selectedSemesters');
+    localStorage.removeItem('selectedCampuses');
+    // Save filters to local storage 
     if (this.selectedFaculty) localStorage.setItem('selectedFaculty', JSON.stringify(this.selectedFaculty));
     if (this.selectedSemesters) localStorage.setItem('selectedSemesters', JSON.stringify(this.selectedSemesters));
     if (this.selectedCampuses) localStorage.setItem('selectedCampuses', JSON.stringify(this.selectedCampuses));
