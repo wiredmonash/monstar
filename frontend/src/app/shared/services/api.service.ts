@@ -29,6 +29,11 @@ export class ApiService {
     return this.http.get(url);
   }
 
+  getUserReviewsGET(userID: string): Observable<any> {
+    const url = `${this.url}/reviews/author/${userID}`;
+    return this.http.get(url);
+  }
+
   /**
    * * PATCH Like Review by ID
    * 

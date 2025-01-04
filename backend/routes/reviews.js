@@ -92,7 +92,7 @@ router.get('/author/:author', async function (req, res) {
         console.log(`Fetching reviews for author: ${author}`);
 
         // Find all reviews associated with this unit
-        const reviews = await Review.find({ author: author._id }).populate('author');
+        const reviews = await Review.find({ author: author._id }).populate('author').populate('unit');
         // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
 
         // Return the list of reviews with a 200 OK status
