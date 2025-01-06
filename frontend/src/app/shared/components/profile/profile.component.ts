@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
+import { ApiService } from '../../services/api.service';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -43,6 +44,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   // Stores the user
   user: User | null = null;
+
+  // Stores the user reviews
+  reviews: any[] = [];
 
   // Outputs user change to parent
   @Output() userChangeEvent = new EventEmitter<User | null>();
@@ -102,8 +106,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileLoading = false;
 
 
-  // ! Injects AuthService
+  // ! Injects ApiService, AuthService, and ActivatedRoute
   constructor (
+    private apiService: ApiService,
     private authService: AuthService,
     private route: ActivatedRoute
   ) { }
@@ -153,6 +158,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
+
+        console.log('Fetching user reviews for:', this.user?.username);
+
+        // Gets the user reviews if the user is not null
+        if (this.user?.username) {
+          this.getUserReviews(this.user.username);
+        }
+        
+        // console.log(this.reviews)
 
         // ? Debug log change of current user
         console.log('Profile | Current User:', this.user);
@@ -506,6 +520,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
     };
 
     input.click();
+  }
+
+  // * Gets the reviews for the user
+  getUserReviews(userID: any) {
+    this.apiService.getUserReviewsGET(userID).subscribe(
+      (reviews: any) => {
+        this.reviews = reviews;
+
+        // Update the reviews property in the user object
+        if (this.user)
+          this.user.reviews = this.reviews;
+
+        console.log(this.reviews)
+      },
+      (error: any) => {
+        // ? Debug log: Error
+        console.log('ERROR DURING: GET Get All Reviews', error)
+      }
+    );
   }
 
   // * Runs on removal of this component

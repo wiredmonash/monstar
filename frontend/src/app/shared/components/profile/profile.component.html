@@ -274,6 +274,34 @@
                     <p-progressSpinner class="mx-auto"></p-progressSpinner>
                 }
             }
+            @else if (profileMenuState === 'reviews') {
+                <div class="reviews-container">
+                    <table class="profile-review-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Unit</th>
+                                <th>Title</th>
+                                <th>Year</th>
+                                <th>Semester</th>
+                                <th>Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (review of reviews; track $index) {
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ review.unit.unitCode }}</td>
+                                    <td>{{ review.title }}</td>
+                                    <td>{{ review.year }}</td>
+                                    <td>{{ review.semester }}</td>
+                                    <td>{{ review.overallRating }}</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+        }
         } @else {
             <!-- Loading when no user assigned yet -->
             <p-progressSpinner class="mx-auto"></p-progressSpinner>

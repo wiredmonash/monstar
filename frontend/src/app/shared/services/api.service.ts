@@ -47,6 +47,11 @@ export class ApiService {
     );
   }
 
+  getUserReviewsGET(userID: string): Observable<any> {
+    const url = `${this.url}/reviews/author/${userID}`;
+    return this.http.get(url);
+  }
+
   /**
    * * PATCH Toggle Like/Dislike a Review by ID
    * 
