@@ -59,11 +59,21 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data._id, response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
+        const user = new User(
+          response.data._id, 
+          response.data.email, 
+          response.data.username, 
+          response.data.reviews, 
+          response.data.profileImg, 
+          response.data.admin, 
+          response.data.verified,
+          response.data.likedReviews,
+          response.data.dislikedReviews 
+        );
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService Logged in as:', this.currentUser);
+        console.log('AuthService | Logged in as:', this.currentUser);
       })
     );
   }
@@ -83,7 +93,7 @@ export class AuthService {
         this.currentUser.next(null);
 
         // ? Console log
-        console.log('AuthService: Logged out.')
+        console.log('AuthService | Logged out.')
       })
     );
   }
@@ -101,11 +111,21 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data._id, response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
+        const user = new User(
+          response.data._id, 
+          response.data.email, 
+          response.data.username, 
+          response.data.reviews, 
+          response.data.profileImg, 
+          response.data.admin, 
+          response.data.verified,
+          response.data.likedReviews,
+          response.data.dislikedReviews 
+        );
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService validated user as:', this.currentUser);
+        console.log('AuthService | validated user as:', this.currentUser);
       })
     );
   }
@@ -125,11 +145,21 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(response.data._id, response.data.email, response.data.username, response.data.reviews, response.data.profileImg, response.data.admin, response.data.verified);
+        const user = new User(
+          response.data._id, 
+          response.data.email, 
+          response.data.username, 
+          response.data.reviews, 
+          response.data.profileImg, 
+          response.data.admin, 
+          response.data.verified,
+          response.data.likedReviews,
+          response.data.dislikedReviews 
+        );
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService: Signed up, Verified, & Logged In as:', this.currentUser);
+        console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
       })
     );
   }
@@ -145,7 +175,20 @@ export class AuthService {
    * @returns {Observable<any>} an observable containing the response from the server.
    */
   updateDetails(oldEmail: string, username?: string, password?: string) {
-    return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password });
+    return this.http.put(`${this.url}/update/${oldEmail}`, 
+      { username: username, password: password }, 
+      { withCredentials: true }
+    ).pipe(
+      tap((response: any) => {
+        // Update the current user's username
+        if (this.currentUser.value) {
+          this.currentUser.value.username = response.username;
+
+          // ? Debug log
+          console.log('AuthService | Updated user details:', this.currentUser);
+        }
+      })
+    );
   }
 
   /**
@@ -162,6 +205,19 @@ export class AuthService {
     formData.append('avatar', file);
     formData.append('email', email);
 
-    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, formData);
+    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, 
+      formData, 
+      { withCredentials: true }
+    ).pipe(
+      tap((response: any) => {
+        // Update the current user's profile image
+        if (this.currentUser.value) {
+          this.currentUser.value.profileImg = response.profileImg;
+
+          // ? Debug log
+          console.log('AuthService | Uploaded avatar:', this.currentUser);
+        }
+      })
+    );
   }
 }

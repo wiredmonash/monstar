@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -84,6 +85,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   isEmailInputValid: boolean = true;
   // Password input validity status
   isPasswordsInputValid: boolean = true;
+  // Email verification sent capped status
+  isVerifyEmailSentCapped: boolean = false;
   // User input validity status
   isUsernameInputValid: boolean = true;
 
@@ -103,10 +106,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileLoading = false;
 
 
-  // ! Injects AuthService and ApiService
+  // ! Injects ApiService, AuthService, and ActivatedRoute
   constructor (
-    private authService: AuthService,
     private apiService: ApiService,
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) { }
 
 
@@ -117,12 +121,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
       next: (response) => {
         console.log('Profile | User is authenticated:', response);
         this.state = 'logged in';
+        this.createToast.emit({ severity: 'success', summary: 'Validated Session & Logged in', detail: 'You are logged in!' });
         this.titleChangeEvent.emit('Profile');
         this.stateChangeEvent.emit(this.state);
       },
       error: (error) => {
         console.log('Profile | User is not authenticated:', error);
         this.state = 'logged out';
+        this.createToast.emit({ severity: 'warn', summary: 'Session Expired & Logged out', detail: 'You are logged out!' });
         this.titleChangeEvent.emit('Login');
         this.stateChangeEvent.emit(this.state);
       }
@@ -134,8 +140,21 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Store the current user
         this.user = currentUser;
 
+        if (this.user?.verified) {
+          this.state = 'logged in';
+          this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+          this.titleChangeEvent.emit('Profile');
+          this.stateChangeEvent.emit(this.state); 
+        }
+
         // Set the current username in the update username field in details page
         this.inputUpdateUsername = this.user?.username;
+
+        // Update the profile menu label with the new username
+        const userItem = this.profileMenuItems.find(item => item.label?.startsWith('User:'));
+        if (userItem) {
+          userItem.label = `User: ${this.user?.username || 'Guest'}`;
+        }
 
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
@@ -157,7 +176,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Set profile menu items
     this.profileMenuItems = [
       {
-        label: 'User: jfer0043',
+        label: `User: ${this.user?.username || 'Guest'}`,
         items: [
           {
             label: 'Details',
@@ -247,6 +266,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.inputPassword = '';
             this.inputPassword2 = '';
 
+            this.createToast.emit({ severity: 'info', summary: 'Signed Up', detail: 'You have signed up, now you must confirm your email!' });
+
             // ? Debug log success
             console.log('Profile | Signed up successfuly!', response);
           },
@@ -254,8 +275,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.signingUp = false;
 
             // If the error status is 400, the user already exists
-            if (error.status == 400)
+            if (error.status == 400) {
               this.isUserSignUpDuplicate = true;
+              this.createToast.emit({ severity: 'warn', summary: 'User already exists', detail: 'User already exists, please login.' });
+            }
 
             // ? Debug log error on signed up
             console.error('Profile | Sign up failed:', error.error);
@@ -271,6 +294,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.inputPassword = '';
         this.inputPassword2 = '';
 
+        this.createToast.emit({ severity: 'error', summary: 'Passwords do not match', detail: 'Please make sure your passwords match.' });
+
         // ? Debug log
         console.log('Profile | Passwords do not match.');
       }
@@ -284,6 +309,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.inputEmail = '';
       this.inputPassword = '';
       this.inputPassword2 = '';
+
+      this.createToast.emit({ severity: 'error', summary: 'Invalid email', detail: 'Please enter a valid Monash email.' });
 
       // ? Debug log
       console.log('Profile | Not a monash email');
@@ -318,6 +345,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.inputEmail = '';
           this.inputPassword = '';
 
+          this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+
           // ? Debug log success
           console.log('Profile | Logged in succesfully!', response);
         },
@@ -329,13 +358,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
           // Clear the password
           this.inputPassword = '';
 
-          // ? Check for 404 Not Found status code when user not found???
+          // Check for 429 Too Many Requests status code when user is rate limited
+          if (error.status == 429) {
+            this.isVerifyEmailSentCapped = true;
+            this.createToast.emit({ severity: 'warn', summary: '429 Too Many Requests', detail: "We have sent you too many emails at this time." });
+          }
 
           // Check for 403 Forbidden status code when user is not verified yet
           if (error.status == 403) {
             this.isEmailInputValid = true;
             this.isPasswordsInputValid = true;
             this.isEmailInputVerified = false;
+            this.createToast.emit({ severity: 'warn', summary: 'Email not verified', detail: 'Please verify your email before logging in' });
           }
 
           // ? Debug log error on login
@@ -351,6 +385,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
       // Clear the password
       this.inputPassword = '';
+      
+      this.createToast.emit({ severity: 'error', summary: 'Invalid email', detail: 'Please enter a valid Monash email.' });
 
       // ? Debug log
       console.log('Profile | Not a valid monash email', this.inputEmail);
@@ -369,6 +405,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Clear local state
         this.inputEmail = '';
         this.inputPassword = '';
+
+        this.createToast.emit({ severity: 'warn', summary: 'Logged out', detail: 'You are logged out!' });
 
         // ? Log success
         console.log('Profile | Logged out successfully!');
@@ -416,13 +454,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
             // Reset the fields
             this.inputUpdateUsername = this.user?.username || '';
             this.inputUpdatePassword = '';
+            
+            // Update the profile menu label with the new username
+            const userItem = this.profileMenuItems.find(item => item.label?.startsWith('User:'));
+            if (userItem) {
+              userItem.label = `User: ${this.user?.username || 'Guest'}`;
+            }
 
             // Show success toast
-            this.createToast.emit({
-              severity: 'success',
-              summary: 'Updated details!',
-              detail: 'You have updated your details'
-            });
+            this.createToast.emit({ severity: 'success', summary: 'Updated details!', detail: 'You have updated your details' });
 
             // ? Debug log show success
             console.log('Profile | Details updated successfully', response);
@@ -444,6 +484,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.isUsernameInputValid = false;
       this.inputUpdateUsername = '';
       this.inputUpdatePassword = '';
+      this.createToast.emit({ severity: 'error', summary: 'Invalid username', detail: 'Please enter a valid username' });
       console.log('Profile | Not a valid username')
     }
     }

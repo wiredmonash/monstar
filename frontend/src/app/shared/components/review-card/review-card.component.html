@@ -15,10 +15,12 @@
     <!-- Container for the whole review card -->
     <div class="container mt-5 review-card-container" (mouseenter)="deleteButtonState='visible';" (mouseleave)="deleteButtonState='hidden';">
         <div class="review-card position-relative">
-            <!-- Delete review button -->
-            <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
-                <i class="pi pi-times-circle"></i>
-            </div>
+            <!-- Delete review button shows only if the current user is the author of this review -->
+            @if (currentUser?.email == review.author.email) {
+                <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
+                    <i class="pi pi-times-circle"></i>
+                </div>
+            }
 
             <div class="row">
                 <!-- Left Side (Anonymous, Semester, Overall Rating) -->
@@ -30,7 +32,7 @@
                     <p class="d-flex align-items-center">
                         <!-- Profile picture -->
                         <img
-                            [src]="review.author.profileImg"
+                            [src]="review.author.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
                             alt="Profile Picture"
                             class="mr-2 profile-picture"
                         />
@@ -133,10 +135,19 @@
 
                     <!-- Thumbs Buttons and Like Count -->
                     <div class="thumbs-container">
-                        <span class="me-2">{{ likes }}</span>
-                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" (click)="like()"></i>
-                        <span class="me-2 ml-3">{{ dislikes }}</span>
-                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" (click)="dislike()"></i>
+                        <!-- Like button -->
+                        <span class="me-2">{{ review.likes }}</span>
+                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" 
+                            (click)="toggleLike()" 
+                            [pTooltip]="currentUser?._id === review.author._id ? 'Cant like yours :(' : ''"
+                            fitContent="true"
+                        ></i>
+                        <!-- Dislike button -->
+                        <span class="me-2 ml-3">{{ review.dislikes }}</span>
+                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" 
+                            (click)="toggleDislike()"
+                            [pTooltip]="currentUser?._id === review.author._id ? 'Cant dislike yours :(' : ''"
+                        ></i>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
 import { TooltipModule } from 'primeng/tooltip';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'app-navbar',
@@ -25,7 +26,8 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     ProfileComponent,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    BadgeModule,
   ],
   providers: [
     MessageService
@@ -44,7 +46,7 @@ export class NavbarComponent {
   sidebarVisible: boolean = false;
 
   // Username for the sidebar
-  username: string = '';
+  username: string | undefined = '';
 
   // Saves the profile state
   profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' = 'signed out';
@@ -61,6 +63,40 @@ export class NavbarComponent {
   constructor (
     private messageService: MessageService
   ) {}
+
+  /** 
+   * * Keybinds
+   * 
+   * - Open and close the profile dialog with CTRL + P
+   * - Open and close the sidebar with CTRL + S
+   */
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    // If the user presses 'p' then we open the profile dialog
+    if (event.ctrlKey && event.key === 'p') {
+      event.preventDefault();
+
+      if (!this.profileDialogVisible) {
+        this.showProfileDialog();
+        this.sidebarVisible = false;
+      } else {
+        this.profileDialogVisible = false;
+        this.onDialogClose();
+      }
+    }
+
+    // If the user presses 's' then we open the sidebar
+    if (event.ctrlKey && event.key === 's') {
+      event.preventDefault();
+
+      if (!this.sidebarVisible) {
+        this.sidebarVisible = true;
+        this.profileDialogVisible = false;
+      } else {
+        this.sidebarVisible = false;
+      }
+    }
+  }
 
   /**
    * * Closes the sidebar
@@ -98,17 +134,11 @@ export class NavbarComponent {
     this.profileState = state;
 
     switch (state) {
-      case 'signed up':
-        this.messageService.add({ severity: 'info', summary: 'Signed Up', detail: 'You have signed up, now you must confirm your email!' });
-        break;
-
       case 'logged in':
-        this.messageService.add({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!'});
-        this.username = 'jfer0043';
+        this.username = this.user?.username;
         break;
 
       case 'logged out':
-        this.messageService.add({ severity: 'warn', summary: 'Logged out!', detail: 'You are logged out!'});
         this.username = 'Login (Guest)';
         break;
     }

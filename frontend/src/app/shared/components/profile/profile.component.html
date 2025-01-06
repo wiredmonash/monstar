@@ -99,14 +99,18 @@
                 <!-- Email input -->
                 <div class="email-container">
                     <p-floatLabel>
-                        <input id="email"
-                            pInputText
-                            class="{{ (isEmailInputValid || isEmailInputVerified) ? '' : 'ng-invalid ng-dirty' }}"
-                            type="text"
-                            [(ngModel)]="inputEmail"
+                        <input id="email" 
+                            pInputText 
+                            class="{{ 
+                                ((isEmailInputValid || isEmailInputVerified) ? '' : 'ng-invalid ng-dirty') ||
+                                (isVerifyEmailSentCapped ? 'ng-invalid ng-dirty' : '')
+                            }}"
+                            type="text" 
+                            [(ngModel)]="inputEmail" 
                             (focus)="
                                 isEmailInputVerified = true;
                                 isEmailInputValid = true;
+                                isVerifyEmailSentCapped = false;
                             "
                             aria-labelledby="email-help"
                         />
@@ -118,6 +122,9 @@
                     @else if (!isEmailInputVerified) {
                         <small id="email-help" style="background-color: rgb(248, 113, 113);">User not verified, check your email.</small>
                     }
+                    @else if (isVerifyEmailSentCapped) {
+                        <small id="email-help" style="background-color: rgb(248, 113, 113);">Too many requests, please wait a while.</small>
+                    }
                 </div>
 
                 <!-- Password input-->
@@ -126,18 +133,20 @@
                         <p-password id="password"
                             type="password"
                             class="{{
-                                isPasswordsInputValid ? '' : 'ng-invalid ng-dirty'
+                                (isPasswordsInputValid ? '' : 'ng-invalid ng-dirty') ||
+                                (isVerifyEmailSentCapped ? 'ng-invalid ng-dirty' : '')
                             }}"
                             [toggleMask]="true"
                             [feedback]="false"
                             [(ngModel)]="inputPassword"
                             (onFocus)="
                                 isPasswordsInputValid = true;
+                                isVerifyEmailSentCapped = false;
                             "
                         />
                         <label for="password">Password</label>
                     </p-floatLabel>
-                    @if (!isPasswordsInputValid) {
+                    @if (!isPasswordsInputValid && !isVerifyEmailSentCapped) {
                         <small id="password-help" style="background-color: rgb(248, 113, 113);">Invalid email or password</small>
                     }
                 </div>
@@ -219,7 +228,7 @@
                         <h4 class="title">Your Details</h4>
 
                         <!-- Avatar and username card -->
-                        <p-card class="avatar-card m-0" [style]="{ overflow: 'hidden', }">
+                        <p-card class="avatar-card m-0" [style]="{ 'overflow': 'hidden', 'width': 'fit-content' }">
                             <div class="d-flex align-items-center p-0">
 
                                 <!-- Profile picture -->
@@ -240,19 +249,21 @@
                         </p-card>
 
                         <!-- Update username input -->
-                        <p-floatLabel>
-                            <input pInputText id="username" [(ngModel)]="inputUpdateUsername" (focus)="isUsernameInputValid = true;"/>
-                            <label for="username">Update your Username</label>
-                        </p-floatLabel>
+                        <ng-container class="input-container">
+                            <p-floatLabel>
+                                <input pInputText id="username" variant="filled" [(ngModel)]="inputUpdateUsername" (focus)="isUsernameInputValid = true;"/>
+                                <label for="username">Update your Username</label>
+                            </p-floatLabel>
+                        </ng-container>
 
                         @if (!isUsernameInputValid) {
                           <small id="username-help" style="background-color: rgb(248, 113, 113);">Invalid Username (Please enter an alphanumeric username <= 20 characters)</small>
                         }
 
-                      <!-- Update password input -->
+                        <!-- Update password input -->
                         <p-floatLabel>
-                            <input pInputText id="password" [(ngModel)]="inputUpdatePassword" />
-                            <label for="password">New Password</label>
+                            <input pInputText id="password" variant="filled" type="password" [(ngModel)]="inputUpdatePassword" />
+                            <label for="password">New Password (optional)</label>
                         </p-floatLabel>
 
                         <!-- Submit changes to update details -->

@@ -1,4 +1,4 @@
-export const CreateSuccess = (statusCode, successMessage, data) => {
+const CreateSuccess = (statusCode, successMessage, data) => {
     const successObj = {
         status: statusCode,
         message: successMessage,
@@ -7,3 +7,5 @@ export const CreateSuccess = (statusCode, successMessage, data) => {
 
     return successObj;
 };
+
+module.exports = { CreateSuccess };

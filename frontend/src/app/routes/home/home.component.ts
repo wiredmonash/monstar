@@ -6,6 +6,8 @@ import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.c
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
 import { ApiService } from '../../shared/services/api.service';
+import { SkeletonModule } from 'primeng/skeleton';
+import { Unit } from '../../shared/models/unit.model';
 
 @Component({
   selector: 'app-home',
@@ -15,14 +17,20 @@ import { ApiService } from '../../shared/services/api.service';
     CarouselModule,
     UnitCardComponent,
     DividerModule,
-    ButtonModule
+    ButtonModule,
+    SkeletonModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  popularUnits: any = [];
+  // Loading status of popular units fetching
+  loading: boolean = true;
 
+  // Stores the popular units to be displayed on the home page
+  popularUnits: Unit[] = [];
+
+  // Carousel responsive options
   responsiveOptions = [
     {
       breakpoint: '1198px',
@@ -49,12 +57,36 @@ export class HomeComponent implements OnInit {
 
   // * Get popular units
   getPopularUnits() {
+    this.loading = true;
     this.apiService.getPopularUnitsGET().subscribe({
-      next: (response: any) => {
-        this.popularUnits = response;
+      next: (response: Unit[]) => {
+        // Map the response data to Unit objects
+        this.popularUnits = response.map((unitData: any) => new Unit(
+          unitData.unitCode,
+          unitData.name,
+          unitData.description,
+          unitData.reviews,
+          unitData.avgOverallRating,
+          unitData.avgRelevancyRating,
+          unitData.avgFacultyRating,
+          unitData.avgContentRating,
+          unitData.level,
+          unitData.creditPoints,
+          unitData.school,
+          unitData.academicOrg,
+          unitData.scaBand,
+          unitData.requisites,
+          unitData.offerings
+        ));
+
+        // Not loading anymore
+        this.loading = false;
+
+        // ? Debug log success
         console.log('Home | Popular units:', response);
       },
       error: (error) => {
+        // ? Debug log error
         console.log('Home | Error getting popular units:', error.error);
       }
     })

@@ -2,9 +2,11 @@
 <p-toast></p-toast>
 
 <!-- CHILD: UnitHeaderComponent -->
-<div class="unit-header-container">
-    <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)" (reviewAdded)="refreshReviews()"></app-unit-review-header>
-</div>
+@if (unit) {
+    <div class="unit-header-container">
+        <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)" (reviewAdded)="refreshReviews()"></app-unit-review-header>
+    </div>
+}
 
 <!-- Shows all the reviews from the backend -->
 @if (!reviewsLoading) {

@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage, SlicePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AvatarModule } from 'primeng/avatar';
@@ -7,6 +7,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ConfirmPopup, ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../models/user.model';
+import { Subscription } from 'rxjs';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-review-card',
@@ -18,6 +22,7 @@ import { ButtonModule } from 'primeng/button';
     ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
+    TooltipModule
   ],
   providers: [
     ConfirmationService,
@@ -43,9 +48,15 @@ import { ButtonModule } from 'primeng/button';
     ])
   ]
 })
-export class ReviewCardComponent implements OnInit {
+export class ReviewCardComponent implements OnInit, OnDestroy {
   // Accept review data from the parent component
   @Input() review: any; 
+
+  // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
+  @Output() reviewDeleted = new EventEmitter<void>();
+
+  // Child that is the confirmation popup on deletion
+  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
   // Expand state
   expanded: boolean = false;
@@ -63,15 +74,15 @@ export class ReviewCardComponent implements OnInit {
   // Delete button visibility state
   deleteButtonState: 'visible' | 'hidden' = 'hidden';
 
-  // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
-  @Output() reviewDeleted = new EventEmitter<void>();
-
-  // Child that is the confirmation popup on deletion
-  @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
+  // Stores current user by subscribing to AuthService
+  currentUser: User | null = null;
+  // Stores the subscription for currentUser from AuthService
+  private userSubscription: Subscription = new Subscription();
 
   // * Injects the ApiService & confirmationService
   constructor(
     private apiService: ApiService,
+    private authService: AuthService,
     private confirmationService: ConfirmationService
   ) { }
 
@@ -84,7 +95,32 @@ export class ReviewCardComponent implements OnInit {
     // Get like and dislike count from review
     this.likes = this.review.likes;
     this.dislikes = this.review.dislikes;
+
+    // Subscribe to the current user from auth service
+    this.userSubscription = this.authService.getCurrentUser().subscribe({
+      next: (currentUser: User | null) => {
+        // Store the current user for this component
+        this.currentUser = currentUser;
+
+        // Set the liked and disliked state of the review
+        this.liked = this.currentUser?.likedReviews.includes(this.review._id) || false;
+        this.disliked = this.currentUser?.dislikedReviews.includes(this.review._id) || false;
+
+        // ? Debug log change of current user
+        console.log('ReviewCard | Current User:', this.currentUser);
+      }
+    });
   }
+
+  /**
+   * * Runs on destroy
+   * 
+   * Unsubscribes from the currentUser subscription
+   */
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
+  }
+  
 
   // * Choices on confirmation popup (either delete or cancel)
   accept() { this.confirmPopup.accept(); }
@@ -136,117 +172,71 @@ export class ReviewCardComponent implements OnInit {
   }
 
   /**
-   * * Toggles the liked state
+   * * Method to toggle the like state
    */
-  like() {
-    // If we have disliked and now we liked.
-    if (this.disliked && !this.liked) { 
-      this.disliked = false;
-      this.callUnDislikeService();
-      if (this.dislikes > 0)
-        this.dislikes--;
-    }
+  toggleLike() {
+    if (!this.currentUser) return;
+    if (this.currentUser._id === this.review.author._id) return;
 
-    // Toggle liked state
-    this.liked = !this.liked;
+    const action = this.liked ? 'unlike' : 'like';
+    this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({
+      next: (updatedReview) => {
+        this.review.likes = updatedReview.likes;
+        this.review.dislikes = updatedReview.dislikes;
+        this.liked = !this.liked;
 
-    // ? Debugging
-    console.log(`User pressed like button for review: '${this.review.title}'`)
-    console.log('Like state: ', this.liked)
+        if (this.liked) {
+          this.currentUser?.addLikedReview(this.review._id);
+          
+          if (this.disliked) {
+            this.disliked = false;
+            this.currentUser?.removeDislikedReview(this.review._id);
+          }
+        } else {
+          this.currentUser?.removeLikedReview(this.review._id);
+        }
 
-    // Like the review
-    if (this.liked) {
-      this.likes++; // Increment the likes
-      this.callLikeService();
-    }
-
-    // Un-Like the review
-    if (!this.liked) {
-      this.likes--; // Decrement the likes
-      this.callUnLikeService();
-    }
+        // ? Debug log successful like toggle
+        console.log(`Review ${action}d successfully:`, updatedReview);
+      },
+      error: (error) => {
+        // ? Debug log error
+        console.error('Error while toggling like:', error);
+      }
+    });
   }
 
   /**
-   * * Toggles the dislike state
+   * * Method to toggle the dislike state
    */
-  dislike() {
-    // if we have liked and now we disliked 
-    if (this.liked && !this.disliked) { 
-      this.liked = false;
-      this.callUnLikeService();
-      if (this.likes > 0)
-        this.likes--;
-    }
+  toggleDislike() {
+    if (!this.currentUser) return;
+    if (this.currentUser._id === this.review.author._id) return;
 
-    // Toggle disliked state
-    this.disliked = !this.disliked;
-
-    // ? Debugging
-    console.log(`User pressed dislike button for review: '${this.review.title}'`)
-    console.log('Dislike state: ', this.disliked)
-
-    // Dislike the review
-    if (this.disliked) {
-      this.dislikes++; // Increment the dislikes
-      this.callDislikeService();
-    }
-
-    // Un-Dislike the review
-    if (!this.disliked) {
-      this.dislikes--; // Decrement the dislikes
-      this.callUnDislikeService();
-    }
-  }
-
-  // * Call the API service method to like the review
-  callLikeService() {
-    this.apiService.likeReviewPATCH(this.review._id).subscribe({
+    const action = this.disliked ? 'undislike' : 'dislike';
+    this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({
       next: (updatedReview) => {
         this.review.likes = updatedReview.likes;
-        console.log('Review liked successfully:', updatedReview);
-      },
-      error: (error) => {
-        console.error('Error while liking the review:', error);
-      }
-    });
-  }
-
-  // * Call the API service method to un-like the review
-  callUnLikeService() {
-    this.apiService.unlikeReviewPATCH(this.review._id).subscribe({
-      next: (updatedReview) => {
-        this.review.likes = updatedReview.likes;
-        console.log('Review un-liked successfully:', updatedReview);
-      },
-      error: (error) => {
-        console.error('Error while un-liking the review:', error);
-      }
-    });
-  }
-
-  // * Call the API service method to dislike the review
-  callDislikeService() {
-    this.apiService.dislikeReviewPATCH(this.review._id).subscribe({
-      next: (updatedReview) => {
         this.review.dislikes = updatedReview.dislikes;
-        console.log('Review disliked successfully:', updatedReview);
-      },
-      error: (error) => {
-        console.error('Error while disliking the review:', error);
-      }
-    });
-  }
+        this.disliked = !this.disliked;
+        
+        if (this.disliked) {
+          this.currentUser?.addDislikedReview(this.review._id);
 
-  // * Call the API service method to un-dislike the review
-  callUnDislikeService() {
-    this.apiService.undislikeReviewPATCH(this.review._id).subscribe({
-      next: (updatedReview) => {
-        this.review.dislikes = updatedReview.dislikes;
-        console.log('Review un-disliked successfully:', updatedReview);
+          if (this.liked) {
+            this.liked = false;
+            this.currentUser?.removeLikedReview(this.review._id);
+          }
+        } else {
+          this.currentUser?.removeDislikedReview(this.review._id);
+        }
+
+        // ? Debug log successful dislike toggle
+        console.log(`Review ${action}d successfully`, updatedReview);
       },
       error: (error) => {
-        console.error('Error while un-disliking the review:', error);
+        // ? Debug log error
+        console.error('Error while toggling dislike:', error);
       }
     });
   }
