@@ -16,7 +16,14 @@ const userSchema = new Schema({
     username: { type: String, required: false },
 
     // Password
+    // ^ Maybe shouldnt be required (in the case of google users)
     password: { type: String, required: true },
+
+    // If user signed in using Google Auth
+    isGoogleUser: { type: Boolean, default: false},
+
+    // Unique Google Identifier if Google User
+    googleID: { type: String, default: null},
 
     // Created reviews
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],

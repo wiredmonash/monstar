@@ -89,6 +89,30 @@ router.post('/register', async function (req, res) {
 
 
 /**
+ * ! POST Login/register a User using Google
+ * 
+ * Creates a new Google User (if doesn't exist) and login
+ * 
+ * @async
+ * @returns {JSON} Responds with the created unit in JSON format
+ * @throws {500} If an error occurs whilst registering a user
+ */
+router.post('/google/register', async function (req, res) {
+    // const { googleId } = req.body;
+    console.log("From google register endpoint!")
+    console.log(req.body)
+    return res.status(201).json({ message: "Successful register from Google!"});
+
+    // try {
+    //     // Verify Google token
+    //     const ticket = await client.verifyIdToken({
+
+    //     })
+
+    // }
+})
+
+/**
  * ! GET Verify Email
  * 
  * Endpoint that verifies the token when the user clicks the link in their mail.
