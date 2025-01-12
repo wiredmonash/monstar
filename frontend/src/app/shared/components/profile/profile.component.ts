@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef, NgZone} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -19,7 +19,12 @@ import { ActivatedRoute } from '@angular/router';
 import { jwtDecode } from "jwt-decode";
 
 declare var google: any;
-declare var gapi: any;
+
+// interface for the JWT token from Google
+interface CustomJwtPayload {
+  name?: string;
+  email?: string;
+}
 
 
 @Component({
@@ -112,9 +117,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // ! Injects AuthService
   constructor (
-    private authService: AuthService,
-    private route: ActivatedRoute
-  , private zone: NgZone) { }
+    private authService: AuthService) { }
 
 
   // * Change title on initialisation
@@ -229,14 +232,19 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     else if (this.state == 'signed out') { this.titleChangeEvent.emit('Sign Up'); }
     else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
 
-    google.accounts.id.initialize({
-      client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
-      callback: this.onGoogleSignIn.bind(this),
-    })
-
   }
 
   ngAfterViewInit(): void {
+    google.accounts.id.initialize({
+      client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
+      // * login_uri is only supported on ux_mode: "redirect", callback is used otherwise
+      // callback: this.onGoogleSignIn.bind(this),
+      login_uri: "http://localhost:8080/api/v1/auth/google/register",
+      ux_mode: "redirect",
+
+    })
+
+
     // https://developers.google.com/identity/gsi/web/guides/display-button#javascript
     google.accounts.id.renderButton(
       // get googleSignInButton on the document
@@ -259,21 +267,33 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onGoogleSignIn(res: any): void {
     const credential = res.credential;
-    const decodedCredential = jwtDecode(credential)
+    // ! Handle decoding in the backend, this is just for testing purposes.
+    const decodedCredential = jwtDecode<CustomJwtPayload>(credential)
     console.log("Google Sign In Successful, ID token:", credential);
     console.log("Decoded credential:", decodedCredential)
-
+    console.log("User details:", decodedCredential.name)
+    this.signup(decodedCredential.email);
   }
 
+  // googleSignUp(googleEmail: String, googleId: String) {
+  
+  // }
+
   // * Signs Up the User
-  signup() {
+  signup(googleEmail: string | null = null) {
     this.signingUp = true;
     this.isEmailInputValid = true;
     this.isPasswordsInputValid = true;
     this.isUserSignUpDuplicate = false;
 
-    // Trim input email whitespace and store as new variable
-    var email = this.inputEmail.trim();
+    // ! NOTE: remove this after implementing dedicated google sign up, purely just for testing
+    if (googleEmail) {
+      email = googleEmail;
+    }
+    else {
+      // Trim input email whitespace and store as new variable
+      var email = this.inputEmail.trim();
+    }
 
     // Regular expression to validate authcate and email
     const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
