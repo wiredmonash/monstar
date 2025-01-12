@@ -241,7 +241,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       // callback: this.onGoogleSignIn.bind(this),
       login_uri: "http://localhost:8080/api/v1/auth/google/register",
       ux_mode: "redirect",
-
     })
 
 
