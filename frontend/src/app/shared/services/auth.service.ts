@@ -43,6 +43,18 @@ export class AuthService {
   }
 
   /**
+   * * Register a Google user
+   * 
+   * Registers a Google user using the Google ID token.
+   * 
+   * @param {string} idToken The Google id token of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  googleRegister(idToken: string): Observable<any> {
+    return this.http.post(`${this.url}/google/register`, { idToken });
+  }
+
+  /**
    * * Login a user and set current user
    * 
    * Logs in a user with the provided email and password.
