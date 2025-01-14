@@ -154,6 +154,9 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         // Emit the event that we deleted a review
         this.reviewDeleted.emit();
 
+        // Remove this review from the current user's reviews array
+        this.currentUser?.reviews.splice(this.currentUser.reviews.indexOf(this.review._id), 1); 
+
         // ? Debug log
         console.log(message);
       },

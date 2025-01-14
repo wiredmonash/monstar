@@ -6,13 +6,13 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
 import { ApiService } from '../../services/api.service';
-import { Router } from '@angular/router';
 import { Review } from '../../models/review.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-write-review-unit',
@@ -57,6 +57,7 @@ export class WriteReviewUnitComponent {
   // * Constructor that initialises the year options also injects ApiService and MessageService
   constructor (
     private apiService: ApiService,
+    private authService: AuthService,
     private messageService: MessageService
   ) {
     this.initialiseYearOptions();
@@ -67,7 +68,7 @@ export class WriteReviewUnitComponent {
     this.visible = true;
   }
 
-  // * Closes the create review dialog
+  // * Closes eate review dialog
   closeDialog() {
     this.visible = false;
   }
@@ -82,6 +83,10 @@ export class WriteReviewUnitComponent {
    * 
    * Also calculates the overallRating using the Review model's calcOverallRating
    * helper method.
+   * 
+   * If all checks pass, it sends the review to the backend.
+   * 
+   * Pushes the review to the frontend currentUser's reviews array as well.
    * 
    * @subscribes apiService.createReviewForUnitPOST
    */
@@ -110,6 +115,9 @@ export class WriteReviewUnitComponent {
     // Set review author user
     this.review.author = this.user._id;
 
+    // Push the new review to the currentUser's reviews array
+    this.user.reviews.push(this.review._id);
+
     // ? Debug log
     console.log('Posting review:', this.review);
 
@@ -119,8 +127,29 @@ export class WriteReviewUnitComponent {
     // Send the review using the API service
     this.apiService.createReviewForUnitPOST(this.unit.unitCode, this.review).subscribe({
       next: (response) => {
+        // Create the review object from the response
+        const review = new Review(
+          response._id,
+          response.title,
+          response.semester,
+          response.grade,
+          response.year,
+          response.overallRating,
+          response.relevancyRating,
+          response.facultyRating,
+          response.contentRating,
+          response.description,
+          response.author
+        )
+
         // Update the user's reviews array
-        this.user?.reviews.push(response._id);
+        this.user!.reviews.push(review._id);
+
+        // Update the current user in AuthService
+        this.authService.setCurrentUser(this.user!);
+
+        // ? Debug log
+        console.log('WriteReviewUnit | Update current user:', this.user);
 
         // Close the pop up write review
         this.closeDialog();

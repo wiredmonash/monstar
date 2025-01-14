@@ -259,6 +259,9 @@ router.delete('/delete/:reviewId', async function (req, res) {
         // Delete the Review from the database
         await Review.findByIdAndDelete(req.params.reviewId); 
 
+        // Delete the Review from the User's reviews array
+        await User.findByIdAndUpdate(review.author, { $pull : { reviews: req.params.reviewId } } ); 
+
         // Removing the review from the Unit's `reviews` array
         await Unit.findByIdAndUpdate(unitId, { $pull : { reviews: req.params.reviewId } } );
 

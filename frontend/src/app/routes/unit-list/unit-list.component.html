@@ -50,9 +50,11 @@
 
     <!-- End group -->
     <div class="p-toolbar-group-end">
+      <!-- Badge for keyboard shortcut -->
+      @if (!op.overlayVisible) { <span class="filter-badge">CTRL+O</span> }
       <!-- Advanced filtering button with overlay panel -->
-      <p-button [icon]="loading ? 'pi pi-spinner pi-spin' : 'pi pi-filter'" (onClick)="op.toggle($event)" pTooltip="Advanced Filtering" [rounded]="true" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
-        <p-overlayPanel #op [dismissable]="true" [style]="{ 'width': '500px', 'margin-top': '1rem' }">
+      <p-button #filterButton [icon]="loading ? 'pi pi-spinner pi-spin' : 'pi pi-filter'" (onClick)="op.toggle($event)" pTooltip="Advanced Filtering" [rounded]="true" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
+        <p-overlayPanel #op id="advancedFiltering" [dismissable]="true" [style]="{ 'width': '500px', 'margin-top': '1rem' }">
           <div class="filter-options">
             <!-- Show only reviewed units -->
             <div class="filter-option">

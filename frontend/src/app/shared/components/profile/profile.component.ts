@@ -17,6 +17,9 @@ import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { ActivatedRoute } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { DatePipe, UpperCasePipe } from '@angular/common';
+import { RatingModule } from 'primeng/rating';
 
 @Component({
   selector: 'app-profile',
@@ -33,7 +36,11 @@ import { ActivatedRoute } from '@angular/router';
     AvatarModule,
     CardModule,
     ProgressSpinnerModule,
-    TooltipModule
+    TooltipModule,
+    TableModule,
+    UpperCasePipe,
+    RatingModule,
+    DatePipe,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -539,6 +546,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
         console.log('ERROR DURING: GET Get All Reviews', error)
       }
     );
+  }
+
+  // * Delete a review
+  deleteReview(reviewId: string) {
+    this.apiService.deleteReviewByIdDELETE(reviewId).subscribe({
+      next: (response: any) => { 
+        // Remove the review from the reviews array
+        this.reviews = this.reviews.filter(review => review._id !== reviewId);
+
+        // Update the reviews array for the frontend's currentUser
+        if (this.user)
+          this.user.reviews = this.reviews;
+
+        // Emit a success toast
+        this.createToast.emit({ severity: 'success', summary: 'Review Deleted', detail: 'Your review has been deleted successfully.' });
+
+        // ? Debug log: Success
+        console.log('Profile | Review deleted successfully', response);
+      },
+      error: (error: any) => {
+        // ? Debug log: Error
+        console.error('Profile | Error whilst deleting review', error.message);
+      }
+    })
   }
 
   // * Runs on removal of this component

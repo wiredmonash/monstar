@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UnitCardComponent } from "../../shared/components/unit-card/unit-card.component";
 import { ApiService } from '../../shared/services/api.service';
@@ -11,11 +11,10 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
-import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { TruncatePipe } from '../../shared/pipes/truncate.pipe';
 import { Unit } from '../../shared/models/unit.model';
 
 @Component({
@@ -71,6 +70,11 @@ export class UnitListComponent implements OnInit {
 
   // NgModel value for the sort by dropdown (default: Alphabetic)
   sortBy: string = 'Alphabetic'; 
+
+  // Advanced filtering overlay panel reference
+  @ViewChild('op') overlayPanel!: OverlayPanel;
+  // Advanced filtering button reference
+  @ViewChild('filterButton', { read: ElementRef }) filterButton!: ElementRef;
 
   // Showing reviewed units
   showReviewed: boolean = false;
@@ -261,6 +265,12 @@ export class UnitListComponent implements OnInit {
       event.preventDefault();
       if (this.sortByDropdown)
         this.sortByDropdown.focus();
+    }
+    // Focuses on advanced filtering
+    if (event.ctrlKey && event.key === 'o') {
+      event.preventDefault();
+      if (this.overlayPanel && this.filterButton)  
+        this.overlayPanel.toggle(event, this.filterButton.nativeElement);
     }
     // Unfocuses on all
     if (event.key === 'Escape') {

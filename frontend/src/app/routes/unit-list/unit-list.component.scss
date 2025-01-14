@@ -65,7 +65,7 @@ $padding: 40px;
     }
 
     // Badge styles
-    .search-badge, .sortby-badge{
+    .search-badge, .sortby-badge {
         position: absolute;
         right: 10px;
         top: 50%;
@@ -76,6 +76,15 @@ $padding: 40px;
         padding: 0.2rem 0.5rem;
         font-size: 0.6rem;
         margin-left: 0.5rem;
+    }
+
+    .filter-badge {
+        font-size: 0.6rem;
+        color: white;
+        margin-right: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        background-color: rgb(83,83,83);
     }
 }
 

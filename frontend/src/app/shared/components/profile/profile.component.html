@@ -275,31 +275,66 @@
                 }
             }
             @else if (profileMenuState === 'reviews') {
+                <!-- This is the table of the reviews that the user has written -->
                 <div class="reviews-container">
-                    <table class="profile-review-table">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
+                    <p-table 
+                        [value]="reviews" 
+                        [tableStyle]="{ 'min-width': '40rem', 'max-width': '50rem' }"
+                        styleClass="p-datatable-striped"
+                    >
+                        <ng-template pTemplate="caption">
+                            <div class="flex align-items-center justify-content-between" style="user-select: none;">
+                                Your Reviews
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr style="user-select: none;">
+                                <th>Date</th>
                                 <th>Unit</th>
-                                <th>Title</th>
-                                <th>Year</th>
-                                <th>Semester</th>
+                                <th>TItle</th>
                                 <th>Rating</th>
+                                <th>Likes</th>
+                                <th>Dislikes</th>
+                                <th>Actions</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @for (review of reviews; track $index) {
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ review.unit.unitCode }}</td>
-                                    <td>{{ review.title }}</td>
-                                    <td>{{ review.year }}</td>
-                                    <td>{{ review.semester }}</td>
-                                    <td>{{ review.overallRating }}</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-review>
+                            <tr>
+                                <!-- Date of review creation -->
+                                <td>
+                                    {{ review.createdAt | date: 'dd/MM/yyyy' }}
+                                </td>
+                                <!-- Unitcode of the unit that the review is in -->
+                                <td style="user-select: none;">{{ review.unit.unitCode | uppercase }}</td>
+                                <!-- Title of review -->
+                                <td style="user-select: none;">{{ review.title }}</td>
+                                <!-- Rating stars -->
+                                <td>
+                                    <p-rating 
+                                        [(ngModel)]="review.overallRating"
+                                        [readonly]="true"
+                                        [cancel]="false"
+                                        style="user-select: none; pointer-events: none; cursor: default;"
+                                    />
+                                </td>
+                                <!-- Likes of this review -->
+                                <td style="text-align: center; user-select: none;">
+                                    {{ review.likes }}
+                                </td>
+                                <!-- Dislikes of this review -->
+                                <td style="text-align: center; user-select: none;">
+                                    {{ review.dislikes }}
+                                </td>
+                                <!-- Actions to edit and delete the review -->
+                                <td>
+                                    <!-- TODO: Edit button is disabled because there is no functionality for this yet -->
+                                    <button pButton [disabled]="true" icon="pi pi-pencil" class="p-button-rounded p-button-text" ></button>
+                                    <!-- Button to delete the current review -->
+                                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text" (click)="this.deleteReview(review._id)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
                 </div>
         }
         } @else {

@@ -2,6 +2,7 @@ import { User } from "./user.model";
 import { Types } from "mongoose";
 
 export class Review {
+  _id: Types.ObjectId;
   title: string;
   semester: number;
   grade: number;
@@ -13,17 +14,30 @@ export class Review {
   description: string;
   author: Types.ObjectId | null;
 
-  constructor () {
-    this.title = '';
-    this.semester = 1;
-    this.grade = 0; 
-    this.year = new Date().getFullYear();
-    this.overallRating = 0;
-    this.relevancyRating = 0;
-    this.facultyRating = 0;
-    this.contentRating = 0;
-    this.description = '';
-    this.author = null;
+  constructor (
+    _id?: Types.ObjectId,
+    title?: string,
+    semester?: number,
+    grade?: number,
+    year?: number,
+    overallRating?: number,
+    relevancyRating?: number,
+    facultyRating?: number,
+    contentRating?: number,
+    description?: string,
+    author?: Types.ObjectId | null
+  ) {
+    this._id = _id || new Types.ObjectId();
+    this.title = title || '';
+    this.semester = semester || 1;
+    this.grade = grade || 0; 
+    this.year = year || new Date().getFullYear();
+    this.overallRating = overallRating ||  0;
+    this.relevancyRating = relevancyRating || 0;
+    this.facultyRating = facultyRating || 0;
+    this.contentRating = contentRating || 0;
+    this.description = description || '';
+    this.author = author || null;
   }
 
   // Validates the values

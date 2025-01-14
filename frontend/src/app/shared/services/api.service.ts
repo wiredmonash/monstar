@@ -47,6 +47,9 @@ export class ApiService {
     );
   }
 
+  /**
+   * * GET Gets the reviews written by a user
+   */
   getUserReviewsGET(userID: string): Observable<any> {
     const url = `${this.url}/reviews/author/${userID}`;
     return this.http.get(url);
