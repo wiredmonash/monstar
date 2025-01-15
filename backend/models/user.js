@@ -15,9 +15,8 @@ const userSchema = new Schema({
     // Username
     username: { type: String, required: false },
 
-    // Password
-    // ^ Maybe shouldnt be required (in the case of google users)
-    password: { type: String, required: true },
+    // Password NOT required for Google users
+    password: { type: String, required: false },
 
     // If user signed in using Google Auth
     isGoogleUser: { type: Boolean, default: false},

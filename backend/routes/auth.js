@@ -8,6 +8,7 @@ const { storage, cloudinary } = require('../utils/cloudinary');
 const multer = require('multer');
 const upload = multer({ storage });
 const { verifyToken } = require('../utils/verify_token.js');
+const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 // Model imports
@@ -15,6 +16,9 @@ const User = require('../models/user');
 
 // Router instance
 const router = express.Router();
+
+// Google OAuth client instance
+const client = new OAuth2Client();
 
 // Function to send the verification email
 async function sendVerificationEmail (email, verificationUrl) {
@@ -89,27 +93,67 @@ router.post('/register', async function (req, res) {
 
 
 /**
- * ! POST Login/register a User using Google
+ * ! POST Login and/or register a User using Google
  * 
- * Creates a new Google User (if doesn't exist) and login
+ * Login and/or register  a Google user
  * 
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
  * @throws {500} If an error occurs whilst registering a user
  */
-router.post('/google/register', async function (req, res) {
-    // const { googleId } = req.body;
-    console.log("From google register endpoint!")
-    console.log(req.body)
-    return res.status(201).json({ message: "Successful register from Google!"});
+router.post('/google/authenticate', async function (req, res) {
+    const { idToken } = req.body;
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: idToken,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
 
-    // try {
-    //     // Verify Google token
-    //     const ticket = await client.verifyIdToken({
+        const payload = ticket.getPayload();
+        // sub is the unique Google ID assigned to the user
+        const { email, name, picture, sub } = payload;
 
-    //     })
+        // Check if the user already exists
+        let user = await User.findOne({
+            $or: [
+                { email: email },
+                { googleID: sub }
+            ]
+        });
+        // register the user if they aren't registered
+        if (!user) {
+            user = new User({
+                email: email,
+                username: name,
+                profileImg: picture,
+                isGoogleUser: true,
+                googleID: sub,
+                verified: true
+            });
+            await user.save();
+        }
+        
+        // Create json web token
+        const token = jwt.sign(
+            { id: user._id, isAdmin: user.admin },
+            process.env.JWT_SECRET
+        );
 
-    // }
+        // Return response as cookie with access token and user data.
+        return res.cookie('access_token', token, { 
+                httpOnly: true,
+                sameSite: 'strict'
+            })
+            .status(200)
+            .json({
+                status: 200,
+                message: 'Login successful',
+                data: user
+            });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
 })
 
 /**
