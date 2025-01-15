@@ -51,8 +51,10 @@ export class AuthService {
    * @returns {Observable<any>} an observable containing the response from the server.
    */
   googleAuthenticate(idToken: string): Observable<any> {
-    return this.http.post(`${this.url}/google/authenticate`, { idToken })
-    .pipe(
+    return this.http.post(`${this.url}/google/authenticate`, 
+      { idToken },
+      { withCredentials: true }
+    ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
         const user = new User(
