@@ -136,7 +136,8 @@ router.post('/google/authenticate', async function (req, res) {
         // Create json web token
         const token = jwt.sign(
             { id: user._id, isAdmin: user.admin },
-            process.env.JWT_SECRET
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
         );
 
         // Return response as cookie with access token and user data.
