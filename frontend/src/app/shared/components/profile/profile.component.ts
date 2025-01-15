@@ -15,17 +15,8 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
-import { ActivatedRoute } from '@angular/router';
-import { jwtDecode } from "jwt-decode";
 
 declare var google: any;
-
-// interface for the JWT token from Google
-interface CustomJwtPayload {
-  name?: string;
-  email?: string;
-}
-
 
 @Component({
   selector: 'app-profile',
@@ -238,9 +229,9 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     google.accounts.id.initialize({
       client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
       // * login_uri is only supported on ux_mode: "redirect", callback is used otherwise
-      // callback: this.onGoogleSignIn.bind(this),
-      login_uri: "http://localhost:8080/api/v1/auth/google/register",
-      ux_mode: "redirect",
+      callback: this.onGoogleSignIn.bind(this),
+      // login_uri: "http://localhost:8080/api/v1/auth/google/register",
+      ux_mode: "popup",
     })
 
 
@@ -266,33 +257,39 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onGoogleSignIn(res: any): void {
     const credential = res.credential;
-    // ! Handle decoding in the backend, this is just for testing purposes.
-    const decodedCredential = jwtDecode<CustomJwtPayload>(credential)
-    console.log("Google Sign In Successful, ID token:", credential);
-    console.log("Decoded credential:", decodedCredential)
-    console.log("User details:", decodedCredential.name)
-    this.signup(decodedCredential.email);
+    this.googleAuthenticate(credential);
   }
 
-  // googleSignUp(googleEmail: String, googleId: String) {
-  
-  // }
+  googleAuthenticate(credential: string) {
+    this.authService.googleAuthenticate(credential).subscribe({
+      next: (response) => {
+        // Change state to logged in
+        this.state = 'logged in';
+        this.titleChangeEvent.emit('Profile');
+        this.stateChangeEvent.emit(this.state);
+        this.loggingIn = false;
+
+        // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+
+        // ? Debug log success
+        console.log('Profile | Logged in succesfully!', response);
+      },
+      error: (error: HttpErrorResponse) => {
+        // ? Debug log error on signed up
+        console.error('Profile | Google Authenticate failed:', error.error);
+      }
+    });
+  }
 
   // * Signs Up the User
-  signup(googleEmail: string | null = null) {
+  signup() {
     this.signingUp = true;
     this.isEmailInputValid = true;
     this.isPasswordsInputValid = true;
     this.isUserSignUpDuplicate = false;
 
-    // ! NOTE: remove this after implementing dedicated google sign up, purely just for testing
-    if (googleEmail) {
-      email = googleEmail;
-    }
-    else {
-      // Trim input email whitespace and store as new variable
-      var email = this.inputEmail.trim();
-    }
+    // Trim input email whitespace and store as new variable
+    var email = this.inputEmail.trim();
 
     // Regular expression to validate authcate and email
     const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/

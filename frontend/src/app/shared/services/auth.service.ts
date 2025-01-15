@@ -43,15 +43,35 @@ export class AuthService {
   }
 
   /**
-   * * Register a Google user
+   * * Register and/or login a Google user
    * 
-   * Registers a Google user using the Google ID token.
+   * Register and/or logins a Google user using the Google ID token.
    * 
    * @param {string} idToken The Google id token of the user.
    * @returns {Observable<any>} an observable containing the response from the server.
    */
-  googleRegister(idToken: string): Observable<any> {
-    return this.http.post(`${this.url}/google/register`, { idToken });
+  googleAuthenticate(idToken: string): Observable<any> {
+    return this.http.post(`${this.url}/google/authenticate`, { idToken })
+    .pipe(
+      tap((response: any) => {
+        // Update the current user with the response data
+        const user = new User(
+          response.data._id, 
+          response.data.email, 
+          response.data.username, 
+          response.data.reviews, 
+          response.data.profileImg, 
+          response.data.admin, 
+          response.data.verified,
+          response.data.likedReviews,
+          response.data.dislikedReviews 
+        );
+        this.currentUser.next(user);
+
+        // ? Debug log
+        console.log('AuthService | Logged in as:', this.currentUser);
+      })
+    );
   }
 
   /**
