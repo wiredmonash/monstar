@@ -275,6 +275,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log('Profile | Logged in succesfully!', response);
       },
       error: (error: HttpErrorResponse) => {
+        if (error.status == 403) {
+          this.createToast.emit({ severity: 'warn', summary: 'Invalid email', detail: "Please sign in using a Monash Student email." });
+        }
+
         // ? Debug log error on signed up
         console.error('Profile | Google Authenticate failed:', error.error);
       }

@@ -98,7 +98,8 @@ router.post('/register', async function (req, res) {
  * Login and/or register  a Google user
  * 
  * @async
- * @returns {JSON} Responds with the created unit in JSON format
+ * @returns {200} Responds with 200 status code if user is successfully registered/logged in
+ * @throws {403} If the email is not a Monash Student email
  * @throws {500} If an error occurs whilst registering a user
  */
 router.post('/google/authenticate', async function (req, res) {
@@ -112,6 +113,16 @@ router.post('/google/authenticate', async function (req, res) {
         const payload = ticket.getPayload();
         // sub is the unique Google ID assigned to the user
         const { email, name, picture, sub } = payload;
+
+        // Regular expression to validate authcate and email
+        const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
+
+        if (!emailRegex.test(email)) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Access denied: Only students with a valid Monash University email can log in.'
+            });         
+        }
 
         // Check if the user already exists
         let user = await User.findOne({
