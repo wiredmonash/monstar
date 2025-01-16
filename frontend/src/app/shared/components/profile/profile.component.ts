@@ -265,6 +265,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     this.googleAuthenticate(credential);
   }
 
+  handleGoogleSignIn(): void {
+    google.accounts.id.prompt();
+  }
+
   googleAuthenticate(credential: string) {
     this.authService.googleAuthenticate(credential).subscribe({
       next: (response) => {
