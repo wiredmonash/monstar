@@ -226,6 +226,11 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.renderGoogleButton();
+  };
+
+
+  renderGoogleButton() {
     google.accounts.id.initialize({
       client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
       // * login_uri is only supported on ux_mode: "redirect", callback is used otherwise
@@ -253,7 +258,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     );
     // uncommenting this enables the one-click sign in prompt in the corner
     // google.accounts.id.prompt();
-  };
+  }
 
   onGoogleSignIn(res: any): void {
     const credential = res.credential;
