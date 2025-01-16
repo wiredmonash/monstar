@@ -94,9 +94,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   signingUp: boolean = false;
   loggingIn: boolean = false;
 
-  // If user is Google user
-  isGoogleUser: boolean = false;
-
   // Profile menu
   profileMenuItems: MenuItem[] = [];
   profileMenuState: 'details' | 'reviews' | 'friends' | 'settings' = 'details';
@@ -271,7 +268,6 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         this.titleChangeEvent.emit('Profile');
         this.stateChangeEvent.emit(this.state);
         this.loggingIn = false;
-        this.isGoogleUser = true;
 
         // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
 

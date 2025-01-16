@@ -4,6 +4,7 @@ export class User {
     _id: Types.ObjectId;
     email: string;
     username: string;
+    isGoogleUser: boolean;
     reviews: Types.ObjectId[];
     profileImg: string;
     admin: boolean;
@@ -15,6 +16,7 @@ export class User {
         _id?: Types.ObjectId, 
         email?: string, 
         username?: string, 
+        isGoogleUser?: boolean,
         reviews?: Types.ObjectId[], 
         profileImg?: string, 
         admin?: boolean, 
@@ -25,6 +27,7 @@ export class User {
         this._id = _id || new Types.ObjectId();
         this.email = email || '';
         this.username = username || email?.slice(0, 8) || '';
+        this.isGoogleUser = isGoogleUser || false;
         this.reviews = reviews || [];
         this.profileImg = profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s';
         this.admin = admin || false;

@@ -283,7 +283,7 @@
                         }
 
                         <!-- Update password input -->
-                        @if (!isGoogleUser) {
+                        @if (!user.isGoogleUser) {
                             <p-floatLabel>
                                 <input pInputText id="password" variant="filled" type="password" [(ngModel)]="inputUpdatePassword" />
                                 <label for="password">New Password (optional)</label>

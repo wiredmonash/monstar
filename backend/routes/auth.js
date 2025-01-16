@@ -490,7 +490,7 @@ router.get('/validate', async function (req, res) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Find and store the user without storing the password
-        const user = await User.findById(decoded.id, 'email username reviews admin profileImg likedReviews dislikedReviews');
+        const user = await User.findById(decoded.id, 'email username isGoogleUser reviews admin profileImg likedReviews dislikedReviews');
 
         // User not found error case
         if (!user)
