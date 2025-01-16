@@ -99,6 +99,7 @@ router.post('/register', async function (req, res) {
  * 
  * @async
  * @returns {200} Responds with 200 status code if user is successfully registered/logged in
+ * @throws {409} If the user already exists as a non-Google account
  * @throws {403} If the email is not a Monash Student email
  * @throws {500} If an error occurs whilst registering a user
  */
@@ -142,6 +143,15 @@ router.post('/google/authenticate', async function (req, res) {
                 verified: true
             });
             await user.save();
+        }
+
+        // if there is a user but they are NOT a Google user but same email
+        // (if they signed up using traditional way but then try logging in thru Google)
+        if (!user.isGoogleUser) {
+            return res.status(409).json({
+                status: 409,
+                message: "Account already exists as non-Google account."
+            })
         }
         
         // Create json web token
@@ -256,6 +266,7 @@ router.get('/', verifyToken, async function (req, res) {
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
  * @throws {404} When the user is not found
+ * @throws {409} When user exists as Google account
  * @throws {401} When the password is incorrect
  * @throws {429} When the user has reached the daily limit of verification emails
  * @throws {429} When the user has requested a verification email within the cooldown period
@@ -273,6 +284,11 @@ router.post('/login', async function (req, res) {
         // If there is no user of that email in the DB return status 400
         if (!user)
             return res.status(404).json({ error: "User not found" });
+
+        // If user exists as Google account
+        if (user.isGoogleUser) {
+            return res.status(409).json({ error: "User is a Google account"});
+        }
 
         // Check if the passwords match
         const passwordMatch = await bcrypt.compare(password, user.password);

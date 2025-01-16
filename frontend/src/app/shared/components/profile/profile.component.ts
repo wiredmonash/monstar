@@ -94,6 +94,9 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   signingUp: boolean = false;
   loggingIn: boolean = false;
 
+  // If user is Google user
+  isGoogleUser: boolean = false;
+
   // Profile menu
   profileMenuItems: MenuItem[] = [];
   profileMenuState: 'details' | 'reviews' | 'friends' | 'settings' = 'details';
@@ -268,6 +271,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         this.titleChangeEvent.emit('Profile');
         this.stateChangeEvent.emit(this.state);
         this.loggingIn = false;
+        this.isGoogleUser = true;
 
         // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
 
@@ -275,7 +279,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log('Profile | Logged in succesfully!', response);
       },
       error: (error: HttpErrorResponse) => {
-        if (error.status == 403) {
+        if (error.status == 409) {
+          this.createToast.emit({ severity: 'warn', summary: 'Account exists', detail: "Account exists as non-Google user, please sign in manually." });
+        }
+        else if (error.status == 403) {
           this.createToast.emit({ severity: 'warn', summary: 'Invalid email', detail: "Please sign in using a Monash Student email." });
         }
 
@@ -406,6 +413,10 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
           // Clear the password
           this.inputPassword = '';
+
+          if (error.status == 409) {
+            this.createToast.emit({ severity: 'warn', summary: 'Account exists', detail: "Account already exists as Google user." });
+          }
 
           // Check for 429 Too Many Requests status code when user is rate limited
           if (error.status == 429) {
