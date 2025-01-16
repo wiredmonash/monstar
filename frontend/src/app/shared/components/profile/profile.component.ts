@@ -248,7 +248,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
       {
         // Options go here, for example:
         type: "standard",
-        shape: "pill",
+        shape: "rectangular",
         theme: "outline",
         text: "signup_with",
         size: "large",
