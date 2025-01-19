@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
 import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { ApiService } from '../../shared/services/api.service';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Unit } from '../../shared/models/unit.model';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +31,9 @@ export class HomeComponent implements OnInit {
   // Stores the popular units to be displayed on the home page
   popularUnits: Unit[] = [];
 
+  // Reference to the navbar child
+  @ViewChild(NavbarComponent) navbar!: NavbarComponent;
+
   // Carousel responsive options
   responsiveOptions = [
     {
@@ -47,7 +51,7 @@ export class HomeComponent implements OnInit {
   // * Inject Router & ApiService
   constructor (
     private router: Router,
-    private apiService: ApiService
+    private apiService: ApiService,
   ) { }
 
   // * Runs on init

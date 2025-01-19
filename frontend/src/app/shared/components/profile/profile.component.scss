@@ -103,13 +103,17 @@ $avatar-size: 64px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+        }
+
+        .forgot-password {
+            transform: translateY(-30px);
         }
 
         .p-button-link { 
             display: inline-flex;
             align-items: center;
             font-weight: bold;
+            margin-bottom: 1rem;
         }
     }
   
@@ -146,6 +150,33 @@ $avatar-size: 64px;
 
     .p-button-link {
         padding-top: 20px;
+    }
+}
+
+// Forgot Password Form
+.forgot-password-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem; // Spacing between sections
+    padding-top: 1.5rem;
+
+    p {
+        text-align: center;
+        margin: 0;
+    }
+
+    a {
+        padding: 0;
+    }
+
+    .p-button-link {
+        font-weight: bold;
+    }
+
+    .error-text {
+        color: red;
     }
 }
 

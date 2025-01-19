@@ -6,6 +6,7 @@ import { UnitListComponent } from './routes/unit-list/unit-list.component';
 import { UnitOverviewComponent } from './routes/unit-overview/unit-overview.component';
 import { VerifiedComponent } from './routes/verified/verified.component';
 import { NotFoundComponent } from './routes/not-found/not-found.component';
+import { ResetPasswordComponent } from './routes/reset-password/reset-password.component';
 
 export const routes: Routes = [
     // Homepage
@@ -16,6 +17,8 @@ export const routes: Routes = [
     { path: 'unit-overview/:unitcode', component: UnitOverviewComponent},
     // Email Verification
     { path: 'verify-email/:token', component: VerifiedComponent }, 
+    // Reset Password
+    { path: 'reset-password/:token', component: ResetPasswordComponent }, 
     
     // 404 Not Found for all other routes
     { path: '**', component: NotFoundComponent },

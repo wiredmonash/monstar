@@ -21,7 +21,7 @@
             tooltipStyleClass="mt-2"
           />
           <!-- Badge to show keyboard shortcut -->
-          @if (!isSortByFocused) { <span class="sortby-badge">CTRL+F</span> }
+          @if (!isSortByFocused) { <span class="sortby-badge prevent-select">CTRL+F</span> }
         </div>
     </div>
 
@@ -44,14 +44,14 @@
               tooltipPosition="bottom"
             />
             <!-- Badge to show keyboard shortcut -->
-            @if (!isSearchFocused) { <span class="search-badge">CTRL+K</span> }
+            @if (!isSearchFocused) { <span class="search-badge prevent-select">CTRL+K</span> }
         </span>
     </div>
 
     <!-- End group -->
     <div class="p-toolbar-group-end">
       <!-- Badge for keyboard shortcut -->
-      @if (!op.overlayVisible) { <span class="filter-badge">CTRL+O</span> }
+      @if (!op.overlayVisible) { <span class="filter-badge prevent-select">CTRL+O</span> }
       <!-- Advanced filtering button with overlay panel -->
       <p-button #filterButton [icon]="loading ? 'pi pi-spinner pi-spin' : 'pi pi-filter'" (onClick)="op.toggle($event)" pTooltip="Advanced Filtering" [rounded]="true" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
         <p-overlayPanel #op id="advancedFiltering" [dismissable]="true" [style]="{ 'width': '500px', 'margin-top': '1rem' }">

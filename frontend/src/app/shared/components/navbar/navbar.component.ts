@@ -49,7 +49,7 @@ export class NavbarComponent {
   username: string | undefined = '';
 
   // Saves the profile state
-  profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' = 'signed out';
+  profileState: 'logged out' | 'logged in' | 'signed out' | 'signed up' | 'forgot password' = 'signed out';
   // Title of the profile dialog
   profileDialogTitle: string = 'Sign Up';
   // Visibility state of the profile dialog
@@ -130,7 +130,7 @@ export class NavbarComponent {
   /**
    * * Called when the profile auth state is changed.
    */
-  authStateChange(state: 'logged out' | 'logged in' | 'signed out' | 'signed up') {
+  authStateChange(state: 'logged out' | 'logged in' | 'signed out' | 'signed up' | 'forgot password') {
     this.profileState = state;
 
     switch (state) {

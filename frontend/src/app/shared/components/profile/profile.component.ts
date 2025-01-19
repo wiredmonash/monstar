@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
@@ -47,7 +47,7 @@ import { RatingModule } from 'primeng/rating';
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   // All user auth states can be inputted by parent as well
-  @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'logged out';
+  @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password' = 'logged out';
 
   // Stores the user
   user: User | null = null;
@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @Output() titleChangeEvent = new EventEmitter<string>();
 
   // Event to emit to the navbar when our state changes
-  @Output() stateChangeEvent = new EventEmitter<'logged in' | 'signed up' | 'logged out' | 'signed out'>();
+  @Output() stateChangeEvent = new EventEmitter<'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password'>();
 
   // Event to emit to the navbar to create a toast
   @Output() createToast = new EventEmitter<{ severity: string, summary: string, detail: string }>();
@@ -83,6 +83,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   inputPassword: string = '';
   // Current input value for confirm password
   inputPassword2: string = '';
+
+  // Current input value for the forgot password email
+  inputForgotPasswordEmail: string = '';
+  // Boolean to check if the reset email has been sent too many times
+  isResetEmailSentCapped: boolean = false;
+  // Boolean to check if the reset email button is disabled
+  resetEmailButtonDisabled: boolean = false;
+  // Timer for the reset email button
+  resetEmailTimer: any;
 
   // Email input of duplicate nature status
   isUserSignUpDuplicate: boolean = false;
@@ -425,6 +434,59 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
+  // * Sends a verification email to reset password
+  forgotPassword() {
+    // Set loading to true
+    this.profileLoading = true;
+
+    // Trim input email whitespace and store as new variable
+    const email = this.inputForgotPasswordEmail.trim();
+
+    // Regular expression to validate authcate and email
+    const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
+
+    // Check if emails ends with monash email
+    if (emailRegex.test(email)) {
+      this.authService.forgotPassword(email).subscribe({
+        next: (response) => {
+          this.createToast.emit({ severity: 'info', summary: 'Email sent', detail: 'We have sent you an email to reset your password!' });
+          this.inputForgotPasswordEmail = '';
+          this.profileLoading = false;
+          console.log('Profile | Forgot password email sent:', response);
+
+          // Disable the reset email button
+          this.resetEmailButtonDisabled = true;
+          this.startResetEmailTimer();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.createToast.emit({ severity: 'error', summary: 'Email not sent', detail: 'Failed to send email to reset password' });
+          this.profileLoading = false;
+
+          if (error.status == 429) {
+            this.isResetEmailSentCapped = true;
+            this.createToast.emit({ severity: 'warn', summary: '429 Too Many Requests', detail: error.error.error });
+          } else { 
+            this.createToast.emit({ severity: 'error', summary: 'Email not sent', detail: error.error.error });
+          }
+          console.error('Profile | Forgot password email failed:', error.error);
+        }
+      });
+    }
+  }
+
+  // * Starts the reset email timer
+  private startResetEmailTimer() {
+    let timeLeft = 300; // 5 minutes in seconds
+    this.resetEmailTimer = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        this.resetEmailButtonDisabled = false;
+        this.isResetEmailSentCapped = false;
+        clearInterval(this.resetEmailTimer);
+      }
+    });
+  }
+
   // * Updates user details
   updateDetails() {
     if (!this.user || !this.user.username) return
@@ -432,6 +494,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Define the empty payload
     const updatePayload: { username?: string, password?: string } = {};
 
+    // Allowable username regular expression
     const usernameRegex = /^[a-zA-Z0-9]{1,20}$/;
 
     // Adding username to payload if given and changed
@@ -577,5 +640,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Clean up subscriptions to avoid memory leaks
     if (this.userSubscription) { this.userSubscription.unsubscribe(); }
     if (this.dialogClosedSubscription) { this.dialogClosedSubscription.unsubscribe(); }
+
+    // Clear the timer on destroy
+    if (this.resetEmailTimer) { clearInterval(this.resetEmailTimer); }
   }
 }

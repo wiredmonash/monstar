@@ -38,6 +38,14 @@ const userSchema = new Schema({
     // Timestamp of the last verification email sent
     lastVerificationEmail: { type: Date, required: false },
 
+    // Password reset token
+    resetPasswordToken: { type: String, required: false },
+    // Password reset token expiry
+    resetPasswordExpires: { type: Date, required: false }, 
+    // Rate limiting for password reset
+    resetPasswordEmailsSent: { type: Number, default: 0 },
+    lastResetPasswordEmail: { type: Date, required: false },
+
     // Liked reviews
     likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     // Disliked reviews
