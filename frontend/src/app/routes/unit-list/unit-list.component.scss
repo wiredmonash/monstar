@@ -127,3 +127,8 @@ $padding: 40px;
         margin-bottom: 2rem;
     }
 }
+
+// Prevents user selection
+.prevent-select {
+    user-select: none;
+}

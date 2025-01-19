@@ -152,25 +152,25 @@
                 </div>
 
                 <!-- Login Submission -->
-                <p-button
-                    label="Login"
-                    icon="pi pi-user"
-                    styleClass="w-10rem mx-auto"
-                    (click)="login()"
-                    [loading]="loggingIn"
-                />
+                <p-button label="Login" icon="pi pi-user" styleClass="w-10rem mx-auto" (click)="login()" [loading]="loggingIn" />
 
-                <!-- Transition to sign up form -->
-                <p>Don't have an account?
-                    <a
-                        pButton
-                        type="button"
-                        class="p-button-link"
-                        (click)="state='signed out'; titleChangeEvent.emit('Sign Up');"
-                    >
-                        Sign Up
-                    </a>
-                </p>
+                <!-- Additional links -->
+                <div class="additional-links">
+                    <!-- "Don't have an account? Sign Up" Link changes state to 'signed out'-->
+                    <p>
+                        Don't have an account?
+                        <a pButton type="button" class="p-button-link"
+                            (click)="state='signed out'; titleChangeEvent.emit('Sign Up');"
+                        >Sign Up</a>
+                    </p>
+
+                    <!-- "Forgot your password?" Link -->
+                    <p class="forgot-password">
+                        <a pButton type="button" class="p-button-link"
+                            (click)="state='forgot password'; titleChangeEvent.emit('Forgot Password');"
+                        >I forgor my password...</a>
+                    </p>
+                </div>
             </div>
         }
 
@@ -207,6 +207,28 @@
 @else if (state === 'signed up') {
     <div class="confirmation">
         To be able to log in you must verify your email, check your inbox for the email you registered with.
+    </div>
+}
+
+<!-- Frogot password state -->
+@else if (state === 'forgot password') {
+    <div class="forgot-password-form">
+        <!-- Subheader -->
+        <p>Enter your email to reset your password (don't forget it again dummy)</p>
+        <!-- Input to take email -->
+        <input pInputText placeholder="Enter your email" [disabled]="profileLoading" [(ngModel)]="inputForgotPasswordEmail" />
+        <!-- Send reset email button -->
+        <p-button label="Send Reset Email" icon="pi pi-envelope" [disabled]="profileLoading" (click)="forgotPassword()"></p-button>
+        <!-- ! Error text -->
+        @if (isResetEmailSentCapped) {
+            <small class="error-text">Please wait {{ resetEmailTimer }} before requesting another reset email.</small>
+        }
+        <!-- Back to login button -->
+        <p>
+            <a pButton type="button" class="p-button-link"
+                (click)="state='logged out'; titleChangeEvent.emit('Login');"
+            >Back to Login</a>
+        </p>
     </div>
 }
 
