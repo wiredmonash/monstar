@@ -256,17 +256,14 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
         width: "199px"
       }
     );
-    // uncommenting this enables the one-click sign in prompt in the corner
-    // google.accounts.id.prompt();
+    // one tap prompt
+    google.accounts.id.prompt();
+
   }
 
   onGoogleSignIn(res: any): void {
     const credential = res.credential;
     this.googleAuthenticate(credential);
-  }
-
-  handleGoogleSignIn(): void {
-    google.accounts.id.prompt();
   }
 
   googleAuthenticate(credential: string) {
