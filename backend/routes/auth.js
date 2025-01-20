@@ -132,11 +132,14 @@ router.post('/google/authenticate', async function (req, res) {
                 { googleID: sub }
             ]
         });
+
+        const authcate = email.split('@')[0];
+
         // register the user if they aren't registered
         if (!user) {
             user = new User({
                 email: email,
-                username: name,
+                username: authcate,
                 profileImg: picture,
                 isGoogleUser: true,
                 googleID: sub,
