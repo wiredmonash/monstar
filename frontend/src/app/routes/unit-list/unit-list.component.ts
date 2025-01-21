@@ -157,6 +157,7 @@ export class UnitListComponent implements OnInit {
       next: (response: any) => {
         // Map the response data to Unit objects
         this.filteredUnits = response.units.map((unitData: any) => new Unit(
+          unitData._id,
           unitData.unitCode,
           unitData.name,
           unitData.description,

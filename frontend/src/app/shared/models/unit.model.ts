@@ -18,6 +18,7 @@ interface Offering {
 }
 
 export class Unit {
+    _id: Types.ObjectId;
     unitCode: string;
     name: string;
     description: string;
@@ -35,6 +36,7 @@ export class Unit {
     offerings: Offering[];
 
     constructor (
+        _id: Types.ObjectId,
         unitCode: string, 
         name: string, 
         description: string,
@@ -51,6 +53,7 @@ export class Unit {
         requisites: Requisites,
         offerings: Offering[]
     ) {
+        this._id = _id;
         this.unitCode = unitCode;
         this.name = name;
         this.description = description;

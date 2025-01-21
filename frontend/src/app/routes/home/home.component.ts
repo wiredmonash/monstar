@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
@@ -9,6 +9,7 @@ import { ApiService } from '../../shared/services/api.service';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Unit } from '../../shared/models/unit.model';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
@@ -21,10 +22,19 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
     ButtonModule,
     SkeletonModule
   ],
+  animations: [
+    // * Animation for subheader text fade in/out
+    trigger('fadeInOut', [
+      state('in', style({ opacity: 1 })),
+      state('out', style({ opacity: 0 })),
+      transition('in => out', animate('500ms ease-out')),
+      transition('out => in', animate('500ms ease-in'))
+    ])
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   // Loading status of popular units fetching
   loading: boolean = true;
 
@@ -34,7 +44,24 @@ export class HomeComponent implements OnInit {
   // Reference to the navbar child
   @ViewChild(NavbarComponent) navbar!: NavbarComponent;
 
-  // Carousel responsive options
+  // Subheader variables
+  subheaders: string[] = [
+    'Browse, Review, and Share Feedback on Monash University Units', 
+    'Find the Best Units for Your Degree!', 
+    'Hmmm, what units should I take next semester?',
+    'Discover the best units at Monash University',
+    'Rate and review your favourite units!',
+    "What's a WAM booster?",
+    'What unit should I do bro?',
+    'Yes, we have all the units you need!'
+  ];
+  subheaderCurrentIndex: number = 0;
+  subheaderState: 'in' | 'out' = 'in';
+  subheaderChangeSeconds: number = 3;
+  subheaderChangeSecondsBuffer: number = 0.5;
+  private intervalId: any; // The ID of the interval used for deletion
+
+  // Carousel responsive options (for resizing the popular units carousel)
   responsiveOptions = [
     {
       breakpoint: '1198px',
@@ -48,24 +75,60 @@ export class HomeComponent implements OnInit {
     }
   ];  
 
-  // * Inject Router & ApiService
+  /**
+   * * Constructor
+   * 
+   * @param router Angular router
+   * @param apiService API service for making HTTP requests
+   */
   constructor (
     private router: Router,
     private apiService: ApiService,
   ) { }
 
-  // * Runs on init
+  /**
+   * * Runs on init
+   * 
+   * Fetches popular units and starts the subheader rotation
+   */
   ngOnInit(): void {
     this.getPopularUnits();
+    this.startSubheaderRotation();
   }
 
-  // * Get popular units
+  /**
+   * * Starts the subheader rotation animation
+   */
+  private startSubheaderRotation() {
+    this.intervalId = setInterval(() => {
+      // Start fade out
+      this.subheaderState = 'out';
+
+      // Update text and fade in after animation
+      setTimeout(() => { 
+        // Get a random index
+        this.subheaderCurrentIndex = Math.floor(Math.random() * ((this.subheaders.length-1) - 0 + 1) + 0);
+        // Increment the index
+        // this.subheaderCurrentIndex = (this.subheaderCurrentIndex + 1) % this.subheader.length;
+        
+        // Start fade in
+        this.subheaderState = 'in';
+      }, this.subheaderChangeSecondsBuffer * 1000);
+    }, this.subheaderChangeSeconds * 1000);
+  }
+
+  /**
+   * * Fetches popular units from the API
+   * 
+   * Makes a GET request to the API to fetch popular units and stores them in the popularUnits array.
+   */
   getPopularUnits() {
     this.loading = true;
     this.apiService.getPopularUnitsGET().subscribe({
       next: (response: Unit[]) => {
         // Map the response data to Unit objects
         this.popularUnits = response.map((unitData: any) => new Unit(
+          unitData._id,
           unitData.unitCode,
           unitData.name,
           unitData.description,
@@ -99,5 +162,15 @@ export class HomeComponent implements OnInit {
   // * Method to navigate to the unit list page
   exploreUnits() {
     this.router.navigate(['/unit-list']);
+  }
+
+  /**
+   * * Runs on destroy
+   * 
+   * Clear the interval for the subheader rotation
+   */
+  ngOnDestroy(): void {
+    if (this.intervalId)
+      clearInterval(this.intervalId);
   }
 }
