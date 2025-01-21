@@ -158,7 +158,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         if (this.user?.verified) {
           this.state = 'logged in';
-          this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+          // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
           this.titleChangeEvent.emit('Profile');
           this.stateChangeEvent.emit(this.state); 
         }
