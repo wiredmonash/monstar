@@ -43,6 +43,41 @@ export class AuthService {
   }
 
   /**
+   * * Register and/or login a Google user
+   * 
+   * Register and/or logins a Google user using the Google ID token.
+   * 
+   * @param {string} idToken The Google id token of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  googleAuthenticate(idToken: string): Observable<any> {
+    return this.http.post(`${this.url}/google/authenticate`, 
+      { idToken },
+      { withCredentials: true }
+    ).pipe(
+      tap((response: any) => {
+        // Update the current user with the response data
+        const user = new User(
+          response.data._id, 
+          response.data.email, 
+          response.data.username, 
+          response.data.isGoogleUser,
+          response.data.reviews, 
+          response.data.profileImg, 
+          response.data.admin, 
+          response.data.verified,
+          response.data.likedReviews,
+          response.data.dislikedReviews 
+        );
+        this.currentUser.next(user);
+
+        // ? Debug log
+        console.log('AuthService | Logged in as:', this.currentUser);
+      })
+    );
+  }
+
+  /**
    * * Login a user and set current user
    * 
    * Logs in a user with the provided email and password.
@@ -62,7 +97,8 @@ export class AuthService {
         const user = new User(
           response.data._id, 
           response.data.email, 
-          response.data.username, 
+          response.data.username,
+          response.data.isGoogleUser, 
           response.data.reviews, 
           response.data.profileImg, 
           response.data.admin, 
@@ -140,6 +176,7 @@ export class AuthService {
           response.data._id, 
           response.data.email, 
           response.data.username, 
+          response.data.isGoogleUser,
           response.data.reviews, 
           response.data.profileImg, 
           response.data.admin, 
@@ -174,6 +211,7 @@ export class AuthService {
           response.data._id, 
           response.data.email, 
           response.data.username, 
+          response.data.isGoogleUser,
           response.data.reviews, 
           response.data.profileImg, 
           response.data.admin, 

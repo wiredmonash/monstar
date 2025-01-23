@@ -8,6 +8,7 @@ const { storage, cloudinary } = require('../utils/cloudinary');
 const multer = require('multer');
 const upload = multer({ storage });
 const { verifyToken } = require('../utils/verify_token.js');
+const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 // Model imports
@@ -15,6 +16,9 @@ const User = require('../models/user');
 
 // Router instance
 const router = express.Router();
+
+// Google OAuth client instance
+const client = new OAuth2Client();
 
 // Function to send the verification email
 async function sendVerificationEmail (email, verificationUrl) {
@@ -87,6 +91,95 @@ router.post('/register', async function (req, res) {
     }
 });
 
+
+/**
+ * ! POST Login and/or register a User using Google
+ * 
+ * Login and/or register  a Google user
+ * 
+ * @async
+ * @returns {200} Responds with 200 status code if user is successfully registered/logged in
+ * @throws {409} If the user already exists as a non-Google account
+ * @throws {403} If the email is not a Monash Student email
+ * @throws {500} If an error occurs whilst registering a user
+ */
+router.post('/google/authenticate', async function (req, res) {
+    const { idToken } = req.body;
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: idToken,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+
+        const payload = ticket.getPayload();
+        // sub is the unique Google ID assigned to the user
+        const { email, name, picture, sub } = payload;
+
+        // Regular expression to validate authcate and email
+        const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
+
+        if (!emailRegex.test(email)) {
+            return res.status(403).json({
+                status: 403,
+                message: 'Access denied: Only students with a valid Monash University email can log in.'
+            });         
+        }
+
+        // Check if the user already exists
+        let user = await User.findOne({
+            $or: [
+                { email: email },
+                { googleID: sub }
+            ]
+        });
+
+        const authcate = email.split('@')[0];
+
+        // register the user if they aren't registered
+        if (!user) {
+            user = new User({
+                email: email,
+                username: authcate,
+                profileImg: picture,
+                isGoogleUser: true,
+                googleID: sub,
+                verified: true
+            });
+            await user.save();
+        }
+
+        // if there is a user but they are NOT a Google user but same email
+        // (if they signed up using traditional way but then try logging in thru Google)
+        if (!user.isGoogleUser) {
+            return res.status(409).json({
+                status: 409,
+                message: "Account already exists as non-Google account."
+            })
+        }
+        
+        // Create json web token
+        const token = jwt.sign(
+            { id: user._id, isAdmin: user.admin },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        // Return response as cookie with access token and user data.
+        return res.cookie('access_token', token, { 
+                httpOnly: true,
+                sameSite: 'strict'
+            })
+            .status(200)
+            .json({
+                status: 200,
+                message: 'Login successful',
+                data: user
+            });
+    }
+    catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+})
 
 /**
  * ! GET Verify Email
@@ -176,6 +269,7 @@ router.get('/', verifyToken, async function (req, res) {
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
  * @throws {404} When the user is not found
+ * @throws {409} When user exists as Google account
  * @throws {401} When the password is incorrect
  * @throws {429} When the user has reached the daily limit of verification emails
  * @throws {429} When the user has requested a verification email within the cooldown period
@@ -193,6 +287,11 @@ router.post('/login', async function (req, res) {
         // If there is no user of that email in the DB return status 400
         if (!user)
             return res.status(404).json({ error: "User not found" });
+
+        // If user exists as Google account
+        if (user.isGoogleUser) {
+            return res.status(409).json({ error: "User is a Google account"});
+        }
 
         // Check if the passwords match
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -507,7 +606,7 @@ router.get('/validate', async function (req, res) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Find and store the user without storing the password
-        const user = await User.findById(decoded.id, 'email username reviews admin profileImg likedReviews dislikedReviews');
+        const user = await User.findById(decoded.id, 'email username isGoogleUser reviews admin profileImg likedReviews dislikedReviews');
 
         // User not found error case
         if (!user)

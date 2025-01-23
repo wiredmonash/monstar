@@ -1,4 +1,4 @@
-import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
@@ -20,6 +20,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
+declare var google: any;
 
 @Component({
   selector: 'app-profile',
@@ -45,7 +46,10 @@ import { RatingModule } from 'primeng/rating';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
-export class ProfileComponent implements OnInit, OnDestroy {
+export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
+  // used to get the google sign in button element
+  @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
+
   // All user auth states can be inputted by parent as well
   @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password' = 'logged out';
 
@@ -250,6 +254,76 @@ export class ProfileComponent implements OnInit, OnDestroy {
     else if (this.state == 'logged in') { this.titleChangeEvent.emit('Profile'); }
     else if (this.state == 'signed out') { this.titleChangeEvent.emit('Sign Up'); }
     else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
+
+  }
+
+  ngAfterViewInit(): void {
+    this.renderGoogleButton();
+  };
+
+
+  renderGoogleButton() {
+    google.accounts.id.initialize({
+      client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
+      // * login_uri is only supported on ux_mode: "redirect", callback is used otherwise
+      callback: this.onGoogleSignIn.bind(this),
+      // login_uri: "http://localhost:8080/api/v1/auth/google/register",
+      ux_mode: "popup",
+    })
+
+
+    // https://developers.google.com/identity/gsi/web/guides/display-button#javascript
+    google.accounts.id.renderButton(
+      // get googleSignInButton on the document
+      // using document.getElementById() doesn't work for some reason
+      this.googleSignInButton.nativeElement,
+      {
+        // Options go here, for example:
+        type: "standard",
+        shape: "rectangular",
+        theme: "outline",
+        text: "signup_with",
+        size: "large",
+        logo_alignment: "left",
+        width: "199px"
+      }
+    );
+    // one tap prompt
+    google.accounts.id.prompt();
+
+  }
+
+  onGoogleSignIn(res: any): void {
+    const credential = res.credential;
+    this.googleAuthenticate(credential);
+  }
+
+  googleAuthenticate(credential: string) {
+    this.authService.googleAuthenticate(credential).subscribe({
+      next: (response) => {
+        // Change state to logged in
+        this.state = 'logged in';
+        this.titleChangeEvent.emit('Profile');
+        this.stateChangeEvent.emit(this.state);
+        this.loggingIn = false;
+
+        // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+
+        // ? Debug log success
+        console.log('Profile | Logged in succesfully!', response);
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status == 409) {
+          this.createToast.emit({ severity: 'warn', summary: 'Account exists', detail: "Account exists as non-Google user, please sign in manually." });
+        }
+        else if (error.status == 403) {
+          this.createToast.emit({ severity: 'warn', summary: 'Invalid email', detail: "Please sign in using a Monash Student email." });
+        }
+
+        // ? Debug log error on signed up
+        console.error('Profile | Google Authenticate failed:', error.error);
+      }
+    });
   }
 
   // * Signs Up the User
@@ -373,6 +447,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
           // Clear the password
           this.inputPassword = '';
+
+          if (error.status == 409) {
+            this.createToast.emit({ severity: 'warn', summary: 'Account exists', detail: "Account already exists as Google user." });
+          }
 
           // Check for 429 Too Many Requests status code when user is rate limited
           if (error.status == 429) {
