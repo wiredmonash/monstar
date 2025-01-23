@@ -420,6 +420,119 @@ router.post('/logout', verifyToken, async function (req, res) {
 });
 
 /**
+ * ! POST Forgot Password
+ * 
+ * Sends a password reset email to the user
+ * 
+ * @async
+ * @returns {JSON} Responds with a success message in JSON
+ * @throws {404} If the user is not found
+ * @throws {500} If an error occurs
+ */
+router.post('/forgot-password', async function (req, res) { 
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) return res.status(404).json({ error: 'User not found' });
+
+        const now = Date.now();
+        const oneDay = 24 * 60 * 60 * 1000; // 24 hours
+        const fiveMinutes = 5 * 60 * 1000; // 5 minutes
+
+        // Check if user has reached the daily limit (3 emails per day)
+        if (user.resetPasswordEmailsSent >= 3 && (now - user.lastResetPasswordEmail) < oneDay)
+            return res.status(429).json({ error: 'You have reached the maximum number of password reset emails for today. Please try again tomorrow.' });
+
+        // Check if user is trying within 5 minutes of last attempt
+        if (user.lastResetPasswordEmail && (now - user.lastResetPasswordEmail) < fiveMinutes)
+            return res.status(429).json({ error: 'Please wait 5 minutes before requesting another password reset email.' });
+
+        // Generate the reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpires = Date.now() + 3600000; // 1 hour
+
+        // Update user token, expiration and last email sent.
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpires = resetTokenExpires;
+        user.lastResetPasswordEmail = now;
+
+        // Reset counter if it's a new day, otherwise increment
+        if ((now - user.lastResetPasswordEmail) >= oneDay) {
+            user.resetPasswordEmailsSent = 1;
+        } else {
+            user.resetPasswordEmailsSent++; 
+        }
+
+        // Save the updated user
+        await user.save();
+
+        // Send reset email
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: process.env.EMAIL_USERNAME,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        await transporter.sendMail({
+            from: process.env.EMAIL_USERNAME,
+            to: email,
+            subject: 'Password Reset Request',
+            html: `
+                <p>Please click the following link to reset your password:</p>
+                <a href="${resetUrl}">RESET PASSWORD</a>
+                <p>This link will expire in 1 hour.</p>
+            `
+        });
+        
+        return res.status(200).json({ message: 'Password reset email sent' });
+    }
+    catch (error) {
+        return res.status(500).json({ error: 'Error whilst sending password reset email'});
+    }
+});
+
+/**
+ * ! POST Reset Password
+ * 
+ * Resets the user's password
+ * 
+ * @async
+ * @returns {JSON} Responds with a success message in JSON
+ * @throws {400} If the token is invalid or expired or matching user not found
+ * @throws {500} If an error occurs
+ */
+router.post('/reset-password/:token', async function (req, res) {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        // Find user with valid reset token
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+
+        if (!user) return res.status(400).json({ error: 'Invalid or expired password reset token' });
+
+        // Hash new password and save
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        return res.status(200).json({ message: 'Password has been reset', data: { email: user.email } });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `Error whilst resetting password: ${error.message}` });
+    }
+});
+
+/**
  * ! PUT Update a User's details
  *  
  * Updates User's username and/or password

@@ -5,7 +5,11 @@
     <h1 class="prevent-select">Welcome to MonSTAR</h1>
 
     <!-- Description -->
-    <p class="prevent-select">Browse, Review, and Share Feedback on Monash University Units</p>
+    <div class="subheader-container">
+      <p class="prevent-select" [@fadeInOut]="subheaderState">
+        {{ subheaders[subheaderCurrentIndex] }}
+      </p>
+    </div>
     
     <!-- Explore Units -->
     <p-button label="Explore Units" [rounded]="true" [raised]="true" icon="pi pi-compass" (onClick)="exploreUnits()"></p-button>
@@ -31,7 +35,7 @@
 
   <!-- Popular Units Carousel -->
   @if (loading) {
-    <!-- Show skeletong if loading -->
+    <!-- Show skeletons if loading -->
     <p-carousel 
       [value]="[1,2,3,4,5,6]"
       [numVisible]="3"

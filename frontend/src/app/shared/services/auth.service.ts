@@ -135,6 +135,31 @@ export class AuthService {
   }
 
   /**
+   * * Forgot password
+   * 
+   * Sends a password reset email to the user with the provided email.
+   * 
+   * @param {string} email The email of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.url}/forgot-password`, { email });
+  }
+
+  /**
+   * * Reset password
+   * 
+   * Resets the user's password using the provided token.
+   * 
+   * @param {string} token The token to reset the password.
+   * @param {string} password The new password for the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post(`${this.url}/reset-password/${token}`, { password });
+  }
+
+  /**
    * * Validate the user's session
    * 
    * Validates the current user's session and updates the current user data.

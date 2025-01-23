@@ -152,25 +152,25 @@
                 </div>
 
                 <!-- Login Submission -->
-                <p-button
-                    label="Login"
-                    icon="pi pi-user"
-                    styleClass="w-10rem mx-auto"
-                    (click)="login()"
-                    [loading]="loggingIn"
-                />
+                <p-button label="Login" icon="pi pi-user" styleClass="w-10rem mx-auto" (click)="login()" [loading]="loggingIn" />
 
-                <!-- Transition to sign up form -->
-                <p>Don't have an account?
-                    <a
-                        pButton
-                        type="button"
-                        class="p-button-link"
-                        (click)="state='signed out'; titleChangeEvent.emit('Sign Up');"
-                    >
-                        Sign Up
-                    </a>
-                </p>
+                <!-- Additional links -->
+                <div class="additional-links">
+                    <!-- "Don't have an account? Sign Up" Link changes state to 'signed out'-->
+                    <p>
+                        Don't have an account?
+                        <a pButton type="button" class="p-button-link"
+                            (click)="state='signed out'; titleChangeEvent.emit('Sign Up');"
+                        >Sign Up</a>
+                    </p>
+
+                    <!-- "Forgot your password?" Link -->
+                    <p class="forgot-password">
+                        <a pButton type="button" class="p-button-link"
+                            (click)="state='forgot password'; titleChangeEvent.emit('Forgot Password');"
+                        >I forgor my password...</a>
+                    </p>
+                </div>
             </div>
         }
 
@@ -232,15 +232,38 @@
     </div>
 }
 
+<!-- Frogot password state -->
+@else if (state === 'forgot password') {
+    <div class="forgot-password-form">
+        <!-- Subheader -->
+        <p>Enter your email to reset your password (don't forget it again dummy)</p>
+        <!-- Input to take email -->
+        <input pInputText placeholder="Enter your email" [disabled]="profileLoading" [(ngModel)]="inputForgotPasswordEmail" />
+        <!-- Send reset email button -->
+        <p-button label="Send Reset Email" icon="pi pi-envelope" [disabled]="profileLoading" (click)="forgotPassword()"></p-button>
+        <!-- ! Error text -->
+        @if (isResetEmailSentCapped) {
+            <small class="error-text">Please wait {{ resetEmailTimer }} before requesting another reset email.</small>
+        }
+        <!-- Back to login button -->
+        <p>
+            <a pButton type="button" class="p-button-link"
+                (click)="state='logged out'; titleChangeEvent.emit('Login');"
+            >Back to Login</a>
+        </p>
+    </div>
+}
+
 <!-- Logged in state will show the profile -->
 @else if (state === 'logged in') {
     <div class="profile">
-        <!-- Profile leftside menu -->
+        <!-- Left-Hand Side Menu Options -->
         <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
 
-        <!-- Divider -->
+        <!-- Vertical Divider -->
         <p-divider layout="vertical"></p-divider>
 
+        <!-- If we have a user then we are logged in and we can show stuff :) -->
         @if (user) {
             <!-- Details-->
             @if (profileMenuState === 'details') {
@@ -297,6 +320,76 @@
                     <!-- Loading when the profileLoading is true -->
                     <p-progressSpinner class="mx-auto"></p-progressSpinner>
                 }
+            }
+            <!-- Reviews -->
+            @else if (profileMenuState === 'reviews') {
+                <!-- This is the table of the reviews that the user has written -->
+                <div class="reviews-container">
+                    <p-table 
+                        [value]="reviews" 
+                        [tableStyle]="{ 'min-width': '40rem', 'max-width': '50rem' }"
+                        styleClass="p-datatable-striped"
+                    >
+                        <ng-template pTemplate="caption">
+                            <div class="flex align-items-center justify-content-between" style="user-select: none;">
+                                Your Reviews
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr style="user-select: none;">
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>TItle</th>
+                                <th>Rating</th>
+                                <th>Likes</th>
+                                <th>Dislikes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-review>
+                            <tr>
+                                <!-- Date of review creation -->
+                                <td>
+                                    {{ review.createdAt | date: 'dd/MM/yyyy' }}
+                                </td>
+                                <!-- Unitcode of the unit that the review is in -->
+                                <td style="user-select: none;">{{ review.unit.unitCode | uppercase }}</td>
+                                <!-- Title of review -->
+                                <td style="user-select: none;">{{ review.title }}</td>
+                                <!-- Rating stars -->
+                                <td>
+                                    <p-rating 
+                                        [(ngModel)]="review.overallRating"
+                                        [readonly]="true"
+                                        [cancel]="false"
+                                        style="user-select: none; pointer-events: none; cursor: default;"
+                                    />
+                                </td>
+                                <!-- Likes of this review -->
+                                <td style="text-align: center; user-select: none;">
+                                    {{ review.likes }}
+                                </td>
+                                <!-- Dislikes of this review -->
+                                <td style="text-align: center; user-select: none;">
+                                    {{ review.dislikes }}
+                                </td>
+                                <!-- Actions to edit and delete the review -->
+                                <td>
+                                    <!-- TODO: Edit button is disabled because there is no functionality for this yet -->
+                                    <button pButton [disabled]="true" icon="pi pi-pencil" class="p-button-rounded p-button-text" ></button>
+                                    <!-- Button to delete the current review -->
+                                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text" (click)="this.deleteReview(review._id)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            }
+            <!-- Friends -->
+            @else if (profileMenuState === 'friends') {
+                <div class="friends-container">
+                    <!-- TODO: Make the friends list here and the suggested friends list -->
+                </div>
             }
         } @else {
             <!-- Loading when no user assigned yet -->

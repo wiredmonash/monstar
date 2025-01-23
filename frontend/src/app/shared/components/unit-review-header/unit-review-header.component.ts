@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component'; 
 import { FooterComponent } from '../footer/footer.component'; 
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -36,7 +37,7 @@ import { ToastModule } from 'primeng/toast';
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'] 
 })
-export class UnitReviewHeaderComponent implements OnInit {
+export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
   // Input property to receive the unit data from the parent component
   @Input() unit: any;
@@ -51,6 +52,7 @@ export class UnitReviewHeaderComponent implements OnInit {
   @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
 
   user: User | null = null;
+  userSubscription: Subscription | null = null;
 
   constructor (
     private authService: AuthService,
@@ -61,12 +63,19 @@ export class UnitReviewHeaderComponent implements OnInit {
    * * Runs on Init
    */
   ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe({
+    this.userSubscription = this.authService.getCurrentUser().subscribe({
       next: (currentUser: User | null) => {
         this.user = currentUser;
         console.log('UnitReviewHeader | Current User:', this.user);
       }
     })
+  }
+
+  /**
+   * * Runs on destroy
+   */
+  ngOnDestroy(): void {
+    if (this.userSubscription) { this.userSubscription.unsubscribe(); }
   }
 
   /**

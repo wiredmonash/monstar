@@ -5,6 +5,7 @@ import { Observable, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
 import { Types } from 'mongoose';
+import { Unit } from '../models/unit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,12 +25,33 @@ export class ApiService {
    * 
    * Retrieves all reviews or reviews for a specific unit if unit code is provided.
    * 
+   * If the unit parameter is provided, we get all reviews by unit, if not get all the reviews.
+   * 
    * @param {string} [unitcode] The unit code of the unit (optional)
    * @returns {Observable<any>} An observable containing the reviews data
    */
   getAllReviewsGET(unitcode?: string): Observable<any> {
-    // If the unit parameter is provided, we get all reviews by unit, if not get all the reviews.
-    const url = unitcode ? `${this.url}/reviews/${unitcode}` : `${this.url}/reviews`;
+    return this.http.get(
+      unitcode ? `${this.url}/reviews/${unitcode}` : `${this.url}/reviews`
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully fetched reviews:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst fetching reviews:', error.error);
+        }
+      })
+    );
+  }
+
+  /**
+   * * GET Gets the reviews written by a user
+   */
+  getUserReviewsGET(userID: string): Observable<any> {
+    const url = `${this.url}/reviews/author/${userID}`;
     return this.http.get(url);
   }
 
@@ -39,7 +61,22 @@ export class ApiService {
    * Toggles a like or dislike on a review by its ID.
    */
   toggleLikeDislikeReviewPATCH(reviewId: string, userId: Types.ObjectId, action: 'like' | 'dislike' | 'unlike' | 'undislike'): Observable<any> {
-    return this.http.patch(`${this.url}/reviews/toggle-like-dislike/${reviewId}`, { userId: userId, action: action }, { withCredentials: true });
+    return this.http.patch(
+      `${this.url}/reviews/toggle-like-dislike/${reviewId}`, 
+      { userId: userId, action: action }, 
+      { withCredentials: true }
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully toggled like/dislike:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst toggling like/dislike:', error.error);
+        }
+      })
+    );
   }
 
   /**
@@ -48,10 +85,23 @@ export class ApiService {
    * Retrieves a unit by its unit code.
    * 
    * @param {string} unitcode The unit code of the unit
-   * @returns {Observable<any>} An observable containing the unit data
+   * @returns {Observable<Unit>} An observable containing the unit data
    */
-  getUnitByUnitcodeGET(unitcode: string): Observable<any> {
-    return this.http.get(`${this.url}/units/unit/${unitcode}`);
+  getUnitByUnitcodeGET(unitcode: string): Observable<Unit> {
+    return this.http.get<Unit>(
+      `${this.url}/units/unit/${unitcode}`
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully fetched unit:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst fetching unit:', error.error);
+        }
+      })
+    );
   }
 
   /**
@@ -59,10 +109,23 @@ export class ApiService {
    * 
    * Retrieves all units.
    * 
-   * @returns {Observable<any[]>} An observable containing an array of all units
+   * @returns {Observable<Unit[]>} An observable containing an array of all units
    */
-  getAllUnits(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/units`);
+  getAllUnits(): Observable<Unit[]> {
+    return this.http.get<Unit[]>(
+      `${this.url}/units`
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully fetched all units:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst fetching all units:', error.error);
+        }
+      })  
+    );
   }
 
   /**
@@ -70,10 +133,23 @@ export class ApiService {
    * 
    * Retrieves the most popular units.
    * 
-   * @returns {Observable<any[]>} An observable containing an array of popular units
+   * @returns {Observable<Unit[]>} An observable containing an array of popular units
    */
-  getPopularUnitsGET(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.url}/units/popular`);
+  getPopularUnitsGET(): Observable<Unit[]> {
+    return this.http.get<Unit[]>(
+      `${this.url}/units/popular`
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully fetched popular units:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst fetching popular units:', error.error);
+        }
+      })
+    );
   }
 
   /**
@@ -84,17 +160,43 @@ export class ApiService {
    * @param {number} offset The offset for pagination
    * @param {number} limit The limit for pagination
    * @param {string} [search=''] The search query for filtering units
-   * @returns {Observable<any[]>} An observable containing an array of filtered units
+   * @param {string} [faculty] The faculty to filter by
+   * @returns {Observable<Unit[]>} An observable containing an array of filtered units
    */
-  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic'): Observable<any[]> {
-    const params = {
+  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic', showReviewed?: boolean, showUnreviewed?: boolean, faculty?: string[], semesters?: string[], campuses?: string[]): Observable<Unit[]> {
+    const params: { offset: string; limit: string; search: string; sort: string; showReviewed: string, showUnreviewed: string, faculty: string[], semesters: string[], campuses: string[] } = {
       offset: offset.toString(),
       limit: limit.toString(),
       search,
-      sort
+      sort,
+      showReviewed: 'false',
+      showUnreviewed: 'false',
+      faculty: [],
+      semesters: [],
+      campuses: []
     }
 
-    return this.http.get<any[]>(`${this.url}/units/filter`, { params });
+    if (showReviewed) { params.showReviewed = showReviewed ? 'true' : 'false'; }
+    if (showUnreviewed) { params.showUnreviewed = showUnreviewed ? 'true' : 'false'; }
+    if (faculty) { params.faculty = faculty; }
+    if (semesters) { params.semesters = semesters; }
+    if (campuses) { params.campuses = campuses; }
+
+    return this.http.get<Unit[]>(
+      `${this.url}/units/filter`, 
+      { params }
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully fetched filtered units:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst fetching filtered units:', error.error);
+        }
+      })
+    );
   }
     
   /**
@@ -141,6 +243,19 @@ export class ApiService {
    * @returns {Observable<any>} An observable containing the response from the server
    */
   deleteReviewByIdDELETE(id: string): Observable<any> {
-    return this.http.delete(`${this.url}/reviews/delete/${id}`);
+    return this.http.delete(
+      `${this.url}/reviews/delete/${id}`
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully deleted review:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst deleting review:', error.error);
+        }
+      })
+    );
   }
 }

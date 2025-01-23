@@ -1,14 +1,14 @@
-<!-- Toast for on deletion of review -->
+<!-- ! Toast for on deletion of review -->
 <p-toast></p-toast>
 
-<!-- CHILD: UnitHeaderComponent -->
+<!-- ! CHILD: UnitHeaderComponent -->
 @if (unit) {
     <div class="unit-header-container">
         <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)" (reviewAdded)="refreshReviews()"></app-unit-review-header>
     </div>
 }
 
-<!-- Shows all the reviews from the backend -->
+<!-- ! Show all the reviews  -->
 @if (!reviewsLoading) {
     <div class="reviews-container">
         @for (review of reviews; track $index) {
@@ -16,14 +16,17 @@
         }
     </div>
 } @else {
-    <!-- Show loading spinner -->
+    <!-- Show loading spinner if there are no reviews -->
     <div class="spinner-container">
         <p-progressSpinner></p-progressSpinner>
     </div>
 }
 
+<!-- ! Show end of reviews message  -->
 @if (reviews.length > 0) {
     <h3 class="text-center mb-5">You have reached the end...</h3>
-} @else {
+} 
+<!-- ! Show no reviews message if there are no reviews -->
+@else {
     <h3 class="text-center">No reviews for this unit...</h3>
 }

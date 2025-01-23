@@ -47,14 +47,25 @@ $padding: 40px;
     .p-toolbar-group-end {
         display: flex;
         justify-content: flex-end;
+
+        // Filter options
+        .filter-options {
+            // Filter option styles
+            .filter-option {
+                display: inline-block;
+                margin-right: 1rem;
+            }
+        }
     }
 
+    // Dropdown container
     .dropdown-container {
         position: relative;
         display: inline-block;
     }
 
-    .search-badge, .sortby-badge{
+    // Badge styles
+    .search-badge, .sortby-badge {
         position: absolute;
         right: 10px;
         top: 50%;
@@ -66,8 +77,31 @@ $padding: 40px;
         font-size: 0.6rem;
         margin-left: 0.5rem;
     }
+
+    .filter-badge {
+        font-size: 0.6rem;
+        color: white;
+        margin-right: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        background-color: rgb(83,83,83);
+    }
 }
 
+// Make sure the dropdown panel isn't too wide
+::ng-deep .p-dropdown-panel {
+    max-width: 200px;
+}
+
+// Make sure the dropdown items are smaller font size and other styles
+::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// Pagination container
 .paginator-container {
     max-width: $max-width;
     margin: 0 auto;
@@ -75,6 +109,7 @@ $padding: 40px;
     padding-bottom: 20px;
 }
 
+// No results container
 .no-results-container {
     display: flex;
     flex-direction: column;
@@ -85,9 +120,15 @@ $padding: 40px;
     padding-top: 20px;
     padding-bottom: 20rem;
 
+    // Emoji styles
     .emoji {
         transform: scale(4);
         margin-top: 10vh;
         margin-bottom: 2rem;
     }
+}
+
+// Prevents user selection
+.prevent-select {
+    user-select: none;
 }

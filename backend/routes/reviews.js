@@ -73,6 +73,41 @@ router.get('/:unit', async function (req, res) {
     }
 });
 
+
+/**
+ * ! GET Get All Reviews by Author
+ *
+ * Gets all reviews for a unit from the database.
+ *
+ * @async
+ * @returns {JSON} Responds with a list of all reviews in JSON format.
+ * @throws {500} If an error occurs whilst fetching reviews from the database.
+ * @throws {404} If the unit is not found in the database.
+ */
+router.get('/author/:author', async function (req, res) {
+    try {
+        // Get the author's name from the request parameters and convert it to lowercase
+        const authorName = req.params.author;
+        console.log(`Searching for ${authorName}`)
+        // const authors = await User.find({})
+        // console.log(authors)
+        const author = await User.findOne({username: authorName})
+        console.log(`Fetching reviews for author: ${author}`);
+
+        // Find all reviews associated with this unit
+        const reviews = await Review.find({ author: author._id }).populate('author').populate('unit');
+        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
+
+        // Return the list of reviews with a 200 OK status
+        return res.status(200).json(reviews);
+    } catch (error) {
+        // Handle any errors that occur during the process
+        console.error(`An error occurred: ${error.message}`);
+        return res.status(500).json({ error: `An error occurred while fetching reviews: ${error.message}` });
+    }
+});
+
+
 /**
  * ! POST Create a Review for Unit
  * 
@@ -223,6 +258,9 @@ router.delete('/delete/:reviewId', async function (req, res) {
 
         // Delete the Review from the database
         await Review.findByIdAndDelete(req.params.reviewId); 
+
+        // Delete the Review from the User's reviews array
+        await User.findByIdAndUpdate(review.author, { $pull : { reviews: req.params.reviewId } } ); 
 
         // Removing the review from the Unit's `reviews` array
         await Unit.findByIdAndUpdate(unitId, { $pull : { reviews: req.params.reviewId } } );

@@ -1,6 +1,76 @@
 // Variables
 $avatar-size: 64px;
 
+.profile-review-table {
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    background-color: white; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    border: none;
+    border-radius: 8px; 
+    overflow: hidden;
+}
+
+.profile-review-table thead {
+    background-color: #f5f5f5;
+    color: #333; 
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.profile-review-table th,
+.profile-review-table td {
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-review-table th {
+    font-weight: bold;
+    letter-spacing: 0.02em;
+}
+
+.profile-review-table tbody tr:nth-child(odd) {
+    background-color: #fafafa; 
+}
+
+.profile-review-table tbody tr:hover {
+    background-color: #f2f2f2;
+    transition: background-color 0.3s ease;
+}
+
+.profile-review-table td {
+    color: #333;
+    vertical-align: middle;
+}
+
+.profile-review-table th:first-child,
+.profile-review-table td:first-child {
+    text-align: center;
+    width: 5%;
+}
+
+/* Rounded corners */
+.profile-review-table thead tr:first-child th:first-child {
+    border-top-left-radius: 8px; 
+}
+
+.profile-review-table thead tr:first-child th:last-child {
+    border-top-right-radius: 8px; 
+}
+
+.profile-review-table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 8px; 
+}
+
+.profile-review-table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
 // Sign Up and Login Forms
 .signup-form {
     display: flex;
@@ -33,13 +103,17 @@ $avatar-size: 64px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+        }
+
+        .forgot-password {
+            transform: translateY(-30px);
         }
 
         .p-button-link { 
             display: inline-flex;
             align-items: center;
             font-weight: bold;
+            margin-bottom: 1rem;
         }
     }
   
@@ -80,6 +154,33 @@ $avatar-size: 64px;
 
     .p-button-link {
         padding-top: 20px;
+    }
+}
+
+// Forgot Password Form
+.forgot-password-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem; // Spacing between sections
+    padding-top: 1.5rem;
+
+    p {
+        text-align: center;
+        margin: 0;
+    }
+
+    a {
+        padding: 0;
+    }
+
+    .p-button-link {
+        font-weight: bold;
+    }
+
+    .error-text {
+        color: red;
     }
 }
 

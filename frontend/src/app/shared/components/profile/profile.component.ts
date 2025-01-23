@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
+import { ApiService } from '../../services/api.service';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -15,7 +16,10 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
-
+import { ActivatedRoute } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { DatePipe, UpperCasePipe } from '@angular/common';
+import { RatingModule } from 'primeng/rating';
 declare var google: any;
 
 @Component({
@@ -33,7 +37,11 @@ declare var google: any;
     AvatarModule,
     CardModule,
     ProgressSpinnerModule,
-    TooltipModule
+    TooltipModule,
+    TableModule,
+    UpperCasePipe,
+    RatingModule,
+    DatePipe,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -43,10 +51,13 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
 
   // All user auth states can be inputted by parent as well
-  @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' = 'logged out';
+  @Input() state: 'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password' = 'logged out';
 
   // Stores the user
   user: User | null = null;
+
+  // Stores the user reviews
+  reviews: any[] = [];
 
   // Outputs user change to parent
   @Output() userChangeEvent = new EventEmitter<User | null>();
@@ -55,7 +66,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() titleChangeEvent = new EventEmitter<string>();
 
   // Event to emit to the navbar when our state changes
-  @Output() stateChangeEvent = new EventEmitter<'logged in' | 'signed up' | 'logged out' | 'signed out'>();
+  @Output() stateChangeEvent = new EventEmitter<'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password'>();
 
   // Event to emit to the navbar to create a toast
   @Output() createToast = new EventEmitter<{ severity: string, summary: string, detail: string }>();
@@ -76,6 +87,15 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   inputPassword: string = '';
   // Current input value for confirm password
   inputPassword2: string = '';
+
+  // Current input value for the forgot password email
+  inputForgotPasswordEmail: string = '';
+  // Boolean to check if the reset email has been sent too many times
+  isResetEmailSentCapped: boolean = false;
+  // Boolean to check if the reset email button is disabled
+  resetEmailButtonDisabled: boolean = false;
+  // Timer for the reset email button
+  resetEmailTimer: any;
 
   // Email input of duplicate nature status
   isUserSignUpDuplicate: boolean = false;
@@ -106,9 +126,12 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
   profileLoading = false;
 
 
-  // ! Injects AuthService
+  // ! Injects ApiService, AuthService, and ActivatedRoute
   constructor (
-    private authService: AuthService) { }
+    private apiService: ApiService,
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) { }
 
 
   // * Change title on initialisation
@@ -139,7 +162,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if (this.user?.verified) {
           this.state = 'logged in';
-          this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+          // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
           this.titleChangeEvent.emit('Profile');
           this.stateChangeEvent.emit(this.state); 
         }
@@ -155,6 +178,15 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
+
+        console.log('Fetching user reviews for:', this.user?.username);
+
+        // Gets the user reviews if the user is not null
+        if (this.user?.username) {
+          this.getUserReviews(this.user.username);
+        }
+        
+        // console.log(this.reviews)
 
         // ? Debug log change of current user
         console.log('Profile | Current User:', this.user);
@@ -480,6 +512,59 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
+  // * Sends a verification email to reset password
+  forgotPassword() {
+    // Set loading to true
+    this.profileLoading = true;
+
+    // Trim input email whitespace and store as new variable
+    const email = this.inputForgotPasswordEmail.trim();
+
+    // Regular expression to validate authcate and email
+    const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
+
+    // Check if emails ends with monash email
+    if (emailRegex.test(email)) {
+      this.authService.forgotPassword(email).subscribe({
+        next: (response) => {
+          this.createToast.emit({ severity: 'info', summary: 'Email sent', detail: 'We have sent you an email to reset your password!' });
+          this.inputForgotPasswordEmail = '';
+          this.profileLoading = false;
+          console.log('Profile | Forgot password email sent:', response);
+
+          // Disable the reset email button
+          this.resetEmailButtonDisabled = true;
+          this.startResetEmailTimer();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.createToast.emit({ severity: 'error', summary: 'Email not sent', detail: 'Failed to send email to reset password' });
+          this.profileLoading = false;
+
+          if (error.status == 429) {
+            this.isResetEmailSentCapped = true;
+            this.createToast.emit({ severity: 'warn', summary: '429 Too Many Requests', detail: error.error.error });
+          } else { 
+            this.createToast.emit({ severity: 'error', summary: 'Email not sent', detail: error.error.error });
+          }
+          console.error('Profile | Forgot password email failed:', error.error);
+        }
+      });
+    }
+  }
+
+  // * Starts the reset email timer
+  private startResetEmailTimer() {
+    let timeLeft = 300; // 5 minutes in seconds
+    this.resetEmailTimer = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        this.resetEmailButtonDisabled = false;
+        this.isResetEmailSentCapped = false;
+        clearInterval(this.resetEmailTimer);
+      }
+    });
+  }
+
   // * Updates user details
   updateDetails() {
     if (!this.user || !this.user.username) return
@@ -487,6 +572,7 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     // Define the empty payload
     const updatePayload: { username?: string, password?: string } = {};
 
+    // Allowable username regular expression
     const usernameRegex = /^[a-zA-Z0-9]{1,20}$/;
 
     // Adding username to payload if given and changed
@@ -584,10 +670,56 @@ export class ProfileComponent implements OnInit, OnDestroy, AfterViewInit {
     input.click();
   }
 
+  // * Gets the reviews for the user
+  getUserReviews(userID: any) {
+    this.apiService.getUserReviewsGET(userID).subscribe(
+      (reviews: any) => {
+        this.reviews = reviews;
+
+        // Update the reviews property in the user object
+        if (this.user)
+          this.user.reviews = this.reviews;
+
+        console.log(this.reviews)
+      },
+      (error: any) => {
+        // ? Debug log: Error
+        console.log('ERROR DURING: GET Get All Reviews', error)
+      }
+    );
+  }
+
+  // * Delete a review
+  deleteReview(reviewId: string) {
+    this.apiService.deleteReviewByIdDELETE(reviewId).subscribe({
+      next: (response: any) => { 
+        // Remove the review from the reviews array
+        this.reviews = this.reviews.filter(review => review._id !== reviewId);
+
+        // Update the reviews array for the frontend's currentUser
+        if (this.user)
+          this.user.reviews = this.reviews;
+
+        // Emit a success toast
+        this.createToast.emit({ severity: 'success', summary: 'Review Deleted', detail: 'Your review has been deleted successfully.' });
+
+        // ? Debug log: Success
+        console.log('Profile | Review deleted successfully', response);
+      },
+      error: (error: any) => {
+        // ? Debug log: Error
+        console.error('Profile | Error whilst deleting review', error.message);
+      }
+    })
+  }
+
   // * Runs on removal of this component
   ngOnDestroy(): void {
     // Clean up subscriptions to avoid memory leaks
     if (this.userSubscription) { this.userSubscription.unsubscribe(); }
     if (this.dialogClosedSubscription) { this.dialogClosedSubscription.unsubscribe(); }
+
+    // Clear the timer on destroy
+    if (this.resetEmailTimer) { clearInterval(this.resetEmailTimer); }
   }
 }
