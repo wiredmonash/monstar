@@ -127,24 +127,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.apiService.getPopularUnitsGET().subscribe({
       next: (response: Unit[]) => {
         // Map the response data to Unit objects
-        this.popularUnits = response.map((unitData: any) => new Unit(
-          unitData._id,
-          unitData.unitCode,
-          unitData.name,
-          unitData.description,
-          unitData.reviews,
-          unitData.avgOverallRating,
-          unitData.avgRelevancyRating,
-          unitData.avgFacultyRating,
-          unitData.avgContentRating,
-          unitData.level,
-          unitData.creditPoints,
-          unitData.school,
-          unitData.academicOrg,
-          unitData.scaBand,
-          unitData.requisites,
-          unitData.offerings
-        ));
+        this.popularUnits = response.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings));
 
         // Not loading anymore
         this.loading = false;
@@ -159,7 +142,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
-  // * Method to navigate to the unit list page
+  /**
+   * * Navigates to the unit list page
+   * 
+   * This is used for the explore units button on the home page.
+   */
   exploreUnits() {
     this.router.navigate(['/unit-list']);
   }

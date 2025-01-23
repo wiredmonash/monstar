@@ -93,10 +93,14 @@ export class UnitListComponent implements OnInit {
   campuses: string[] = ['Clayton', 'Caulfield', 'Malaysia', 'Overseas', 'Peninsula', 'City (Melbourne)', 'Alfred Hospital', 'Monash Online', 'Monash Medical Centre', 'Monash Law Chambers', 'Notting Hill', 'Parkville', 'Hudson Institute of Medical Research', 'Gippsland', 'Indonesia', 'Box Hill', 'Warragul', 'Prato', 'Suzhou (SEU)', 'Southbank', 'Moe'];
   selectedCampuses: any = null;
 
+  // Ratings
   ratings: number[] = [1,2,3,4,5];
   selectedRating: number = 0;
 
+  // Prerequisites
   hasPrerequisites: boolean = false;
+
+  // TODO: Show tags for the units
   tags: any[] = [];
   selectedTags: any[] = [];
 
@@ -156,24 +160,7 @@ export class UnitListComponent implements OnInit {
     this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
       next: (response: any) => {
         // Map the response data to Unit objects
-        this.filteredUnits = response.units.map((unitData: any) => new Unit(
-          unitData._id,
-          unitData.unitCode,
-          unitData.name,
-          unitData.description,
-          unitData.reviews,
-          unitData.avgOverallRating,
-          unitData.avgRelevancyRating,
-          unitData.avgFacultyRating,
-          unitData.avgContentRating,
-          unitData.level,
-          unitData.creditPoints,
-          unitData.school,
-          unitData.academicOrg,
-          unitData.scaBand,
-          unitData.requisites,
-          unitData.offerings
-        ));
+        this.filteredUnits = response.units.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings));
 
         // Update the total records
         this.totalRecords = response.total;

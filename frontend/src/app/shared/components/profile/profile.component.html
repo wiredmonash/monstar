@@ -235,12 +235,13 @@
 <!-- Logged in state will show the profile -->
 @else if (state === 'logged in') {
     <div class="profile">
-        <!-- Profile leftside menu -->
+        <!-- Left-Hand Side Menu Options -->
         <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
 
-        <!-- Divider -->
+        <!-- Vertical Divider -->
         <p-divider layout="vertical"></p-divider>
 
+        <!-- If we have a user then we are logged in and we can show stuff :) -->
         @if (user) {
             <!-- Details-->
             @if (profileMenuState === 'details') {
@@ -296,6 +297,7 @@
                     <p-progressSpinner class="mx-auto"></p-progressSpinner>
                 }
             }
+            <!-- Reviews -->
             @else if (profileMenuState === 'reviews') {
                 <!-- This is the table of the reviews that the user has written -->
                 <div class="reviews-container">
@@ -358,7 +360,13 @@
                         </ng-template>
                     </p-table>
                 </div>
-        }
+            }
+            <!-- Friends -->
+            @else if (profileMenuState === 'friends') {
+                <div class="friends-container">
+                    <!-- TODO: Make the friends list here and the suggested friends list -->
+                </div>
+            }
         } @else {
             <!-- Loading when no user assigned yet -->
             <p-progressSpinner class="mx-auto"></p-progressSpinner>
