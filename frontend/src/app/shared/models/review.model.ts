@@ -4,8 +4,8 @@ import { Types } from "mongoose";
 export class Review {
   _id: Types.ObjectId;
   title: string;
-  semester: number;
-  grade: number;
+  semester: string;
+  grade: string;
   year: number;
   overallRating: number;
   relevancyRating: number;
@@ -17,8 +17,8 @@ export class Review {
   constructor (
     _id?: Types.ObjectId,
     title?: string,
-    semester?: number,
-    grade?: number,
+    semester?: string,
+    grade?: string,
     year?: number,
     overallRating?: number,
     relevancyRating?: number,
@@ -29,8 +29,8 @@ export class Review {
   ) {
     this._id = _id || new Types.ObjectId();
     this.title = title || '';
-    this.semester = semester || 1;
-    this.grade = grade || 0; 
+    this.semester = semester || 'First semester';
+    this.grade = grade || 'P';
     this.year = year || new Date().getFullYear();
     this.overallRating = overallRating ||  0;
     this.relevancyRating = relevancyRating || 0;
@@ -43,7 +43,6 @@ export class Review {
   // Validates the values
   isValid(): boolean {
     return (
-      this.semester >= 1 && this.semester <= 2 &&
       this.year > 0 &&
       this.overallRating >= 0 && this.overallRating <= 5 &&
       this.relevancyRating >= 0 && this.relevancyRating <= 5 &&
