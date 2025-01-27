@@ -10,11 +10,13 @@
   [style]="{ 'width': '75vw' }"
   [closeOnEscape]="profileState == 'signed up' ? false : true"
   (onHide)="onDialogClose()"
+  (onShow)="onDialogOpen()"
 >
   <!-- For the content of the dialog see profile.component.html -->
   <app-profile 
     [state]="profileState"
     [dialogClosedEvent]="dialogClosedEvent"
+    [dialogOpenedEvent]="dialogOpenedEvent"
     (userChangeEvent)="user = $event"
     (titleChangeEvent)="profileDialogTitle = $event"
     (stateChangeEvent)="authStateChange($event)"

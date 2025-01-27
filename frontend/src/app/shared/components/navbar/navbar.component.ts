@@ -39,8 +39,9 @@ export class NavbarComponent {
   // Reference to the sidebar child
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
-  // ! Event emitter for closing the dialog  THIS COULD CAUSE LAG ()_() !!!!!!!!!
+  // ! Event emitter for opening/closing the dialog  THIS COULD CAUSE LAG ()_() !!!!!!!!!
   @Output() dialogClosedEvent = new EventEmitter<void>();
+  @Output() dialogOpenedEvent = new EventEmitter<void>();
 
   // Visibility state of the sidebar
   sidebarVisible: boolean = false;
@@ -81,7 +82,7 @@ export class NavbarComponent {
         this.sidebarVisible = false;
       } else {
         this.profileDialogVisible = false;
-        this.onDialogClose();
+        //this.onDialogClose();
       }
     }
 
@@ -118,6 +119,10 @@ export class NavbarComponent {
     if (this.profileState == 'signed up') {
       this.profileState = 'logged out';
     }
+  }
+
+  onDialogOpen() {
+    this.dialogOpenedEvent.emit();
   }
 
   /**
