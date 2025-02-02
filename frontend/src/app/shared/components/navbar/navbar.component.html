@@ -26,27 +26,55 @@
 
 
 <!-- ! Navbar -->
-<nav class="navbar navbar-expand-lg">
+<nav 
+  class="navbar navbar-expand-lg"
+  [style.backgroundColor]="navbarColor"
+>
   <div class="container-fluid d-flex justify-content-center position-relative">
     <!-- Sidebar button -->
-    <div class="hamburger-menu position-absolute start-0 ml-2" type="button" (click)="sidebarVisible = true;">
+    <div 
+      class="hamburger-menu position-absolute start-0 ml-2" 
+      type="button" 
+      (click)="sidebarVisible = true;"
+      [style.color]="hamburgColor" 
+    >
       <i class="pi pi-bars" pTooltip="Sidebar (CTRL + S)" tooltipPosition="right" tooltipStyleClass="ml-2 mt-1"></i>
     </div>
 
     <!-- Website Name, also redirects to the home page -->
-    <a class="navbar-brand mx-auto text-center prevent-select" routerLink="/" pTooltip="Back to homepage" tooltipPosition="bottom">MonSTAR</a>
+    <a 
+      class="navbar-brand mx-auto text-center prevent-select"
+      routerLink="/" 
+      pTooltip="Back to homepage" 
+      tooltipPosition="bottom"
+      [style.color]="titleColor"
+    >MonSTAR</a>
 
     <!-- Profile -->
     <div class="profile position-absolute end-0 mr-2" type="button" (click)="showProfileDialog()">
       @if (user) {
         <!-- Avatar shown if logged in -->
-        <div class="profile-pic pt-1" style="transform: scale(0.9);" pTooltip="Profile (CTRL + P)" tooltipStyleClass="mt-1">
-          <p-avatar [image]="user.profileImg" shape="circle"></p-avatar>
+        <div 
+          class="profile-pic pt-1" 
+          style="transform: scale(0.9);" 
+          pTooltip="Profile (CTRL + P)" 
+          tooltipStyleClass="mt-1"
+        >
+          <p-avatar 
+            [image]="user.profileImg" 
+            shape="circle"
+          ></p-avatar>
           <span class="online-badge"></span>
         </div>
       } @else {
         <!-- Icon shown if not logged in -->
-        <i class="pi pi-user-plus mr-1 mb-2" pTooltip="Sign In (CTRL + P)" tooltipStyleClass="mt-2" [style]="{ 'transform': 'scale(1.2)' }"></i>
+        <i 
+          class="pi pi-user-plus mr-1 mb-2" 
+          pTooltip="Sign In (CTRL + P)" 
+          tooltipStyleClass="mt-2" 
+          [style]="{ 'transform': 'scale(1.2)' }"
+          [style.color]="profileColor"
+        ></i>
       }
     </div>
   </div>
@@ -54,7 +82,11 @@
 
 
 <!-- ! Sidebar-->
-<p-sidebar #sidebarRef [(visible)]="sidebarVisible">
+<p-sidebar 
+  #sidebarRef 
+  [(visible)]="sidebarVisible"
+  [style]="{ 'background-color': '#1e1e1e' }"
+>
   <ng-template pTemplate="headless">
     <div class="flex flex-column h-full">
         <!-- Title Text-->

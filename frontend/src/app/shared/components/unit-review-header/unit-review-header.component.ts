@@ -15,6 +15,9 @@ import { User } from '../../models/user.model';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Subscription } from 'rxjs';
+import { IntegerPipe } from '../../pipes/integer.pipe';
+import { DividerModule } from 'primeng/divider';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -29,7 +32,9 @@ import { Subscription } from 'rxjs';
     DropdownModule,
     FormsModule,
     DecimalPipe,
-    ToastModule
+    ToastModule,
+    DividerModule,
+    TooltipModule,
   ], 
   providers: [
     MessageService
@@ -38,6 +43,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./unit-review-header.component.scss'] 
 })
 export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
+  Math: any = Math
 
   // Input property to receive the unit data from the parent component
   @Input() unit: any;
@@ -54,6 +60,16 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   user: User | null = null;
   userSubscription: Subscription | null = null;
 
+  // The currently selected sorting option for the dropdown
+  selectedSort: string = 'recent';
+  // Sorting options used for the dropdown
+  sortOptions = [
+    { name: 'Recent', value: 'recent'}, 
+    { name: 'Lowest Rating', value: 'lowest-rating'}, 
+    { name: 'Highest Rating', value: 'highest-rating'}
+  ]
+
+  // === Injects the AuthService and MessageService ===
   constructor (
     private authService: AuthService,
     private messageService: MessageService
@@ -68,7 +84,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
         this.user = currentUser;
         console.log('UnitReviewHeader | Current User:', this.user);
       }
-    })
+    });
   }
 
   /**
@@ -81,11 +97,11 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   /**
    * * Handles the sorting action and emits the chosen criteria to the parent component.
    *
-   * @param {string} criteria - The criteria to sort by, such as 'recent', 'highest-rating', or 'lowest-rating'.
+   * @param {any} event - The event object containing the sorting criteria.
    */
-  onSort(criteria: string) {
-    console.log('Sorting by: ', criteria);
-    this.sortBy.emit(criteria);
+  onSort(event: any) {
+    console.log('Sorting by: ', event.value);
+    this.sortBy.emit(event.value);
   }
 
   // * Shows the dialog to write a review
@@ -102,4 +118,6 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   handleReviewPosted() {
     this.reviewAdded.emit();
   }
+
+
 }

@@ -24,9 +24,15 @@
 
 <!-- ! Show end of reviews message  -->
 @if (reviews.length > 0) {
-    <h3 class="text-center mb-5">You have reached the end...</h3>
+    <h3 
+        class="text-center mb-5 prevent-select"
+        [style]="{ 'color': 'var(--text-color)' }"
+    >You have reached the end...</h3>
 } 
 <!-- ! Show no reviews message if there are no reviews -->
 @else {
-    <h3 class="text-center">No reviews for this unit...</h3>
+    <h3 
+        class="text-center prevent-select"
+        [style]="{ 'color': 'var(--text-color)', 'margin-top': '5rem', 'margin-bottom': '5rem' }"
+    >No reviews for this unit...</h3>
 }

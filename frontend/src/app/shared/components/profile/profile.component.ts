@@ -1,4 +1,4 @@
-import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
@@ -46,7 +46,7 @@ declare var google: any;
     SkeletonModule
   ],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   // used to get the google sign in button element
@@ -303,7 +303,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
   }
 
-  /**
+  /** 
    * * Renders the Google Sign In button
    * 
    * Called to render the Google Sign In button asynchronously. This function
@@ -351,7 +351,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           text: "sign_in_with",
           size: "large",
           logo_alignment: "left",
-          width: "199px"
+          width: "199px",
         }
       );
 

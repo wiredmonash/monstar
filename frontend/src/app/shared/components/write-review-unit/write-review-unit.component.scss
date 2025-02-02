@@ -1,6 +1,11 @@
-/* Custom scrollbar for PrimeNG dropdown */
+// Custom scrollbar for PrimeNG dropdown
 .justify-start {
-    margin-right: auto;
+    margin-right: auto; 
+}
+
+// Altering the Z-Index of the PrimeNG dialog dark overlay
+::ng-deep .p-dialog-mask {
+    z-index: 1000 !important;
 }
 
 :host {

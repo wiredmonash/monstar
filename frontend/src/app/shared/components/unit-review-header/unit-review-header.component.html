@@ -1,131 +1,155 @@
 <!-- Toast -->
 <p-toast></p-toast>
 
-<!-- UnitHeaderComponent | PARENT: UnitOverviewComponent -->
-<div class="unit-overview">
-  <div class="row align-items-center ">
+<!-- Unit Review Header Container -->
+<div class="unit-review-header">
+  <!-- Top Section: Unit Info & Overall Rating -->
+  <div class="header-content prevent-select">
     <!-- Unit Info -->
-    <div class="col-md-3 unit-title-container">
-      <!-- Unit Code -->
-      <h1 class="fw-bold unit-title">{{ unit.unitCode | uppercase }}</h1>
-      <!-- Unit Name -->
-      <p class="unit-subtitle">{{ unit.name }}</p>
-    </div>
-
-    <!-- Vertical Divider -->
-    <div class="col-md-1 p-0">
-      <div class="vr"></div>
+    <div class="unit-info">
+      <h1 class="unit-code">{{ unit.unitCode | uppercase }}</h1>
+      <p class="unit-name">{{ unit.name }}</p>
     </div>
 
     <!-- Overall Rating -->
-    <div class="col-md-2 overall-rating-container text-center">
-      <h2 class="fw-bold overall-rating-title">{{ unit.avgOverallRating | decimal }} <span class="fs-5">out of 5</span></h2>
+    <div class="overall-rating prevent-select">
+      <h2>
+        {{ unit.avgOverallRating | decimal }} <span>out of 5</span>
+      </h2>
       <div class="stars">
-        @for (star of [1,2,3,4,5]; track $index) {
-          <i class="bi text-dark" 
-              [class.bi-star-fill]="star <= unit.avgOverallRating"
-              [class.bi-star]="star > unit.avgOverallRating"
+        <ng-container *ngFor="let star of [1,2,3,4,5]">
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-star-fill': Math.floor(unit.avgOverallRating) >= star,
+              'bi-star-half': Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star,
+              'bi-star': Math.ceil(unit.avgOverallRating) < star
+            }"
           ></i>
-        }
+        </ng-container>
       </div>
-      <!-- Number of total reviews -->
-      @if (unit.reviews.length > 1) {
-        <p>{{ unit.reviews.length }} reviews</p>
-      } 
-      @else if (unit.reviews.length == 1) {
-        <p>{{ unit.reviews.length }} review</p>
-      }
-      @else if (unit.reviews.length <= 0) {
-        <p>No reviews</p>
-      }
-    </div>
-
-    <!-- Ratings: Content, Relevancy, and Teaching Team -->
-    <div class="col-md-4 d-flex p-0 ratings-section">
-      <div class="d-flex flex-column me-3">
-        <!-- Content Section -->
-        <div class="text-left smaller-section content-rating">
-          <div class="label-with-rating">
-            <p>Content</p>
-            <p class="rating-number">{{ unit.avgContentRating | decimal }}</p>
-          </div>
-          <div class="stars smaller-stars">
-            @for (star of [1,2,3,4,5]; track $index) {
-              <i class="bi text-dark" 
-                  [class.bi-star-fill]="star <= unit.avgContentRating"
-                  [class.bi-star]="star > unit.avgContentRating"
-              ></i>
-            }
-          </div>
-        </div>
-
-        <!-- Teaching Team Section -->
-        <div class="text-left smaller-section teaching-team-rating mt-2">
-          <div class="label-with-rating">
-            <p>Teaching Team</p>
-            <p class="rating-number">{{ unit.avgFacultyRating | decimal }}</p>
-          </div>
-          <div class="stars smaller-stars">
-            @for (star of [1,2,3,4,5]; track $index) {
-              <i class="bi text-dark" 
-                  [class.bi-star-fill]="star <= unit.avgFacultyRating"
-                  [class.bi-star]="star > unit.avgFacultyRating"
-              ></i>
-            }
-          </div>
-        </div>
-      </div>
-
-      <!-- Relevancy Section -->
-      <div class="text-left smaller-section relevancy-rating">
-        <div class="label-with-rating">
-          <p>Relevancy</p>
-          <p class="rating-number">{{ unit.avgRelevancyRating | decimal }}</p>
-        </div>
-        <div class="stars smaller-stars">
-          @for (star of [1,2,3,4,5]; track $index) {
-            <i class="bi text-dark" 
-                [class.bi-star-fill]="star <= unit.avgRelevancyRating"
-                [class.bi-star]="star > unit.avgRelevancyRating"
-            ></i>
-          }
-        </div>
-      </div>
+      <p class="review-count">
+        <ng-container *ngIf="unit.reviews.length > 1; else oneOrNone">
+          {{ unit.reviews.length }} reviews
+        </ng-container>
+        <ng-template #oneOrNone>
+          <ng-container *ngIf="unit.reviews.length === 1; else noReviews">
+            1 review
+          </ng-container>
+          <ng-template #noReviews>No reviews</ng-template>
+        </ng-template>
+      </p>
     </div>
   </div>
 
-  <!-- Sort By and Filter Section -->
-  <div class="row d-flex justify-content-end buttons-container">
-    <!-- Write a Review Button -->
-    <div class="col-auto">
-      <button class="btn btn-outline-white filter-btn" (click)="showDialog()">
-        <i class="bi bi-pencil"></i> Write a review
-      </button>
+  <!-- Middle Section: Detailed Ratings -->
+  <div class="detailed-ratings">
+    <!-- Content Rating -->
+    <div class="rating-section prevent-select">
+      <p>Content</p>
+      <div class="stars">
+        <ng-container *ngFor="let star of [1,2,3,4,5]">
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-star-fill': Math.floor(unit.avgContentRating) >= star,
+              'bi-star-half': Math.floor(unit.avgContentRating) < star && Math.ceil(unit.avgContentRating) >= star,
+              'bi-star': Math.ceil(unit.avgContentRating) < star
+            }"
+          ></i>
+        </ng-container>
+      </div>
+      <span class="rating-value">{{ unit.avgContentRating | decimal }}</span>
     </div>
 
-    <!-- Sort By Dropdown -->
-    <div class="col-auto">
-      <div class="dropdown">
-        <button class="btn btn-outline-dark sort-by-btn dropdown-toggle mb-3" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          Sort by
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-          <!-- The different criteria for sorting the reviews (event handler called on click) -->
-          <li><button class="dropdown-item" (click)="onSort('recent')">Recent</button></li> 
-          <li><button class="dropdown-item" (click)="onSort('lowest-rating')">Lowest Rating</button></li> 
-          <li><button class="dropdown-item" (click)="onSort('highest-rating')">Highest Rating</button></li> 
-        </ul>
+    <!-- Teaching Team Rating -->
+    <div class="rating-section prevent-select">
+      <p>Faculty</p>
+      <div class="stars">
+        <ng-container *ngFor="let star of [1, 2,3,4,5]">
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-star-fill': Math.floor(unit.avgFacultyRating) >= star,
+              'bi-star-half': Math.floor(unit.avgFacultyRating) < star && Math.ceil(unit.avgFacultyRating) >= star,
+              'bi-star': Math.ceil(unit.avgFacultyRating) < star
+            }"
+          ></i>
+        </ng-container>
       </div>
+      <span class="rating-value">{{ unit.avgFacultyRating | decimal }}</span>
+    </div>
+
+    <!-- Relevancy Rating -->
+    <div class="rating-section prevent-select">
+      <p>Relevancy</p>
+      <div class="stars">
+        <ng-container *ngFor="let star of [1,2,3,4,5]">
+          <i
+            class="bi"
+            [ngClass]="{
+              'bi-star-fill': Math.floor(unit.avgRelevancyRating) >= star,
+              'bi-star-half': Math.floor(unit.avgRelevancyRating) < star && Math.ceil(unit.avgRelevancyRating) >= star,
+              'bi-star': Math.ceil(unit.avgRelevancyRating) < star
+            }"
+          ></i>
+        </ng-container>
+      </div>
+      <span class="rating-value">{{ unit.avgRelevancyRating | decimal }}</span>
+    </div>
+  </div>
+
+  <!-- Bottom Section: Actions (Write Review, Sort, Filter) -->
+  <div class="actions">
+    <!-- Write a Review Button -->
+    <div
+      [pTooltip]="user == null ? 'You must be logged in to write a review.' : 'Write a review for this unit.'"
+      tooltipPosition="top"
+    >
+      <p-button 
+        label="Review"
+        icon="pi pi-pencil" 
+        (click)="showDialog()" 
+        rounded="true"
+        [disabled]="user == null ? true : false"
+      ></p-button>
     </div>
 
     <!-- Filter Button -->
-    <div class="col-auto">
-      <button class="btn btn-outline-dark filter-btn">
-        <i class="bi bi-sliders"></i> Filter
-      </button>
-    </div>
+    <p-button
+      label="Filter"
+      icon="pi pi-sliders-h"
+      rounded="true"
+      pTooltip="Filtering options"
+      tooltipPosition="bottom"
+    ></p-button>
+
+    <!-- Unit Map Button -->
+    <p-button
+      label="Map"
+      icon="pi pi-map-marker"
+      rounded="true"
+      pTooltip="See prerequisites and other unit connections in a graph"
+      tooltipPosition="bottom"
+    ></p-button>
+
+    <!-- Sort By Dropdown -->
+    <!-- <div class="dropdown">
+      <p-dropdown
+        [options]="sortOptions"
+        [(ngModel)]="selectedSort"
+        optionLabel="name"
+        optionValue="value"
+        (onChange)="onSort($event)"
+      >
+      </p-dropdown>
+    </div> -->
   </div>
 </div>
 
-<!-- CHILD: Pop up write review -->
-<app-write-review-unit [unit]="unit" [user]="user" (reviewPosted)="handleReviewPosted()"></app-write-review-unit>
+<!-- Child Component: Write Review -->
+<app-write-review-unit
+  [unit]="unit"
+  [user]="user"
+  (reviewPosted)="handleReviewPosted()"
+></app-write-review-unit>

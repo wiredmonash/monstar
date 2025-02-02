@@ -103,12 +103,19 @@ export class WriteReviewUnitComponent {
   openDialog() {
     this.visible = true;
     this.focusCurrentInput();
-    this.messageService.add({ severity: 'info', summary: 'Use thee keyboard shortcuts!', detail: 'Enter: Next , [ or ]: Navigate , 1-5: Rate', sticky: true, closable: false });
+    this.messageService.add({ key: 'helper-toast', severity: 'contrast', summary: 'Use thee keyboard shortcuts!', detail: 'Enter: Next , [ or ]: Navigate , 1-5: Rate', sticky: true, closable: false });
   }
 
   // * Closes the create review dialog
   closeDialog() {
     this.visible = false;
+  }
+
+  // * Called when the dialog is hidden
+  onDialogHide() {
+    this.stateIndex = 0;
+    this.visible = false;
+    this.messageService.clear('helper-toast');
   }
 
   /** 

@@ -194,6 +194,9 @@
                 ></p-button>
             } @else {
                 <div class="google-button-container">
+                    <!-- Overlay to hide the white around the google button 
+                        caused by the iframe -->
+                    <div class="google-button-overlay"></div>
                     <!-- The google button -->
                     <div #googleSignInButton [style]="{ 'z-index': '-9999' }"></div>
                     <!-- Skeleton that is shown above it to hide bad styling initially -->

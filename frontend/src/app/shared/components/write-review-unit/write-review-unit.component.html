@@ -1,24 +1,32 @@
-
+<!-- === Success Toast (shown on submission of review) === -->
 <p-toast key="success-toast"></p-toast>
 
+<!-- === Writing Review Dialog === -->
 <div class="dialog-wrapper">
+  <!-- ! Keyboard Shortcut Helper Toast  -->
+  <p-toast 
+    key='helper-toast'
+    position="bottom-center"
+    appendTo="body"
+    [baseZIndex]="1700"
+    [style]="{ 'margin-bottom': '2.25rem' }"    
+  ></p-toast>
+
+  <!-- ! The Dialog Iteself -->
   <p-dialog 
     header="Review for {{ unit.unitCode | uppercase }}" 
     [modal]="true" 
     [(visible)]="visible" 
-    [style]="{ width: '40rem', height: '50%', 'text-align': 'center', 'z-index': 1000 }"
+    [style]="{ width: '40rem', height: '50%', 'text-align': 'center', 'z-index': 2000 }"
     [draggable]="false"
     appendTo="body"
-    (onHide)="stateIndex=0;"
+    (onHide)="onDialogHide();"
   >
-    <p-toast 
-      position="bottom-center"
-      [style]="{ 'margin-top': '5rem' }"
-    ></p-toast>
-
+    <!-- ! Error Toast -->
     <p-toast 
       key="error-toast"
       position="top-center"
+      [baseZIndex]="10000"
       [style]="{ 'margin-top': '4rem' }"
     ></p-toast>
 
@@ -45,7 +53,7 @@
     <div class="dialog-content">
       <div>
       @switch (stateList[stateIndex]) {
-        <!-- Title -->
+        <!-- * Title -->
         @case ('title') {
           <span class="p-text-secondary block mb-3">Give your review a title (sum it up)</span>
 
@@ -60,7 +68,7 @@
             />
           </div>
         }
-        <!-- Description -->
+        <!-- * Description -->
         @case ('description') {
           <span class="p-text-secondary block mb-3">Describe your experience with this unit</span>
 
@@ -76,7 +84,7 @@
             ></textarea>
           </div>
         }
-        <!-- Semester -->
+        <!-- * Semester -->
         @case ('semester') {
           <span class="p-text-secondary block mb-3">What semester did you take this unit?</span>
 
@@ -95,7 +103,7 @@
             ></p-dropdown>
           </div>
         }
-        <!-- Year -->
+        <!-- * Year -->
         @case ('year') {
           <span class="p-text-secondary block mb-3">What year did you take this unit?</span>
 
@@ -112,7 +120,7 @@
             ></p-dropdown>
           </div>
         }
-        <!-- Grade -->
+        <!-- * Grade -->
         @case ('grade') {
           <span class="p-text-secondary block mb-3">What grade did you get?<br/>(this won't be shown in your review)</span>
 
@@ -129,7 +137,7 @@
             ></p-dropdown>
           </div>
         }
-        <!-- Relevancy Rating -->
+        <!-- * Relevancy Rating -->
         @case ('relevancyRating') {
           <span class="p-text-secondary block mb-4">How relevant was this unit to your degree?</span>
 
@@ -146,7 +154,7 @@
 
           <span class="p-text-secondary block">TIP: Use the number keys 1-5 to rate</span>
         }
-        <!-- Faculty Rating -->
+        <!-- * Faculty Rating -->
         @case ('facultyRating') {
           <span class="p-text-secondary block mb-4">How was the teaching team? Were they supportive?</span>
 
@@ -161,7 +169,7 @@
             ></p-rating>
           </div>
         }
-        <!-- Content Rating -->
+        <!-- * Content Rating -->
         @case ('contentRating') {
           <span class="p-text-secondary block mb-4">What about the actual content?</span>
 
@@ -176,7 +184,7 @@
             ></p-rating>
           </div>
         }
-        <!-- Submit Review -->
+        <!-- * Submit Review -->
         @case ('submit') {
           <span class="p-text-secondary block mb-3">Ready to post your review?</span>
 

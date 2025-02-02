@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
+import { RouterLink, Router, NavigationEnd } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -12,6 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
 import { TooltipModule } from 'primeng/tooltip';
 import { BadgeModule } from 'primeng/badge';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -35,7 +36,7 @@ import { BadgeModule } from 'primeng/badge';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   // Reference to the sidebar child
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
@@ -56,14 +57,43 @@ export class NavbarComponent {
   // Visibility state of the profile dialog
   profileDialogVisible: boolean = false;
 
+  // The color of the navbar background (changes based on route)
+  navbarColor: string = '#e288e2';
+  // The color of the title (changes based on route)
+  titleColor: string = '#e288e2';
+  // The color of the hamburger menu icon (changes based on route)
+  hamburgColor: string = '#363636';
+  // The color of the profile icon (changes based on route)
+  profileColor: string = '#363636';
+
   // Current user
   user: User | null = null;
 
 
-  // ! Injects MessageService
+  // ! Injects MessageService and Router
   constructor (
-    private messageService: MessageService
-  ) {}
+    private messageService: MessageService,
+    private router: Router
+  ) {
+    // Subscribes to changes in navigation
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // Update the navbar color
+      this.updateNavbarColor();
+    });
+  }
+
+  ngOnInit() {
+    this.updateNavbarColor();
+  }
+
+  private updateNavbarColor() {
+    this.navbarColor = this.router.url === '/' ? '#e288e2' : '#2c2c2c';
+    this.titleColor = this.router.url === '/' ? 'black' : '#e288e2';
+    this.hamburgColor = this.router.url === '/' ? 'black' : 'white';
+    this.profileColor = this.router.url === '/' ? 'black' : 'white';
+  }
 
   /** 
    * * Keybinds

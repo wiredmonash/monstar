@@ -1,46 +1,21 @@
 @import '../../_variables.scss';
 
-// * FAQ Title
-.FAQ {
-  text-align: center;
-  padding-bottom: 20px;
-  font-family: $poppins;
-}
-
-// * Explore button
-.explore-button {
-  padding: 10px 30px;
-  background-color: $primary-color;
-  border: none;
-  border-radius: 50%;
-  color: #000;
-  font-family: $poppins;
-  font-size: 1.25rem;
-  cursor: pointer;
-
-  transition: background-color 0.2s ease-in-out; // Smooth transition for background color
-
-  &:hover {
-    background-color: $primary-color-hover;
-  }
-}
-
 // * Hero Section
 .hero-section {
-  position: relative;
+  position: relative; // Establish positioning context for the stars
   top: 0;
   left: 0;
-  background: linear-gradient(to bottom, rgba(226, 136, 226, 1), rgba(0,0,0,0.0));
+  background: linear-gradient(to bottom, rgba(226, 136, 226, 1), rgba(0, 0, 0, 0.0));
   height: 50vh;
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: hidden; // Ensures stars outside the hero are hidden
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  color: #000;
+  color: white;
   font-family: $poppins;
   
   // Shimmer effect
@@ -54,56 +29,88 @@
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 100%);
     animation: shimmer 3s infinite;
   }
-
-  // Shimmer effect keyframes
+  
   @keyframes shimmer {
-    0% {
-      opacity: 0.1;
-    }
-    50% {
-      opacity: 0.3;
-    }
-    100% {
-      opacity: 0.1;
-    }
+    0% { opacity: 0.1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 0.1; }
   }
 
   .hero-content {
     max-width: 800px;
     position: relative;
+    z-index: 1; // Ensures hero content is above the stars
 
     h1 {
       font-size: 3rem;
       font-weight: bold;
       margin-bottom: 1rem;
-      
     }
 
     p {
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
     }
+  }
 
-    .explore-button {
-      padding: 10px 30px;
-      font-size: 1.25rem;
-      background-color: black; /* Bright button color */
-      color: #fff;
-      border-radius: 100%;
-      cursor: pointer;
+  // Shooting Stars styling (now using rotate(45deg) for bottom-right movement)
+  .shooting-star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1),
+                0 0 0 8px rgba(255, 255, 255, 0.1),
+                0 0 20px rgba(255, 255, 255, 1);
+    animation: shooting-star 2s linear infinite;
+  }
 
-      &:hover {
-        background-color: gray;
-      }
+  // Position each star (starting off-screen at the top)
+  .shooting-star:nth-child(2) { top: -15px; left: 25%; animation-delay: 0s; }
+  .shooting-star:nth-child(3) { top: -20px; left: 40%; animation-delay: 0.2s; }
+  .shooting-star:nth-child(4) { top: -10px; left: 55%; animation-delay: 0.4s; }
+  .shooting-star:nth-child(5) { top: -15px; left: 70%; animation-delay: 0.6s; }
+  .shooting-star:nth-child(6) { top: -10px; left: 80%; animation-delay: 0.8s; }
+  .shooting-star:nth-child(7) { top: -20px; left: 90%; animation-delay: 1s; }
+  .shooting-star:nth-child(8) { top: -15px; left: 5%;  animation-delay: 1.2s; }
+  .shooting-star:nth-child(9) { top: -10px; left: 35%; animation-delay: 1.4s; }
+  .shooting-star:nth-child(10) { top: -20px; left: 60%; animation-delay: 1.6s; }
+  // (Adjust or add more nth-child selectors as needed.)
+
+  // New keyframes for the shooting star: move in the direction of 45deg (bottom right) and fade out before the hero section's bottom
+  @keyframes shooting-star {
+    0% {
+      transform: rotate(45deg) translate(0, 0);
+      opacity: 0;  // Start off invisible to avoid a pop
+    }
+    10% {
+      opacity: 1;  // Fade in quickly
+    }
+    70% {
+      opacity: 1;  // Stay visible briefly
+    }
+    90% {
+      opacity: 0;  // Fade out before reaching the bottom
+    }
+    100% {
+      transform: rotate(45deg) translate(120px, 30vh);
+      opacity: 0;  // Fully faded out
     }
   }
 }
 
-// * Prevents user selection
-.prevent-select {
-  -webkit-user-select: none; // Safari
-  -ms-user-select: none; // IE 10 and IE 11
-  user-select: none; // Standard syntax 
+// * Popular Units Heading 2
+h2 {
+  font-family: $poppins;
+}
+
+// * FAQ Title
+.FAQ {
+  text-align: center;
+  padding-bottom: 20px;
+  font-family: $poppins;
+  color: white;
 }
 
 // * Accordion
@@ -112,120 +119,48 @@
   border-radius: 10px; // Adds rounded corners to enhance the floaty effect
   transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; // Adds smooth transition for box-shadow
 
-  // On mouse hover
   &:hover {
     box-shadow: 0 8px 16px rgba(226, 136, 226, 0.25), 0 10px 24px rgba(226, 136, 226, 0.25); // Purple and larger shadow on hover
     transform: translateY(-3px); // Slight upward movement on hover to emphasize floating effect
   }  
 
-  // Header link
   .p-accordion-header-link {
     // White background color
-    background-color: #ffffff !important; 
+    background-color: #2c2c2c !important; 
+
+    &:hover {
+      background-color: #363636 !important;
+    }
+  }
+
+  .p-accordion-tab {
+    margin-bottom: 4px;
+  }
+
+  .p-accordion-content {
+    background-color: #2c2c2c !important;
+    padding-top: 1rem;
   }
 }
 
 // ! Shooting stars
-span {
-  position: absolute;
-  top: 50%;
-  left: 23%;
-  width: 4px;
-  height: 4px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
-  animation: animate 3s linear infinite;
-}
-span::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 300px;
-  height: 1px;
-  background: linear-gradient(90deg, #fff, transparent);
-}
-@keyframes animate {
-  0% {
-    transform: rotate(315deg) translateX(0);
-    opacity: 1;
-  }
-  70% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(315deg) translateX(-1000px);
-    opacity: 0;
-  }
-}
-span:nth-child(1) {
-  top: -10px;
-  right: 0;
-  left: initial;
-  animation-delay: 0;
-  animation-duration: 1s;
-}
-span:nth-child(2) {
-  top: -10px;
-  right: 80px;
-  left: initial;
-  animation-delay: 0.2s;
-  animation-duration: 2s;
-}
-span:nth-child(3) {
-  top: -5px;
-  right: 0px;
-  animation-delay: 0.4s;
-  animation-duration: 2s;
-}
-span:nth-child(4) {
-  top: -10px;
-  right: 180px;
-  left: initial;
-  animation-delay: 0.6s;
-  animation-duration: 2s;
-}
-span:nth-child(5) {
-  top: -10px;
-  right: 400px;
-  left: initial;
-  animation-delay: 0.8s;
-  animation-duration: 2.5s;
-}
-span:nth-child(6) {
-  top: -10px;
-  right: 600px;
-  left: initial;
-  animation-delay: 1s;
-  animation-duration: 3s;
-}
-span:nth-child(7) {
-  top: -10px;
-  right: 0px;
-  left: initial;
-  animation-delay: 1.2s;
-  animation-duration: 1.75s;
-}
-span:nth-child(8) {
-  top: -10px;
-  right: 700px;
-  left: initial;
-  animation-delay: 1.4s;
-  animation-duration: 1.25s;
-}
-span:nth-child(9) {
-  top: -100px;
-  right: 1000px;
-  left: initial;
-  animation-delay: 0.75s;
-  animation-duration: 2.25s;
-}
-span:nth-child(10) {
-  top: -7px;
-  right: 450px;
-  left: initial;
-  animation-delay: 2.75s;
-  animation-duration: 2.25s;
-}
-
+// span {
+//   position: absolute;
+//   top: 50%;
+//   left: 23%;
+//   width: 4px;
+//   height: 4px;
+//   background: #fff;
+//   border-radius: 50%;
+//   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
+//   animation: animate 3s linear infinite;
+// }
+// span::before {
+//   content: '';
+//   position: absolute;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   width: 300px;
+//   height: 1px;
+//   background: linear-gradient(90deg, #fff, transparent);
+// }

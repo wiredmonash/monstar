@@ -2,7 +2,7 @@
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css' layer(bootstrap);
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css" layer(bootstrap);
 @import "../node_modules/primeicons/primeicons.css" layer(primeng);
-@import "../node_modules/primeng-sass-theme/themes/aura/aura-light/noir/theme.scss" layer(primeng);
+@import "../node_modules/primeng-sass-theme/themes/aura/aura-dark/noir/theme.scss" layer(primeng);
 @import "../node_modules/primeng/resources/primeng.min.css" layer(primeng);
 @import "../node_modules/primeflex/primeflex.css" layer(primeng);
 
@@ -20,6 +20,12 @@ body {
 /* Hide scrollbar for Chrome, Safari, and other WebKit browsers */
 body::-webkit-scrollbar {
   display: none;
+}
+
+.prevent-select {
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 
 // PrimeNG Fixes

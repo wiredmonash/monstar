@@ -3,27 +3,32 @@ import { CardModule } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
 import { RatingModule } from 'primeng/rating';
 import { ButtonModule } from 'primeng/button';
-import { UpperCasePipe } from '@angular/common';
+import { CommonModule, UpperCasePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { TruncatePipe } from "../../pipes/truncate.pipe";
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-unit-card',
   standalone: true,
   imports: [
-    CardModule, 
-    FormsModule, 
-    RatingModule, 
+    CardModule,
+    FormsModule,
+    RatingModule,
     ButtonModule,
     UpperCasePipe,
-  ],
+    TruncatePipe,
+    TooltipModule,
+    CommonModule,
+],
   templateUrl: './unit-card.component.html',
   styleUrls: ['./unit-card.component.scss']
 })
 export class UnitCardComponent {
+  Math = Math; // Make Math available to the template
+
   // Stores the data of the unit
   @Input() unit: any;
-
-  @Input() applyMarginLeft = false;
 
   // Injects Router
   constructor(private router: Router) { }

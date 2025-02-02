@@ -1,13 +1,45 @@
+<!-- === Unit Card === -->
 <div class="hover-card">
   <p-card
     class="unit-card"
-    [style]="{ width: '20rem', height: '15rem', 'padding-right': '2em', 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"
+    [style]="{ 
+      width: '20rem', 
+      height: '15rem', 
+      'padding-right': '2rem', 
+      'margin-bottom': '2rem', 
+      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)',
+      'background-color': '#2c2c2c',
+      'color': 'white'
+    }"
     (click)="onCardClick()"
   >
+    <!-- ! Unit code -->
     <p class="unit-code">{{ unit?.unitCode ? (unit.unitCode | uppercase) : 'N/A' }}</p> 
-    <p-rating [(ngModel)]="averageRating" [readonly]="true" [cancel]="false"></p-rating>
-      
+
+    <!-- ! Rating stars -->
+    <div class="stars">
+      <ng-container *ngFor="let star of [1,2,3,4,5]">
+        <i
+          class="bi"
+          [ngClass]="{
+            'bi-star-fill': Math.floor(unit.avgOverallRating) >= star,
+            'bi-star-half': Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star,
+            'bi-star': Math.ceil(unit.avgOverallRating) < star
+          }"
+        ></i>
+      </ng-container>
+    </div>
+    
+    <!-- ! No. of reviews -->
     <p class="reviews">{{ unit?.reviews?.length || 0 }} reviews</p>
-    <p class="unit-name">{{ unit?.name || 'No Title' }}</p>
+
+    <!-- ! Unit name -->
+    <p 
+      class="unit-name" 
+      [pTooltip]="unit?.name && unit.name.length > 70 ? unit.name : null" 
+      tooltipPosition="bottom"
+    >
+      {{ unit?.name || 'No Title' | truncate:70 }}
+    </p>
   </p-card>
 </div>

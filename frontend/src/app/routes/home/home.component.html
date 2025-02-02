@@ -14,25 +14,29 @@
     <!-- Explore Units -->
     <p-button label="Explore Units" [rounded]="true" [raised]="true" icon="pi pi-compass" (onClick)="exploreUnits()"></p-button>
   </div>
-</div>
 
-<!-- Shooting Stars -->
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
+  <!-- Shooting Stars -->
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+</div>
 
 <!-- Centered Content -->
 <div class="content container mb-5">
   <!-- Divider -->
   <p-divider [style]="{ 'margin-bottom': '3rem' }"></p-divider>
 
+  <!-- Popular Units Header -->
+  <h2 
+    class="text-center text-white prevent-select"
+  >Popular Units</h2>
   <!-- Popular Units Carousel -->
   @if (loading) {
     <!-- Show skeletons if loading -->
@@ -46,7 +50,14 @@
       styleClass="custom-carousel"
     >
       <ng-template pTemplate="item">
-        <p-skeleton width="20rem" height="15rem" styleClass="mx-auto" [style]="{ 'padding-right': '2em', 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"></p-skeleton>
+        <div class="p-4">
+          <p-skeleton 
+            width="20rem" 
+            height="15rem" 
+            styleClass="mx-auto" 
+            [style]="{ 'padding-right': '2em', 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"
+          ></p-skeleton>
+        </div>
       </ng-template>
     </p-carousel>  
   } @else {
@@ -61,10 +72,12 @@
       styleClass="custom-carousel"
     >
       <ng-template let-unit pTemplate="item">
-        <app-unit-card
-          class="unit-card" 
-          [unit]="unit"
-        ></app-unit-card>
+        <div class="p-4">
+          <app-unit-card
+            class="unit-card" 
+            [unit]="unit"
+          ></app-unit-card>
+        </div>
       </ng-template>
     </p-carousel>
   }
@@ -75,8 +88,12 @@
 
   <!-- FAQ Title -->
   <h2 class="FAQ prevent-select">FAQ</h2>
-  <p-accordion [multiple]="true">
-    <p-accordionTab header="What is MonSTAR?">
+  <p-accordion 
+    [multiple]="true"
+  >
+    <p-accordionTab 
+      header="What is MonSTAR?"
+    >
         <p>
           MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units, helping others make informed decisions.
         </p>

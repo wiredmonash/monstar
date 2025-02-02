@@ -136,7 +136,12 @@
   <div class="unit-list-container">
     <ng-container class="unit-card-wrapper">
       <ng-container *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
-        <p-skeleton width="20rem" height="15rem" styleClass="ml-4 mr-6 mb-6 mx-auto"/>
+        <p-skeleton 
+          width="20rem" 
+          height="15rem" 
+          styleClass="ml-4 mr-6 mx-auto"
+          [style]="{ 'margin-bottom': '2rem' }"
+        />
       </ng-container>
     </ng-container>
   </div>
