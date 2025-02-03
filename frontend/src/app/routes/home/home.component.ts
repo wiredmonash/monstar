@@ -10,6 +10,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { Unit } from '../../shared/models/unit.model';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { RatingComponent } from '../../shared/components/rating/rating.component';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,7 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     UnitCardComponent,
     DividerModule,
     ButtonModule,
-    SkeletonModule
+    SkeletonModule,
   ],
   animations: [
     // * Animation for subheader text fade in/out
@@ -43,6 +44,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Reference to the navbar child
   @ViewChild(NavbarComponent) navbar!: NavbarComponent;
+
+  myRating: number = 0;
 
   // Subheader variables
   subheaders: string[] = [

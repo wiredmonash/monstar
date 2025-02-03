@@ -167,7 +167,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
-    private route: ActivatedRoute
   ) { }
 
 

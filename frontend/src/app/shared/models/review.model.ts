@@ -63,8 +63,22 @@ export class Review {
     this.contentRating = this.contentRating ?? 0;
   }
 
-  // Calculates the overall rating
+  /**
+   * * Calculates the overall rating based on the other ratings
+   * 
+   * - If no ratings are provided, overall rating is set to 0
+   * - Otherwise, the overall rating is the average of the provided ratings
+   * - The overall rating is rounded to 1 decimal place
+   */
   calcOverallRating() {
-    this.overallRating = Math.round((this.relevancyRating + this.facultyRating + this.contentRating) / 3);
+    const validRatings = [this.relevancyRating, this.facultyRating, this.contentRating].filter(rating => rating > 0);
+    
+    if (validRatings.length === 0) {
+      this.overallRating = 0;
+      return;
+    }
+    
+    const sum = validRatings.reduce((acc, curr) => acc + curr, 0);
+    this.overallRating = Number((sum / validRatings.length).toFixed(1));
   }
 }

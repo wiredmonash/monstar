@@ -48,12 +48,16 @@
                     <!-- Stars -->
                     <div class="d-flex justify-content-center">
                         <div class="stars-overall">
-                            @for (star of [1,2,3,4,5]; track $index) {
-                                <i class="bi mx-3" 
-                                    [class.bi-star-fill]="star <= review.overallRating"
-                                    [class.bi-star]="star > review.overallRating"
+                            <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                <i
+                                    class="bi"
+                                    [ngClass]="{
+                                    'bi-star-fill': Math.floor(review.overallRating) >= star,
+                                    'bi-star-half': Math.floor(review.overallRating) < star && Math.ceil(review.overallRating) >= star,
+                                    'bi-star': Math.ceil(review.overallRating) < star
+                                    }"
                                 ></i>
-                            }
+                            </ng-container>
                         </div>
                     </div>
                 </div>
@@ -73,12 +77,38 @@
                             <!-- Stars for ConentRating -->
                             <div class="d-flex justify-content-center">
                                 <div class="stars mr-3">
-                                    @for (star of [1,2,3,4,5]; track $index) {
-                                        <i class="bi mx-2" 
-                                            [class.bi-star-fill]="star <= review.contentRating"
-                                            [class.bi-star]="star > review.contentRating"
+                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                        <i
+                                            class="bi"
+                                            [ngClass]="{
+                                            'bi-star-fill': Math.floor(review.contentRating) >= star,
+                                            'bi-star-half': Math.floor(review.contentRating) < star && Math.ceil(review.contentRating) >= star,
+                                            'bi-star': Math.ceil(review.contentRating) < star
+                                            }"
                                         ></i>
-                                    }
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Faculty Category -->
+                        <div class="col-md-4">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-0">Faculty</h6>
+                                <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6> -->
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <div class="stars mr-3">
+                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                        <i
+                                            class="bi"
+                                            [ngClass]="{
+                                            'bi-star-fill': Math.floor(review.facultyRating) >= star,
+                                            'bi-star-half': Math.floor(review.facultyRating) < star && Math.ceil(review.facultyRating) >= star,
+                                            'bi-star': Math.ceil(review.facultyRating) < star
+                                            }"
+                                        ></i>
+                                    </ng-container>
                                 </div>
                             </div>
                         </div>
@@ -91,30 +121,16 @@
                             </div>
                             <div class="d-flex justify-content-center">
                                 <div class="stars mr-3">
-                                    @for (star of [1,2,3,4,5]; track $index) {
-                                        <i class="bi mx-2" 
-                                            [class.bi-star-fill]="star <= review.relevancyRating"
-                                            [class.bi-star]="star > review.relevancyRating"
+                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                        <i
+                                            class="bi"
+                                            [ngClass]="{
+                                            'bi-star-fill': Math.floor(review.relevancyRating) >= star,
+                                            'bi-star-half': Math.floor(review.relevancyRating) < star && Math.ceil(review.relevancyRating) >= star,
+                                            'bi-star': Math.ceil(review.relevancyRating) < star
+                                            }"
                                         ></i>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Teaching Team Category -->
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="mb-0">Faculty</h6>
-                                <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6> -->
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <div class="stars mr-3">
-                                    @for (star of [1,2,3,4,5]; track $index) {
-                                        <i class="bi mx-2" 
-                                            [class.bi-star-fill]="star <= review.facultyRating"
-                                            [class.bi-star]="star > review.facultyRating"
-                                        ></i>
-                                    }
+                                    </ng-container>
                                 </div>
                             </div>
                         </div>

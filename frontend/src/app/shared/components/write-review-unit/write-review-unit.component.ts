@@ -14,6 +14,7 @@ import { ToastModule } from 'primeng/toast';
 import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { RatingComponent } from '../rating/rating.component';
 
 @Component({
   selector: 'app-write-review-unit',
@@ -28,6 +29,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
     RatingModule,
     DropdownModule,
     ToastModule,
+    RatingComponent,
   ],
   providers: [
     MessageService
@@ -47,6 +49,17 @@ import { trigger, style, animate, transition } from '@angular/animations';
   ]
 })
 export class WriteReviewUnitComponent {
+  // View children for the input fields and buttons
+  @ViewChild('titleInput') titleInput?: ElementRef;
+  @ViewChild('semesterInput') semesterInput?: Dropdown;
+  @ViewChild('gradeInput') gradeInput?: Dropdown;
+  @ViewChild('yearInput') yearInput?: Dropdown;
+  @ViewChild('descriptionInput') descriptionInput?: ElementRef;
+  @ViewChild('relevancyRatingInput') relevancyRatingInput?: ElementRef;
+  @ViewChild('facultyRatingInput') facultyRatingInput?: ElementRef;
+  @ViewChild('contentRatingInput') contentRatingInput?: ElementRef;
+  @ViewChild('submitReviewButton') submitReviewButton?: ElementRef;
+
   // Input property to receive the unit data from the parent component
   @Input() unit: any;
 
@@ -77,20 +90,22 @@ export class WriteReviewUnitComponent {
   isAnimating: boolean = false;
 
   // State of the dialog
-  stateList = ['title', 'description', 'semester', 'year', 'grade', 'relevancyRating', 'facultyRating', 'contentRating', 'submit'];
+  stateList = ['title', 'description', 'semester', 'year', 'grade', 'contentRating', 'facultyRating', 'relevancyRating', 'submit'];
   stateIndex = 0;
 
-  @ViewChild('titleInput') titleInput?: ElementRef;
-  @ViewChild('semesterInput') semesterInput?: Dropdown;
-  @ViewChild('gradeInput') gradeInput?: Dropdown;
-  @ViewChild('yearInput') yearInput?: Dropdown;
-  @ViewChild('descriptionInput') descriptionInput?: ElementRef;
-  @ViewChild('relevancyRatingInput') relevancyRatingInput?: ElementRef;
-  @ViewChild('facultyRatingInput') facultyRatingInput?: ElementRef;
-  @ViewChild('contentRatingInput') contentRatingInput?: ElementRef;
-  @ViewChild('submitReviewButton') submitReviewButton?: ElementRef;
+  // Stores the last key pressed, used for resetting the rating
+  lastKeyPressed: string = '';
 
-  // * Constructor that initialises the year options also injects ApiService and MessageService
+  // List of rating types
+  ratingTypes = ['relevancyRating', 'facultyRating', 'contentRating'];
+
+  // List of dangerous characters
+  dangerousChars = ['{', '}', '/', '>', '<', '+', '\\', '*'];
+
+  /** 
+   * === Constructor ===
+   * - Calls initialiseYearOptions
+   */
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
@@ -99,19 +114,19 @@ export class WriteReviewUnitComponent {
     this.initialiseYearOptions();
   }
 
-  // * Opens the create review dialog
+  // === Opens the create review dialog ===
   openDialog() {
     this.visible = true;
     this.focusCurrentInput();
-    this.messageService.add({ key: 'helper-toast', severity: 'contrast', summary: 'Use thee keyboard shortcuts!', detail: 'Enter: Next , [ or ]: Navigate , 1-5: Rate', sticky: true, closable: false });
+    this.messageService.add({ key: 'helper-toast', severity: 'contrast', summary: 'Use thee keyboard shortcuts!', detail: 'Enter: Next , [ or ]: Navigate , 1-0: Keyboard rate', sticky: true, closable: false });
   }
 
-  // * Closes the create review dialog
+  // === Closes the create review dialog ===
   closeDialog() {
     this.visible = false;
   }
 
-  // * Called when the dialog is hidden
+  // === Called when the dialog is hidden ===
   onDialogHide() {
     this.stateIndex = 0;
     this.visible = false;
@@ -119,7 +134,7 @@ export class WriteReviewUnitComponent {
   }
 
   /** 
-   * * Moves to the next state in the dialog
+   * === Moves to the next state in the dialog ===
    * 
    * - Checks if the current state is not the last state in the stateList array.
    * - Adds the slide-next-leave class to the content div.
@@ -149,7 +164,7 @@ export class WriteReviewUnitComponent {
   }
 
   /**
-   * * Moves to the previous state in the dialog
+   * === Moves to the previous state in the dialog ===
    * 
    * - Checks if the current state is not the first state in the stateList array.
    * - Adds the slide-prev-leave class to the content div.
@@ -179,7 +194,7 @@ export class WriteReviewUnitComponent {
   }
 
   /**
-   * * Focuses the current input based on the stateIndex
+   * === Focuses the current input based on the stateIndex ===
    * 
    * - Uses a setTimeout to focus the input after 500ms.
    * - Switches the stateList[stateIndex] to focus the correct input.
@@ -227,17 +242,8 @@ export class WriteReviewUnitComponent {
     }, 500);
   }
 
-  // Stores the last key pressed, used for resetting the rating
-  lastKeyPressed: string = '';
-
-  // List of rating types
-  ratingTypes = ['relevancyRating', 'facultyRating', 'contentRating'];
-
-  // List of dangerous characters
-  dangerousChars = ['{', '}', '/', '>', '<', '+', '\\', '*'];
-
   /**
-   * * Handles paste events
+   * === Handles paste events ===
    */
   @HostListener('document:paste', ['$event'])
   handlePaste(event: ClipboardEvent) {
@@ -257,7 +263,7 @@ export class WriteReviewUnitComponent {
   }
 
   /**
-   * * Handles key press events
+   * === Handles key press events === 
    * 
    * - If the key pressed is 'Enter', it will submit the review if the current state is 'submit'.
    * - If the key pressed is a number from 1-5, it will set the rating for the current state.
@@ -297,31 +303,27 @@ export class WriteReviewUnitComponent {
     }
 
     // * Ratings handling
-    // Check if the current state is a rating type
-    if (this.ratingTypes.includes(this.stateList[this.stateIndex])) {
-      // Iterate through 1-5
-      for (let i = 1; i <= 5; i++) {
-        // Check if the key pressed is a number from 1-5
-        if (event.key === i.toString()) {
-          if (this.lastKeyPressed === event.key && (this.review as any)[this.stateList[this.stateIndex]] === i) {
-            // Reset the rating if the same key is pressed twice
-            (this.review as any)[this.stateList[this.stateIndex]] = 0;
-          } else {
-            // Set the rating if the key is pressed once
-            (this.review as any)[this.stateList[this.stateIndex]] = i;
-          }
+    const keyRatingMap: { [key: string]: number} = { '1': 0.5, '2': 1, '3': 1.5, '4': 2, '5': 2.5, '6': 3, '7': 3.5, '8': 4, '9': 4.5, '0': 5 };
 
-          // Store the last key pressed
-          this.lastKeyPressed = event.key;
-        } 
+    if (event.key in keyRatingMap) { 
+      const ratingValue = keyRatingMap[event.key];
+      const currentState = this.stateList[this.stateIndex];
+
+      if (this.lastKeyPressed === event.key && (this.review as any)[currentState] === ratingValue) {
+        // Reset the rating if same key is pressed twice
+        (this.review as any)[currentState] = 0;
+      } else {
+        // Set new rating
+        (this.review as any)[currentState] = ratingValue;
       }
-    }
 
+      this.lastKeyPressed = event.key;
+    }
 
   }
 
   /**
-   * * Posts the Review (to the backend)
+   * === Posts the Review (to the backend) ===
    * 
    * This method checks if:
    * - we are currently creating a review FOR a unit.
@@ -406,7 +408,7 @@ export class WriteReviewUnitComponent {
   }
 
   /**
-   * * Creates the multiple previous years from current year.
+   * === Creates the multiple previous years from current year. ===
    * 
    * - Pushes the values to the yearOptions array.
    * - This is used for the year dropdown option.

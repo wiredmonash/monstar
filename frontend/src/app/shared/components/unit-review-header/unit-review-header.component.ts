@@ -69,7 +69,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     { name: 'Highest Rating', value: 'highest-rating'}
   ]
 
-  // === Injects the AuthService and MessageService ===
+  // === the AuthService and MessageService ===
   constructor (
     private authService: AuthService,
     private messageService: MessageService

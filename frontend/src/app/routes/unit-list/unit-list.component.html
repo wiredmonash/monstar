@@ -1,9 +1,9 @@
-<!-- ! Toolbar -->
+<!-- === Toolbar === -->
 <div class="toolbar-container">
   <p-toolbar class="toolbar" styleClass="shadow-2" [style]="{ 'border-radius': '3rem' }">
-    <!-- Start group (Simple sorting order dropdown) -->
+    <!-- ! Start group (Simple sorting order dropdown) -->
     <div class="p-toolbar-group-start">
-        <!-- Sortby dropdown  -->
+        <!-- * Sortby dropdown  -->
         <div class="dropdown-container">
           <p-dropdown
             #sortByDropdown
@@ -26,10 +26,10 @@
         </div>
     </div>
 
-    <!-- Center group (dynamic search bar)-->
+    <!-- ! Center group (dynamic search bar)-->
     <div class="p-toolbar-group-center">
         <span class="p-input-icon-left">
-            <!-- Search bar with icon that changes -->
+            <!-- * Search bar with icon that changes -->
             <i class="pi" [ngClass]="{ 'pi-search': !loading, 'pi-spinner pi-spin': loading }"></i>
             <input 
               id="searchInput"
@@ -49,11 +49,11 @@
         </span>
     </div>
 
-    <!-- End group (Advanced filtering options) -->
+    <!-- ! End group (Advanced filtering options) -->
     <div class="p-toolbar-group-end">
       <!-- Badge for keyboard shortcut -->
       @if (!op.overlayVisible) { <span class="filter-badge prevent-select">CTRL+O</span> }
-      <!-- Advanced filtering button with overlay panel -->
+      <!-- * Advanced filtering button with overlay panel -->
       <p-button #filterButton [icon]="loading ? 'pi pi-spinner pi-spin' : 'pi pi-filter'" (onClick)="op.toggle($event)" pTooltip="Advanced Filtering" [rounded]="true" tooltipPosition="bottom" tooltipStyleClass="mt-2" />
         <p-overlayPanel #op id="advancedFiltering" [dismissable]="true" [style]="{ 'width': '500px', 'margin-top': '1rem' }">
           <div class="filter-options">
@@ -75,6 +75,7 @@
                 <p-multiSelect id="faculty" 
                   [options]="faculties" 
                   [style]="{ 'width': '100%' }" 
+                  scrollHeight="500px"
                   [showClear]="true"
                   [(ngModel)]="selectedFaculty" 
                   (onChange)="filterUnits();"
@@ -90,6 +91,7 @@
                 <p-multiSelect id="semester" 
                   [options]="semesters" 
                   [style]="{ 'width': '100%' }" 
+                  scrollHeight="400px"
                   [showClear]="true"
                   [(ngModel)]="selectedSemesters" 
                   (onChange)="filterUnits();"
@@ -105,6 +107,7 @@
                 <p-multiSelect id="campus" 
                   [options]="campuses" 
                   [style]="{ 'width': '100%' }" 
+                  scrollHeight="300px"
                   [showClear]="true"
                   [(ngModel)]="selectedCampuses" 
                   (onChange)="filterUnits();"
@@ -131,7 +134,7 @@
   </p-toolbar>
 </div>
 
-<!-- ! Skeletons for unit cards if loading -->
+<!-- === Skeletons for unit cards if loading === -->
 @if (loading) {
   <div class="unit-list-container">
     <ng-container class="unit-card-wrapper">
@@ -146,7 +149,7 @@
     </ng-container>
   </div>
 } 
-<!-- ! The list of units shown in grid format -->
+<!-- === The list of units shown in grid format === -->
 @else if (filteredUnits.length > 0) {
   <div class="unit-list-container">
     @for (unit of filteredUnits; track $index) {
@@ -156,15 +159,15 @@
     }
   </div>
 } 
-<!-- ! No units match search query -->
+<!-- === No units match search query === -->
 @else {
   <div class="no-results-container">
     <svg class="emoji" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none"><path fill="#FFB02E" d="M15.999 29.998c9.334 0 13.999-6.268 13.999-14 0-7.73-4.665-13.998-14-13.998C6.665 2 2 8.268 2 15.999s4.664 13.999 13.999 13.999"/><path fill="#fff" d="M10.42 16.224a4.206 4.206 0 1 0 0-8.411 4.206 4.206 0 0 0 0 8.411M21.568 16.301a4.244 4.244 0 1 0 0-8.489 4.244 4.244 0 0 0 0 8.49"/><path fill="#402A32" d="M14 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0M24 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0M10.894 22.447C11.098 22.04 12.46 20 16 20s4.902 2.04 5.106 2.447a1 1 0 1 0 1.788-.894C22.431 20.627 20.46 18 16 18s-6.431 2.627-6.894 3.553a1 1 0 1 0 1.788.894"/></svg>
-    <h4 class="text-center mt-3 mb-5">No units match your search query.</h4>
+    <h4 class="text-center mt-3 mb-5 text-white">No units match your search query.</h4>
   </div>
 }
 
-<!-- ! Bottom paginator -->
+<!-- === Bottom paginator === -->
 <div class="flex align-items-center justify-content-center paginator-container">
   <div class="flex-1">
       <p-paginator 

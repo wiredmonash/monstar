@@ -142,31 +142,27 @@
           <span class="p-text-secondary block mb-4">How relevant was this unit to your degree?</span>
 
           <div class="flex flex-column mb-4 centered-container">
-            <p-rating
+            <app-rating
               #relevancyRatingInput
-              [style]="{ 'margin-bottom': '1.4rem' }"
-              [(ngModel)]="review.relevancyRating"
+              [(rating)]="review.relevancyRating"
               [stars]="5"
-              [readonly]="false"
-              [style]="{ 'transform': 'scale(2)' }"
-            ></p-rating>
+              [style]="{ 'transform': 'scale(1.5)' }"
+            ></app-rating>
           </div>
 
-          <span class="p-text-secondary block">TIP: Use the number keys 1-5 to rate</span>
+          <span class="p-text-secondary block">TIP: Use the number keys 1-0 to rate</span>
         }
         <!-- * Faculty Rating -->
         @case ('facultyRating') {
           <span class="p-text-secondary block mb-4">How was the teaching team? Were they supportive?</span>
 
           <div class="flex flex-column mb-4 centered-container">
-            <p-rating
+            <app-rating
               #facultyRatingInput
-              [style]="{ 'margin-bottom': '1.4rem' }"
-              [(ngModel)]="review.facultyRating"
+              [(rating)]="review.facultyRating"
               [stars]="5"
-              [readonly]="false"
-              [style]="{ 'transform': 'scale(2)' }"
-            ></p-rating>
+              [style]="{ 'transform': 'scale(1.5)' }"
+            ></app-rating>
           </div>
         }
         <!-- * Content Rating -->
@@ -174,14 +170,12 @@
           <span class="p-text-secondary block mb-4">What about the actual content?</span>
 
           <div class="flex flex-column mb-4 centered-container">
-            <p-rating
+            <app-rating
               #contentRatingInput
-              [style]="{ 'margin-bottom': '1.4rem' }"
-              [(ngModel)]="review.contentRating"
+              [(rating)]="review.contentRating"
               [stars]="5"
-              [readonly]="false"
-              [style]="{ 'transform': 'scale(2)' }"
-            ></p-rating>
+              [style]="{ 'transform': 'scale(1.5)' }"
+            ></app-rating>
           </div>
         }
         <!-- * Submit Review -->

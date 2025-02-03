@@ -49,6 +49,9 @@ import { TooltipModule } from 'primeng/tooltip';
   ]
 })
 export class ReviewCardComponent implements OnInit, OnDestroy {
+  // Allow the template to use Math
+  Math = Math;
+
   // Accept review data from the parent component
   @Input() review: any; 
 
@@ -79,15 +82,18 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Stores the subscription for currentUser from AuthService
   private userSubscription: Subscription = new Subscription();
 
-  // * Injects the ApiService & confirmationService
-  constructor(
+  /**
+   * Constructor 
+   *
+   */
+  constructor (
     private apiService: ApiService,
     private authService: AuthService,
     private confirmationService: ConfirmationService
   ) { }
 
   /**
-   * * Runs on initialisation
+   * === Runs on initialisation ===
    * 
    * - Sets the likes and dislikes count for the review
    */
@@ -113,7 +119,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Runs on destroy
+   * === Runs on destroy ===
    * 
    * Unsubscribes from the currentUser subscription
    */
@@ -122,12 +128,12 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
   
 
-  // * Choices on confirmation popup (either delete or cancel)
+  // === Choices on confirmation popup (either delete or cancel) ===
   accept() { this.confirmPopup.accept(); }
   reject() { this.confirmPopup.reject(); }
 
   /**
-   * * Subscribes to the confirmation service on deletion
+   * === Subscribes to the confirmation service on deletion ===
    */
   confirmDeletion(event: Event) {
     this.confirmationService.confirm({
@@ -140,9 +146,8 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Deletes a review from the database using API Service
   /**
-   * * Deletes a review from the DB using API Service Method
+   * === Deletes a review from the DB using API Service Method ===
    * 
    * This deletes a review by it's MongoDB ID. If successful, it emits the 
    * reviewDeleted event so that 'unit-overview' can refresh the reviews.
@@ -168,14 +173,14 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Method to toggle the expand/collapse state 
+   * === Method to toggle the expand/collapse state ===
    */
   toggleExpand() {
     this.expanded = !this.expanded;
   }
 
   /**
-   * * Method to toggle the like state
+   * === Method to toggle the like state ===
    */
   toggleLike() {
     if (!this.currentUser) return;
@@ -210,7 +215,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Method to toggle the dislike state
+   * === Method to toggle the dislike state === 
    */
   toggleDislike() {
     if (!this.currentUser) return;
