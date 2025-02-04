@@ -258,4 +258,25 @@ export class ApiService {
       })
     );
   }
+
+  /**
+   * * GET Units Requiring Unit
+   * 
+   * Gets all units that have a specified unit as a prerequisite
+   * 
+   * @param {string} unitCode The unit code to search for
+   * @returns {Observable<Unit[]>} An observable containing an array of units
+   */
+  getUnitsRequiringUnitGET(unitCode: string): Observable<Unit[]> {
+    return this.http.get<Unit[]>(`${this.url}/units/${unitCode}/required-by`).pipe(
+      tap({
+        next: (units) => {
+          console.log('ApiService | Sucessfully got units requiring unit:', units);
+        },
+        error: (error) => {
+          console.log('ApiService | Error whilst getting units requiring unit:', error.error);
+        }
+      })
+    )
+  }
 }

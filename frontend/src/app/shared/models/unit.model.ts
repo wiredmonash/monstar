@@ -3,7 +3,7 @@ import { Review } from "./review.model";
 
 interface Requisites {
     permission: boolean;
-    prerequisites: string[];
+    prerequisites: { NumReq: number, units: string[] }[];
     corequisites: string[];
     prohibitions: string[];
     cpRequired: number;

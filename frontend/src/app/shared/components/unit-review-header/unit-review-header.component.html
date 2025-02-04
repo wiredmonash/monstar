@@ -66,7 +66,7 @@
     <div class="rating-section prevent-select">
       <p>Faculty</p>
       <div class="stars">
-        <ng-container *ngFor="let star of [1, 2,3,4,5]">
+        <ng-container *ngFor="let star of [1,2,3,4,5]">
           <i
             class="bi"
             [ngClass]="{
@@ -125,25 +125,22 @@
     ></p-button>
 
     <!-- Unit Map Button -->
-    <p-button
-      label="Map"
-      icon="pi pi-map-marker"
-      rounded="true"
-      pTooltip="See prerequisites and other unit connections in a graph"
+    <div
+      [pTooltip]="
+        unitMapButtonDisabled
+          ? 'This unit has no connections to other units at Monash' 
+          : 'See prerequisites and other unit connections in a graph.'
+      "
       tooltipPosition="bottom"
-    ></p-button>
-
-    <!-- Sort By Dropdown -->
-    <!-- <div class="dropdown">
-      <p-dropdown
-        [options]="sortOptions"
-        [(ngModel)]="selectedSort"
-        optionLabel="name"
-        optionValue="value"
-        (onChange)="onSort($event)"
-      >
-      </p-dropdown>
-    </div> -->
+    >
+      <p-button
+        label="Map"
+        icon="pi pi-map-marker"
+        rounded="true"
+        [disabled]="unitMapButtonDisabled"
+        (click)="navigateToUnitMap()"
+      ></p-button>
+    </div>
   </div>
 </div>
 
