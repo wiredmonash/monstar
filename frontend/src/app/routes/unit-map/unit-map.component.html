@@ -5,6 +5,9 @@
         <!-- ! Start group (Simple sorting order dropdown) -->
         <div class="p-toolbar-group-start">
             <p-button 
+                pTooltip="Reset Graph"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
                 icon="pi pi-replay"
                 rounded="true"
                 (click)="resetGraph()"
@@ -14,6 +17,9 @@
         <!-- ! Center group (dynamic search bar)-->
         <div class="p-toolbar-group-center">
             <p-button 
+                pTooltip="Center Graph"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
                 icon="pi pi-arrow-down-left-and-arrow-up-right-to-center"
                 rounded="true"
                 (click)="centerGraph()"
@@ -23,6 +29,9 @@
         <!-- ! End group (Advanced filtering options) -->
         <div class="p-toolbar-group-end">
             <p-button 
+                pTooltip="Zoom to Fit"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
                 icon="pi pi-expand"
                 rounded="true"
                 (click)="resetZoom()"

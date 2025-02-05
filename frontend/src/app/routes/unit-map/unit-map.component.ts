@@ -9,6 +9,7 @@ import * as shape from 'd3-shape';
 import { Subject } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
 
 /**
  * * Unit Node Interface
@@ -43,6 +44,7 @@ interface UnitEdge extends Edge {
     NgxGraphModule,
     ButtonModule,
     ToolbarModule,
+    TooltipModule
   ],
   templateUrl: './unit-map.component.html',
   styleUrl: './unit-map.component.scss'
