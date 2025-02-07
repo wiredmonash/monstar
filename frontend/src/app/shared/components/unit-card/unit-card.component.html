@@ -1,45 +1,109 @@
-<!-- === Unit Card === -->
-<div class="hover-card">
-  <p-card
-    class="unit-card"
-    [style]="{ 
-      width: '20rem', 
-      height: '15rem', 
-      'padding-right': '2rem', 
-      'margin-bottom': '2rem', 
-      'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)',
-      'background-color': '#2c2c2c',
-      'color': 'white'
-    }"
-    (click)="onCardClick()"
-  >
-    <!-- ! Unit code -->
-    <p class="unit-code">{{ unit?.unitCode ? (unit.unitCode | uppercase) : 'N/A' }}</p> 
 
-    <!-- ! Rating stars -->
-    <div class="stars">
-      <ng-container *ngFor="let star of [1,2,3,4,5]">
-        <i
-          class="bi"
-          [ngClass]="{
-            'bi-star-fill': Math.floor(unit.avgOverallRating) >= star,
-            'bi-star-half': Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star,
-            'bi-star': Math.ceil(unit.avgOverallRating) < star
-          }"
-        ></i>
-      </ng-container>
+
+<div class="card-container">
+  @if (unit) {
+    <!-- === Unit Card === -->
+    <div class="hover-card">
+      <p-card
+        class="unit-card"
+        [style]="{ 
+          'width': '20rem', 
+          'height': '15rem',
+          'margin-bottom': '2rem', 
+          'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)',
+          'background-color': '#2c2c2c',
+          'color': 'white'
+        }"
+        (click)="onCardClick()"
+      >
+        <div class="card-content">
+          <div class="content-top">
+            <div class="unit-card-top">
+              <!-- ! Unit code -->
+              <p class="unit-code">{{ unit.unitCode ? (unit.unitCode | uppercase) : 'N/A' }}</p> 
+
+              <!-- ! Rating stars -->
+              <div class="stars">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                  <i
+                    class="bi"
+                    [class]="{
+                      'bi-star-fill': Math.floor(unit.avgOverallRating) >= star,
+                      'bi-star-half': Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star,
+                      'bi-star': Math.ceil(unit.avgOverallRating) < star
+                    }"
+                    [style]="{ 
+                      'color': 
+                        Math.floor(unit.avgOverallRating) >= star 
+                          ? '#e288e2' 
+                          : Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star
+                            ? '#ba7bba'
+                            : '#6c757d' 
+                    }"
+                  ></i>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- ! Unit name -->
+            <p 
+              class="unit-name" 
+              [pTooltip]="unit.name && unit.name.length > 70 ? unit.name : ''" 
+              tooltipPosition="bottom"
+            >
+              {{ unit.name || 'No Title' | truncate:70 }}
+            </p>
+
+            <!-- No. of reviews -->
+            <p class="reviews">{{getReviewsText()}}</p>
+          </div>
+
+          <!-- Bottom chips -->
+          <div class="chips">
+            <div #locationsRow class="chips-row">
+              @for (location of locationChipsOverflow ? visibleLocations : locations; track $index) {
+                <p-chip 
+                  class="mr-1" 
+                  label="{{ location }}"
+                  [style]="{ 'background-color': '#7069d1' }"
+                />
+              }
+              @if (locationChipsOverflow) {
+                <p-chip
+                  class="mr-1"
+                  label="+{{ locations.length - 2 }}"
+                  [pTooltip]="locations.slice(2).join('\n')"
+                  tooltipPosition="bottom"
+                />
+              }
+            </div>
+
+            <div #periodsRow class="chips-row mt-2">
+              @for (period of periodChipsOverflow ? visiblePeriods : teachingPeriods; track $index) {
+                <p-chip 
+                  class="mr-1" 
+                  label="{{ period }}"
+                  [style]="{ 
+                    'background-color': period === 'No Offerings in 2025' ? '#eb5055' : '#a88565' 
+                  }"
+                  [pTooltip]="getOriginalPeriodName(period)"
+                  showDelay="500"
+                  tooltipPosition="bottom"
+                />
+              }
+              @if (periodChipsOverflow) {
+                <p-chip
+                  class="mr-1"
+                  label="+{{ teachingPeriods.length - 2 }}"
+                  [pTooltip]="'- ' + getOriginalPeriodNames(teachingPeriods.slice(2)).join('\n\n - ')"
+                  tooltipPosition="bottom"
+                  [style]="{ 'background-color': 'rgba(63, 63, 70, 0.5)' }"
+                />
+              }
+            </div>
+          </div>
+        </div>
+      </p-card>
     </div>
-    
-    <!-- ! No. of reviews -->
-    <p class="reviews">{{ unit?.reviews?.length || 0 }} reviews</p>
-
-    <!-- ! Unit name -->
-    <p 
-      class="unit-name" 
-      [pTooltip]="unit?.name && unit.name.length > 70 ? unit.name : null" 
-      tooltipPosition="bottom"
-    >
-      {{ unit?.name || 'No Title' | truncate:70 }}
-    </p>
-  </p-card>
+  }
 </div>

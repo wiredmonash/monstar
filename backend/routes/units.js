@@ -120,6 +120,7 @@ router.get('/filter', async function (req, res) {
             sort = 'Alphabetic', 
             showReviewed = 'false',
             showUnreviewed = 'false',
+            hideNoOfferings = 'false',
             faculty, 
             semesters,
             campuses
@@ -160,6 +161,10 @@ router.get('/filter', async function (req, res) {
         // Show only unreviewed
         if (showUnreviewed === 'true') {
             query.reviews = { $exists: true, $size: 0 };
+        }
+        // Hide units with no offerings
+        if (hideNoOfferings === 'true') {
+            query.offerings = { $not: { $eq: null } };
         }
 
         // Get total count for pagination

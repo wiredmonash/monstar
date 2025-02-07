@@ -43,6 +43,73 @@
 
 <!-- === Background, Graph, and Loading Overlay === -->
 <div #graphContainer class="graph-container">
+    <!-- ! Information Sidebar -->
+    <div class="card-container">
+        <p-card styleClass="unit-info-card">
+            <!-- Header -->
+            <header class="header prevent-select">
+                <h1>{{ unit?.unitCode | uppercase }}</h1>
+            </header>
+            <!-- Subheader -->
+            <section class="subheader prevent-select">
+                <h3>{{ unit?.name }}</h3>
+            </section>
+            <!-- Advanced Unit Information -->
+            <section class="unit-info prevent-select">
+                <dl>
+                    <!-- Credit Points -->
+                    <div class="unit-info-row">
+                        <dt 
+                            class="unit-info-label"
+                            pTooltip="The number of credit points this unit is worth."
+                            tooltipZIndex="9999"
+                        >Credit Points 🛈</dt>
+                        <dd 
+                            class="unit-info-value"
+                        >{{ unit?.creditPoints }}</dd>
+                    </div>
+                    <!-- Divider -->
+                    <p-divider></p-divider>
+                    <!-- Prerequisite Units -->
+                    <div class="unit-info-row mt-4">
+                        <dt 
+                            class="unit-info-label" 
+                            [style]="{ 'color': 'rgb(34, 197, 94)' }"
+                            pTooltip="Prerequisites are units that must be completed before this unit."
+                            tooltipZIndex="9999"
+                        >Prerequisites 🛈</dt>
+                        <dd 
+                            class="unit-info-value" 
+                            [style]="{ 'color': 'rgba(34, 197, 94, 0.75)' }"
+                        >{{ prerequisiteUnitCodes ? prerequisiteUnitCodes : 'None' }}</dd>
+                    </div>
+                    <!-- Prerequisite Number Required -->
+                    <div class="unit-info-row">
+                        <dt 
+                            class="unit-info-label"
+                            pTooltip="The number of prerequisites needed to be completed before this unit."
+                            tooltipZIndex="9999"
+                        >No. of Prerequisites 🛈</dt>
+                        <dd class="unit-info-value">{{ prerequisiteNumReq > 0 ? prerequisiteNumReq : 'None' }} of the above</dd>
+                    </div>
+                    <!-- Divider -->
+                    <p-divider></p-divider>
+                    <!-- Parent Units -->
+                    <div class="unit-info-row mt-4">
+                        <dt 
+                            class="unit-info-label" 
+                            [style]="{ 'color': 'rgb(249, 115, 22)' }"
+                            pTooltip="Parent units are units where {{ unit?.unitCode | uppercase }} is a prerequisite."
+                            tooltipZIndex="9999"
+                        >Parent Units 🛈</dt>
+                        <dd class="unit-info-value" [style]="{ 'color': 'rgba(249, 115, 22, 0.75)' }">{{ parentUnitCodes }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+        </p-card>
+    </div>
+
     <!-- ! Dotted Background -->
     <svg width="100%" height="100%" class="background-pattern">
         <defs>

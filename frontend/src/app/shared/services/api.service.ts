@@ -163,14 +163,15 @@ export class ApiService {
    * @param {string} [faculty] The faculty to filter by
    * @returns {Observable<Unit[]>} An observable containing an array of filtered units
    */
-  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic', showReviewed?: boolean, showUnreviewed?: boolean, faculty?: string[], semesters?: string[], campuses?: string[]): Observable<Unit[]> {
-    const params: { offset: string; limit: string; search: string; sort: string; showReviewed: string, showUnreviewed: string, faculty: string[], semesters: string[], campuses: string[] } = {
+  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic', showReviewed?: boolean, showUnreviewed?: boolean, hideNoOfferings?: boolean, faculty?: string[], semesters?: string[], campuses?: string[]): Observable<Unit[]> {
+    const params: { offset: string; limit: string; search: string; sort: string; showReviewed: string, showUnreviewed: string, hideNoOfferings: string, faculty: string[], semesters: string[], campuses: string[] } = {
       offset: offset.toString(),
       limit: limit.toString(),
       search,
       sort,
       showReviewed: 'false',
       showUnreviewed: 'false',
+      hideNoOfferings: 'false',
       faculty: [],
       semesters: [],
       campuses: []
@@ -178,6 +179,7 @@ export class ApiService {
 
     if (showReviewed) { params.showReviewed = showReviewed ? 'true' : 'false'; }
     if (showUnreviewed) { params.showUnreviewed = showUnreviewed ? 'true' : 'false'; }
+    if (hideNoOfferings) { params.hideNoOfferings = hideNoOfferings ? 'true' : 'false'; }
     if (faculty) { params.faculty = faculty; }
     if (semesters) { params.semesters = semesters; }
     if (campuses) { params.campuses = campuses; }

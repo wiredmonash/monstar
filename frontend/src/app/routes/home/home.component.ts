@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
@@ -35,7 +35,7 @@ import { RatingComponent } from '../../shared/components/rating/rating.component
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Loading status of popular units fetching
   loading: boolean = true;
 
@@ -60,14 +60,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
   subheaderCurrentIndex: number = 0;
   subheaderState: 'in' | 'out' = 'in';
-  subheaderChangeSeconds: number = 3;
+  subheaderChangeSeconds: number = 5;
   subheaderChangeSecondsBuffer: number = 0.5;
   private intervalId: any; // The ID of the interval used for deletion
 
   // Carousel responsive options (for resizing the popular units carousel)
   responsiveOptions = [
     {
-      breakpoint: '1198px',
+      breakpoint: '1400px',
       numVisible: 2,
       numScroll: 1
     },
@@ -94,9 +94,12 @@ export class HomeComponent implements OnInit, OnDestroy {
    * 
    * Fetches popular units and starts the subheader rotation
    */
-  ngOnInit(): void {
-    this.getPopularUnits();
+  ngOnInit() {
     this.startSubheaderRotation();
+  }
+
+  ngAfterViewInit() {
+    this.getPopularUnits();
   }
 
   /**
@@ -132,7 +135,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         // Map the response data to Unit objects
         this.popularUnits = response.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings));
 
-        // Not loading anymore
         this.loading = false;
 
         // ? Debug log success

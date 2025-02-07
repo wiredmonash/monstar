@@ -26,38 +26,39 @@
   <span class="shooting-star"></span>
   <span class="shooting-star"></span>
   <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
 </div>
 
 <!-- Centered Content -->
 <div class="content container mb-5">
   <!-- Divider -->
-  <p-divider [style]="{ 'margin-bottom': '3rem' }"></p-divider>
+  <p-divider class="first-divider" [style]="{ 'margin-bottom': '3rem' }"></p-divider>
   
   <!-- Popular Units Header -->
   <h2 
-    class="text-center text-white prevent-select"
-  >Popular Units</h2>
+    class="popular-units-header text-center text-white prevent-select"
+  >Check out these units!</h2>
   <!-- Popular Units Carousel -->
   @if (loading) {
     <!-- Show skeletons if loading -->
     <p-carousel 
       [value]="[1,2,3,4,5,6]"
       [numVisible]="3"
-      [numScroll]="3"
+      [numScroll]="1"
       [circular]="true"
       [autoplayInterval]="4500"
       [responsiveOptions]="responsiveOptions"
       styleClass="custom-carousel"
     >
       <ng-template pTemplate="item">
-        <div class="p-4">
-          <p-skeleton 
-            width="20rem" 
-            height="15rem" 
-            styleClass="mx-auto" 
-            [style]="{ 'padding-right': '2em', 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"
-          ></p-skeleton>
-        </div>
+        <p-skeleton 
+          width="20rem" 
+          height="15rem" 
+          styleClass="mx-auto" 
+          [style]="{ 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"
+        ></p-skeleton>
       </ng-template>
     </p-carousel>  
   } @else {
@@ -65,16 +66,16 @@
     <p-carousel 
       [value]="popularUnits"
       [numVisible]="3"
-      [numScroll]="3"
+      [numScroll]="1"
       [circular]="true"
-      [autoplayInterval]="4500"
+      [showNavigators]="true"
+      [showIndicators]="true"
       [responsiveOptions]="responsiveOptions"
       styleClass="custom-carousel"
     >
       <ng-template let-unit pTemplate="item">
-        <div class="p-4">
+        <div class="carousel-item-wrapper">
           <app-unit-card
-            class="unit-card" 
             [unit]="unit"
           ></app-unit-card>
         </div>
@@ -112,7 +113,7 @@
     </p-accordionTab>
     <p-accordionTab header="Who made MonSTAR?">
         <p>
-          MonSTAR was made by the projects team at WIRED Monash, this team is led by Jenul Ferdinand & Alex Lai.
+          MonSTAR was made by the projects team at WIRED Monash.
         </p>
     </p-accordionTab>
   </p-accordion>

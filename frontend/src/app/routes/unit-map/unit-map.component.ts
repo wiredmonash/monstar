@@ -1,7 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { TreeNode } from 'primeng/api';
 import { OrganizationChartModule } from 'primeng/organizationchart';
-import { Unit } from '../../shared/models/unit.model';
 import { ApiService } from '../../shared/services/api.service';
 import { Router } from '@angular/router';
 import { Edge, NgxGraphModule, NgxGraphZoomOptions } from '@swimlane/ngx-graph';
@@ -10,6 +8,10 @@ import { Subject } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from 'primeng/card';
+import { Unit } from '../../shared/models/unit.model';
+import { UpperCasePipe } from '@angular/common';
+import { DividerModule } from 'primeng/divider';
 
 /**
  * * Unit Node Interface
@@ -44,7 +46,10 @@ interface UnitEdge extends Edge {
     NgxGraphModule,
     ButtonModule,
     ToolbarModule,
-    TooltipModule
+    TooltipModule,
+    CardModule,
+    UpperCasePipe,
+    DividerModule
   ],
   templateUrl: './unit-map.component.html',
   styleUrl: './unit-map.component.scss'
@@ -61,6 +66,11 @@ export class UnitMapComponent implements OnInit, OnDestroy {
   zoomToFit$: Subject<NgxGraphZoomOptions> = new Subject();
 
   isLoading: boolean = false;
+
+  unit: Unit | null = null;
+  prerequisiteNumReq: number = 0;
+  prerequisiteUnitCodes: string[] | null = null;
+  parentUnitCodes: string[] | null = null;
 
 
   /**
@@ -109,9 +119,12 @@ export class UnitMapComponent implements OnInit, OnDestroy {
     
     // Fetch the current unit
     this.apiService.getUnitByUnitcodeGET(unitCode).subscribe({
-      next: (unit) => {
+      next: (unit: Unit) => {
         // ? Debug log: Current unit
         console.log('Current unit:', unit);
+
+        // Save the unit
+        this.unit = unit;
         
         // Add current unit node from router param
         const currentNode: UnitNode = {
@@ -139,6 +152,11 @@ export class UnitMapComponent implements OnInit, OnDestroy {
               label: code.toUpperCase(),
               data: {  type: 'prerequisite', name: code }
             }));
+
+          // Save the prerequisite unit codes
+          this.prerequisiteUnitCodes = prereqNodes.map(node => ' ' + node.label);
+          // Save the prerequisite number required
+          this.prerequisiteNumReq = unit.requisites.prerequisites[0].NumReq;
           
           // Add prerequisite edges
           prereqEdges = prereqNodes.map(node => ({
@@ -169,6 +187,9 @@ export class UnitMapComponent implements OnInit, OnDestroy {
                 name: parent.name
               }
             }));
+
+            // Save the parent unit codes
+            this.parentUnitCodes = parentNodes.map(node => ' ' + node.label);
 
             // ? Debug log: Parent nodes
             console.log('Parent nodes:', parentNodes);
