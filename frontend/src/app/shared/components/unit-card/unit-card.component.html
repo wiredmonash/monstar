@@ -59,45 +59,57 @@
           </div>
 
           <!-- Bottom chips -->
-          <div class="chips">
-            <div #locationsRow class="chips-row">
-              @for (location of locationChipsOverflow ? visibleLocations : locations; track $index) {
-                <p-chip 
-                  class="mr-1" 
-                  label="{{ location }}"
-                  [style]="{ 'background-color': '#7069d1' }"
-                />
-              }
-              @if (locationChipsOverflow) {
-                <p-chip
-                  class="mr-1"
-                  label="+{{ locations.length - 2 }}"
-                  [pTooltip]="locations.slice(2).join('\n')"
-                  tooltipPosition="bottom"
-                />
-              }
-            </div>
+          <div class="chips-tags">
+            <div class="chips">
+              <div #locationsRow class="chips-row">
+                @for (location of locationChipsOverflow ? visibleLocations : locations; track $index) {
+                  <p-chip 
+                    class="mr-1" 
+                    label="{{ location }}"
+                    [style]="{ 'background-color': '#7069d1' }"
+                  />
+                }
+                @if (locationChipsOverflow) {
+                  <p-chip
+                    class="mr-1"
+                    label="+{{ locations.length - 1 }}"
+                    [pTooltip]="locations.slice(1).join('\n')"
+                    tooltipPosition="bottom"
+                  />
+                }
+              </div>
 
-            <div #periodsRow class="chips-row mt-2">
-              @for (period of periodChipsOverflow ? visiblePeriods : teachingPeriods; track $index) {
-                <p-chip 
-                  class="mr-1" 
-                  label="{{ period }}"
-                  [style]="{ 
-                    'background-color': period === 'No Offerings in 2025' ? '#eb5055' : '#a88565' 
-                  }"
-                  [pTooltip]="getOriginalPeriodName(period)"
-                  showDelay="500"
-                  tooltipPosition="bottom"
-                />
-              }
-              @if (periodChipsOverflow) {
-                <p-chip
-                  class="mr-1"
-                  label="+{{ teachingPeriods.length - 2 }}"
-                  [pTooltip]="'- ' + getOriginalPeriodNames(teachingPeriods.slice(2)).join('\n\n - ')"
-                  tooltipPosition="bottom"
-                  [style]="{ 'background-color': 'rgba(63, 63, 70, 0.5)' }"
+              <div #periodsRow class="chips-row mt-2">
+                @for (period of periodChipsOverflow ? visiblePeriods : teachingPeriods; track $index) {
+                  <p-chip 
+                    class="mr-1" 
+                    label="{{ period }}"
+                    [style]="{ 
+                      'background-color': period === 'No Offerings in 2025' ? '#eb5055' : '#a88565' 
+                    }"
+                    [pTooltip]="getOriginalPeriodName(period)"
+                    showDelay="500"
+                    tooltipPosition="bottom"
+                  />
+                }
+                @if (periodChipsOverflow) {
+                  <p-chip
+                    class="mr-1"
+                    label="+{{ teachingPeriods.length - 2 }}"
+                    [pTooltip]="getPeriodNamesTooltip()"
+                    tooltipPosition="bottom"
+                    [style]="{ 'background-color': 'rgba(63, 63, 70, 0.5)' }"
+                  />
+                }
+              </div>
+            </div>
+            <div class="tags">
+              @for (tag of unit.tags; track $index) {
+                <p-tag 
+                  [value]="getTagDisplay(tag)"
+                  [severity]="getTagSeverity(tag)"
+                  [icon]="getTagIcon(tag)"
+                  [style]="{ 'font-size': '0.7rem' }"
                 />
               }
             </div>

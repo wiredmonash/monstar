@@ -1,9 +1,11 @@
 // Module Imports
 const express = require('express');
 const mongoose = require('mongoose');
+const cron = require('node-cron');
 const cors = require('cors');
 const app = express();
 const cookieParser = require('cookie-parser');
+const tagManager = require('./services/tagManager.service');
 require('dotenv').config();
 
 // Router Imports 
@@ -44,6 +46,11 @@ connect(url)
 app.use('/api/v1/units', UnitRouter);
 app.use('/api/v1/reviews', ReviewRouter);
 app.use('/api/v1/auth', AuthRouter);
+
+// === Services ===
+cron.schedule('0 * * * *', async function() {
+    await tagManager.updateMostReviewsTag(1);
+})
 
 // === Debugging Root Route ===
 // app.get('/', (req, res) => {

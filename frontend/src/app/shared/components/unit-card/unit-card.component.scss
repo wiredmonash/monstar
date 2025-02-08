@@ -111,13 +111,28 @@
             }
         }
 
-        .chips {
+        .chips-tags {
             margin-top: auto;
             padding-top: 0;
+            display: flex;
+            gap: 1rem;
 
-            .chips-row {
-                overflow: hidden;
-                width: 100%;
+            .chips {
+                flex: 1;
+                min-width: 0;
+
+                .chips-row {
+                    overflow: hidden;
+                    width: 100%;
+                }
+            }
+
+            .tags {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 0.25rem;
+                align-items: flex-end;
+                white-space: nowrap;
             }
         }
     }

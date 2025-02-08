@@ -247,4 +247,11 @@ export class UnitMapComponent implements OnInit, OnDestroy {
   resetZoom() {
     this.zoomToFit$.next({ force: true, autoCenter: true });
   }
+
+  /**
+   * * Navigates back to the unit overview page
+   */
+  navigateBack() {
+    return this.router.navigate(['/unit-overview', this.unit?.unitCode.toLowerCase()]);
+  }
 }

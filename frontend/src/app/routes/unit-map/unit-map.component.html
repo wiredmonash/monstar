@@ -48,10 +48,23 @@
         <p-card styleClass="unit-info-card">
             <!-- Header -->
             <header class="header prevent-select">
+                <!-- Unitcode -->
                 <h1>{{ unit?.unitCode | uppercase }}</h1>
+                <!-- Back button -->
+                <p-button
+                    icon="pi pi-arrow-left"
+                    [rounded]="true"
+                    [text]="true"
+                    (click)="navigateBack()"
+                    styleClass="p-button-secondary"
+                    pTooltip="Go back"
+                    tooltipPosition="right"
+                    tooltipZIndex="9999"
+                />
             </header>
             <!-- Subheader -->
             <section class="subheader prevent-select">
+                <!-- Unit name -->
                 <h3>{{ unit?.name }}</h3>
             </section>
             <!-- Advanced Unit Information -->

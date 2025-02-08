@@ -19,6 +19,7 @@ import { DividerModule } from 'primeng/divider';
 import { TooltipModule } from 'primeng/tooltip';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { KnobModule } from 'primeng/knob';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -36,6 +37,7 @@ import { ApiService } from '../../services/api.service';
     ToastModule,
     DividerModule,
     TooltipModule,
+    KnobModule,
   ], 
   providers: [
     MessageService
@@ -162,5 +164,9 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
 
     console.info('UnitReviewHeader | verifyUnitGraph false boundary case');
     return this.unitMapButtonDisabled = true;
+  }
+
+  openHandbookNewTab() {
+    return window.open(`https://handbook.monash.edu/2025/units/${this.unit?.unitCode}?year=2025`, '_blank');
   }
 }

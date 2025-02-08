@@ -1,6 +1,12 @@
 import { Types } from "mongoose";
 import { Review } from "./review.model";
 
+export enum UnitTag {
+    MOST_REVIEWS = 'most-reviews',
+    CONTROVERSIAL = 'controversial',
+    WAM_BOOSTER = 'wam-booster'
+}
+
 interface Requisites {
     permission: boolean;
     prerequisites: { NumReq: number, units: string[] }[];
@@ -34,6 +40,7 @@ export class Unit {
     scaBand: number;
     requisites: Requisites;
     offerings: Offering[];
+    tags: UnitTag[] = [];
 
     constructor (
         _id: Types.ObjectId,
@@ -51,7 +58,8 @@ export class Unit {
         academicOrg: string,
         scaBand: number,
         requisites: Requisites,
-        offerings: Offering[]
+        offerings: Offering[],
+        tags?: UnitTag[]
     ) {
         this._id = _id;
         this.unitCode = unitCode;
@@ -69,6 +77,7 @@ export class Unit {
         this.scaBand = scaBand;
         this.requisites = requisites;
         this.offerings = offerings;
+        this.tags = tags || [];
     }
 
     // Ensure all rating properties default to 0 if undefined
@@ -89,5 +98,10 @@ export class Unit {
         } else {
             this.ensureDefaults();
         }
+    }
+
+    // Helper method to check if unit has a specific tag
+    hasTag(tag: UnitTag) {
+        return this.tags.includes(tag);
     }
 }

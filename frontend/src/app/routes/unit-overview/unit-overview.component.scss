@@ -2,9 +2,28 @@
     margin-bottom: 40px;
 }
 
-.spinner-container {
+.reviews-skeleton-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    margin-bottom: 40px;
+}
+
+:host ::ng-deep .header-skeleton-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+}
+
+:host ::ng-deep .header-skeleton {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 2rem;
+
+    @media (max-width: 1200px) {
+        margin-left: 1rem;
+        margin-right: 1rem;
+    }
 }
