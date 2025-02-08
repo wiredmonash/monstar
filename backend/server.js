@@ -39,7 +39,10 @@ app.use((obj, req, res, next) => {
 const url = process.env.MONGODB_CONN_STRING;
 async function connect(url) { await mongoose.connect(url); }
 connect(url)
-    .then(console.log('Connected to MongoDB Database'))
+    .then(() => { 
+        console.log('Connected to MongoDB Database')
+        tagManager.updateMostReviewsTag(1);
+    })
     .catch((error) => console.log(error));
 
 // === Routes ===

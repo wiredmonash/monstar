@@ -1,4 +1,5 @@
 const Unit = require('../models/unit');
+const Review = require('../models/review');
 
 class TagManager {
     static async updateMostReviewsTag(threshold = 10) {
@@ -10,13 +11,44 @@ class TagManager {
                 console.log('[TagManager] Starting transaction');
 
                 // Find units exceeding threshold
-                console.log('[TagManager] Finding units with most reviews...');
-                const unitsWithMostReviews = await Unit.find({
-                    reviewCount: { $gt: threshold }
-                })
-                .sort({ reviewCount: -1 })
-                .limit(1)
-                .session(session);
+                console.log('[TagManager] Finding unit with most reviews...');
+                const unitsWithMostReviews = await Review.aggregate([
+                    {
+                        $group: {
+                            _id: '$unit',
+                            reviewCount: { $sum: 1 }
+                        }
+                    },
+                    {
+                        $match: {
+                            reviewCount: { $gte: threshold }
+                        }
+                    },
+                    {
+                        $sort: { reviewCount: -1 }
+                    },
+                    {
+                        $limit: 1
+                    },
+                    {
+                        $lookup: {
+                            from: 'units',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'unit'
+                        }
+                    },
+                    {
+                        $unwind: '$unit'
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            unit: 1,
+                            reviewCount: 1
+                        }
+                    }
+                ]).session(session);
 
                 console.log(`[TagManager] Found ${unitsWithMostReviews.length} units exceeding threshold`);
 
@@ -31,11 +63,11 @@ class TagManager {
 
                 // Add tag to top unit
                 if (unitsWithMostReviews.length > 0) {
-                    const topUnit = unitsWithMostReviews[0];
+                    const topUnit = unitsWithMostReviews[0].unit;
                     console.log(`[TagManager] Adding most-reviews tag to ${topUnit.unitCode}`);
 
                     await Unit.findByIdAndUpdate(
-                        unitsWithMostReviews[0]._id,
+                        topUnit._id,
                         { $addToSet: { tags: 'most-reviews' } },
                         { session }
                     );
