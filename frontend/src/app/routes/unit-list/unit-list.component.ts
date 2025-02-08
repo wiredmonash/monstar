@@ -246,19 +246,30 @@ export class UnitListComponent implements OnInit {
       if (searchInput) {
         searchInput.focus();
         this.sortByDropdown.hide(); // We hide the dropdown if we focus on the search bar.
+        this.overlayPanel.hide();
       }
     }
     // Focuses on sort by dropdown
     if (event.ctrlKey && event.key === 'f') {
       event.preventDefault();
-      if (this.sortByDropdown)
-        this.sortByDropdown.focus();
+      if (this.sortByDropdown) {
+        if (!this.isSortByFocused) {
+          this.sortByDropdown.focus();
+          this.sortByDropdown.show();
+          this.isSortByFocused = true;
+        } else {
+          this.sortByDropdown.hide();
+          this.isSortByFocused = false;
+        }
+      }
     }
     // Focuses on advanced filtering
     if (event.ctrlKey && event.key === 'o') {
       event.preventDefault();
-      if (this.overlayPanel && this.filterButton)  
+      if (this.overlayPanel && this.filterButton) {
         this.overlayPanel.toggle(event, this.filterButton.nativeElement);
+        this.sortByDropdown.hide();
+      }
     }
     // Unfocuses on all
     if (event.key === 'Escape') {

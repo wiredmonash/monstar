@@ -3,13 +3,15 @@
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css" layer(bootstrap);
 @import "../node_modules/primeicons/primeicons.css" layer(primeng);
 @import "../node_modules/primeng-sass-theme/themes/aura/aura-dark/noir/theme.scss" layer(primeng);
-@import "../node_modules/primeng/resources/primeng.min.css" layer(primeng);
+@import "../node_modules/primeng/resources/primeng.css" layer(primeng);
 @import "../node_modules/primeflex/primeflex.css" layer(primeng);
+@import "./app/_variables.scss";
 
 html, body {
 	height: 100%; // Make sure the entire document height is considered
 	overflow-x: hidden;
 	overflow: hidden;
+	background-color: $fg-dark-color;
 }
 
 body {

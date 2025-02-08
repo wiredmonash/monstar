@@ -20,6 +20,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { KnobModule } from 'primeng/knob';
+import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -38,6 +39,7 @@ import { KnobModule } from 'primeng/knob';
     DividerModule,
     TooltipModule,
     KnobModule,
+    RippleModule,
   ], 
   providers: [
     MessageService
