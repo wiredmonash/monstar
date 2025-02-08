@@ -10,7 +10,7 @@ class TagManager {
                 console.log('[TagManager] Starting transaction');
 
                 // Find units exceeding threshold
-                cnosole.log('[TagManager] Finding units with most reviews...');
+                console.log('[TagManager] Finding units with most reviews...');
                 const unitsWithMostReviews = await Unit.find({
                     reviewCount: { $gt: threshold }
                 })
