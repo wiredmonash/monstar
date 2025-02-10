@@ -196,22 +196,31 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
  * @returns {JSON} Responds with the updated review in JSON format
  * @throws {500} If an error occurs whilst updating a review.
  */
-router.put('/update/:reviewId', async function (req, res) {
+router.put('/update/:reviewId', verifyToken, async function (req, res) {
     try {
-        const updatedReview = await Review.findByIdAndUpdate(
-            // Find using parsed MongoDB ObjectID
-            req.params.reviewId,
-            // Update with the json body being sent
-            req.body
-        );
+        // Get the review to update
+        const review = await Review.findById(req.params.reviewId);
+        if (!review) return res.status(404).json({ error: 'Review not found' });
 
-        // Error if review doesn't exist in db
-        if (!updatedReview) {
-            res.status(500).json({error: "Review not found"});
+        // Get the requesting user
+        const requestingUser = await User.findById(req.user.id);
+        if (!requestingUser) return res.status(404).json({ error: 'Requesting user not found' });
+
+        // Check if the user is authorised (review author or admin)
+        const isAuthor = review.author.toString() === requestingUser._id.toString();
+        if (!isAuthor && !requestingUser.admin) {
+            return res.status(403).json({ error: 'Unauthorised to update review' });
         }
 
+        // Update the review
+        const updatedReview = await Review.findByIdAndUpdate(
+            req.params.reviewId,
+            req.body,
+            { new: true }
+        );
+
         // Recalculate the averages after adding the review
-        const allReviews = await Review.find({ unit: unitDoc._id });
+        const allReviews = await Review.find({ unit: review.unit });
         const avgOverallRating = allReviews.reduce((sum, rev) => sum + rev.overallRating, 0) / allReviews.length;
         const avgContentRating = allReviews.reduce((sum, rev) => sum + rev.contentRating, 0) / allReviews.length;
         const avgFacultyRating = allReviews.reduce((sum, rev) => sum + rev.facultyRating, 0) / allReviews.length;
@@ -219,7 +228,7 @@ router.put('/update/:reviewId', async function (req, res) {
 
         // Update the unit with new averages
         await Unit.updateOne(
-            { _id: unitDoc._id },
+            { _id: review._id },
             {
                 avgOverallRating,
                 avgContentRating,
@@ -228,10 +237,10 @@ router.put('/update/:reviewId', async function (req, res) {
             }
         );
 
-        res.status(200).json({message: "Review successfully updated"});
+        return res.status(200).json({message: "Review successfully updated", review: updatedReview });
     }
     catch (error) {
-        res.status(500).json({error: `Error while updating review: ${error.message}`});
+        return res.status(500).json({error: `Error while updating review: ${error.message}`});
     }
 });
 

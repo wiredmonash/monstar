@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
+import { ObjectId } from 'mongoose';
 
 @Injectable({
   providedIn: 'root'
@@ -232,13 +233,13 @@ export class AuthService {
    * 
    * Updates the user's details such as username and password.
    * 
-   * @param {string} oldEmail The current email of the user.
+   * @param {string} userId The MongoDB ID of the user.
    * @param {string} [username] The new username for the user.
    * @param {string} [password] The new password for the user.
    * @returns {Observable<any>} an observable containing the response from the server.
    */
-  updateDetails(oldEmail: string, username?: string, password?: string) {
-    return this.http.put(`${this.url}/update/${oldEmail}`, 
+  updateDetails(userId: string, username?: string, password?: string) {
+    return this.http.put(`${this.url}/update/${userId}`, 
       { username: username, password: password }, 
       { withCredentials: true }
     ).pipe(
@@ -282,5 +283,25 @@ export class AuthService {
         }
       })
     );
+  }
+
+  /**
+   * * Delete user account
+   * 
+   * Deletes the user's account.
+   * 
+   * @param {string} userId The MongoDB ID of the user.
+   * @returns {Observable<any>} An observable containing the response from the server.
+   */
+  deleteUserAccount(userId: String): Observable<any> {
+    return this.http.delete(`${this.url}/delete/${userId}`)
+      .pipe(
+        tap(() => {
+          this.currentUser.next(null);
+
+          // ? Debug log
+          console.log('AuthService | Deleted user account.')
+        })
+      );
   }
 }

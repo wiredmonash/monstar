@@ -379,6 +379,13 @@
                     <!-- TODO: Make the friends list here and the suggested friends list -->
                 </div>
             }
+            <!-- Settings -->
+            @else if (profileMenuState === 'settings') {
+                <div class="settings-container">
+                    <h3>Delete Account</h3>
+                    <p-button></p-button>
+                </div>
+            }
         } @else {
             <!-- Loading when no user assigned yet -->
             <p-progressSpinner class="mx-auto"></p-progressSpinner>
