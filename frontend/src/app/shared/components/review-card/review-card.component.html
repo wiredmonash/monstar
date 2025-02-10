@@ -22,7 +22,7 @@
 
             <div class="row">
                 <!-- Left Side (Anonymous, Semester, Overall Rating) -->
-                <div class="col-md-4 border-end">
+                <div class="col-md-4 review-column">
                     <!-- Title -->
                     <h5>{{ review.title || 'No Title' }}</h5>
                     
@@ -62,10 +62,10 @@
                     <h5>{{ review.heading }}</h5>
                     <div class="row mb-2">
                         <!-- Content Category -->
-                        <div class="col-md-5 col-lg-4">
+                        <div class="col-md-5 col-lg-4 content">
                             <!-- Content Rating -->
                             <div class="d-flex justify-content-between">
-                                <h6 class="mb-0">Content</h6>
+                                <h6 class="mb-0 mt-1">Content</h6>
                                 <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.contentRating }}</h6> -->
                             </div>
                             <!-- Stars for ConentRating -->
@@ -82,9 +82,9 @@
                         </div>
 
                         <!-- Relevancy Category -->
-                        <div class="col-md-5 col-lg-4">
+                        <div class="col-md-5 col-lg-4 relevancy">
                             <div class="d-flex justify-content-between">
-                                <h6 class="mb-0">Relevancy</h6>
+                                <h6 class="mb-0 mt-1">Relevancy</h6>
                                 <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{review.relevancyRating}}</h6> -->
                             </div>
                             <div class="d-flex justify-content-center">
@@ -100,9 +100,9 @@
                         </div>
 
                         <!-- Teaching Team Category -->
-                        <div class="col-md-5 col-lg-4">
+                        <div class="col-md-5 col-lg-4 faclt">
                             <div class="d-flex justify-content-between">
-                                <h6 class="mb-0">Faculty</h6>
+                                <h6 class="mb-0 mt-1">Faculty</h6>
                                 <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6> -->
                             </div>
                             <div class="d-flex justify-content-center">
