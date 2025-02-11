@@ -11,7 +11,7 @@ MonSTAR is an online platform designed for Monash University students to browse,
 ---
 
 ## Contributors
-- **WIRED Projects Team Members**: Collaborating to bring this web application  to life.
+- **WIRED Projects Team Members**: Collaborating to bring this web application to life.
 - **Sai Kumar Murali Krishnan**: Contributed the [monash-handbook-scraper](https://github.com/saikumarmk/monash-handbook-scraper), a vital tool for gathering information about all Monash University units for our database. 
 
 ---
@@ -19,13 +19,14 @@ MonSTAR is an online platform designed for Monash University students to browse,
 ## Project Setup:
 ### Prerequisites
 Ensure you have the following installed:
+- Angular (v18.2.14)
 - Node.js (v20.15.1 or higher)
 - MongoDB
-- Cloudinary Account (for image storage)
+
 ### Installation Steps
 1. Clone the repository:
 ```shell
-git clone https://github.com/jenul-ferdinand/monstar.git
+git clone https://github.com/wiredmonash/monstar.git
 ```
 2. Navigate to the project directory:
 ```shell
@@ -37,17 +38,19 @@ npm install
 ```
 4. Create a `.env` file in the `backend/.` directory and add the following variables:
 ```shell
-MONGODB_CONN_STRING=''
-PORT=
-JWT_SECRET=''
-EMAIL_USERNAME=
-EMAIL_PASSWORD=
-FRONTEND_URL=
+MONGODB_CONN_STRING='(mongodb atlas connection string)'
+PORT=8080
+JWT_SECRET='(secret key for the jwt)'
+EMAIL_USERNAME=(email of the account used to send emails)
+EMAIL_PASSWORD=(app password from google account)
+FRONTEND_URL=(url of the frontend app)
 
-CLOUDINARY_NAME=''
-CLOUDINARY_API_KEY=''
-CLOUDINARY_API_SECRET=''
-CLOUDINARY_URL=''
+CLOUDINARY_NAME='(name of the cloudinary cloud)'
+CLOUDINARY_API_KEY='(api key for the cloudinary account)'
+CLOUDINARY_API_SECRET='(secret key for the cloudinary account)'
+CLOUDINARY_URL='(full url to the cloudinary)'
+
+GOOGLE_CLIENT_ID='923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com'
 ```
 5. Start the application `npm start`
 
@@ -58,7 +61,7 @@ CLOUDINARY_URL=''
 monstar/
 ├── backend/               # Contains server-side code
 ├── frontend/              # Contains client-side code
-└── README.md              # Project documentation
+└── README.md              
 ```
 
 ---
@@ -68,9 +71,9 @@ monstar/
 - Cloud Database: MongoDB
 - Frontend: Angular.js
 - Cloud Storage (profile pictures): Cloudinary
+- Deployment: EC2 (Amazon Web Services)
 
 ---
 
-Contact
-
-For questions or support, please contact jenul15ferdinand@gmail.com
+## Contact
+For questions or support with development, please contact jenul15ferdinand@gmail.com

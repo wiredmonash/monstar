@@ -1,0 +1,222 @@
+<!-- === Bottom Toolbar === -->
+@if (!isLoading) {
+    <div class="toolbar-container">
+        <p-toolbar class="toolbar" styleClass="shadow-2" [style]="{ 'border-radius': '3rem' }">
+        <!-- ! Start group (Simple sorting order dropdown) -->
+        <div class="p-toolbar-group-start">
+            <p-button 
+                pTooltip="Reset Graph"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
+                icon="pi pi-replay"
+                rounded="true"
+                (click)="resetGraph()"
+            ></p-button>
+        </div>
+    
+        <!-- ! Center group (dynamic search bar)-->
+        <div class="p-toolbar-group-center">
+            <p-button 
+                pTooltip="Center Graph"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
+                icon="pi pi-arrow-down-left-and-arrow-up-right-to-center"
+                rounded="true"
+                (click)="centerGraph()"
+            ></p-button>
+        </div>
+    
+        <!-- ! End group (Advanced filtering options) -->
+        <div class="p-toolbar-group-end">
+            <p-button 
+                pTooltip="Zoom to Fit"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
+                icon="pi pi-expand"
+                rounded="true"
+                (click)="resetZoom()"
+            ></p-button>
+        </div>
+        </p-toolbar>
+    </div>
+}
+
+<!-- === Background, Graph, and Loading Overlay === -->
+<div #graphContainer class="graph-container">
+    <!-- ! Information Sidebar -->
+    <div class="card-container">
+        <p-card styleClass="unit-info-card">
+            <!-- Header -->
+            <header class="header prevent-select">
+                <!-- Unitcode -->
+                <h1>{{ unit?.unitCode | uppercase }}</h1>
+                <!-- Back button -->
+                <p-button
+                    icon="pi pi-arrow-left"
+                    [rounded]="true"
+                    [text]="true"
+                    (click)="navigateBack()"
+                    styleClass="p-button-secondary"
+                    pTooltip="Go back"
+                    tooltipPosition="right"
+                    tooltipZIndex="9999"
+                />
+            </header>
+            <!-- Subheader -->
+            <section class="subheader prevent-select">
+                <!-- Unit name -->
+                <h3>{{ unit?.name }}</h3>
+            </section>
+            <!-- Advanced Unit Information -->
+            <section class="unit-info prevent-select">
+                <dl>
+                    <!-- Credit Points -->
+                    <div class="unit-info-row">
+                        <dt 
+                            class="unit-info-label"
+                            pTooltip="The number of credit points this unit is worth."
+                            tooltipZIndex="9999"
+                        >Credit Points 🛈</dt>
+                        <dd 
+                            class="unit-info-value"
+                        >{{ unit?.creditPoints }}</dd>
+                    </div>
+                    <!-- Divider -->
+                    <p-divider></p-divider>
+                    <!-- Prerequisite Units -->
+                    <div class="unit-info-row mt-4">
+                        <dt 
+                            class="unit-info-label" 
+                            [style]="{ 'color': 'rgb(34, 197, 94)' }"
+                            pTooltip="Prerequisites are units that must be completed before this unit."
+                            tooltipZIndex="9999"
+                        >Prerequisites 🛈</dt>
+                        <dd 
+                            class="unit-info-value" 
+                            [style]="{ 'color': 'rgba(34, 197, 94, 0.75)' }"
+                        >{{ prerequisiteUnitCodes ? prerequisiteUnitCodes : 'None' }}</dd>
+                    </div>
+                    <!-- Prerequisite Number Required -->
+                    <div class="unit-info-row">
+                        <dt 
+                            class="unit-info-label"
+                            pTooltip="The number of prerequisites needed to be completed before this unit."
+                            tooltipZIndex="9999"
+                        >No. of Prerequisites 🛈</dt>
+                        <dd class="unit-info-value">{{ prerequisiteNumReq > 0 ? prerequisiteNumReq : 'None' }} of the above</dd>
+                    </div>
+                    <!-- Divider -->
+                    <p-divider></p-divider>
+                    <!-- Parent Units -->
+                    <div class="unit-info-row mt-4">
+                        <dt 
+                            class="unit-info-label" 
+                            [style]="{ 'color': 'rgb(249, 115, 22)' }"
+                            pTooltip="Parent units are units where {{ unit?.unitCode | uppercase }} is a prerequisite."
+                            tooltipZIndex="9999"
+                        >Parent Units 🛈</dt>
+                        <dd class="unit-info-value" [style]="{ 'color': 'rgba(249, 115, 22, 0.75)' }">{{ parentUnitCodes }}</dd>
+                    </div>
+                </dl>
+            </section>
+
+        </p-card>
+    </div>
+
+    <!-- ! Dotted Background -->
+    <svg width="100%" height="100%" class="background-pattern">
+        <defs>
+            <pattern id="dotPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.2)"/>
+            </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dotPattern)"/>
+    </svg>
+
+    <!-- ! Arrow marker defintions -->
+    <svg width="0" height="0">
+        <defs>
+            <marker
+                id="arrow"
+                viewBox="0 -5 10 10"
+                refX="30"
+                refY="0"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto">
+                <path d="M0,-5L10,0L0,5" class="arrow-head"/>
+            </marker>
+            <marker
+                id="prerequisite-arrow"
+                viewBox="0 -5 10 10"
+                refX="30"
+                refY="0"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto">
+                <path d="M0,-5L10,0L0,5" class="prerequisite-arrow-head"/>
+            </marker>
+            <marker
+                id="parent-arrow"
+                viewBox="0 -5 10 10"
+                refX="30"
+                refY="0"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto">
+                <path d="M0,-5L10,0L0,5" class="parent-arrow-head"/>
+            </marker>
+        </defs>
+    </svg>
+
+    <!-- ! Graph -->
+    <ngx-graph
+        [view]="[graphContainer.offsetWidth, graphContainer.offsetHeight]" 
+        [links]="edges"
+        [nodes]="nodes"
+        [layout]="layout"
+        [curve]="curve"
+        [autoZoom]="false"
+        [center$]="center$"
+        [zoomToFit$]="zoomToFit$"
+        [deferDisplayUntilPosition]="true"
+    >
+        <!-- * Nodes -->
+        <ng-template #nodeTemplate let-node>
+            <svg:g class="node" [class]="node.data?.type">
+            <svg:rect
+                [attr.width]="90"
+                [attr.height]="30"
+                [attr.rx]="8"
+            />
+            <svg:text
+                alignment-baseline="middle"
+                dominant-baseline="middle"
+                [attr.x]="45"
+                [attr.y]="15"
+            >
+                {{node.label}}
+            </svg:text>
+            </svg:g>
+        </ng-template>
+        <!-- * Edges for edging -->
+        <ng-template #linkTemplate let-edge>
+            <svg:g class="edge" [class]="edge.data?.type">
+            <svg:path
+                class="line"
+                [attr.marker-end]="'url(#' + (edge.data?.type || 'arrow') + '-arrow)'"
+            />
+            </svg:g>
+        </ng-template>
+    </ngx-graph>
+    
+    <!-- ! The loading overlay screen (this must be put here) -->
+    @if (isLoading) {
+        <div class="loading-overlay">
+            <div class="loader">
+                <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+                <span>Loading Unit Map...</span>
+            </div>
+        </div>
+    }
+</div>

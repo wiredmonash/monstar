@@ -1,0 +1,209 @@
+@import '../../_variables.scss';
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $bg-dark-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    .loader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        color: white;
+        font-family: $poppins;
+
+        span {
+            font-size: 1.2rem;
+        }
+    }
+}
+
+// Info Card Container
+:host ::ng-deep .card-container {
+    z-index: 4000;
+    max-width: 20rem;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    height: fit-content; // Make height fit the content
+    position: absolute; // Take it out of the flex flow
+    top: 0;
+    left: 0;
+
+    .unit-info-card {
+        font-family: $poppins;
+        background-color: $fg-dark-color;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            h1 {
+                font-size: 1.5rem;
+                font-weight: 700;
+            }
+        }
+    
+        .subheader {
+            h3 {
+                font-size: 1rem;
+                font-weight: 500;
+                color: rgb(189, 189, 189);
+            }
+        }
+    
+        .unit-info {
+            margin-top: 1rem;
+            background-color: $bg-dark-color;
+            padding: 1rem;
+            border-radius: 16px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            width: 100%;
+    
+            dd {
+                white-space: normal;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+            }
+        }
+    }   
+}
+
+// === Graph Container ===
+.graph-container {
+    width: 100%;
+    height: calc(100vh - 64px);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+
+    // Graph background pattern
+    .background-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    // The graph itself
+    ngx-graph {
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// === Toolbar Container ===
+.toolbar-container {
+    // Center the toolbar at the bottom of the screen
+    position: absolute;
+    bottom: 20px;
+    transform: translateX(-50%);
+    left: 50%;
+    z-index: 2000;
+    
+    // Toolbar styles
+    .p-toolbar {
+        display: flex;
+        justify-content: space-between;
+        width: 100%
+    }
+
+    // Start and end groups
+    .p-toolbar-group-start,
+    .p-toolbar-group-end {
+        flex: 1;
+    }
+
+    // Center group
+    .p-toolbar-group-center {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+    }
+}
+
+// === Node Styles ===
+.node {
+    cursor: pointer;
+    transition: all 0.3s;
+
+    rect {
+        fill: white;
+        stroke: #ccc;
+        stroke-width: 2px;
+    }
+
+    text {
+        fill: #ffffff;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        font-size: 14px;
+        font-family: $poppins;
+        font-weight: 500;
+    }
+
+    // Current unit node
+    &.current rect {
+        stroke: #4e4e4e;
+        fill: #414141;
+        filter: drop-shadow(0 0 5px rgba(147, 51, 234, 0.5));
+    }
+
+    // Prerequitsite unit node
+    &.prerequisite rect {
+        stroke: #4e4e4e;
+        fill: #414141;
+        filter: drop-shadow(0 0 5px rgba(34, 197, 94, 0.5));
+    }
+
+    // Parent unit node
+    &.parent rect {
+        stroke: #4e4e4e;
+        fill: #414141;
+        filter: drop-shadow(0 0 5px rgba(249, 115, 22, 0.5));
+    }
+
+    // Mouse hover effect
+    &:hover rect {  
+        filter: brightness(95%) drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+    }
+}
+
+// === Edge Styles ===
+.edge {
+    .line {
+        stroke: #999;
+        stroke-width: 1px;
+    }
+
+    &.prerequisite .line {
+        stroke: #4CAF50;
+    }
+
+    &.parent .line {
+        stroke: #FF9800;
+    }
+}
+
+// === Arrow Head Styles ===
+.arrow-head {
+    fill: #999;
+}
+
+.prerequisite-arrow-head {
+    fill: rgba(34, 197, 94, 0.5);
+}
+
+.parent-arrow-head {
+    fill: rgba(249, 115, 22, 0.5);
+}

@@ -1,5 +1,5 @@
 $max-width: 1200px;
-$gap: 20px;
+$gap: 40px;
 $padding: 40px;
 
 .unit-list-container {
@@ -16,13 +16,92 @@ $padding: 40px;
     justify-content: center;
 }
 
+// Toolbar container
 .toolbar-container {
     max-width: $max-width;
     margin: 0 auto;
     padding: 0 2rem;
     padding-top: 10px;
+
+    // Toolbar styles
+    .p-toolbar {
+        display: flex;
+        justify-content: space-between;
+        width: 100%
+    }
+
+    // Start and end groups
+    .p-toolbar-group-start,
+    .p-toolbar-group-end {
+        flex: 1;
+    }
+
+    // Center group
+    .p-toolbar-group-center {
+        flex: 2;
+        display: flex;
+        justify-content: center;
+    }
+
+    // End group
+    .p-toolbar-group-end {
+        display: flex;
+        justify-content: flex-end;
+
+        // Filter options
+        .filter-options {
+            // Filter option styles
+            .filter-option {
+                display: inline-block;
+                margin-right: 1rem;
+            }
+        }
+    }
+
+    // Dropdown container
+    .dropdown-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    // Badge styles
+    .search-badge, .sortby-badge {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgb(83, 83, 83);
+        color: white;
+        border-radius: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.6rem;
+        margin-left: 0.5rem;
+    }
+
+    .filter-badge {
+        font-size: 0.6rem;
+        color: white;
+        margin-right: 0.5rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        background-color: rgb(83,83,83);
+    }
 }
 
+// Make sure the dropdown panel isn't too wide
+::ng-deep .p-dropdown-panel {
+    max-width: 200px;
+}
+
+// Make sure the dropdown items are smaller font size and other styles
+::ng-deep .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// Pagination container
 .paginator-container {
     max-width: $max-width;
     margin: 0 auto;
@@ -30,6 +109,7 @@ $padding: 40px;
     padding-bottom: 20px;
 }
 
+// No results container
 .no-results-container {
     display: flex;
     flex-direction: column;
@@ -40,9 +120,15 @@ $padding: 40px;
     padding-top: 20px;
     padding-bottom: 20rem;
 
+    // Emoji styles
     .emoji {
         transform: scale(4);
         margin-top: 10vh;
         margin-bottom: 2rem;
     }
+}
+
+// Prevents user selection
+.prevent-select {
+    user-select: none;
 }
