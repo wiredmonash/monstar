@@ -79,4 +79,10 @@ export class ReportReviewComponent {
   onDialogHide() {
     this.visible = false;
   }
+
+  sendReport() {
+    console.log("placeholder send report");
+    this.closeDialog();
+    this.messageService.add({ key: 'success-toast', severity: 'success', summary: 'Report submitted!', detail: 'Your report has been sent to the admin team.' });
+  }
 }
