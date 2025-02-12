@@ -152,7 +152,10 @@
                     <!-- Report and dislike/like buttons -->
                     <div class="action-buttons-container">
                         <!-- Report button -->
-                        <div class="report-button" *ngIf="!(currentUser?._id ===  review.author._id)">
+                        <div class="report-button"
+                        *ngIf="currentUser && !(currentUser?._id ===  review.author._id)"
+                        (click)="showReportDialog()"
+                        >
                             <i class="report" [class]="'pi pi-flag'"></i>
                             <span>Report</span>
                         </div>
@@ -173,6 +176,11 @@
                             ></i>
                         </div>
                     </div>
+
+                    <!-- Child component: Report Review -->
+                    <app-report-review
+                        [review]="review"
+                    ></app-report-review>
                 </div>
             </div>
         </div>

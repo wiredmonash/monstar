@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { Subscription } from 'rxjs';
 import { TooltipModule } from 'primeng/tooltip';
+import { ReportReviewComponent } from './report-review/report-review.component';
 
 @Component({
   selector: 'app-review-card',
@@ -22,7 +23,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
-    TooltipModule
+    TooltipModule,
+    ReportReviewComponent
   ],
   providers: [
     ConfirmationService,
@@ -49,6 +51,10 @@ import { TooltipModule } from 'primeng/tooltip';
   ]
 })
 export class ReviewCardComponent implements OnInit, OnDestroy {
+
+  // Report dialog component
+  private _reportReviewDialog!: ReportReviewComponent;
+
   // Allow the template to use Math
   Math = Math;
 
@@ -61,6 +67,18 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Child that is the confirmation popup on deletion
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
+  // Child component: report review dialog
+  @ViewChild(ReportReviewComponent)
+  set reportReviewDialog(content: ReportReviewComponent) {
+    if (content) {
+      this._reportReviewDialog = content;
+    }
+  }
+
+  get reportReviewDialog(): ReportReviewComponent {
+    return this._reportReviewDialog;
+  }
+  
   // Expand state
   expanded: boolean = false;
 
@@ -247,5 +265,14 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         console.error('Error while toggling dislike:', error);
       }
     });
+  }
+
+  /**
+   * * === Shows dialog to report review ===
+   */
+  showReportDialog() {
+    if (this.currentUser && this.reportReviewDialog) {
+      this.reportReviewDialog.openDialog();
+    }
   }
 }
