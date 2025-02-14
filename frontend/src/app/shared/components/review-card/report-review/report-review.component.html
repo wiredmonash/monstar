@@ -15,7 +15,8 @@
       <div class="dialog-content">
         <span>Why are you reporting this review?</span>
         <p-dropdown
-          #reportReason
+          #reason
+          [(ngModel)]="reportReason"
           [options]="reportOptions"
           [style]="{ 'width': '20rem' }"
           (selectOnFocus)="true"
@@ -27,9 +28,10 @@
         ></p-dropdown>
         
         <textarea
-            #reportDescription
+            #description
             pInputTextarea
             id="reportDescription"
+            [(ngModel)]="reportDescription"
             [style]="{ 'width': '28rem', 'height': '15rem', 'resize': 'none !important' }"
             autocomplete="off"
             [autoResize]="false"
@@ -40,6 +42,7 @@
             #submitReportButton
             label="Send Report"
             (click)="sendReport()"
+            [disabled]="!reportReason"
         ></p-button>
       </div>
 

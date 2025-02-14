@@ -5,8 +5,11 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { User } from '../../../models/user.model';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-report-review',
@@ -18,6 +21,7 @@ import { trigger, style, animate, transition } from '@angular/animations';
     ButtonModule,
     DropdownModule,
     InputTextareaModule,
+    FormsModule
   ],
   providers: [
     MessageService
@@ -38,11 +42,17 @@ import { trigger, style, animate, transition } from '@angular/animations';
 })
 export class ReportReviewComponent {
 
+  // * Input property of current user
+  @Input() currentUser: User | null = null;
+
   // * Input property to receive review data from parent component
   @Input() review!: any;
 
   // * Input property to receive the visible boolean data from the parent component
   @Input() visible: boolean = false;
+
+  reportReason: string | null = null;
+  reportDescription: string | null = null;
 
   // * Report options
   reportOptions =[
@@ -61,28 +71,41 @@ export class ReportReviewComponent {
   ]
 
   constructor (
-    private messageService: MessageService
+    private messageService: MessageService,
+    private apiService: ApiService
   ) {}
 
   // * === Opens the create review dialog ===
   openDialog() {
     this.visible = true;
-    // this.focusCurrentInput(); // ! DEAL WITH THIS
   }
 
   // * === Closes the create review dialog ===
   closeDialog() {
     this.visible = false;
+    this.reportReason = null;
+    this.reportDescription = null;
   }
 
   // * === Called when the dialog is hidden ===
   onDialogHide() {
     this.visible = false;
+    this.reportReason = null;
+    this.reportDescription = null;
   }
 
   sendReport() {
-    console.log("placeholder send report");
+    const reportPayload = {
+      reportReason: this.reportReason,
+      reportDescription: this.reportDescription,
+      reporterName: this.currentUser?.username,
+      review: this.review
+    }
+
+    this.apiService.sendReviewReportPOST(reportPayload);
     this.closeDialog();
+    this.reportReason = null;
+    this.reportDescription = null;
     this.messageService.add({ key: 'success-toast', severity: 'success', summary: 'Report submitted!', detail: 'Your report has been sent to the admin team.' });
   }
 }
