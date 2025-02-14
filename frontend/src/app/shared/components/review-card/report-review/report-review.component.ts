@@ -61,12 +61,32 @@ export class ReportReviewComponent {
       value: 'Hate Speech'
     },
     {
-      label: 'Trolling',
-      value: 'Trolling'
+      label: 'Trolling / Spam',
+      value: 'Trolling / Spam'
     },
     {
-      label: 'Not helpful',
-      value: 'Not helpful'
+      label: 'Harassment / Bullying',
+      value: 'Harassment / Bullying'
+    },
+    {
+      label: 'False and/or Misleading Information',
+      value: 'False and/or Misleading Information'
+    },
+    {
+      label: 'Inappropriate Content',
+      value: 'Inappropriate Content'
+    },
+    {
+      label: 'Private / Confidential Information',
+      value: 'Private / Confidential Information'
+    },
+    {
+      label: 'Biased / Unfair Review',
+      value: 'Biased / Unfair Review'
+    },
+    {
+      label: 'Duplicate Review',
+      value: 'Duplicate Review'
     }
   ]
 
