@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cron = require('node-cron');
 const cors = require('cors');
 const app = express();
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const tagManager = require('./services/tagManager.service');
 require('dotenv').config();
@@ -14,11 +15,7 @@ const ReviewRouter = require('./routes/reviews');
 const AuthRouter = require('./routes/auth');
 
 // === Middleware ===
-app.use(cors({ 
-        origin: 'http://localhost:4200',
-        credentials: true 
-    })
-);
+app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
 app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
@@ -37,7 +34,9 @@ app.use((obj, req, res, next) => {
 
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
-async function connect(url) { await mongoose.connect(url); }
+async function connect(url) { 
+    await mongoose.connect(url); 
+}
 connect(url)
     .then(() => { 
         console.log('Connected to MongoDB Database')

@@ -82,7 +82,7 @@ router.post('/register', async function (req, res) {
         await newUser.save();
 
         // Send the verification email
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+        const verificationUrl = `${process.env.FRONTEND_URL}/#/verify-email/${verificationToken}`;
         await sendVerificationEmail(email, verificationUrl);
 
         // Return status 201 for succesfull creation of a new user
@@ -354,7 +354,7 @@ router.post('/login', async function (req, res) {
             await user.save();
 
             // Send the verification email
-            const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${verificationToken}`;
+            const verificationUrl = `${process.env.FRONTEND_URL}/#/verify-email/${verificationToken}`;
             await sendVerificationEmail(email, verificationUrl);
             
             // Respond with status 403 and error message 
