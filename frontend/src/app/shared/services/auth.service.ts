@@ -294,8 +294,9 @@ export class AuthService {
    * @returns {Observable<any>} An observable containing the response from the server.
    */
   deleteUserAccount(userId: String): Observable<any> {
-    return this.http.delete(`${this.url}/delete/${userId}`)
-      .pipe(
+    return this.http.delete(`${this.url}/delete/${userId}`, 
+      { withCredentials: true }
+    ).pipe(
         tap(() => {
           this.currentUser.next(null);
 

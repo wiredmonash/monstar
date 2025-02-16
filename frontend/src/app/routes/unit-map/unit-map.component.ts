@@ -249,6 +249,13 @@ export class UnitMapComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * * Toggle Layout
+   */
+  toggleLayout() {
+    this.layout = this.layout === 'dagre' ? 'colaForceDirected' : 'dagre';
+  }
+
+  /**
    * * Navigates back to the unit overview page
    */
   navigateBack() {

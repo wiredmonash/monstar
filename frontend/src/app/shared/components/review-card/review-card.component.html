@@ -35,6 +35,7 @@
                             [src]="review.author.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
                             alt="Profile Picture"
                             class="mr-2 profile-picture"
+                            (error)="review.author.profileImg = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
                         />
                         <!-- Username -->
                         <span>{{ review.author.username || 'Anonymous' }}</span>

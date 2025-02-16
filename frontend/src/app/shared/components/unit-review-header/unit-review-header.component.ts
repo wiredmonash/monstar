@@ -47,21 +47,22 @@ import { RippleModule } from 'primeng/ripple';
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'] 
 })
-export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewInit {
-  Math: any = Math
+export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
+  // ViewChild to reference the WriteReviewUnitComponent
+  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
 
-  // Input property to receive the unit data from the parent component
+  // Provide Math to the template
+  Math = Math;
+
+  // Receives the unit data from the parent component (UnitOverviewComponent)
   @Input() unit: any;
 
-  // Output property to emit sorting criteria to the partent component (UnitOverviewComponent)
+  // Emits the sorting criteria to the parent component (UnitOverviewComponent)
   @Output() sortBy = new EventEmitter<string>();
-
   // Emits that the user has added a review
   @Output() reviewAdded = new EventEmitter<void>();
 
-  // Our child component write-review-unit.component
-  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
-
+  // The current user
   user: User | null = null;
   userSubscription: Subscription | null = null;
 
@@ -75,9 +76,17 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
     { name: 'Recent', value: 'recent'}, 
     { name: 'Lowest Rating', value: 'lowest-rating'}, 
     { name: 'Highest Rating', value: 'highest-rating'}
-  ]
+  ];
 
-  // === the AuthService and MessageService ===
+
+  /**
+   * === Constructor ===
+   * 
+   * @param {AuthService} authService - The authentication service.
+   * @param {ApiService} apiService - The API service.
+   * @param {MessageService} messageService - The message service.  
+   * @param {Router} router - The router service.
+   */
   constructor (
     private authService: AuthService,
     private apiService: ApiService,
@@ -85,8 +94,11 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
     private router: Router
   ) { }
 
+
   /**
    * * Runs on Init
+   * 
+   * Subscribes to the current user observable to get the current user.
    */
   ngOnInit(): void {
     this.userSubscription = this.authService.getCurrentUser().subscribe({
@@ -100,10 +112,6 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
     this.unitMapButtonDisabled = this.verifyUnitGraph();
   }
 
-  ngAfterViewInit(): void {
-    
-  }
-
   /**
    * * Runs on destroy
    */
@@ -113,7 +121,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
 
   /**
    * * Handles the sorting action and emits the chosen criteria to the parent component.
-   *
+   * 
    * @param {any} event - The event object containing the sorting criteria.
    */
   onSort(event: any) {
@@ -141,7 +149,15 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
     this.router.navigate(['/unit-map', this.unit?.unitCode]);
   }
 
-  // * Check if unit has prerequisites and/or parent units
+  /** 
+   * * Check if unit has prerequisites and/or parent units
+   * 
+   * This checks if the unit has prerequisites or parent units by checking the unit object.
+   * - If the unit object doesn't have prerequisites, the unit map button is disabled.
+   * - If the unit object doesn't have parent units, the unit map button is disabled.
+   * 
+   * @returns {boolean} Returns true if the unit has prerequisites or parent units, false otherwise.
+   */ 
   verifyUnitGraph(): boolean {
     if (this.unit!.requisites! && this.unit!.requisites!.prerequisites!) {
       console.info(`UnitReviewHeader | Unit has requisites.`);
@@ -168,7 +184,10 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, AfterViewIn
     return this.unitMapButtonDisabled = true;
   }
 
+  /**
+   * * Opens the unit handbook for this unit in a new tab
+   */
   openHandbookNewTab() {
-    return window.open(`https://handbook.monash.edu/2025/units/${this.unit?.unitCode}?year=2025`, '_blank');
+    return window.open(`https://handbook.monash.edu/2025/units/${this.unit?.unitCode}?year=${new Date().getFullYear()}`, '_blank');
   }
 }

@@ -1,6 +1,6 @@
 import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -16,17 +16,18 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
-import { ActivatedRoute } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 declare var google: any;
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
+    ConfirmPopupModule,
     InputTextModule,
     PasswordModule,
     ButtonModule,
@@ -44,6 +45,9 @@ declare var google: any;
     RatingModule,
     DatePipe,
     SkeletonModule
+  ],
+  providers: [
+    ConfirmationService
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -163,10 +167,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
 
-  // ! Injects ApiService, AuthService, and ActivatedRoute
+  /**
+   * ! Constructor
+   * 
+   * @param apiService The API service
+   * @param authService The Auth service
+   * @param confirmService The Confirmation service
+   */
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
+    private confirmService: ConfirmationService
   ) { }
 
 
@@ -251,6 +262,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           {
             label: 'Friends',
             icon: 'pi pi-users',
+            disabled: true,
             command: () => {
               this.profileMenuState = 'friends';
             }
@@ -917,7 +929,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     
     this.authService.deleteUserAccount(this.user._id.toString()).subscribe({
       next: (response) => {
-        this.logout();
+        window.location.reload();
         this.createToast.emit({ severity: 'success', summary: 'Account Deleted', detail: 'Your account has been deleted successfully.' });
         console.log('Profile | Account deleted successfully', response);
       },
@@ -926,6 +938,29 @@ export class ProfileComponent implements OnInit, OnDestroy {
         console.error('Profile | Error whilst deleting account', error.message);
       }
     })
+  }
+
+  /**
+   * * Controls the delete account confirmation popup
+   * 
+   * @param event The event that triggered the confirmation
+   * @event confirmService.confirm(options) Opens the confirmation dialog
+   * @event confirmService.(options).accept() Runs the accept function
+   * @event confirmService.confirm(options).reject() Runs the reject function
+   */
+  deleteAccountConfirmation(event: Event) {
+    this.confirmService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure about this?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        console.log('Deleting account');
+        this.deleteUserAccount();
+      },
+      reject: () => {
+        console.log('User canceled');
+      }
+    });
   }
 
   /**

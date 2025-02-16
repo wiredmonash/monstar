@@ -155,8 +155,10 @@ export class UnitListComponent implements OnInit {
     const searchLower = this.search.toLowerCase();
     this.loading = true;
 
+    // ? Debug log the fetch request details
     console.log('UnitList | Fetching units:', this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses);
-  
+    
+    // Fetch the paginated units from the backend
     this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
       next: (response: any) => {
         // Map the response data to Unit objects

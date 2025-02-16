@@ -11,7 +11,7 @@
                 icon="pi pi-replay"
                 rounded="true"
                 (click)="resetGraph()"
-            ></p-button>
+            />
         </div>
     
         <!-- ! Center group (dynamic search bar)-->
@@ -23,19 +23,29 @@
                 icon="pi pi-arrow-down-left-and-arrow-up-right-to-center"
                 rounded="true"
                 (click)="centerGraph()"
-            ></p-button>
-        </div>
-    
-        <!-- ! End group (Advanced filtering options) -->
-        <div class="p-toolbar-group-end">
+            />
+
             <p-button 
+                class="ml-2"
                 pTooltip="Zoom to Fit"
                 tooltipPosition="top"
                 tooltipZIndex="9999"
                 icon="pi pi-expand"
                 rounded="true"
                 (click)="resetZoom()"
-            ></p-button>
+            />
+        </div>
+    
+        <!-- ! End group (Advanced filtering options) -->
+        <div class="p-toolbar-group-end">
+            <p-button
+                pTooltip="Toggle Layout"
+                tooltipPosition="top"
+                tooltipZIndex="9999"
+                icon="pi pi-wave-pulse"
+                rounded="true"
+                (click)="toggleLayout()"
+            />
         </div>
         </p-toolbar>
     </div>

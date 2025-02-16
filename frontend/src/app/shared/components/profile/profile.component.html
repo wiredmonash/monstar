@@ -382,8 +382,18 @@
             <!-- Settings -->
             @else if (profileMenuState === 'settings') {
                 <div class="settings-container">
-                    <h3>Delete Account</h3>
-                    <p-button></p-button>
+                    <!-- Delete Account Section -->
+                    <h4>Delete Account</h4>
+                    <p-confirmPopup styleClass="delete-confirm-popup"></p-confirmPopup>
+                    <p-button
+                        label="Delete Account"
+                        severity="danger"
+                        icon="pi pi-trash"
+                        (onClick)="deleteAccountConfirmation($event)"
+                        pTooltip="This action is irreversible"
+                        tooltipPosition="bottom"
+                        tooltipZIndex="9999"
+                    />
                 </div>
             }
         } @else {

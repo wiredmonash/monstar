@@ -51,6 +51,4 @@ export class User {
     removeDislikedReview(reviewId: Types.ObjectId): void {
         this.dislikedReviews = this.dislikedReviews.filter(id => id !== reviewId);
     }
-
-    
 }
