@@ -1,0 +1,44 @@
+/* Rating Container */
+.rating-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.reset-icon { 
+    position: absolute;
+    left: -40px;
+    top: 3px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    line-height: 0;
+}
+.rating-container:hover .reset-icon {
+    opacity: 1;
+    transform: translateX(-5px);
+}
+/* Ratings */
+.rating {
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2rem;
+}
+/* Singular Star */ 
+.star {
+    display: inline-flex;
+    
+    i {
+        opacity: 0.83;
+        font-size: 2rem;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}

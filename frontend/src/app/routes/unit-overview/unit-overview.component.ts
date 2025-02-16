@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../shared/services/api.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonModule } from 'primeng/skeleton';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-unit-overview',
@@ -15,6 +17,8 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     UnitReviewHeaderComponent,
     ToastModule,
     ProgressSpinnerModule,
+    SkeletonModule,
+    CommonModule,
   ],
   providers: [
     MessageService,
@@ -22,17 +26,30 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   templateUrl: './unit-overview.component.html',
   styleUrl: './unit-overview.component.scss'
 })
-export class UnitOverviewComponent implements OnInit {
-  // This will store the unit that we are currently showing
+export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('headerSkeleton') headerSkeleton!: ElementRef;
+
   unit: any = null;
-
-  // Stores the reviews
   reviews: any[] = [];
-
-  // Loading state for reviews
   reviewsLoading: boolean = true;
 
-  // Injects ApiService and ActivatedRoute
+  // Header skeleton heights for different screen sizes
+  private readonly SKELETON_HEIGHTS = {
+    mobile: '606px',
+    tablet: '431.6px',
+    laptop: '273.2px',
+    desktop: '255.2px'
+  }
+  skeletonHeight: string = this.SKELETON_HEIGHTS.desktop;
+
+
+  /**
+   * === Constructor ===
+   * 
+   * @param {ApiService} apiService - The API service to make API calls.
+   * @param {ActivatedRoute} route - The route service to get the route parameters.
+   * @param {MessageService} messageService - The message service to show toasts.
+   */
   constructor (
     private apiService: ApiService,
     private route: ActivatedRoute,
@@ -53,6 +70,14 @@ export class UnitOverviewComponent implements OnInit {
       this.getUnitByUnitcode(unitCode); // Get the unit
       this.getAllReviews(unitCode); // Get the reviews
     }
+  }
+
+  /**
+   * * Runs after the view has been initialised
+   */
+  ngAfterViewInit(): void {
+    this.updateSkeletonHeight();
+    window.addEventListener('resize', () => this.updateSkeletonHeight());
   }
 
 
@@ -162,5 +187,32 @@ export class UnitOverviewComponent implements OnInit {
         this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review has been deleted.` });
       }
     }
+  }
+
+  /**
+   * * Updates the height of the header skeleton based on the screen size
+   */
+  private updateSkeletonHeight() {
+    const width = window.innerWidth;
+    let height = this.SKELETON_HEIGHTS.desktop;
+
+    if (width < 768) {
+      height = this.SKELETON_HEIGHTS.mobile;
+    } else if (width < 976) {
+      height = this.SKELETON_HEIGHTS.tablet;
+    } else if (width < 1110) {
+      height = this.SKELETON_HEIGHTS.laptop;
+    }
+
+    this.skeletonHeight = height;
+  }
+
+  /**
+   * * On Component Destruction
+   * 
+   * - Removes the event listener for window resize
+   */
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', () => this.updateSkeletonHeight());
   }
 }

@@ -1,57 +1,196 @@
-<p-toast></p-toast>
-<p-dialog header="Review for {{unit.unitCode | uppercase}}" [modal]="true" [(visible)]="visible" [style]="{ width: '40rem' }">
-  <span class="p-text-secondary block mb-3">Write your review and give your ratings</span>
+<!-- === Success Toast (shown on submission of review) === -->
+<p-toast key="success-toast"></p-toast>
 
-  <!-- Review title -->
-  <div class="flex flex-column mb-4">
-    <label for="reviewTitle" class="font-semibold mb-2">Title</label>
-    <input pInputText id="reviewTitle" [(ngModel)]="review.title" class="w-full" autocomplete="off"/>
-  </div>
+<!-- === Writing Review Dialog === -->
+<div class="dialog-wrapper">
+  <!-- ! Keyboard Shortcut Helper Toast  -->
+  <p-toast 
+    key='helper-toast'
+    position="bottom-center"
+    appendTo="body"
+    [baseZIndex]="1700"
+    [style]="{ 'margin-bottom': '2.25rem' }"    
+  ></p-toast>
 
-  <!-- Review description -->
-  <div class="flex flex-column mb-4">
-      <label for="reviewDescription" class="font-semibold mb-2">Description</label>
-      <textarea rows="5" pInputTextarea [(ngModel)]="review.description" style="resize: none;" id="reviewDescription" class="w-full" autocomplete="off" placeholder="Write your review here..."></textarea>
-  </div>
+  <!-- ! The Dialog Iteself -->
+  <p-dialog 
+    header="Review for {{ unit.unitCode | uppercase }}" 
+    [modal]="true" 
+    [(visible)]="visible" 
+    [style]="{ width: '40rem', height: '50%', 'text-align': 'center', 'z-index': 2000 }"
+    [draggable]="false"
+    appendTo="body"
+    (onHide)="onDialogHide();"
+  >
+    <!-- ! Error Toast -->
+    <p-toast 
+      key="error-toast"
+      position="top-center"
+      [baseZIndex]="10000"
+      [style]="{ 'margin-top': '4rem' }"
+    ></p-toast>
 
-  <!-- Year Taken --> 
-  <div class="flex flex-row justify-content-end">
-    <div class="flex flex-column justify-start mb-4">
-      <label for="yearTaken" class="font-semibold mb-2">Year Taken</label>
-      <p-dropdown 
-        [options]="yearOptions" 
-        [(ngModel)]="review.year"
-        id="yearTaken" 
-        class="w-full" 
-        placeholder="Select Year"
-      ></p-dropdown>
+    @if (stateIndex > 0) {
+      <p-button
+        icon="pi pi-angle-left"
+        class="nav-button left-nav"
+        styleClass="p-button-rounded p-button-text"
+        [style]="{ color: 'white' }"
+        (click)="prevState();"
+      ></p-button>
+    }
+
+    @if (stateIndex < stateList.length-1) {
+      <p-button
+        icon="pi pi-angle-right"
+        class="nav-button right-nav"
+        styleClass="p-button-rounded p-button-text"
+        [style]="{ color: 'white' }"
+        (click)="nextState();"
+      ></p-button>
+    }
+
+    <div class="dialog-content">
+      <div>
+      @switch (stateList[stateIndex]) {
+        <!-- * Title -->
+        @case ('title') {
+          <span class="p-text-secondary block mb-3">Give your review a title (sum it up)</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <input 
+              #titleInput
+              pInputText 
+              id="reviewTitle" 
+              [(ngModel)]="review.title" 
+              [style]="{ 'width': '22rem' }"
+              autocomplete="off"
+            />
+          </div>
+        }
+        <!-- * Description -->
+        @case ('description') {
+          <span class="p-text-secondary block mb-3">Describe your experience with this unit</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <textarea 
+              #descriptionInput
+              pInputTextarea 
+              id="reviewDescription" 
+              [(ngModel)]="review.description" 
+              [style]="{ 'width': '22rem', 'height': '10rem', 'resize': 'none !important' }"
+              autocomplete="off"
+              [autoResize]="false"
+            ></textarea>
+          </div>
+        }
+        <!-- * Semester -->
+        @case ('semester') {
+          <span class="p-text-secondary block mb-3">What semester did you take this unit?</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <p-dropdown
+              #semesterInput
+              [options]="semesterOptions"
+              [(ngModel)]="review.semester"
+              [style]="{ 'width': '22rem' }"
+              (selectOnFocus)="true"
+              (focusOnHover)="true"
+              appendTo="body"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a semester"
+            ></p-dropdown>
+          </div>
+        }
+        <!-- * Year -->
+        @case ('year') {
+          <span class="p-text-secondary block mb-3">What year did you take this unit?</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <p-dropdown
+              #yearInput
+              [options]="yearOptions"
+              [(ngModel)]="review.year"
+              [style]="{ 'width': '200px' }"
+              appendTo="body"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a year"
+            ></p-dropdown>
+          </div>
+        }
+        <!-- * Grade -->
+        @case ('grade') {
+          <span class="p-text-secondary block mb-3">What grade did you get?<br/>(this won't be shown in your review)</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <p-dropdown
+              #gradeInput
+              [options]="gradeOptions"
+              [(ngModel)]="review.grade"
+              [style]="{ 'margin-bottom': '1.4rem' }"
+              appendTo="body"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a grade"
+            ></p-dropdown>
+          </div>
+        }
+        <!-- * Relevancy Rating -->
+        @case ('relevancyRating') {
+          <span class="p-text-secondary block mb-4">How relevant was this unit to your degree?</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <app-rating
+              #relevancyRatingInput
+              [(rating)]="review.relevancyRating"
+              [stars]="5"
+              [style]="{ 'transform': 'scale(1.5)' }"
+            ></app-rating>
+          </div>
+        }
+        <!-- * Faculty Rating -->
+        @case ('facultyRating') {
+          <span class="p-text-secondary block mb-4">How was the teaching team? Were they supportive?</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <app-rating
+              #facultyRatingInput
+              [(rating)]="review.facultyRating"
+              [stars]="5"
+              [style]="{ 'transform': 'scale(1.5)' }"
+            ></app-rating>
+          </div>
+        }
+        <!-- * Content Rating -->
+        @case ('contentRating') {
+          <span class="p-text-secondary block mb-4">What about the actual content?</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <app-rating
+              #contentRatingInput
+              [(rating)]="review.contentRating"
+              [stars]="5"
+              [style]="{ 'transform': 'scale(1.5)' }"
+            ></app-rating>
+          </div>
+        }
+        <!-- * Submit Review -->
+        @case ('submit') {
+          <span class="p-text-secondary block mb-3">Ready to post your review?</span>
+
+          <div class="flex flex-column mb-4 centered-container">
+            <p-button
+              #submitReviewButton
+              label="Post (Enter)"
+              icon="pi pi-check"
+              (click)="postReview()"
+            ></p-button>
+          </div>
+        }
+      }
+      </div>
     </div>
-
-    <!-- Star ratings -->
-    <div class="flex flex-column gap-3 mb-4">
-      <!-- Content rating -->
-      <div class="flex align-items-center">
-      <label for="contentRating" class="font-semibold w-8rem">Content</label>
-      <p-rating [(ngModel)]="review.contentRating" stars="5" id="contentRating" class="ml-3"></p-rating>
-      </div>
-
-      <!-- Relevancy Rating -->
-      <div class="flex align-items-center">
-      <label for="relevancyRating" class="font-semibold w-8rem">Relevancy</label>
-      <p-rating [(ngModel)]="review.relevancyRating" stars="5" id="relevancyRating" class="ml-3"></p-rating>
-      </div>
-
-      <!-- Teaching Team Rating -->
-      <div class="flex align-items-center">
-      <label for="facultyRating" class="font-semibold w-8rem">Teaching Team</label>
-      <p-rating [(ngModel)]="review.facultyRating" stars="5" id="facultyRating" class="ml-3"></p-rating>
-      </div>
-    </div>
-  </div>
-
-  <!-- Action buttons -->
-  <div class="flex justify-content-end gap-2">
-    <p-button label="Cancel" severity="secondary" (click)="closeDialog()"></p-button>
-    <p-button label="Post" (click)="postReview()"></p-button>
-  </div>
-</p-dialog>
+  </p-dialog>
+</div>

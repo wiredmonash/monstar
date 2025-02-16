@@ -2,6 +2,13 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Unit Tags
+const UnitTags = {
+    MOST_REVIEWS: 'most-reviews',
+    CONTROVERSIAL: 'controversial',
+    WAM_BOOSTER: 'wam-booster',
+}
+
 // Nested requisites schema
 const RequisiteSchema = new Schema({
     NumReq: {
@@ -127,8 +134,21 @@ const UnitSchema = new Schema({
         mode: { type: String, required: true },
         name: { type: String, required: true },
         period: { type: String, required: true }
-    }]
+    }],
+
+    tags: {
+        type: [{
+            type: String,
+            enum: Object.values(UnitTags),
+        }],
+        validate: [arrayLimit, 'Unit can only have up to 2 tags']
+    }
 });
+
+// Validator function for max tags
+function arrayLimit(val) {
+    return val.length <= 2;
+}
 
 // Export the Unit model
 const Unit = mongoose.model('Unit', UnitSchema);

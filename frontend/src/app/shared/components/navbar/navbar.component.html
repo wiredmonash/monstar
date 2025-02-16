@@ -1,6 +1,6 @@
 <p-toast></p-toast>
 
-<!-- Profile Dialog -->
+<!-- ! Profile Dialog -->
 <p-dialog 
   [(visible)]="profileDialogVisible" 
   header="{{profileDialogTitle}}" 
@@ -10,11 +10,13 @@
   [style]="{ 'width': '75vw' }"
   [closeOnEscape]="profileState == 'signed up' ? false : true"
   (onHide)="onDialogClose()"
+  (onShow)="onDialogOpen()"
 >
   <!-- For the content of the dialog see profile.component.html -->
   <app-profile 
     [state]="profileState"
     [dialogClosedEvent]="dialogClosedEvent"
+    [dialogOpenedEvent]="dialogOpenedEvent"
     (userChangeEvent)="user = $event"
     (titleChangeEvent)="profileDialogTitle = $event"
     (stateChangeEvent)="authStateChange($event)"
@@ -23,35 +25,68 @@
 </p-dialog>
 
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg">
+<!-- ! Navbar -->
+<nav 
+  class="navbar navbar-expand-lg"
+  [style.backgroundColor]="navbarColor"
+>
   <div class="container-fluid d-flex justify-content-center position-relative">
     <!-- Sidebar button -->
-    <div class="hamburger-menu position-absolute start-0 ml-2" type="button" (click)="sidebarVisible = true;">
-      <i class="pi pi-bars"></i>
+    <div 
+      class="hamburger-menu position-absolute start-0 ml-2" 
+      type="button" 
+      (click)="sidebarVisible = true;"
+      [style.color]="hamburgColor" 
+    >
+      <i class="pi pi-bars" pTooltip="Sidebar (CTRL + S)" tooltipPosition="right" tooltipStyleClass="ml-2 mt-1"></i>
     </div>
 
     <!-- Website Name, also redirects to the home page -->
-    <a class="navbar-brand mx-auto text-center prevent-select" routerLink="/">MonSTAR</a>
+    <a 
+      class="navbar-brand mx-auto text-center prevent-select"
+      routerLink="/" 
+      pTooltip="Back to homepage" 
+      tooltipPosition="bottom"
+      [style.color]="titleColor"
+    >MonSTAR</a>
 
     <!-- Profile -->
     <div class="profile position-absolute end-0 mr-2" type="button" (click)="showProfileDialog()">
       @if (user) {
         <!-- Avatar shown if logged in -->
-        <div class="profile-pic pt-1" style="transform: scale(0.9);" pTooltip="Profile">
-          <p-avatar [image]="user.profileImg" shape="circle"></p-avatar>
+        <div 
+          class="profile-pic pt-1" 
+          style="transform: scale(0.9);" 
+          pTooltip="Profile (CTRL + P)" 
+          tooltipStyleClass="mt-1"
+        >
+          <p-avatar 
+            [image]="user.profileImg" 
+            shape="circle"
+          ></p-avatar>
+          <span class="online-badge"></span>
         </div>
       } @else {
         <!-- Icon shown if not logged in -->
-        <i class="pi pi-user-plus" pTooltip="Sign In"></i>
+        <i 
+          class="pi pi-user-plus mr-1 mb-2" 
+          pTooltip="Sign In (CTRL + P)" 
+          tooltipStyleClass="mt-2" 
+          [style]="{ 'transform': 'scale(1.2)' }"
+          [style.color]="profileColor"
+        ></i>
       }
     </div>
   </div>
 </nav>
 
 
-<!-- Sidebar-->
-<p-sidebar #sidebarRef [(visible)]="sidebarVisible">
+<!-- ! Sidebar-->
+<p-sidebar 
+  #sidebarRef 
+  [(visible)]="sidebarVisible"
+  [style]="{ 'background-color': '#1e1e1e' }"
+>
   <ng-template pTemplate="headless">
     <div class="flex flex-column h-full">
         <!-- Title Text-->
@@ -71,6 +106,7 @@
               alt="Profile Picture"
               class="mr-1 avatar"
             >
+
             <!-- Username -->
             <span class="font-bold mb-1 ml-2">{{ user?.username || 'Login (Guest)' }}</span>
           </a>

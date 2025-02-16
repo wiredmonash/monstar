@@ -1,0 +1,23 @@
+<div class="rating-container">
+    <!-- Reset Icon (hidden unless hovered) -->
+    <div class="reset-icon">
+        <i class="bi bi-x" (click)="resetRating($event)"></i>
+    </div>
+
+    <!-- Stars Container -->
+    <div class="rating"
+        (mousemove)="onContainerHover($event)"
+        (mouseleave)="onContainerLeave()"
+    >
+        @for (star of starsArray; track $index) {
+            <div 
+                class="star" 
+                (click)="onStarClick($event, $index)"
+            >
+                <i *ngIf="getStarType($index) === 'full'" class="bi bi-star-fill"></i>
+                <i *ngIf="getStarType($index) === 'half'" class="bi bi-star-half"></i>
+                <i *ngIf="getStarType($index) === 'empty'" class="bi bi-star"></i>
+            </div>
+        }
+    </div>
+</div>

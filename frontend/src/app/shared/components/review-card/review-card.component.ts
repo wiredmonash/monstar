@@ -10,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user.model';
 import { Subscription } from 'rxjs';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-review-card',
@@ -21,6 +22,7 @@ import { Subscription } from 'rxjs';
     ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
+    TooltipModule
   ],
   providers: [
     ConfirmationService,
@@ -47,6 +49,9 @@ import { Subscription } from 'rxjs';
   ]
 })
 export class ReviewCardComponent implements OnInit, OnDestroy {
+  // Allow the template to use Math
+  Math = Math;
+
   // Accept review data from the parent component
   @Input() review: any; 
 
@@ -77,15 +82,18 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Stores the subscription for currentUser from AuthService
   private userSubscription: Subscription = new Subscription();
 
-  // * Injects the ApiService & confirmationService
-  constructor(
+  /**
+   * Constructor 
+   *
+   */
+  constructor (
     private apiService: ApiService,
     private authService: AuthService,
     private confirmationService: ConfirmationService
   ) { }
 
   /**
-   * * Runs on initialisation
+   * === Runs on initialisation ===
    * 
    * - Sets the likes and dislikes count for the review
    */
@@ -111,7 +119,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Runs on destroy
+   * === Runs on destroy ===
    * 
    * Unsubscribes from the currentUser subscription
    */
@@ -120,12 +128,12 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
   
 
-  // * Choices on confirmation popup (either delete or cancel)
+  // === Choices on confirmation popup (either delete or cancel) ===
   accept() { this.confirmPopup.accept(); }
   reject() { this.confirmPopup.reject(); }
 
   /**
-   * * Subscribes to the confirmation service on deletion
+   * === Subscribes to the confirmation service on deletion ===
    */
   confirmDeletion(event: Event) {
     this.confirmationService.confirm({
@@ -138,9 +146,8 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Deletes a review from the database using API Service
   /**
-   * * Deletes a review from the DB using API Service Method
+   * === Deletes a review from the DB using API Service Method ===
    * 
    * This deletes a review by it's MongoDB ID. If successful, it emits the 
    * reviewDeleted event so that 'unit-overview' can refresh the reviews.
@@ -151,6 +158,9 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
       next: (message) => {
         // Emit the event that we deleted a review
         this.reviewDeleted.emit();
+
+        // Remove this review from the current user's reviews array
+        this.currentUser?.reviews.splice(this.currentUser.reviews.indexOf(this.review._id), 1); 
 
         // ? Debug log
         console.log(message);
@@ -163,17 +173,18 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Method to toggle the expand/collapse state 
+   * === Method to toggle the expand/collapse state ===
    */
   toggleExpand() {
     this.expanded = !this.expanded;
   }
 
   /**
-   * * Method to toggle the like state
+   * === Method to toggle the like state ===
    */
   toggleLike() {
     if (!this.currentUser) return;
+    if (this.currentUser._id === this.review.author._id) return;
 
     const action = this.liked ? 'unlike' : 'like';
     this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({
@@ -204,10 +215,11 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Method to toggle the dislike state
+   * === Method to toggle the dislike state === 
    */
   toggleDislike() {
     if (!this.currentUser) return;
+    if (this.currentUser._id === this.review.author._id) return;
 
     const action = this.disliked ? 'undislike' : 'dislike';
     this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({

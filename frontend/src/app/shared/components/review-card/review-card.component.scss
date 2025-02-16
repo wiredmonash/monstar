@@ -68,9 +68,14 @@
 
 // * Overall stars
 .stars-overall {
+  display: flex;
+  flex-wrap: wrap; /* Allows stars to wrap onto the next line */
+  justify-content: center; /* Center align stars */
+  
   i {
     color: #000;
     font-size: 30px;
+    margin: 0 0.5rem;
   }
 
   .filled {
@@ -155,4 +160,128 @@ h6 {
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.review-column {
+  padding-right: 20px;
+  border-right: 1px solid #dee2e6;
+}
+
+// Adjust border visibility for smaller screens
+@media (max-width: 767px) {
+  .review-card {
+    margin-left: 8%;
+    margin-right: 9%;
+  }
+
+  .review-column {
+    border-right: none;
+    padding-right: 0;
+  }
+
+  .col-md-5 {
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0; /* Set padding-left to 0 */
+  }
+
+  .stars {
+    margin:0;
+    padding-right: 0;
+    width: 180px;
+  }
+
+  .stars i{
+    font-size: 28px;
+  }
+
+  p{
+    font-size: 13px;
+   }
+
+}
+
+// Adjust stars-overall
+@media (max-width: 1200px) and (min-width: 768px) {
+  .review-card {
+    margin-left: 7%;
+    margin-right: 7%;
+  }
+
+  .col-md-5{
+    display:inline;
+  }
+  
+  .content {
+    width: 50%;
+    text-align: center;  /* Make each .col-md-5 take up the full row */
+    display: block;  /* Ensure it breaks to a new line */
+  }
+
+  .relevancy{
+    width: 50%;
+    text-align: center;
+  }
+
+  .stars i{
+    font-size: 28px;
+  }
+
+  .stars-overall {
+    width: 200px;
+  }
+
+  .faclt{
+    margin: auto;
+    width: 50%;
+  }
+
+  p{
+    font-size: 13px;
+   }
+}
+
+// Adjust border visibility for smaller screens
+@media (max-width: 500px){
+  .review-card {
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+  .stars-overall {
+    margin: auto;
+    width: 210px;
+  }
+
+  .stars i{
+    font-size: 23px;
+  }
+
+  .stars-overall i{
+    font-size: 25px;
+  }
+
+
+}
+
+// Adjust border visibility for smaller screens
+@media (max-width: 930px) and (min-width: 767px){
+  .stars i{
+    font-size: 23px;
+  }
+
+  .stars-overall i{
+    font-size: 25px;
+  }
+
+  h5{
+    font-size: 17px;
+  }
+
+  h6{
+    font-size: 16px;
+  }
+
+  p{
+    font-size: 14px;
+  }
 }

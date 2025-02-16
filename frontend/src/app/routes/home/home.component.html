@@ -1,55 +1,100 @@
 <!-- Hero Section -->
 <div class="hero-section">
   <div class="hero-content">
+    <!-- BIG Title -->
     <h1 class="prevent-select">Welcome to MonSTAR</h1>
-    <p class="prevent-select">Browse, Review, and Share Feedback on Monash University Units</p>
+
+    <!-- Description -->
+    <div class="subheader-container">
+      <p class="prevent-select" [@fadeInOut]="subheaderState">
+        {{ subheaders[subheaderCurrentIndex] }}
+      </p>
+    </div>
     
+    <!-- Explore Units -->
     <p-button label="Explore Units" [rounded]="true" [raised]="true" icon="pi pi-compass" (onClick)="exploreUnits()"></p-button>
   </div>
-</div>
 
-<!-- Shooting Stars -->
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
-<span></span>
+  <!-- Shooting Stars -->
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+  <span class="shooting-star"></span>
+</div>
 
 <!-- Centered Content -->
 <div class="content container mb-5">
   <!-- Divider -->
-  <p-divider [style]="{ 'margin-bottom': '3rem' }"></p-divider>
-
+  <p-divider class="first-divider" [style]="{ 'margin-bottom': '3rem' }"></p-divider>
+  
+  <!-- Popular Units Header -->
+  <h2 
+    class="popular-units-header text-center text-white prevent-select"
+  >Check out these units!</h2>
   <!-- Popular Units Carousel -->
-  <p-carousel 
-    [value]="popularUnits"
-    [numVisible]="3"
-    [numScroll]="3"
-    [circular]="true"
-    [autoplayInterval]="4500"
-    [responsiveOptions]="responsiveOptions"
-    styleClass="custom-carousel"
-  >
-    <ng-template let-unit pTemplate="item">
-      <app-unit-card
-        class="unit-card" 
-        [unit]="unit"
-      ></app-unit-card>
-    </ng-template>
-  </p-carousel>
+  @if (loading) {
+    <!-- Show skeletons if loading -->
+    <p-carousel 
+      [value]="[1,2,3,4,5,6]"
+      [numVisible]="3"
+      [numScroll]="1"
+      [circular]="true"
+      [autoplayInterval]="4500"
+      [responsiveOptions]="responsiveOptions"
+      styleClass="custom-carousel"
+    >
+      <ng-template pTemplate="item">
+        <p-skeleton 
+          width="20rem" 
+          height="15rem" 
+          styleClass="mx-auto" 
+          [style]="{ 'margin-bottom': '2em', 'box-shadow': '0 4px 8px rgba(0, 0, 0, 0.2)' }"
+        ></p-skeleton>
+      </ng-template>
+    </p-carousel>  
+  } @else {
+    <!-- Show popular units if loaded -->
+    <p-carousel 
+      [value]="popularUnits"
+      [numVisible]="3"
+      [numScroll]="1"
+      [circular]="true"
+      [showNavigators]="true"
+      [showIndicators]="true"
+      [responsiveOptions]="responsiveOptions"
+      styleClass="custom-carousel"
+    >
+      <ng-template let-unit pTemplate="item">
+        <div class="carousel-item-wrapper">
+          <app-unit-card
+            [unit]="unit"
+          ></app-unit-card>
+        </div>
+      </ng-template>
+    </p-carousel>
+  }
+  
 
   <!-- Divider -->
   <p-divider [style]="{ 'margin-bottom': '3rem' }"></p-divider>
 
   <!-- FAQ Title -->
   <h2 class="FAQ prevent-select">FAQ</h2>
-  <p-accordion [multiple]="true">
-    <p-accordionTab header="What is MonSTAR?">
+  <p-accordion 
+    [multiple]="true"
+  >
+    <p-accordionTab 
+      header="What is MonSTAR?"
+    >
         <p>
           MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units, helping others make informed decisions.
         </p>
@@ -68,7 +113,7 @@
     </p-accordionTab>
     <p-accordionTab header="Who made MonSTAR?">
         <p>
-          MonSTAR was made by the projects team at WIRED Monash, this team is led by Jenul Ferdinand & Alex Lai.
+          MonSTAR was made by the projects team at WIRED Monash.
         </p>
     </p-accordionTab>
   </p-accordion>

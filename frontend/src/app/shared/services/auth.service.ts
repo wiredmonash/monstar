@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
+import { ObjectId } from 'mongoose';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,41 @@ export class AuthService {
   }
 
   /**
+   * * Register and/or login a Google user
+   * 
+   * Register and/or logins a Google user using the Google ID token.
+   * 
+   * @param {string} idToken The Google id token of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  googleAuthenticate(idToken: string): Observable<any> {
+    return this.http.post(`${this.url}/google/authenticate`, 
+      { idToken },
+      { withCredentials: true }
+    ).pipe(
+      tap((response: any) => {
+        // Update the current user with the response data
+        const user = new User(
+          response.data._id, 
+          response.data.email, 
+          response.data.username, 
+          response.data.isGoogleUser,
+          response.data.reviews, 
+          response.data.profileImg, 
+          response.data.admin, 
+          response.data.verified,
+          response.data.likedReviews,
+          response.data.dislikedReviews 
+        );
+        this.currentUser.next(user);
+
+        // ? Debug log
+        console.log('AuthService | Logged in as:', this.currentUser);
+      })
+    );
+  }
+
+  /**
    * * Login a user and set current user
    * 
    * Logs in a user with the provided email and password.
@@ -62,7 +98,8 @@ export class AuthService {
         const user = new User(
           response.data._id, 
           response.data.email, 
-          response.data.username, 
+          response.data.username,
+          response.data.isGoogleUser, 
           response.data.reviews, 
           response.data.profileImg, 
           response.data.admin, 
@@ -73,7 +110,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService Logged in as:', this.currentUser);
+        console.log('AuthService | Logged in as:', this.currentUser);
       })
     );
   }
@@ -93,9 +130,34 @@ export class AuthService {
         this.currentUser.next(null);
 
         // ? Console log
-        console.log('AuthService: Logged out.')
+        console.log('AuthService | Logged out.')
       })
     );
+  }
+
+  /**
+   * * Forgot password
+   * 
+   * Sends a password reset email to the user with the provided email.
+   * 
+   * @param {string} email The email of the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.url}/forgot-password`, { email });
+  }
+
+  /**
+   * * Reset password
+   * 
+   * Resets the user's password using the provided token.
+   * 
+   * @param {string} token The token to reset the password.
+   * @param {string} password The new password for the user.
+   * @returns {Observable<any>} an observable containing the response from the server.
+   */
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post(`${this.url}/reset-password/${token}`, { password });
   }
 
   /**
@@ -115,6 +177,7 @@ export class AuthService {
           response.data._id, 
           response.data.email, 
           response.data.username, 
+          response.data.isGoogleUser,
           response.data.reviews, 
           response.data.profileImg, 
           response.data.admin, 
@@ -125,7 +188,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService validated user as:', this.currentUser);
+        console.log('AuthService | validated user as:', this.currentUser);
       })
     );
   }
@@ -149,6 +212,7 @@ export class AuthService {
           response.data._id, 
           response.data.email, 
           response.data.username, 
+          response.data.isGoogleUser,
           response.data.reviews, 
           response.data.profileImg, 
           response.data.admin, 
@@ -159,7 +223,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService: Signed up, Verified, & Logged In as:', this.currentUser);
+        console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
       })
     );
   }
@@ -169,13 +233,26 @@ export class AuthService {
    * 
    * Updates the user's details such as username and password.
    * 
-   * @param {string} oldEmail The current email of the user.
+   * @param {string} userId The MongoDB ID of the user.
    * @param {string} [username] The new username for the user.
    * @param {string} [password] The new password for the user.
    * @returns {Observable<any>} an observable containing the response from the server.
    */
-  updateDetails(oldEmail: string, username?: string, password?: string) {
-    return this.http.put(`${this.url}/update/${oldEmail}`, { username: username, password: password });
+  updateDetails(userId: string, username?: string, password?: string) {
+    return this.http.put(`${this.url}/update/${userId}`, 
+      { username: username, password: password }, 
+      { withCredentials: true }
+    ).pipe(
+      tap((response: any) => {
+        // Update the current user's username
+        if (this.currentUser.value) {
+          this.currentUser.value.username = response.username;
+
+          // ? Debug log
+          console.log('AuthService | Updated user details:', this.currentUser);
+        }
+      })
+    );
   }
 
   /**
@@ -192,6 +269,40 @@ export class AuthService {
     formData.append('avatar', file);
     formData.append('email', email);
 
-    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, formData);
+    return this.http.post<{ profileImg: string }>(`${this.url}/upload-avatar`, 
+      formData, 
+      { withCredentials: true }
+    ).pipe(
+      tap((response: any) => {
+        // Update the current user's profile image
+        if (this.currentUser.value) {
+          this.currentUser.value.profileImg = response.profileImg;
+
+          // ? Debug log
+          console.log('AuthService | Uploaded avatar:', this.currentUser);
+        }
+      })
+    );
+  }
+
+  /**
+   * * Delete user account
+   * 
+   * Deletes the user's account.
+   * 
+   * @param {string} userId The MongoDB ID of the user.
+   * @returns {Observable<any>} An observable containing the response from the server.
+   */
+  deleteUserAccount(userId: String): Observable<any> {
+    return this.http.delete(`${this.url}/delete/${userId}`, 
+      { withCredentials: true }
+    ).pipe(
+        tap(() => {
+          this.currentUser.next(null);
+
+          // ? Debug log
+          console.log('AuthService | Deleted user account.')
+        })
+      );
   }
 }
