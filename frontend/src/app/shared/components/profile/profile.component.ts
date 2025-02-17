@@ -1,6 +1,6 @@
 import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
@@ -16,17 +16,18 @@ import { Subscription } from 'rxjs';
 import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
-import { ActivatedRoute } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { DatePipe, UpperCasePipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 declare var google: any;
 
 @Component({
   selector: 'app-profile',
   standalone: true,
   imports: [
+    ConfirmPopupModule,
     InputTextModule,
     PasswordModule,
     ButtonModule,
@@ -44,6 +45,9 @@ declare var google: any;
     RatingModule,
     DatePipe,
     SkeletonModule
+  ],
+  providers: [
+    ConfirmationService
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
@@ -163,10 +167,17 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
 
-  // ! Injects ApiService, AuthService, and ActivatedRoute
+  /**
+   * ! Constructor
+   * 
+   * @param apiService The API service
+   * @param authService The Auth service
+   * @param confirmService The Confirmation service
+   */
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
+    private confirmService: ConfirmationService
   ) { }
 
 
@@ -251,6 +262,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           {
             label: 'Friends',
             icon: 'pi pi-users',
+            disabled: true,
             command: () => {
               this.profileMenuState = 'friends';
             }
@@ -393,7 +405,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.stateChangeEvent.emit(this.state);
         this.loggingIn = false;
 
-        // this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+        this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
 
         // ? Debug log success
         console.log('Profile | Logged in succesfully!', response);
@@ -538,74 +550,66 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Trim input email whitespace and store as new variable
     var email = this.inputEmail.trim();
 
-    // Regular expression to validate authcate and email
-    const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/
+    // Uses auth service to call the login api
+    this.authService.login(email, this.inputPassword).subscribe({
+      next: (response) => {
+        // Change state to logged in
+        this.state = 'logged in';
+        this.titleChangeEvent.emit('Profile');
+        this.stateChangeEvent.emit(this.state);
+        this.loggingIn = false;
 
-    // Check if emails ends with monash email
-    if (emailRegex.test(email)) {
-      // Uses auth service to call the login api
-      this.authService.login(email, this.inputPassword).subscribe({
-        next: (response) => {
-          // Change state to logged in
-          this.state = 'logged in';
-          this.titleChangeEvent.emit('Profile');
-          this.stateChangeEvent.emit(this.state);
+        // Clear the input fields
+        this.inputEmail = '';
+        this.inputPassword = '';
+
+        this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
+
+        // ? Debug log success
+        console.log('Profile | Logged in succesfully!', response);
+      },
+      error: (error: HttpErrorResponse) => {
+        // Wrong password or email
+        this.isPasswordsInputValid = false;
+        this.loggingIn = false;
+
+        // Clear the password
+        this.inputPassword = '';
+
+        // Check for 400 Bad Request status code when user already exists
+        if (error.status == 409) {
+          this.createToast.emit({ severity: 'warn', summary: 'Account exists', detail: "Account already exists as Google user." });
+        }
+
+        // Check for 429 Too Many Requests status code when user is rate limited
+        if (error.status == 429) {
+          this.isVerifyEmailSentCapped = true;
+          this.createToast.emit({ severity: 'warn', summary: '429 Too Many Requests', detail: "We have sent you too many emails at this time." });
+        }
+
+        // Check for 403 Forbidden status code when user is not verified yet
+        if (error.status == 403 && error.error.error == 'Email not verified') {
+          this.isEmailInputValid = true;
+          this.isPasswordsInputValid = true;
+          this.isEmailInputVerified = false;
+          this.createToast.emit({ severity: 'warn', summary: 'Email not verified', detail: 'Please verify your email before logging in' });
+        }
+
+        // Check for 403 Forbidden status code when email is not valid
+        if (error.status == 403 && error.error.error == 'Not a Monash email') {
+          this.isEmailInputValid = false;
           this.loggingIn = false;
-
-          // Clear the input fields
           this.inputEmail = '';
           this.inputPassword = '';
-
-          this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
-
-          // ? Debug log success
-          console.log('Profile | Logged in succesfully!', response);
-        },
-        error: (error: HttpErrorResponse) => {
-          // Wrong password or email
-          this.isPasswordsInputValid = false;
-          this.loggingIn = false;
-
-          // Clear the password
-          this.inputPassword = '';
-
-          if (error.status == 409) {
-            this.createToast.emit({ severity: 'warn', summary: 'Account exists', detail: "Account already exists as Google user." });
-          }
-
-          // Check for 429 Too Many Requests status code when user is rate limited
-          if (error.status == 429) {
-            this.isVerifyEmailSentCapped = true;
-            this.createToast.emit({ severity: 'warn', summary: '429 Too Many Requests', detail: "We have sent you too many emails at this time." });
-          }
-
-          // Check for 403 Forbidden status code when user is not verified yet
-          if (error.status == 403) {
-            this.isEmailInputValid = true;
-            this.isPasswordsInputValid = true;
-            this.isEmailInputVerified = false;
-            this.createToast.emit({ severity: 'warn', summary: 'Email not verified', detail: 'Please verify your email before logging in' });
-          }
-
-          // ? Debug log error on login
-          console.error('Profile | Login failed:', error.error);
+          this.createToast.emit({ severity: 'error', summary: 'Invalid email', detail: 'Please enter a valid Monash email.' });
+          // ? Debug log
+          console.log('Profile | Not a valid monash email', this.inputEmail);
         }
-      });
-    }
-    // If the email is invalid
-    else {
-      this.isEmailInputValid = false;
-      this.loggingIn = false;
-      this.inputEmail = '';
 
-      // Clear the password
-      this.inputPassword = '';
-      
-      this.createToast.emit({ severity: 'error', summary: 'Invalid email', detail: 'Please enter a valid Monash email.' });
-
-      // ? Debug log
-      console.log('Profile | Not a valid monash email', this.inputEmail);
-    }
+        // ? Debug log error on login
+        console.error('Profile | Login failed:', error.error);
+      }
+    });
   }
 
   /**
@@ -757,8 +761,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Updates the user's username and/or password using AuthService
     if (usernameRegex.test(updatePayload.username || this.user.username)) {
-      if (this.user.email)
-        this.authService.updateDetails(this.user.email, updatePayload.username, updatePayload.password).subscribe({
+      if (this.user)
+        this.authService.updateDetails(this.user._id.toString(), updatePayload.username, updatePayload.password).subscribe({
           next: (response) => {
             // Set the updated username for our user
             if (updatePayload.username && this.user) {
@@ -908,6 +912,55 @@ export class ProfileComponent implements OnInit, OnDestroy {
         console.error('Profile | Error whilst deleting review', error.message);
       }
     })
+  }
+
+  /**
+   * * Deletes the user's account
+   * 
+   * Called to delete the user's account. Will call the backend API to delete 
+   * the user's account and log the user out.
+   * 
+   * @subscribes authService.deleteUserAccount(userId)
+   * @throws {success toast} Account deleted
+   * @throws {error toast} Error deleting account
+   */
+  deleteUserAccount() {
+    if (!this.user) return;
+    
+    this.authService.deleteUserAccount(this.user._id.toString()).subscribe({
+      next: (response) => {
+        window.location.reload();
+        this.createToast.emit({ severity: 'success', summary: 'Account Deleted', detail: 'Your account has been deleted successfully.' });
+        console.log('Profile | Account deleted successfully', response);
+      },
+      error: (error) => {
+        this.createToast.emit({ severity: 'error', summary: 'Error deleting account', detail: 'There was an error whilst deleting your account' });
+        console.error('Profile | Error whilst deleting account', error.message);
+      }
+    })
+  }
+
+  /**
+   * * Controls the delete account confirmation popup
+   * 
+   * @param event The event that triggered the confirmation
+   * @event confirmService.confirm(options) Opens the confirmation dialog
+   * @event confirmService.(options).accept() Runs the accept function
+   * @event confirmService.confirm(options).reject() Runs the reject function
+   */
+  deleteAccountConfirmation(event: Event) {
+    this.confirmService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure about this?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        console.log('Deleting account');
+        this.deleteUserAccount();
+      },
+      reject: () => {
+        console.log('User canceled');
+      }
+    });
   }
 
   /**

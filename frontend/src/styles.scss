@@ -3,34 +3,31 @@
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css" layer(bootstrap);
 @import "../node_modules/primeicons/primeicons.css" layer(primeng);
 @import "../node_modules/primeng-sass-theme/themes/aura/aura-dark/noir/theme.scss" layer(primeng);
-@import "../node_modules/primeng/resources/primeng.min.css" layer(primeng);
+@import "../node_modules/primeng/resources/primeng.css" layer(primeng);
 @import "../node_modules/primeflex/primeflex.css" layer(primeng);
+@import "./app/_variables.scss";
 
 html, body {
-  height: 100%; /* Make sure the entire document height is considered */
-  overflow: hidden; /* Initially hide overflow to prevent showing the scrollbar */
+	height: 100%; // Make sure the entire document height is considered
+	overflow-x: hidden;
+	overflow: hidden;
+	background-color: $fg-dark-color;
 }
 
 body {
-  overflow-y: auto; /* Allow vertical scrolling without showing the scrollbar */
-  -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
-  scrollbar-width: none; /* Hide scrollbar for Firefox */
+	//scrollbar-color: rgb(39, 39, 39) rgb(25, 25, 25);
+	overflow-y: auto; // Allow vertical scrolling without showing the scrollbar
+	-ms-overflow-style: none; // Hide scrollbar for Internet Explorer and Edge 
+	scrollbar-width: none; //Hide scrollbar for Firefox 
 }
 
-/* Hide scrollbar for Chrome, Safari, and other WebKit browsers */
+// Hide scrollbar for Chrome, Safari, and other WebKit browsers
 body::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
 .prevent-select {
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
 }
-
-// PrimeNG Fixes
-// .p-button {
-//   border-radius: 0.65rem !important;
-//   font-size: 14px !important;
-//   padding: 8px 12px !important;
-// }

@@ -170,14 +170,15 @@ export class ApiService {
    * @param {string} [faculty] The faculty to filter by
    * @returns {Observable<Unit[]>} An observable containing an array of filtered units
    */
-  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic', showReviewed?: boolean, showUnreviewed?: boolean, faculty?: string[], semesters?: string[], campuses?: string[]): Observable<Unit[]> {
-    const params: { offset: string; limit: string; search: string; sort: string; showReviewed: string, showUnreviewed: string, faculty: string[], semesters: string[], campuses: string[] } = {
+  getUnitsFilteredGET(offset: number, limit: number, search: string = '', sort: string = 'Alphabetic', showReviewed?: boolean, showUnreviewed?: boolean, hideNoOfferings?: boolean, faculty?: string[], semesters?: string[], campuses?: string[]): Observable<Unit[]> {
+    const params: { offset: string; limit: string; search: string; sort: string; showReviewed: string, showUnreviewed: string, hideNoOfferings: string, faculty: string[], semesters: string[], campuses: string[] } = {
       offset: offset.toString(),
       limit: limit.toString(),
       search,
       sort,
       showReviewed: 'false',
       showUnreviewed: 'false',
+      hideNoOfferings: 'false',
       faculty: [],
       semesters: [],
       campuses: []
@@ -185,6 +186,7 @@ export class ApiService {
 
     if (showReviewed) { params.showReviewed = showReviewed ? 'true' : 'false'; }
     if (showUnreviewed) { params.showUnreviewed = showUnreviewed ? 'true' : 'false'; }
+    if (hideNoOfferings) { params.hideNoOfferings = hideNoOfferings ? 'true' : 'false'; }
     if (faculty) { params.faculty = faculty; }
     if (semesters) { params.semesters = semesters; }
     if (campuses) { params.campuses = campuses; }
@@ -280,5 +282,26 @@ export class ApiService {
         next: (response) => console.log('ApiService | Successfully sent review report:', response),
         error: (error) => console.log('ApiService | Error whilst sending review report:', error)
       });
+   }
+  
+  /**
+   * * GET Units Requiring Unit
+   * 
+   * Gets all units that have a specified unit as a prerequisite
+   * 
+   * @param {string} unitCode The unit code to search for
+   * @returns {Observable<Unit[]>} An observable containing an array of units
+   */
+  getUnitsRequiringUnitGET(unitCode: string): Observable<Unit[]> {
+    return this.http.get<Unit[]>(`${this.url}/units/${unitCode}/required-by`).pipe(
+      tap({
+        next: (units) => {
+          console.log('ApiService | Sucessfully got units requiring unit:', units);
+        },
+        error: (error) => {
+          console.log('ApiService | Error whilst getting units requiring unit:', error.error);
+        }
+      })
+    )
   }
 }

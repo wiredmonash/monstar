@@ -1,40 +1,139 @@
+@import '../../../_variables.scss';
+
+:host ::ng-deep .p-card-body {
+    padding: 1rem;
+    height: 100%;
+}
+
+:host ::ng-deep .p-card-content {
+    height: 100%;
+    overflow: hidden;
+}
+
+:host ::ng-deep .p-chip-text {
+    // Make the chip smaller
+    font-size: 0.75rem;
+}
+
+.card-container {
+    position: relative;
+    width: 20rem;
+    height: 15rem;
+}
+
+.skeleton-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    opacity: 100%;
+}
+
 .hover-card {
     width: 20rem;
     border-radius: 10px;
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; /* Smooth transition */
     cursor: pointer;
     margin: auto;
+    font-family: $poppins;
+    position: relative;
+    z-index: 0;
 
     &:hover {
         transform: scale(1.02); 
         box-shadow: 0 0 16px rgba(226, 136, 226, 0.25), 0 0 24px rgba(214, 124, 214, 0.25); // Purple and centered shadow on hover
     }
-}
 
-.stars {
-    display: flex;
-    gap: 0.25rem;
-    margin: 0.25rem 0;
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
 
-    i {
-        font-size: 1.2rem;
-        color: white;   
+        .content-top {
+            flex-grow: 1;
+
+            .unit-card-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                background-color: $bg-dark-color;
+                border-radius: 10px;
+                padding: 0.5rem;
+        
+                .unit-code {
+                    font-weight: bold;
+                    font-size: 24px;
+                    margin: 0;
+                    margin-left: 0.5rem;
+                }
+        
+                .stars {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    padding-top: 0.5rem;
+                    padding-bottom: 0.5rem;
+                    padding-left: 0.75rem;
+                    padding-right: 0.75rem;
+                
+                    i {
+                        font-size: 1.2rem;
+                        height: fit-content;
+                        
+                        &.bi .bi-star-fill .bi-star-half {
+                            color: $primary-color;
+                        }
+
+                        &.bi .bi-star {
+                            color: white;
+                        }
+                    }
+                }
+            }
+
+            .unit-name {
+                font-size: 15px;
+                color: rgb(189, 189, 189);
+                margin-top: 0.5rem;
+                margin-left: 5px;
+                margin-bottom: 0.25rem;
+            }   
+
+            .reviews {
+                font-size: 14px;
+                color: gray;
+                display: flex;
+                align-items: center;
+                padding-top: 0;
+                margin-left: 5px;
+                margin-bottom: 0;
+            }
+        }
+
+        .chips-tags {
+            margin-top: auto;
+            padding-top: 0;
+            display: flex;
+            gap: 1rem;
+
+            .chips {
+                flex: 1;
+                min-width: 0;
+
+                .chips-row {
+                    overflow: hidden;
+                    width: 100%;
+                }
+            }
+
+            .tags {
+                display: flex;
+                flex-direction: column-reverse;
+                gap: 0.25rem;
+                align-items: flex-end;
+                white-space: nowrap;
+            }
+        }
     }
 }
-
-.unit-code {
-    font-weight: bold;
-    font-size: 25px;
-    letter-spacing: 0.2px;
-}
-
-.reviews {
-    font-size: 14px;
-    padding-top: 5px;
-}
-
-.unit-name {
-    font-size: 15px;
-    height: 2rem;
-}
-

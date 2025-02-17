@@ -120,6 +120,7 @@ router.get('/filter', async function (req, res) {
             sort = 'Alphabetic', 
             showReviewed = 'false',
             showUnreviewed = 'false',
+            hideNoOfferings = 'false',
             faculty, 
             semesters,
             campuses
@@ -160,6 +161,10 @@ router.get('/filter', async function (req, res) {
         // Show only unreviewed
         if (showUnreviewed === 'true') {
             query.reviews = { $exists: true, $size: 0 };
+        }
+        // Hide units with no offerings
+        if (hideNoOfferings === 'true') {
+            query.offerings = { $not: { $eq: null } };
         }
 
         // Get total count for pagination
@@ -381,6 +386,41 @@ router.put('/update/:unitcode', async function (req, res) {
     }
 });
 
+
+/**
+ * ! GET Units Required-By
+ * 
+ * Gets all units that have the specified unit as a prerequisite
+ * 
+ * @async
+ * @param {string} unitCode - The unit code to search for in the prerequisites
+ * @returns {JSON} Array of units that require the specified unit
+ * @throws {404} If unit not found
+ * @throws {500} If database error occurs
+ */
+router.get('/:unitCode/required-by', async function (req, res) {
+    try { 
+        const unitCode = req.params.unitCode.toLowerCase();
+
+        // Verify unit existance
+        const unitExists = await Unit.findOne({ unitCode });
+        if (!unitExists) return res.status(404).json({ error: 'Unit not found' });
+
+        // Find units where this unit is in prerequisites
+        const requiredByUnits = await Unit.find({
+            'requisites.prerequisites': {
+                $elemMatch: {
+                    'units': { $in: [unitCode.toUpperCase(), unitCode.toLowerCase()] }
+                }
+            }
+        }).select('unitCode name');
+
+        return res.status(200).json(requiredByUnits);
+    }
+    catch (error) {
+        return res.status(500).json({ error: `Error finding units requiring ${req.params.unitCode}: ${error.message}` });
+    }
+});
 
 // Export the router
 module.exports = router;

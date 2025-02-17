@@ -1,18 +1,20 @@
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-require('dotenv').config();
+const cloudinary = require('cloudinary').v2;                                    // Cloudinary library
+const { CloudinaryStorage } = require('multer-storage-cloudinary');             // Multer storage enging for Cloudinary
+require('dotenv').config();                                                     // Environment variables
 
+// Configure Cloudinary with credentials from environment variables
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+// Create a new Cloudinary storage instance for Multer
 const storage = new CloudinaryStorage({
-    cloudinary,
+    cloudinary, 
     params: {
         folder: 'user_avatars',
-        allowed_formats: ['jpg', 'png', 'jpeg'],
+        allowed_formats: ['jpg', 'png', 'jpeg'], 
         transformation: [
             {
                 width: 300,             // Crop width
@@ -26,4 +28,5 @@ const storage = new CloudinaryStorage({
     }
 });
 
+// Export the Cloudinary instance and storage engine
 module.exports = { cloudinary, storage };

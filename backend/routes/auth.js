@@ -60,10 +60,13 @@ router.post('/register', async function (req, res) {
         // Get values from json request
         const { email, password } = req.body;
 
+        // Validate Monash student email format
+        const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/;
+        if (!emailRegex.test(email)) return res.status(403).json({ error: 'Not a Monash email' });
+
         // Find and check if user already exists
         const existingUser = await User.findOne({ email });
-        if (existingUser)
-            return res.status(400).json({ error: "User already exists/Email exists" });
+        if (existingUser) return res.status(400).json({ error: "User already exists/email exists" });
         
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -264,7 +267,12 @@ router.get('/', verifyToken, async function (req, res) {
 /**
  * ! POST Login/authenticate a User
  * 
- * Checks a email and password against database entry
+ * - Checks a email and password against the database and logs the user in.
+ * - Checks if the email is a Monash student email unless the user is an admin.
+ * - Makes sure the user is verified before logging in. 
+ * - Sends a verification email if the user is not verified.
+ * - Rate limits the number of verification emails sent.
+ * - Rate limits the time between verification email requests.
  * 
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
@@ -274,6 +282,7 @@ router.get('/', verifyToken, async function (req, res) {
  * @throws {429} When the user has reached the daily limit of verification emails
  * @throws {429} When the user has requested a verification email within the cooldown period
  * @throws {403} When the user has not verified their email
+ * @throws {403} When the user tries logging in with a non-Monash email
  * @throws {500} If an error occurs whilst creating a unit
  */
 router.post('/login', async function (req, res) {
@@ -282,7 +291,7 @@ router.post('/login', async function (req, res) {
         const { email, password } = req.body;   
 
         // Find the user by email from the DB
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email });
 
         // If there is no user of that email in the DB return status 400
         if (!user)
@@ -293,6 +302,16 @@ router.post('/login', async function (req, res) {
             return res.status(409).json({ error: "User is a Google account"});
         }
 
+        // Skip Monash email validation for admin users
+        if (!user.admin) {
+            // Regular expression to validate Monash student email
+            const emailRegex = /^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/;
+
+            // Check if email is a valid Monash email
+            if (!emailRegex.test(email))
+                return res.status(403).json({ error: 'Not a Monash email' });
+        }
+        
         // Check if the passwords match
         const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -339,7 +358,7 @@ router.post('/login', async function (req, res) {
             await sendVerificationEmail(email, verificationUrl);
             
             // Respond with status 403 and error message 
-            return res.status(403).json({ error: 'Email not verified. Please check your inbox to verify your email.' });
+            return res.status(403).json({ error: 'Email not verified' });
         }
 
         // Create json web token
@@ -349,16 +368,9 @@ router.post('/login', async function (req, res) {
         );
 
         // Return response as cookie with access token and user data.
-        return res.cookie('access_token', token, { 
-                httpOnly: true,
-                sameSite: 'strict'
-            })
+        return res.cookie('access_token', token, { httpOnly: true, sameSite: 'strict' })
             .status(200)
-            .json({
-                status: 200,
-                message: 'Login successful',
-                data: user
-            });
+            .json({ status: 200, message: 'Login successful', data: user });
     }
     catch (error) {
         // Handle general errors
@@ -370,23 +382,33 @@ router.post('/login', async function (req, res) {
 /**
  * ! DELETE Remove a User from the database
  * 
- * Deletes a User from the database
- * 
- * TODO: Make sure the user is an admin before deleting
+ * Deletes a User from the database. Only admins or the user themselves can
+ * delete accounts.
  * 
  * @async
  * @returns {JSON} Responds with a success message in JSON
+ * @throws {403} If user is not authorised to delete this account
  * @throws {500} If an error occurs
  * @throws {404} User not found error
  */
-router.delete('/delete/:email', verifyToken, async function (req, res) {
+router.delete('/delete/:userId', verifyToken, async function (req, res) {
     try {
-        // Get the user by email in the DB and delete them.
-        const user = await User.findOneAndDelete({email: req.params.email});
+        // Get the requesting user from the token
+        const requestingUser = await User.findById(req.user.id);
+        if (!requestingUser) return res.status(404).json({ error: 'Requesting user not found' });
 
-        // If there is no user in the DB, return status 404 Not Found.
-        if (!user)
-            return res.status(404).json({ error: "User not found" });
+        // Get the target user by email
+        const targetUser = await User.findById(req.params.userId);
+        if (!targetUser) return res.status(404).json({ error: 'Target user not found' });
+
+        // Check authorisation
+        const isSameUser = requestingUser._id.toString() === targetUser._id.toString();
+        const isAdminDeletingOther = requestingUser.admin && !isSameUser;
+        if (!isSameUser && !isAdminDeletingOther)
+            return res.status(403).json({ error: 'You are not authorised to delete this account' });
+
+        // Delete the user
+        await User.findOneAndDelete({ _id: targetUser._id });
 
         // Return status 200 for successful deletion of user
         return res.status(200).json({ message: "User successfully deleted" });
@@ -535,45 +557,55 @@ router.post('/reset-password/:token', async function (req, res) {
 /**
  * ! PUT Update a User's details
  *  
- * Updates User's username and/or password
+ * Updates User's username and/or password. Only admins or the user themselves
+ * can update account details.
  * 
  * @async
+ * @param {String} userId - The ID of the user to update
  * @returns {JSON} Responds with status 200 and success message
  * @throws {404} If the Unit is not found
+ * @throws {403} If the user is not authorised to update this account
+ * @throws {400} If no update fields are provided
  * @throws {500} If some error occurs
  */
-router.put('/update/:email', verifyToken, async function (req, res) {
+router.put('/update/:userId', verifyToken, async function (req, res) {
     try {
+        // Get the requesting user from the token
+        const requestingUser = await User.findById(req.user.id);
+        if (!requestingUser) return res.status(404).json({ error: 'Requesting user not found' });
+
+        // Get the target user by userID
+        const targetUser = await User.findById(req.params.userId);
+        if (!targetUser) return res.status(404).json({ error: 'Target user not found' });
+
+        // Check authorisation
+        const isSameUser = requestingUser._id.toString() === targetUser._id.toString();
+        const isAdminUpdatingOther = requestingUser.admin && !isSameUser;
+        if (!isSameUser && !isAdminUpdatingOther)
+            return res.status(403).json({ error: 'You are not authorised to update user details' });
+
         // Get the updated email and/or password from the request body
         const { username, password } = req.body;
 
-        // Validate that either username or password is provided in the request body
+        // Validate that either username or password is provided
         if (!username && !password)
             return res.status(400).json({ error: 'Either username or password is required to update' });
 
-        // Get the user by email from the DB
-        const user = await User.findOne({ email: req.params.email });
-
-        // If the user doesn't exist in the DB return status 404 not found
-        if (!user)
-            return res.status(404).json({ error: "User not found" });
-
-        // If username was provided in the request body, update it.
+        // Update fields if provided
         if (username) {
-            user.username = username;
+            targetUser.username = username;
         }
 
-        // If password was provided in the request body, hash it and update it.
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            user.password = hashedPassword;
+            targetUser.password = hashedPassword;
         }
 
         // Save the updated user
-        await user.save();
+        await targetUser.save();
 
         // Return status 200 sending success message and updated user data
-        return res.status(200).json({ message: "User details successfully updated", username: user.username });
+        return res.status(200).json({ message: "User details successfully updated",  username: targetUser.username });
     }
     catch (error) {
         // Handle general errors status 500

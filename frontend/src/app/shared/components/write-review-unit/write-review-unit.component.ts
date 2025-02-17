@@ -15,6 +15,7 @@ import { User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { RatingComponent } from '../rating/rating.component';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 @Component({
   selector: 'app-write-review-unit',

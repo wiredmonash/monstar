@@ -16,6 +16,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Unit } from '../../shared/models/unit.model';
+import { ScrollTopModule } from 'primeng/scrolltop';
 
 @Component({
   selector: 'app-unit-list',
@@ -36,6 +37,7 @@ import { Unit } from '../../shared/models/unit.model';
     DropdownModule,
     MultiSelectModule,
     FloatLabelModule,
+    ScrollTopModule,
   ],
   templateUrl: './unit-list.component.html',
   styleUrl: './unit-list.component.scss',
@@ -80,6 +82,8 @@ export class UnitListComponent implements OnInit {
   showReviewed: boolean = false;
   // Showing unreviewed units
   showUnreviewed: boolean = false;
+  // Hiding no offerings units
+  hideNoOfferings: boolean = false;
 
   // Choice of faculties
   faculties: string[] = ['Art, Design and Architecture', 'Arts', 'Business and Economics', 'Education', 'Engineering', 'Information Technology', 'Law', 'Medicine, Nursing and Health Sciences', 'Pharmacy and Pharmaceutical Sciences', 'Science'];
@@ -99,10 +103,6 @@ export class UnitListComponent implements OnInit {
 
   // Prerequisites
   hasPrerequisites: boolean = false;
-
-  // TODO: Show tags for the units
-  tags: any[] = [];
-  selectedTags: any[] = [];
 
   /**
    * * Constructor
@@ -155,12 +155,14 @@ export class UnitListComponent implements OnInit {
     const searchLower = this.search.toLowerCase();
     this.loading = true;
 
-    console.log('UnitList | Fetching units:', this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses);
-  
-    this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
+    // ? Debug log the fetch request details
+    console.log('UnitList | Fetching units:', this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses);
+    
+    // Fetch the paginated units from the backend
+    this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
       next: (response: any) => {
         // Map the response data to Unit objects
-        this.filteredUnits = response.units.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings));
+        this.filteredUnits = response.units.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings, unitData.tags));
 
         // Update the total records
         this.totalRecords = response.total;
@@ -246,19 +248,30 @@ export class UnitListComponent implements OnInit {
       if (searchInput) {
         searchInput.focus();
         this.sortByDropdown.hide(); // We hide the dropdown if we focus on the search bar.
+        this.overlayPanel.hide();
       }
     }
     // Focuses on sort by dropdown
     if (event.ctrlKey && event.key === 'f') {
       event.preventDefault();
-      if (this.sortByDropdown)
-        this.sortByDropdown.focus();
+      if (this.sortByDropdown) {
+        if (!this.isSortByFocused) {
+          this.sortByDropdown.focus();
+          this.sortByDropdown.show();
+          this.isSortByFocused = true;
+        } else {
+          this.sortByDropdown.hide();
+          this.isSortByFocused = false;
+        }
+      }
     }
     // Focuses on advanced filtering
     if (event.ctrlKey && event.key === 'o') {
       event.preventDefault();
-      if (this.overlayPanel && this.filterButton)  
+      if (this.overlayPanel && this.filterButton) {
         this.overlayPanel.toggle(event, this.filterButton.nativeElement);
+        this.sortByDropdown.hide();
+      }
     }
     // Unfocuses on all
     if (event.key === 'Escape') {

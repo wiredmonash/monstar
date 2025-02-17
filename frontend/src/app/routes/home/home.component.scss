@@ -30,6 +30,7 @@
     animation: shimmer 3s infinite;
   }
   
+  // Gradient effect for the hero section
   @keyframes shimmer {
     0% { opacity: 0.1; }
     50% { opacity: 0.3; }
@@ -42,14 +43,22 @@
     z-index: 1; // Ensures hero content is above the stars
 
     h1 {
-      font-size: 3rem;
+      font-size: 4rem;
       font-weight: bold;
       margin-bottom: 1rem;
+
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
     }
 
     p {
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
+
+      @media (max-width: 768px) {
+        font-size: 1.2rem;
+      }
     }
   }
 
@@ -58,12 +67,24 @@
     position: absolute;
     width: 4px;
     height: 4px;
-    background: #fff;
+    background: linear-gradient(45deg, rgba(255,255,255,1), rgba(255,255,255,0));
     border-radius: 50%;
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1),
                 0 0 0 8px rgba(255, 255, 255, 0.1),
-                0 0 20px rgba(255, 255, 255, 1);
-    animation: shooting-star 2s linear infinite;
+                0 0 20px rgba(255, 255, 255, 1),
+                0 0 40px rgba(255, 255, 255, 0.4);
+    animation: shooting-star 3s linear infinite;
+
+    &::after { // Add trailing effect
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 40px; // Longer trail
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.8), transparent);
+      transform: translateX(-30px) translateY(-18px) rotateZ(240deg);
+    }
   }
 
   // Position each star (starting off-screen at the top)
@@ -72,10 +93,13 @@
   .shooting-star:nth-child(4) { top: -10px; left: 55%; animation-delay: 0.4s; }
   .shooting-star:nth-child(5) { top: -15px; left: 70%; animation-delay: 0.6s; }
   .shooting-star:nth-child(6) { top: -10px; left: 80%; animation-delay: 0.8s; }
-  .shooting-star:nth-child(7) { top: -20px; left: 90%; animation-delay: 1s; }
+  .shooting-star:nth-child(7) { top: -20px; left: 95%; animation-delay: 1s; }
   .shooting-star:nth-child(8) { top: -15px; left: 5%;  animation-delay: 1.2s; }
   .shooting-star:nth-child(9) { top: -10px; left: 35%; animation-delay: 1.4s; }
   .shooting-star:nth-child(10) { top: -20px; left: 60%; animation-delay: 1.6s; }
+  .shooting-star:nth-child(11) { top: -12px; left: 90%; animation-delay: 1.3s; }
+  .shooting-star:nth-child(12) { top: -30px; left: 10%; animation-delay: 2s; }
+  .shooting-star:nth-child(13) { top: -22px; left: 15%; animation-delay: 1s; }
   // (Adjust or add more nth-child selectors as needed.)
 
   // New keyframes for the shooting star: move in the direction of 45deg (bottom right) and fade out before the hero section's bottom
@@ -84,14 +108,15 @@
       transform: rotate(45deg) translate(0, 0);
       opacity: 0;  // Start off invisible to avoid a pop
     }
-    10% {
+    5% {
       opacity: 1;  // Fade in quickly
     }
-    70% {
+    80% {
       opacity: 1;  // Stay visible briefly
     }
-    90% {
+    95% {
       opacity: 0;  // Fade out before reaching the bottom
+      transform: rotate(45deg) translate(200px, 40vh); // Longer travel distance
     }
     100% {
       transform: rotate(45deg) translate(120px, 30vh);
@@ -103,6 +128,15 @@
 // * Popular Units Heading 2
 h2 {
   font-family: $poppins;
+}
+
+:host ::ng-deep .custom-carousel {
+  .p-carousel-item {
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
 }
 
 // * FAQ Title
@@ -143,24 +177,18 @@ h2 {
   }
 }
 
-// ! Shooting stars
-// span {
-//   position: absolute;
-//   top: 50%;
-//   left: 23%;
-//   width: 4px;
-//   height: 4px;
-//   background: #fff;
-//   border-radius: 50%;
-//   box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 1);
-//   animation: animate 3s linear infinite;
-// }
-// span::before {
-//   content: '';
-//   position: absolute;
-//   top: 50%;
-//   transform: translateY(-50%);
-//   width: 300px;
-//   height: 1px;
-//   background: linear-gradient(90deg, #fff, transparent);
-// }
+// === Media Queries ===
+// Hide the Popular Units header and carousel on small screens
+@media screen and (max-width: 440px) {
+  .popular-units-header {
+    display: none;
+  }
+
+  .first-divider {
+    display: none;
+  }
+
+  :host ::ng-deep .custom-carousel {
+    display: none;
+  }
+}

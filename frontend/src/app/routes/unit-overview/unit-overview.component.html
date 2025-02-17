@@ -3,22 +3,57 @@
 
 <!-- ! CHILD: UnitHeaderComponent -->
 @if (unit) {
-    <div class="unit-header-container">
-        <app-unit-review-header [unit]="unit" (sortBy)="sortReviews($event)" (reviewAdded)="refreshReviews()"></app-unit-review-header>
+    <!-- Unit review header -->
+    <app-unit-review-header 
+        [unit]="unit" 
+        (sortBy)="sortReviews($event)" 
+        (reviewAdded)="refreshReviews()"
+    />
+} @else {
+    <!-- Show unit review header skeleton if there is no unit yet -->
+    <div class="header-skeleton-container">
+        <p-skeleton 
+            #headerSkeleton
+            class="header-skeleton" 
+            [height]="skeletonHeight"
+            borderRadius="16px"
+        />
     </div>
 }
 
 <!-- ! Show all the reviews  -->
 @if (!reviewsLoading) {
+    <!-- Review cards -->
     <div class="reviews-container">
         @for (review of reviews; track $index) {
-            <app-review-card [review]="review" (reviewDeleted)="refreshReviews('delete')"></app-review-card>
+            <app-review-card 
+                [review]="review" 
+                (reviewDeleted)="refreshReviews('delete')"
+            />
         }
     </div>
 } @else {
-    <!-- Show loading spinner if there are no reviews -->
-    <div class="spinner-container">
-        <p-progressSpinner></p-progressSpinner>
+    <!-- Show review card skeletons if reviews are still loading -->
+    <div class="reviews-skeleton-container mt-5">
+        @if (!unit) {
+            @for (i of [1,2,3]; track $index) {
+                <p-skeleton 
+                    width="1057.52px" 
+                    height="204.4px" 
+                    borderRadius="20px"
+                    [style]="{ 'margin-top': '20px', 'margin-bottom': '20px' }"
+                />
+            }
+        } @else {
+            @for (i of [].constructor(unit.reviews.length); track $index) {
+                <p-skeleton 
+                    width="1057.52px" 
+                    height="204.4px" 
+                    borderRadius="20px"
+                    [style]="{ 'margin-top': '20px', 'margin-bottom': '20px' }"
+                />
+            }
+        }
     </div>
 }
 
