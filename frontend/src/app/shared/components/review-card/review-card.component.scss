@@ -84,16 +84,32 @@
 }
 
 // * Like and Dislike buttons
-.thumbs-container {
+.action-buttons-container {
   position: absolute;
   bottom: 15px;
   right: 40px;
   display: flex;
   align-items: center;
+  gap: 20px;
 
-  .thumbs {
-    font-size: 1.5rem;
-  
+  .thumb-buttons {
+    display: flex;
+    align-items: center;
+
+    .thumbs {
+      font-size: 1.5rem;
+    
+      &:hover {
+        color: white;
+      }
+    }
+  }
+
+  .report-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
     &:hover {
       color: white;
     }

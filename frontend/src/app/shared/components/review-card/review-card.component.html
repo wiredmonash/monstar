@@ -150,24 +150,47 @@
                         </button>
                     }
 
-                    <!-- Thumbs Buttons and Like Count -->
-                    <div class="thumbs-container">
-                        <!-- Like button -->
-                        <span class="me-2">{{ review.likes }}</span>
-                        <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" 
-                            (click)="toggleLike()" 
-                            [pTooltip]="currentUser?._id === review.author._id ? 'Cant like yours :(' : ''"
-                            fitContent="true"
-                        ></i>
-                        <!-- Dislike button -->
-                        <span class="me-2 ml-3">{{ review.dislikes }}</span>
-                        <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" 
-                            (click)="toggleDislike()"
-                            [pTooltip]="currentUser?._id === review.author._id ? 'Cant dislike yours :(' : ''"
-                        ></i>
+                    <!-- Report and dislike/like buttons -->
+                    <div class="action-buttons-container">
+                        <!-- Report button -->
+                        <div class="report-button"
+                        *ngIf="currentUser && !(currentUser?._id ===  review.author._id)"
+                        (click)="showReportDialog()"
+                        >
+                            <i class="report" [class]="'pi pi-flag'"></i>
+                            <span>Report</span>
+                        </div>
+                        <!-- Thumbs up/down -->
+                        <div class="thumb-buttons">
+                            <!-- Like button -->
+                            <span class="me-2">{{ review.likes }}</span>
+                            <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" 
+                                (click)="toggleLike()" 
+                                [pTooltip]="currentUser?._id === review.author._id ? 'Cant like yours :(' : ''"
+                                fitContent="true"
+                            ></i>
+                            <!-- Dislike button -->
+                            <span class="me-2 ml-3">{{ review.dislikes }}</span>
+                            <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" 
+                                (click)="toggleDislike()"
+                                [pTooltip]="currentUser?._id === review.author._id ? 'Cant dislike yours :(' : ''"
+                            ></i>
+                        </div>
                     </div>
+
+                    <!-- Child component: Report Review -->
+                    <!-- <app-report-review
+                        [review]="review"
+                        [currentUser]="currentUser"
+                    ></app-report-review> -->
                 </div>
             </div>
         </div>
     </div>
+    
+    <!-- Child component: Report Review -->
+    <app-report-review
+        [review]="review"
+        [currentUser]="currentUser"
+    ></app-report-review>
 }
