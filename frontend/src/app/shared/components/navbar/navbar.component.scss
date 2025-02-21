@@ -128,3 +128,10 @@
   user-select: none; // Standard syntax 
 }
 
+// Makes the element disabled
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+

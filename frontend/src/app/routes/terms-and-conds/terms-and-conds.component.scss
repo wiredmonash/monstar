@@ -1,0 +1,73 @@
+@import '../../_variables.scss';
+
+.terms-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $bg-dark-color;
+  padding: 2rem 1rem;
+  user-select: none;
+
+  .content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: $fg-dark-color;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: $poppins;
+  }
+}
+
+.section-heading {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.content-section {
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background-color: $bg-dark-color;
+  border-radius: 8px;
+  color: white;
+}
+
+.subsection-heading {
+  color: white;
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.text-body {
+  color: white;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.list-items {
+  color: white;
+  list-style-type: disc;
+  margin-left: 2rem;
+}
+
+.list-item {
+  margin-bottom: 0.5rem;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: 1.5rem;
+  }
+
+  .section-heading {
+    font-size: 2rem;
+  }
+
+  .content-section {
+    padding: 1rem;
+  }
+}

@@ -1,5 +1,6 @@
 // Module Imports
 const express = require('express');
+const nodemailer = require('nodemailer');
 
 // Model Imports
 const Review = require('../models/review');
@@ -397,6 +398,63 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
     catch (error) {
         // Handle general errors
         return res.status(500).json({ error: `An error occured while toggling like/dislike: ${error.message}` });
+    }
+});
+
+/**
+ * ! POST Send Report Email
+ * 
+ * Sends an email corresponding to a user's report on a review
+ * 
+ * @async
+ * @throws {500} if error occurs when sending the report email
+ */
+router.post('/send-report', async function (req, res) {
+    const {
+        reportReason,
+        reportDescription,
+        reporterName,
+        review
+    } = req.body;
+
+    try {
+        // Transport settings
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: process.env.EMAIL_USERNAME,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+
+        // Email content
+        const mailOptions = {
+            from: process.env.EMAIL_USERNAME,
+            to: process.env.EMAIL_USERNAME,
+            subject: `Report on review written by user ${review.author.username}`,
+            html: `
+            <p>
+            Reporter: ${reporterName} <br>
+            Reason: ${reportReason} <br>
+            Description: ${reportDescription} <br>
+            <br>
+            Author ID: ${review.author._id} <br>
+            Author Username: ${review.author.username} <br>
+            <br>
+            Review ID: ${review._id} <br>
+            Review Title: ${review.title} <br>
+            Review Description: ${review.description} <br>
+            </p>
+            `
+        };
+
+        // Send the email
+        await transporter.sendMail(mailOptions);
+
+        return res.status(201).json({ message: "Report email sent" });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `An error occured while sending report email: ${error.message}` });
     }
 });
 

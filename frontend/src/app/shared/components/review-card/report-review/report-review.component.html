@@ -1,0 +1,50 @@
+<!-- === Success Toast (shown on submission of report) === -->
+<p-toast key="success-toast"></p-toast>
+
+<div class="dialog-container">
+    <p-dialog
+      header="Report review from user {{ review?.author?.username }}"
+      [modal]="true"
+      [(visible)]="visible"
+      [style]="{ width: '40rem', height: '34rem', 'text-align': 'center'}"
+      [draggable]="false"
+      appendTo="body"
+      (onHide)="onDialogHide();"
+    >
+    
+      <div class="dialog-content">
+        <span>Why are you reporting this review?</span>
+        <p-dropdown
+          #reason
+          [(ngModel)]="reportReason"
+          [options]="reportOptions"
+          [style]="{ 'width': '20rem' }"
+          (selectOnFocus)="true"
+          (focusOnHover)="true"
+          appendTo="body"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select report reason"
+        ></p-dropdown>
+        
+        <textarea
+            #description
+            pInputTextarea
+            id="reportDescription"
+            [(ngModel)]="reportDescription"
+            [style]="{ 'width': '28rem', 'height': '15rem', 'resize': 'none !important' }"
+            autocomplete="off"
+            [autoResize]="false"
+            placeholder="Provide a description with your report (optional)"
+        ></textarea>
+
+        <p-button
+            #submitReportButton
+            label="Send Report"
+            (click)="sendReport()"
+            [disabled]="!reportReason"
+        ></p-button>
+      </div>
+
+    </p-dialog>
+</div>
