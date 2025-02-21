@@ -27,16 +27,17 @@
       font-weight: bold;
     }
 
-    .delete-button {
+    // * Top right button for reporting/deleting review (hidden unless hovered)
+    .top-right-button {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 1rem;
+      right: 1rem;
       cursor: pointer;
       z-index: 10;
 
       i {
         font-size: 1.5rem;
-        color: #000;  
+        color: #000;
 
         &:hover {
           color: white;
@@ -44,74 +45,170 @@
       }
     }
 
-    .border-end {
-      border-right: 2px solid rgba(0, 0, 0, 0.2);
-    }
-  }
-}
+    // * User profile image and name with year taken
+    .user-section {
+      padding: 0;
+      margin-top: 0.75rem;
+      margin-bottom: 1rem;
 
-// * Sub-category stars
-.stars {
-  display: flex;
-  justify-content: space-between; /* Aligns stars to the container edges */
-  width: 100%; /* Ensures the stars div stretches to the full width of its container */
-
-  i {
-    color: #000;
-    font-size: 24px;
-  }
-
-  .filled {
-    color: #000; /* Filled stars black */
-  }
-}
-
-// * Overall stars
-.stars-overall {
-  display: flex;
-  flex-wrap: wrap; /* Allows stars to wrap onto the next line */
-  justify-content: center; /* Center align stars */
+      .profile-picture {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
   
-  i {
-    color: #000;
-    font-size: 30px;
-    margin: 0 0.5rem;
-  }
-
-  .filled {
-    color: #000;
-  }
-}
-
-// * Like and Dislike buttons
-.action-buttons-container {
-  position: absolute;
-  bottom: 15px;
-  right: 40px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-  .thumb-buttons {
-    display: flex;
-    align-items: center;
-
-    .thumbs {
-      font-size: 1.5rem;
-    
-      &:hover {
-        color: white;
+      // Review year in user part
+      .review-year {
+        color: #474b4f;
+        font-size: 0.85rem;
+        margin-left: 5px;
       }
     }
-  }
 
-  .report-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    // * Overall rating section with heading & stars
+    .overall-section {
+      background-color: $bg-dark-color;
+      border-radius: 20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 10px;
+      padding-bottom: 10px;
 
-    &:hover {
-      color: white;
+      .heading {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+      }
+
+      .stars-overall {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; 
+        
+        i {
+          color: $primary-color;
+          font-size: 30px;
+          margin: 0 0.5rem;
+        }
+
+        .filled {
+          color: $primary-color;
+        }
+      }
+    }
+
+    // Main RHS content
+    .main-content-container {
+      display: flex;
+      flex-direction: column;
+
+      .review {
+        background-color: $primary-color-darker;
+        border-radius: 20px;
+        flex: 1;
+        min-height: 10rem;
+        padding-top: 1rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-bottom: 2rem;
+        margin-bottom: 1rem;
+        margin-right: 1rem;
+      }
+
+      .categories {
+        padding: 1rem;
+        margin-top: auto;
+        background-color: $bg-dark-color;
+        border-radius: 20px;
+
+        .category {
+          .category-header {
+            color: white;
+            margin-bottom: 0.5rem;
+          }
+        }
+
+        .circles {
+          display: flex;
+          gap: 4px;
+          
+          .circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+          }
+
+          .full-circle {
+            background-color: $primary-color;
+          }
+  
+          .half-circle {
+            background-color: $primary-color-hover;
+          }
+  
+          .empty-circle {
+            background-color: rgb(96, 96, 96);
+          }
+        }
+
+        // Rating stars
+        .stars {
+          display: flex;
+          justify-content: space-between; 
+          width: 100%;
+
+          i {
+            color: #000;
+            font-size: 24px;
+          }
+
+          .filled {
+            color: #000;
+          }
+        }
+
+        // Like and Dislike buttons
+        .action-buttons-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin: 0 auto;
+          height: 100%;
+
+          .thumb-buttons {
+            display: flex;
+            align-items: center;
+
+            .thumbs {
+              font-size: 1.5rem;
+              transition: transform 0.3s ease-in-out;
+            
+              &:hover {
+                color: white;
+                transform: scale(1.4);
+              }
+            }
+          }
+
+          .report-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &:hover {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    .border-end {
+      border-right: 2px solid rgba(0, 0, 0, 0.2);
     }
   }
 }
@@ -138,13 +235,6 @@ p {
   padding-top: 10px;
 }
 
-// Review year in user part
-.review-year {
-  color: #474b4f;
-  font-size: 0.85rem;
-  margin-left: 5px;
-}
-
 // Heading 5 
 h5 {
   margin-bottom: 0px;
@@ -165,22 +255,10 @@ h6 {
   max-width: 1100px;
 }
 
-.review {
-  padding-top: 10px;
-  padding-bottom: 20px;
-  margin-bottom: 0;
-}
-
-.profile-picture {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
+// Middle divider
 .review-column {
   padding-right: 20px;
-  border-right: 1px solid #dee2e6;
+  border-right: 1px solid $primary-color-darker;
 }
 
 // Adjust border visibility for smaller screens

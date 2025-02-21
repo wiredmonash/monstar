@@ -82,13 +82,19 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Expand state
   expanded: boolean = false;
 
+  console = console;
+
   // Liked state
   liked: boolean = false;
+  // Hovering state for the like button
+  hoveringLike: boolean = false;
   // No. of likes
   likes: number = 0;
 
   // Disliked state
   disliked: boolean = false;
+  // Hovering state for the dislike button
+  hoveringDislike: boolean = false;
   // No. of dislikes
   dislikes: number = 0;
 

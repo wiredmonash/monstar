@@ -1,35 +1,53 @@
+<!-- === Confirmation Popup === -->
 <p-confirmPopup #confirmPopupRef>
     <ng-template pTemplate="headless" let-message let-test>
         <div class="border-round p-3">
-            <span>{{ message.message }}</span>
-            <div class="flex align-items-center gap-2 mt-3">
-                <p-button (click)="accept()" label="Delete" size="small" severity="danger"></p-button>
-                <p-button (click)="reject()" label="Cancel" [outlined]="true" size="small" severity="secondary"></p-button>
-            </div>
+            <!-- Delete review if this is the current user's review -->
+            @if (currentUser?.email == review.author.email) {
+                <span>{{ message.message }}</span>
+                <div class="flex align-items-center gap-2 mt-3">
+                    <p-button (click)="accept()" label="Delete" size="small" severity="danger"></p-button>
+                    <p-button (click)="reject()" label="Cancel" [outlined]="true" size="small" severity="secondary"></p-button>
+                </div>
+            } 
+            <!-- Report review if this is not the current user's review -->
+            @else {
+                <span>Review goes against rules?<br/>Report it to us pls.</span>
+                <div class="flex align-items-center gap-2">
+                    <p-button (click)="showReportDialog()" label="Report" size="small" severity="warning"></p-button>
+                    <p-button (click)="reject()" label="Cancel" [outlined]="true" size="small" severity="secondary"></p-button>
+                </div>
+            }
         </div>
     </ng-template>
 </p-confirmPopup>
 
-<!-- Review Card Component -->
+
+
+<!-- === Review Card Component === -->
 @if (review) {
     <!-- Container for the whole review card -->
     <div class="container mt-5 review-card-container" (mouseenter)="deleteButtonState='visible';" (mouseleave)="deleteButtonState='hidden';">
         <div class="review-card position-relative">
-            <!-- Delete review button shows only if the current user is the author of this review -->
+            <!-- ! Buttons for deletion and reporting (shown in top right of review card) -->
             @if (currentUser?.email == review.author.email) {
-                <div class="delete-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
-                    <i class="pi pi-times-circle"></i>
+                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
+                    <i class="pi pi-trash"></i>
+                </div>
+            } @else if (currentUser) {
+                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
+                    <i class="pi pi-flag"></i>
                 </div>
             }
 
             <div class="row">
-                <!-- Left Side (Anonymous, Semester, Overall Rating) -->
+                <!-- * Left Side (Anonymous, Semester, Overall Rating) -->
                 <div class="col-md-4 review-column">
                     <!-- Title -->
                     <h5>{{ review.title || 'No Title' }}</h5>
                     
                     <!-- User -->
-                    <p class="d-flex align-items-center">
+                    <p class="d-flex align-items-center user-section">
                         <!-- Profile picture -->
                         <img
                             [src]="review.author.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
@@ -45,153 +63,158 @@
                         <span class="review-year">(taken in {{review.year}})</span>
                     </p>
 
-                    <!-- Overall Rating -->
-                    <h5 class="d-flex justify-content-between">
-                        <span>Overall</span>
-                    </h5>
-                    <!-- Stars -->
-                    <div class="d-flex justify-content-center">
-                        <div class="stars-overall">
-                            <ng-container *ngFor="let star of [1,2,3,4,5]">
-                                <i
-                                    class="bi"
-                                    [ngClass]="{
-                                    'bi-star-fill': Math.floor(review.overallRating) >= star,
-                                    'bi-star-half': Math.floor(review.overallRating) < star && Math.ceil(review.overallRating) >= star,
-                                    'bi-star': Math.ceil(review.overallRating) < star
-                                    }"
-                                ></i>
-                            </ng-container>
+                    <div class="overall-section">
+                        <!-- Overall Rating -->
+                        <h5 class="heading">Overall Rating</h5>
+                        <!-- Stars -->
+                        <div class="d-flex justify-content-center">
+                            <div class="stars-overall">
+                                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                    <i
+                                        class="bi"
+                                        [ngClass]="{
+                                        'bi-star-fill': Math.floor(review.overallRating) >= star,
+                                        'bi-star-half': Math.floor(review.overallRating) < star && Math.ceil(review.overallRating) >= star,
+                                        'bi-star': Math.ceil(review.overallRating) < star
+                                        }"
+                                    ></i>
+                                </ng-container>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Side (Review Heading, Categories, Stars, Description) -->
-                <div class="col-md-8 px-4"> 
-                    <!-- Review Heading -->
-                    <h5>{{ review.heading }}</h5>
-                    <div class="row mb-2">
-                        <!-- Content Category -->
-                        <div class="col-md-5 col-lg-4 content">
-                            <!-- Content Rating -->
-                            <div class="d-flex justify-content-between">
-                                <h6 class="mb-0 mt-1">Content</h6>
-                                <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.contentRating }}</h6> -->
-                            </div>
-                            <!-- Stars for ConentRating -->
-                            <div class="d-flex justify-content-center">
-                                <div class="stars mr-3">
-                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
-                                        <i
-                                            class="bi"
-                                            [ngClass]="{
-                                            'bi-star-fill': Math.floor(review.contentRating) >= star,
-                                            'bi-star-half': Math.floor(review.contentRating) < star && Math.ceil(review.contentRating) >= star,
-                                            'bi-star': Math.ceil(review.contentRating) < star
-                                            }"
-                                        ></i>
-                                    </ng-container>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Relevancy Category -->
-                        <div class="col-md-5 col-lg-4 relevancy">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="mb-0 mt-1">Relevancy</h6>
-                                <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{review.relevancyRating}}</h6> -->
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <div class="stars mr-3">
-                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
-                                        <i
-                                            class="bi"
-                                            [ngClass]="{
-                                            'bi-star-fill': Math.floor(review.facultyRating) >= star,
-                                            'bi-star-half': Math.floor(review.facultyRating) < star && Math.ceil(review.facultyRating) >= star,
-                                            'bi-star': Math.ceil(review.facultyRating) < star
-                                            }"
-                                        ></i>
-                                    </ng-container>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Teaching Team Category -->
-                        <div class="col-md-5 col-lg-4 faclt">
-                            <div class="d-flex justify-content-between">
-                                <h6 class="mb-0 mt-1">Faculty</h6>
-                                <!-- <h6 class="mb-0 mr-3" style="font-weight: normal;">{{ review.facultyRating }}</h6> -->
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <div class="stars mr-3">
-                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
-                                        <i
-                                            class="bi"
-                                            [ngClass]="{
-                                            'bi-star-fill': Math.floor(review.relevancyRating) >= star,
-                                            'bi-star-half': Math.floor(review.relevancyRating) < star && Math.ceil(review.relevancyRating) >= star,
-                                            'bi-star': Math.ceil(review.relevancyRating) < star
-                                            }"
-                                        ></i>
-                                    </ng-container>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <!-- * Right Side (Review Heading, Categories, Stars, Description) -->
+                <div class="col-md-8 px-4 main-content-container"> 
                     <!-- Review Description -->
                     <p class="review">
-                        {{ expanded ? review.description : (review.description | slice:0:150) + (review.description.length > 150 ? '...' : '') }}
+                        {{ expanded ? review.description : (review.description | slice:0:350) + (review.description.length > 150 ? '...' : '') }}
                     </p>
 
                     <!-- Expand/Collapse Button -->
                     @if (review.description.length > 150) {
-                        <button class="btn btn-link p-0" (click)="toggleExpand()">
+                        <button class="btn btn-link p-0 mb-3" (click)="toggleExpand()">
                             <i [class]="expanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
                             {{ expanded ? 'Show Less' : 'Show More' }}
                         </button>
                     }
 
-                    <!-- Report and dislike/like buttons -->
-                    <div class="action-buttons-container">
-                        <!-- Report button -->
-                        <div class="report-button"
-                        *ngIf="currentUser && !(currentUser?._id ===  review.author._id)"
-                        (click)="showReportDialog()"
-                        >
-                            <i class="report" [class]="'pi pi-flag'"></i>
-                            <span>Report</span>
+                    <div class="row categories">
+                        <!-- Content Category -->
+                        <div class="col-md-3 col-lg-3 category">
+                            <!-- Category header -->
+                            <h6 class="category-header">Content</h6>
+                            <!-- Circles for Content Rating -->
+                            <div >
+                                <div class="circles mr-3">
+                                    @for (circle of [1,2,3,4,5]; track $index) {
+                                        <i 
+                                            class="circle"
+                                            [ngClass]="{
+                                            'full-circle': Math.floor(review.contentRating) >= circle,
+                                            'half-circle': Math.floor(review.contentRating) < circle && Math.ceil(review.contentRating) >= circle,
+                                            'empty-circle': Math.ceil(review.contentRating) < circle
+                                            }"
+                                        ></i>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <!-- Thumbs up/down -->
-                        <div class="thumb-buttons">
-                            <!-- Like button -->
-                            <span class="me-2">{{ review.likes }}</span>
-                            <i class="thumbs" [class]="liked ? 'pi pi-thumbs-up-fill' : 'pi pi-thumbs-up'" 
-                                (click)="toggleLike()" 
-                                [pTooltip]="currentUser?._id === review.author._id ? 'Cant like yours :(' : ''"
-                                fitContent="true"
-                            ></i>
-                            <!-- Dislike button -->
-                            <span class="me-2 ml-3">{{ review.dislikes }}</span>
-                            <i class="thumbs" [class]="disliked ? 'pi pi-thumbs-down-fill' : 'pi pi-thumbs-down'" 
-                                (click)="toggleDislike()"
-                                [pTooltip]="currentUser?._id === review.author._id ? 'Cant dislike yours :(' : ''"
-                            ></i>
+
+                        <!-- Faculty Category -->
+                        <div class="col-md-3 col-lg-3 category">
+                            <!-- Category header -->
+                            <h6 class="category-header">Faculty</h6>
+                            <!-- Circles for faculty rating -->
+                            <div class="circles mr-3">
+                                @for (circle of [1,2,3,4,5]; track $index) {
+                                    <i
+                                        class="circle"
+                                        [ngClass]="{
+                                        'full-circle': Math.floor(review.relevancyRating) >= circle,
+                                        'half-circle': Math.floor(review.relevancyRating) < circle && Math.ceil(review.relevancyRating) >= circle,
+                                        'empty-circle': Math.ceil(review.relevancyRating) < circle
+                                        }"
+                                    ></i>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Relevancy Category -->
+                        <div class="col-md-3 col-lg-3 category">
+                            <!-- Category header -->
+                            <h6 class="category-header">Relevancy</h6>
+                            <!-- Circles for relevancy rating -->
+                            <div class="circles mr-3">
+                                @for (circle of [1,2,3,4,5]; track $index) {
+                                    <i
+                                        class="circle"
+                                        [ngClass]="{
+                                        'full-circle': Math.floor(review.facultyRating) >= circle,
+                                        'half-circle': Math.floor(review.facultyRating) < circle && Math.ceil(review.facultyRating) >= circle,
+                                        'empty-circle': Math.ceil(review.facultyRating) < circle
+                                        }"
+                                    ></i>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-lg-3 d-flex flex-column justify-content-end">
+                            <!-- Report and dislike/like buttons -->
+                            <div class="action-buttons-container">
+                                <!-- Thumbs up/down -->
+                                <div class="thumb-buttons">
+                                    <!-- Like count -->
+                                    <span 
+                                        class="me-2"
+                                        [style]="{
+                                            'color': liked ? 'rgb(72, 158, 60)' : 'gray'
+                                        }"
+                                    >{{ review.likes }}</span>
+                                    <!-- Like button -->
+                                    <i 
+                                        class="thumbs" 
+                                        [class]="'pi pi-thumbs-up-fill'" 
+                                        (click)="toggleLike()" 
+                                        (mouseover)="hoveringLike = true"
+                                        (mouseleave)="hoveringLike = false"
+                                        [ngStyle]="{ 
+                                            'color': liked ? 'rgb(72, 158, 60)' : (currentUser ? (currentUser.email == review.author.email ? 'rgb(96,96,96)' : 'gray') : 'rgb(96,96,96)'),
+                                        }"
+                                        [pTooltip]="currentUser?._id === review.author._id ? 'Cant like yours :(' : ''"
+                                        fitContent="true"
+                                    ></i>
+                                    <!-- Dislike count -->
+                                    <span 
+                                        class="me-2 ml-3"
+                                        [style]="{
+                                            'color': disliked ? 'rgb(196, 57, 94)' : 'gray'
+                                        }"
+                                    >{{ review.dislikes }}</span>
+                                    <!-- Dislike button -->
+                                    <i 
+                                        class="thumbs"  
+                                        [class]="'pi pi-thumbs-down-fill'" 
+                                        (click)="toggleDislike()"
+                                        (mouseover)="hoveringDislike = true"
+                                        (mouseleave)="hoveringDislike = false"
+                                        [style]="{ 
+                                            'color': disliked ? 'rgb(196, 57, 94)' : (currentUser ? (currentUser.email == review.author.email ? 'rgb(96,96,96)' : 'gray') : 'rgb(96,96,96)'),
+                                        }"
+                                        [pTooltip]="currentUser?._id === review.author._id ? 'Cant dislike yours :(' : ''"
+                                    ></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Child component: Report Review -->
-                    <!-- <app-report-review
-                        [review]="review"
-                        [currentUser]="currentUser"
-                    ></app-report-review> -->
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Child component: Report Review -->
+
+
+    <!-- === Child component: Report Review === -->
     <app-report-review
         [review]="review"
         [currentUser]="currentUser"
