@@ -87,12 +87,10 @@
                 <!-- * Right Side (Review Heading, Categories, Stars, Description) -->
                 <div class="col-md-8 px-4 main-content-container"> 
                     <!-- Review Description -->
-                    <p class="review">
-                        {{ expanded ? review.description : (review.description | slice:0:350) + (review.description.length > 150 ? '...' : '') }}
-                    </p>
+                    <p class="review">{{ expanded ? review.description : (review.description | slice:0:350) + (review.description.length > 350 ? '...' : '') }}</p>
 
                     <!-- Expand/Collapse Button -->
-                    @if (review.description.length > 150) {
+                    @if (review.description.length > 350) {
                         <button class="btn btn-link p-0 mb-3" (click)="toggleExpand()">
                             <i [class]="expanded ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
                             {{ expanded ? 'Show Less' : 'Show More' }}

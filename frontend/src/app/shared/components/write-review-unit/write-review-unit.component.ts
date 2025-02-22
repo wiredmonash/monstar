@@ -274,13 +274,20 @@ export class WriteReviewUnitComponent {
    */
   @HostListener('document:keydown', ['$event'])
   handleKeyPress(event: KeyboardEvent) {
+    const currentState = this.stateList[this.stateIndex];
+
     // * Enter key handling
     if (event.key === 'Enter') {
+      // Allow SHIFT + ENTER in the description state
+      if (currentState === 'description' && event.shiftKey) { 
+        return;
+      }
+
       // Prevent the default action of the enter key
       event.preventDefault();
 
       // If the current state is 'submit', post the review
-      if (this.stateList[this.stateIndex] === 'submit') {
+      if (currentState === 'submit') {
         return this.postReview();
       }
 
@@ -304,21 +311,22 @@ export class WriteReviewUnitComponent {
     }
 
     // * Ratings handling
-    const keyRatingMap: { [key: string]: number} = { '1': 0.5, '2': 1, '3': 1.5, '4': 2, '5': 2.5, '6': 3, '7': 3.5, '8': 4, '9': 4.5, '0': 5 };
+    if (currentState == 'relevancyRating' || currentState == 'facultyRating' || currentState == 'contentRating') {
+      const keyRatingMap: { [key: string]: number} = { '1': 0.5, '2': 1, '3': 1.5, '4': 2, '5': 2.5, '6': 3, '7': 3.5, '8': 4, '9': 4.5, '0': 5 };
 
-    if (event.key in keyRatingMap) { 
-      const ratingValue = keyRatingMap[event.key];
-      const currentState = this.stateList[this.stateIndex];
+      if (event.key in keyRatingMap) { 
+        const ratingValue = keyRatingMap[event.key];
 
-      if (this.lastKeyPressed === event.key && (this.review as any)[currentState] === ratingValue) {
-        // Reset the rating if same key is pressed twice
-        (this.review as any)[currentState] = 0;
-      } else {
-        // Set new rating
-        (this.review as any)[currentState] = ratingValue;
+        if (this.lastKeyPressed === event.key && (this.review as any)[currentState] === ratingValue) {
+          // Reset the rating if same key is pressed twice
+          (this.review as any)[currentState] = 0;
+        } else {
+          // Set new rating
+          (this.review as any)[currentState] = ratingValue;
+        }
+
+        this.lastKeyPressed = event.key;
       }
-
-      this.lastKeyPressed = event.key;
     }
 
   }
