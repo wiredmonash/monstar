@@ -17,10 +17,12 @@ import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { TableModule } from 'primeng/table';
-import { DatePipe, UpperCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, UpperCasePipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { MenubarModule } from 'primeng/menubar';
+import { ViewportService, ViewportType } from '../../services/viewport.service';
 declare var google: any;
 
 @Component({
@@ -44,7 +46,9 @@ declare var google: any;
     UpperCasePipe,
     RatingModule,
     DatePipe,
-    SkeletonModule
+    SkeletonModule,
+    MenubarModule,
+    CommonModule,
   ],
   providers: [
     ConfirmationService
@@ -53,6 +57,8 @@ declare var google: any;
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  window = window;
+
   // used to get the google sign in button element
   @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
 
@@ -166,9 +172,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  mobileLimit: number = 950;
-  // Boolean to determine whether the user is on a mobile device
-  isMobile: boolean = window.innerWidth <= this.mobileLimit;
+  // Viewport type retrieved viewport service subscription
+  viewportType: ViewportType = 'desktop';
 
 
   /**
@@ -181,7 +186,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
-    private confirmService: ConfirmationService
+    private confirmService: ConfirmationService,
+    private viewportService: ViewportService
   ) { }
 
 
@@ -246,50 +252,43 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Set profile menu items
     this.profileMenuItems = [
-      {
-        label: `User: ${this.user?.username || 'Guest'}`,
-        items: [
-          {
-            label: 'Details',
-            icon: 'pi pi-user',
-            command: () => {
-              this.profileMenuState = 'details';
-            }
-          },
-          {
-            label: 'Reviews',
-            icon: 'pi pi-address-book',
-            command: () => {
-              this.profileMenuState = 'reviews';
-            }
-          },
-          {
-            label: 'Friends',
-            icon: 'pi pi-users',
-            disabled: true,
-            command: () => {
-              this.profileMenuState = 'friends';
-            }
-          },
-          {
-            label: 'Settings',
-            icon: 'pi pi-cog',
-            command: () => {
-              this.profileMenuState = 'settings';
-            }
-          },
-          {
-            separator: true
-          },
-          {
-            label: 'Logout',
-            icon: 'pi pi-sign-out',
-            command: () => {
-              this.logout();
-            }
+        {
+          label: 'Profile',
+          icon: 'pi pi-user',
+          command: () => {
+            this.profileMenuState = 'details';
           }
-        ]
-      }
+        },
+        {
+          label: 'Reviews',
+          icon: 'pi pi-address-book',
+          command: () => {
+            this.profileMenuState = 'reviews';
+          }
+        },
+        {
+          label: 'Friends',
+          icon: 'pi pi-users',
+          disabled: true,
+          command: () => {
+            this.profileMenuState = 'friends';
+          }
+        },
+        {
+          label: 'Settings',
+          icon: 'pi pi-cog',
+          command: () => {
+            this.profileMenuState = 'settings';
+          }
+        },
+        {
+          label: 'Logout',
+          icon: 'pi pi-sign-out',
+          style: { 'background-color': 'var(--red-300)', 'border-radius': '6px' },
+          command: () => {
+            this.logout();
+          }
+        }
     ];
 
     // Subscribe to the dialogClosedEvent
@@ -299,6 +298,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.inputEmail = '';
       this.inputPassword = '';
       this.inputPassword2 = '';
+      this.isEditingUsername = false;
     });
 
     // Subscribe to the dialogOpenedEvent
@@ -311,6 +311,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       setTimeout(() => { this.showGoogleSkeleton = false; }, 1000);
     });
 
+    // Get viewport changes
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
+    
     // Changing dialog title based on state
     if (this.state == 'signed up') { this.titleChangeEvent.emit('Verify your email'); }
     else if (this.state == 'logged in') { this.titleChangeEvent.emit('Profile'); }
@@ -345,7 +350,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.isGoogleLoading = true;
 
       await google.accounts.id.initialize({
-        client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
+        client_id: '671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com',
         // * login_uri is only supported on ux_mode: "redirect", callback is used otherwise
         callback: this.onGoogleSignIn.bind(this),
         // login_uri: "http://localhost:8080/api/v1/auth/google/register",
@@ -806,7 +811,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.isUsernameInputValid = false;
       this.inputUpdateUsername = '';
       this.inputUpdatePassword = '';
-      this.createToast.emit({ severity: 'error', summary: 'Invalid username', detail: 'Please enter a valid username' });
+      this.createToast.emit({ severity: 'error', summary: 'Invalid username', detail: 'Invalid Username (Please enter an alphanumeric username <= 20 characters)' });
       console.log('Profile | Not a valid username')
     }
     }
@@ -983,11 +988,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.resetEmailTimer) { clearInterval(this.resetEmailTimer); }
   }
 
-  /**
-   * * Listens for window resize events
-   */
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.isMobile = window.innerWidth <= this.mobileLimit;
+  menuStates = ['details', 'reviews', 'settings'];
+  navigateMenu(direction: 'prev' | 'next') {
+    const currentIndex = this.menuStates.indexOf(this.profileMenuState);
+    let newIndex: number;
+
+    if (direction === 'next') {
+      newIndex = (currentIndex + 1) % this.menuStates.length;
+    } else {
+      newIndex = (currentIndex - 1 + this.menuStates.length) % this.menuStates.length; 
+    }
+
+    this.profileMenuState = this.menuStates[newIndex] as 'details' | 'reviews' | 'friends' | 'settings';
+  }
+
+  @ViewChild('usernameInput') usernameInput!: ElementRef;
+  isEditingUsername = false;
+  startEditingUsername() {
+    this.isEditingUsername = true;
+    this.inputUpdateUsername = this.user?.username || '';
+    setTimeout(() => {
+      this.usernameInput.nativeElement.focus();
+    });
   }
 }

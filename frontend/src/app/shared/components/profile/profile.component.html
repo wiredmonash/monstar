@@ -85,6 +85,7 @@
                         type="button"
                         class="p-button-link"
                         (click)="state='logged out'; titleChangeEvent.emit('Login');"
+                        [style]="{ 'margin-bottom': '1rem' }"
                     >
                         Login Here
                     </a>
@@ -180,8 +181,10 @@
 
         <!-- Divider -->
         <div class="middle">
-            <p-divider [layout]="isMobile ? 'horizontal' : 'vertical'">
-                @if (!isMobile) { <b>OR</b> }
+            <p-divider [layout]="viewportType === 'desktop' ? 'vertical' : 'horizontal'">
+                @if (viewportType === 'desktop') { 
+                    <b>OR</b> 
+                }
             </p-divider>
         </div>
 
@@ -249,26 +252,45 @@
 <!-- Logged in state will show the profile -->
 @else if (state === 'logged in') {
     <div class="profile">
-        <!-- Left-Hand Side Menu Options -->
-        <p-menu #profileMenu [model]="profileMenuItems"></p-menu>
+        <div class="menu-container mb-2">
+            <!-- Top Menu Options -->
+            <p-menubar 
+                [model]="profileMenuItems" styleClass="menu"
+                [style.display]="viewportType !== 'desktop' ? 'none' : ''"
+            />
+        </div>
 
-        <!-- Vertical Divider -->
-        <p-divider layout="vertical"></p-divider>
+        <!-- Navigation arrows -->
+        @if (viewportType !== 'desktop') {
+            <div class="nav-arrows">
+                <button 
+                    class="nav-arrow left-arrow"
+                    (click)="navigateMenu('prev')"
+                >
+                    <i class="pi pi-angle-left"></i>
+                </button>
+                <button
+                    class="nav-arrow right-arrow"
+                    (click)="navigateMenu('next')"
+                >
+                    <i class="pi pi-angle-right"></i>
+                </button>
+            </div>
+        }
 
         <!-- If we have a user then we are logged in and we can show stuff :) -->
         @if (user) {
             <!-- Details-->
             @if (profileMenuState === 'details') {
                 @if (!profileLoading) {
-                    <div class="update-details">
-                        <!-- Details title -->
-                        <h4 class="title">Your Details</h4>
-
-                        <!-- Avatar and username card -->
-                        <p-card class="avatar-card m-0" [style]="{ 'overflow': 'hidden', 'width': 'fit-content' }">
-                            <div class="d-flex align-items-center p-0">
-
-                                <!-- Profile picture -->
+                    <div class="details">
+                        <div class="title">
+                            <h3 class="text-center prevent-select text-400">Profile</h3>
+                        </div>
+                        <div class="header">
+                            <!-- Avatar with Overlay -->
+                            <div class="avatar-container">
+                                <!-- Avatar Image -->
                                 <img
                                     [src]="user.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
                                     alt="Profile Picture"
@@ -279,34 +301,35 @@
                                 <div class="avatar-overlay" (click)="uploadAvatar()" pTooltip="Upload (5 MB)" tooltipPosition="top">
                                     <i class="pi pi-upload upload-icon"></i>
                                 </div>
-
-                                <!-- Username -->
-                                <span>{{ user.username || 'No User' }}</span>
                             </div>
-                        </p-card>
 
-                        <!-- Update username input -->
-                        <ng-container class="input-container">
-                            <p-floatLabel>
-                                <input pInputText id="username" variant="filled" [(ngModel)]="inputUpdateUsername" (focus)="isUsernameInputValid = true;"/>
-                                <label for="username">Update your Username</label>
-                            </p-floatLabel>
-                        </ng-container>
+                            <!-- Editable Username -->
+                            <div class="username-container">
+                                @if (isEditingUsername) {
+                                    <input
+                                        #usernameInput
+                                        pInputText
+                                        [(ngModel)]="inputUpdateUsername"
+                                        (keyup.enter)="updateDetails(); isEditingUsername = false;"
+                                        (blur)="isEditingUsername = false"
+                                        class="username-input"
+                                        (focus)="isUsernameInputValid = true"
+                                    />
+                                } @else {
+                                    <h4 class="title text-center prevent-select">{{ user.username }}</h4>
+                                    <button
+                                        pButton
+                                        class="p-button-text p-button-rounded edit-button"
+                                        icon="pi pi-pencil"
+                                        (click)="startEditingUsername()"
+                                    ></button>
+                                }
+                            </div>
+                        </div>
 
-                        @if (!isUsernameInputValid) {
-                          <small id="username-help" style="background-color: rgb(248, 113, 113);">Invalid Username (Please enter an alphanumeric username <= 20 characters)</small>
-                        }
-
-                        <!-- Update password input -->
-                        @if (!user.isGoogleUser) {
-                            <p-floatLabel>
-                                <input pInputText id="password" variant="filled" type="password" [(ngModel)]="inputUpdatePassword" />
-                                <label for="password">New Password (optional)</label>
-                            </p-floatLabel>
-                        }
-
-                        <!-- Submit changes to update details -->
-                        <p-button label="Update Details" class="update-details-button" styleClass="padding-top: 2rem;" (onClick)="updateDetails()"></p-button>
+                        <div class="stats">
+                            <p class="text-center prevent-select">{{ user.reviews.length }} Reviews</p>
+                        </div>
                     </div>
                 } @else {
                     <!-- Loading when the profileLoading is true -->
@@ -315,41 +338,49 @@
             }
             <!-- Reviews -->
             @else if (profileMenuState === 'reviews') {
+                <div class="title mt-3">
+                    <h3 class="text-center prevent-select text-400">Your Reviews</h3>
+                </div>
                 <!-- This is the table of the reviews that the user has written -->
                 <div class="reviews-container">
                     <p-table 
                         [value]="reviews" 
-                        [tableStyle]="{ 'min-width': '40rem', 'max-width': '50rem' }"
-                        styleClass="p-datatable-striped"
+                        [tableStyle]="{ 'max-width': '50rem' }"
+                        styleClass="p-datatable-striped small"
                     >
-                        <ng-template pTemplate="caption">
-                            <div class="flex align-items-center justify-content-between" style="user-select: none;">
-                                Your Reviews
-                            </div>
-                        </ng-template>
                         <ng-template pTemplate="header">
                             <tr style="user-select: none;">
-                                <th>Date</th>
+                                <th *ngIf="viewportType === 'desktop'">Date</th>
                                 <th>Unit</th>
-                                <th>TItle</th>
-                                <th>Rating</th>
-                                <th>Likes</th>
-                                <th>Dislikes</th>
+                                <th *ngIf="viewportType !== 'mobile'" style="max-width: 200px;">Title</th>
+                                <th *ngIf="viewportType === 'desktop' || viewportType === 'laptop'">Rating</th>
+                                @if (viewportType === 'desktop' || viewportType === 'laptop') {
+                                    <th>Likes</th>
+                                    <th>Dislikes</th>
+                                }
                                 <th>Actions</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-review>
                             <tr>
                                 <!-- Date of review creation -->
-                                <td>
+                                <td *ngIf="viewportType === 'desktop'">
                                     {{ review.createdAt | date: 'dd/MM/yyyy' }}
                                 </td>
                                 <!-- Unitcode of the unit that the review is in -->
-                                <td style="user-select: none;">{{ review.unit.unitCode | uppercase }}</td>
+                                <td 
+                                    style="user-select: none;" 
+                                >{{ review.unit.unitCode | uppercase }}</td>
                                 <!-- Title of review -->
-                                <td style="user-select: none;">{{ review.title }}</td>
+                                <td 
+                                    *ngIf="viewportType !== 'mobile'" 
+                                    pTooltip="{{ review.title }}"
+                                    style="user-select: none; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                                >{{ review.title }}</td>
                                 <!-- Rating stars -->
-                                <td>
+                                <td 
+                                    *ngIf="viewportType === 'desktop' || viewportType === 'laptop'"
+                                >
                                     <p-rating 
                                         [(ngModel)]="review.overallRating"
                                         [readonly]="true"
@@ -357,14 +388,16 @@
                                         style="user-select: none; pointer-events: none; cursor: default;"
                                     />
                                 </td>
-                                <!-- Likes of this review -->
-                                <td style="text-align: center; user-select: none;">
-                                    {{ review.likes }}
-                                </td>
-                                <!-- Dislikes of this review -->
-                                <td style="text-align: center; user-select: none;">
-                                    {{ review.dislikes }}
-                                </td>
+                                @if (viewportType === 'desktop' || viewportType === 'laptop') {
+                                    <!-- Likes of this review -->
+                                    <td style="text-align: center; user-select: none;">
+                                        {{ review.likes }}
+                                    </td>
+                                    <!-- Dislikes of this review -->
+                                    <td style="text-align: center; user-select: none;">
+                                        {{ review.dislikes }}
+                                    </td>
+                                }
                                 <!-- Actions to edit and delete the review -->
                                 <td>
                                     <!-- TODO: Edit button is disabled because there is no functionality for this yet -->
@@ -385,19 +418,54 @@
             }
             <!-- Settings -->
             @else if (profileMenuState === 'settings') {
+                <div class="title">
+                    <h3 class="text-center prevent-select text-400 mt-3">Settings</h3>
+                </div>
                 <div class="settings-container">
+                    <!-- Update password input -->
+                    @if (!user.isGoogleUser) {
+                        <div class="mt-4">
+                            <h4 class="text-center prevent-select">Don't like your password?</h4>
+                            <div class="password-update-container mt-4">
+                                <p-floatLabel>
+                                    <input pInputText id="password" variant="filled" type="password" [(ngModel)]="inputUpdatePassword" />
+                                    <label for="password">Enter New Password</label>
+                                </p-floatLabel>
+                                <p-button 
+                                    icon="pi pi-check"
+                                    (click)="updateDetails()"
+                                    pTooltip="Update Password"
+                                    tooltipPosition="left"
+                                />
+                            </div>
+                        </div>
+                        <p-divider [style]="{ 'width': '60vw' }"></p-divider>
+                    }
+                    <!-- Logout -->
+                    <div class="flex flex-column justify-content-center align-items-center" [class]="user.isGoogleUser ? 'mt-4' : ''">
+                        <h4 class="text-center prevent-select mb-3">We'll meet again?</h4>
+                        <p-button
+                            label="Logout"
+                            severity="warning"
+                            icon="pi pi-sign-out"
+                            (click)="logout()"
+                        />
+                    </div>
+                    <p-divider [style]="{ 'width': '60vw' }"></p-divider>
                     <!-- Delete Account Section -->
-                    <h4>Delete Account</h4>
-                    <p-confirmPopup styleClass="delete-confirm-popup"></p-confirmPopup>
-                    <p-button
-                        label="Delete Account"
-                        severity="danger"
-                        icon="pi pi-trash"
-                        (onClick)="deleteAccountConfirmation($event)"
-                        pTooltip="This action is irreversible"
-                        tooltipPosition="bottom"
-                        tooltipZIndex="9999"
-                    />
+                    <div>
+                        <h4 class="text-center prevent-select mb-3">Danger zone!</h4>
+                        <p-confirmPopup styleClass="delete-confirm-popup"></p-confirmPopup>
+                        <p-button
+                            label="Delete Account"
+                            severity="danger"
+                            icon="pi pi-trash"
+                            (onClick)="deleteAccountConfirmation($event)"
+                            pTooltip="This action is irreversible"
+                            tooltipPosition="bottom"
+                            tooltipZIndex="9999"
+                        />
+                    </div>
                 </div>
             }
         } @else {

@@ -130,8 +130,9 @@
         pRipple
         label="Review"
         icon="pi pi-pencil" 
-        (click)="showDialog()" 
+        (click)="showDialog()"
         rounded="true"
+        [style]="{ 'background-color': 'var(--primary-color)', 'border': 'none' }"
         [disabled]="user == null ? true : false"
       ></p-button>
     </div>

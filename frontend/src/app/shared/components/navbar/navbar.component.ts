@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { StyleClassModule } from 'primeng/styleclass';
-import { DialogModule } from 'primeng/dialog';
+import { Dialog, DialogModule } from 'primeng/dialog';
 import { ProfileComponent } from '../profile/profile.component';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -13,6 +13,7 @@ import { User } from '../../models/user.model';
 import { TooltipModule } from 'primeng/tooltip';
 import { BadgeModule } from 'primeng/badge';
 import { filter } from 'rxjs/operators';
+import { ViewportService, ViewportType } from '../../services/viewport.service';
 
 @Component({
   selector: 'app-navbar',
@@ -40,6 +41,9 @@ export class NavbarComponent implements OnInit {
   // Reference to the sidebar child
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
+  // Reference to the profile dialog
+  @ViewChild('profileDialog') profileDialog!: Dialog;
+
   // ! Event emitter for opening/closing the dialog  THIS COULD CAUSE LAG ()_() !!!!!!!!!
   @Output() dialogClosedEvent = new EventEmitter<void>();
   @Output() dialogOpenedEvent = new EventEmitter<void>();
@@ -55,25 +59,36 @@ export class NavbarComponent implements OnInit {
   // Title of the profile dialog
   profileDialogTitle: string = 'Sign Up';
   // Visibility state of the profile dialog
-  profileDialogVisible: boolean = false;
+  profileDialogVisible: boolean = true;
 
   // The color of the navbar background (changes based on route)
-  navbarColor: string = '#e288e2';
+  navbarColor: string = 'var(--primary-color)';
   // The color of the title (changes based on route)
-  titleColor: string = '#e288e2';
+  titleColor: string = 'var(--primary-color)';
   // The color of the hamburger menu icon (changes based on route)
-  hamburgColor: string = '#363636';
+  hamburgColor: string = 'black';
   // The color of the profile icon (changes based on route)
-  profileColor: string = '#363636';
+  profileColor: string = 'black';
 
   // Current user
   user: User | null = null;
 
-
-  // ! Injects MessageService and Router
+  // Viewport type
+  viewportType: ViewportType = 'desktop';
+  
+  /**
+   * ! Constructor
+   * 
+   * Navigation event listener to update the navbar colour
+   * 
+   * @param messageService The message service
+   * @param router The router service
+   * @param viewportService The viewport service  
+   */
   constructor (
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private viewportService: ViewportService
   ) {
     // Subscribes to changes in navigation
     this.router.events.pipe(
@@ -84,13 +99,29 @@ export class NavbarComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  /**
+   * * On Initalisation
+   * 
+   * - Updates the navbar color
+   * - Subcribes to viewport changes
+   */
+  ngOnInit() {  
     this.updateNavbarColor();
+
+    // Subscribe to viewport changes
+    this.viewportService.viewport$.subscribe(type => { 
+      this.viewportType = type; 
+    });
   }
 
+  /**
+   * * Updates the navbar color
+   * 
+   * This method updates the navbar color based no the current route.
+   */
   private updateNavbarColor() {
-    this.navbarColor = this.router.url === '/' ? '#e288e2' : '#2c2c2c';
-    this.titleColor = this.router.url === '/' ? 'black' : '#e288e2';
+    this.navbarColor = this.router.url === '/' ? 'var(--primary-color)' : 'var(--fg-dark-color)';
+    this.titleColor = this.router.url === '/' ? 'black' : 'var(--primary-color)';
     this.hamburgColor = this.router.url === '/' ? 'black' : 'white';
     this.profileColor = this.router.url === '/' ? 'black' : 'white';
   }
@@ -98,8 +129,12 @@ export class NavbarComponent implements OnInit {
   /** 
    * * Keybinds
    * 
+   * This method listens for key presses and performs actions based on the key press.
+   * 
    * - Open and close the profile dialog with CTRL + P
    * - Open and close the sidebar with CTRL + S
+   * 
+   * @param event The keyboard event
    */
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
@@ -137,7 +172,9 @@ export class NavbarComponent implements OnInit {
   }
 
   /**
-   * * On close of the dialog
+   * * Called when the dialog is closed
+   * 
+   * @event dialogClosedEvent Event emitter for when the dialog is closed.
    */
   onDialogClose() {
     // Emit to children that we closed the dialog
@@ -151,7 +188,23 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  onDialogOpen() {
+  /**
+   * * Called when the dialog is opened
+   * 
+   * @event dialogOpenedEvent Event emitter for when the dialog is opened.
+   * @param dialog The dialog that was opened.
+   */
+  onDialogOpen(dialog: Dialog) {
+    this.profileDialog = dialog;
+
+    // if (dialog && this.profileState !== 'logged in' && this.viewportType === 'mobile') { 
+    //   dialog.maximize(); 
+    // }
+
+    if (dialog && this.profileState === 'logged in' && (this.viewportType === 'laptop' || this.viewportType === 'tablet' || this.viewportType === 'mobile')) {
+      dialog.maximize();
+    }
+
     this.dialogOpenedEvent.emit();
   }
 

@@ -2,18 +2,20 @@
 
 <!-- ! Profile Dialog -->
 <p-dialog 
+  #profileDialog 
   [(visible)]="profileDialogVisible" 
   header="{{profileDialogTitle}}" 
   [draggable]="false" 
   [modal]="true" 
   [resizable]="false" 
-  [style]="{ 'width': '75vw' }"
+  [maximizable]="true"
+  [style]="{ 'width': '75vw', 'height': '75vh' }"
   [closeOnEscape]="profileState == 'signed up' ? false : true"
   (onHide)="onDialogClose()"
-  (onShow)="onDialogOpen()"
+  (onShow)="onDialogOpen(profileDialog)"
 >
   <!-- For the content of the dialog see profile.component.html -->
-  <app-profile 
+  <app-profile
     [state]="profileState"
     [dialogClosedEvent]="dialogClosedEvent"
     [dialogOpenedEvent]="dialogOpenedEvent"
