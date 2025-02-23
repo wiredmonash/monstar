@@ -46,6 +46,15 @@ const reviewSchema = new Schema({
     timestamps: true
 });
 
+// Add pre-save hook to collapse multiple newlines into a single newline
+reviewSchema.pre('save', function(next) {
+    if (this.description) {
+        // Replace 3 or more newlines with exactly 2 newlines
+        this.description = this.description.replace(/\n{3,}/g, '\n\n');
+    }
+    next();
+});
+
 // Export the Review model
 const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

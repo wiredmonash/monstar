@@ -94,6 +94,15 @@
           <span class="inline-flex align-items-center gap-2">
             <span class="font-semibold text-2xl sidebar-title prevent-select">MonSTAR</span>
           </span>
+
+          <!-- Close button -->
+          <i
+            class="pi pi-times"
+            (click)="sidebarVisible = false"
+            style="cursor: pointer; font-size: 1.5rem; color: white;"
+            pTooltip="Close Sidebar"
+            tooltipPosition="bottom"
+          ></i>
         </div>
 
         <!-- User Profile -->

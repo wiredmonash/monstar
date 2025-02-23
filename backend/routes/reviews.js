@@ -254,7 +254,8 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
  * @returns {JSON} Responds with the deleted review in JSON format
  * @throws {500} If an error occurs whilst deleting the review.
  */
-router.delete('/delete/:reviewId', async function (req, res) {
+router.delete('/delete/:reviewId', 
+    async function (req, res) {
     try {
         // Find the Review
         const review = await Review.findById(req.params.reviewId);

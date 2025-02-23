@@ -159,7 +159,11 @@
                     <!-- "Don't have an account? Sign Up" Link changes state to 'signed out'-->
                     <p>
                         Don't have an account?
-                        <a pButton type="button" class="p-button-link"
+                        <a 
+                            pButton 
+                            type="button" 
+                            class="p-button-link"
+                            [style]="{ 'margin-bottom': '1rem' }" 
                             (click)="state='signed out'; titleChangeEvent.emit('Sign Up');"
                         >Sign Up</a>
                     </p>
@@ -176,8 +180,8 @@
 
         <!-- Divider -->
         <div class="middle">
-            <p-divider layout="vertical">
-                <b>OR</b>
+            <p-divider [layout]="isMobile ? 'horizontal' : 'vertical'">
+                @if (!isMobile) { <b>OR</b> }
             </p-divider>
         </div>
 

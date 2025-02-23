@@ -43,7 +43,7 @@ $avatar-size: 64px;
             display: inline-flex;
             align-items: center;
             font-weight: bold;
-            margin-bottom: 1rem;
+            //margin-bottom: 1rem;
         }
     }
   
@@ -186,4 +186,43 @@ $avatar-size: 64px;
         }        
     }
 }
-  
+
+// === Responsive Sign Up and Login Forms ===
+@media screen and (max-width: 950px) {
+    // Sets it up so that the form will be in a column format
+    .signup-form {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    // Remove the margin from the bottom of the forgot password link
+    .forgot-password {
+        margin-bottom: 0;
+    }
+
+    // Allows for horizontal divider
+    .middle {
+        width: 100%;
+        max-height: 20px;
+        display: flex;
+        justify-content: center;
+
+        p-divider {
+            width: 100%;
+        }
+    }
+
+    // Makes sure the the "OR" will be centered
+    .middle p-divider[layout='vertical'] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .left, .right {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -1,4 +1,4 @@
-import { assertPlatform, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
+import { assertPlatform, HostListener, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
@@ -165,6 +165,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  mobileLimit: number = 950;
+  // Boolean to determine whether the user is on a mobile device
+  isMobile: boolean = window.innerWidth <= this.mobileLimit;
 
 
   /**
@@ -977,5 +981,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Clear the timer on destroy
     if (this.resetEmailTimer) { clearInterval(this.resetEmailTimer); }
+  }
+
+  /**
+   * * Listens for window resize events
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobile = window.innerWidth <= this.mobileLimit;
   }
 }
