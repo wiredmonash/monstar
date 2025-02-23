@@ -59,7 +59,7 @@ export class NavbarComponent implements OnInit {
   // Title of the profile dialog
   profileDialogTitle: string = 'Sign Up';
   // Visibility state of the profile dialog
-  profileDialogVisible: boolean = true;
+  profileDialogVisible: boolean = false;
 
   // The color of the navbar background (changes based on route)
   navbarColor: string = 'var(--primary-color)';
