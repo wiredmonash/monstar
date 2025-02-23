@@ -1,4 +1,5 @@
 import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { OrganizationChartModule } from 'primeng/organizationchart';
 import { ApiService } from '../../shared/services/api.service';
 import { Router } from '@angular/router';
@@ -78,7 +79,8 @@ export class UnitMapComponent implements OnInit, OnDestroy {
    */
   constructor (
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
 
@@ -256,9 +258,9 @@ export class UnitMapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Navigates back to the unit overview page
+   * * Navigates back to the previous page
    */
   navigateBack() {
-    return this.router.navigate(['/unit-overview', this.unit?.unitCode.toLowerCase()]);
+    return this.location.back();
   }
 }
