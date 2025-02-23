@@ -345,7 +345,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.isGoogleLoading = true;
 
       await google.accounts.id.initialize({
-        client_id: '923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com',
+        client_id: '671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com',
         // * login_uri is only supported on ux_mode: "redirect", callback is used otherwise
         callback: this.onGoogleSignIn.bind(this),
         // login_uri: "http://localhost:8080/api/v1/auth/google/register",
