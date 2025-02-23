@@ -129,9 +129,9 @@
                                     <i
                                         class="circle"
                                         [ngClass]="{
-                                        'full-circle': Math.floor(review.relevancyRating) >= circle,
-                                        'half-circle': Math.floor(review.relevancyRating) < circle && Math.ceil(review.relevancyRating) >= circle,
-                                        'empty-circle': Math.ceil(review.relevancyRating) < circle
+                                        'full-circle': Math.floor(review.facultyRating) >= circle,
+                                        'half-circle': Math.floor(review.facultyRating) < circle && Math.ceil(review.facultyRating) >= circle,
+                                        'empty-circle': Math.ceil(review.facultyRating) < circle
                                         }"
                                     ></i>
                                 }
@@ -148,9 +148,9 @@
                                     <i
                                         class="circle"
                                         [ngClass]="{
-                                        'full-circle': Math.floor(review.facultyRating) >= circle,
-                                        'half-circle': Math.floor(review.facultyRating) < circle && Math.ceil(review.facultyRating) >= circle,
-                                        'empty-circle': Math.ceil(review.facultyRating) < circle
+                                        'full-circle': Math.floor(review.relevancyRating) >= circle,
+                                        'half-circle': Math.floor(review.relevancyRating) < circle && Math.ceil(review.relevancyRating) >= circle,
+                                        'empty-circle': Math.ceil(review.relevancyRating) < circle
                                         }"
                                     ></i>
                                 }
