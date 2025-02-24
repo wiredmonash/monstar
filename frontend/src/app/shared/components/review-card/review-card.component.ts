@@ -1,5 +1,5 @@
 import { CommonModule, NgOptimizedImage, SlicePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { AvatarModule } from 'primeng/avatar';
@@ -12,6 +12,8 @@ import { User } from '../../models/user.model';
 import { Subscription } from 'rxjs';
 import { TooltipModule } from 'primeng/tooltip';
 import { ReportReviewComponent } from './report-review/report-review.component';
+import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { BadgeModule } from 'primeng/badge';
 
 @Component({
   selector: 'app-review-card',
@@ -24,7 +26,8 @@ import { ReportReviewComponent } from './report-review/report-review.component';
     ConfirmPopupModule,
     ButtonModule,
     TooltipModule,
-    ReportReviewComponent
+    ReportReviewComponent,
+    BadgeModule
   ],
   providers: [
     ConfirmationService,
@@ -51,12 +54,12 @@ import { ReportReviewComponent } from './report-review/report-review.component';
   ]
 })
 export class ReviewCardComponent implements OnInit, OnDestroy {
-
   // Report dialog component
   private _reportReviewDialog!: ReportReviewComponent;
 
-  // Allow the template to use Math
+  // Providing to template
   Math = Math;
+  console = console;
 
   // Accept review data from the parent component
   @Input() review: any; 
@@ -74,7 +77,6 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
       this._reportReviewDialog = content;
     }
   }
-
   get reportReviewDialog(): ReportReviewComponent {
     return this._reportReviewDialog;
   }
@@ -82,42 +84,48 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Expand state
   expanded: boolean = false;
 
-  console = console;
-
-  // Liked state
+  // Liking
   liked: boolean = false;
-  // Hovering state for the like button
   hoveringLike: boolean = false;
-  // No. of likes
   likes: number = 0;
-
-  // Disliked state
+  // Disliking
   disliked: boolean = false;
-  // Hovering state for the dislike button
   hoveringDislike: boolean = false;
-  // No. of dislikes
   dislikes: number = 0;
 
   // Delete button visibility state
   deleteButtonState: 'visible' | 'hidden' = 'hidden';
 
-  // Stores current user by subscribing to AuthService
+  // Current user
   currentUser: User | null = null;
-  // Stores the subscription for currentUser from AuthService
   private userSubscription: Subscription = new Subscription();
 
+  // Viewport type
+  viewportType: ViewportType = 'desktop';
+
+
+
   /**
-   * Constructor 
+   * ! Constructor 
    *
    */
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private viewportService: ViewportService
   ) { }
 
+
+
+  /** 
+   * ! |=======================================================================|
+   * ! | LIFECYCLE HOOKS                                                       |
+   * ! |=======================================================================|
+   */
+
   /**
-   * === Runs on initialisation ===
+   * * Runs on initialisation
    * 
    * - Sets the likes and dislikes count for the review
    */
@@ -140,24 +148,38 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         console.log('ReviewCard | Current User:', this.currentUser);
       }
     });
+
+    // Subscribe to viewport changes
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
   }
 
   /**
-   * === Runs on destroy ===
+   * * Runs on destroy
    * 
    * Unsubscribes from the currentUser subscription
    */
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
   }
-  
 
-  // === Choices on confirmation popup (either delete or cancel) ===
+
+
+  /** 
+   * ! |=======================================================================|
+   * ! | REVIEW DELETION                                                       |
+   * ! |=======================================================================|
+   */
+  
+  /** 
+   * * Choices on confirmation popup (either delete or cancel)
+   */
   accept() { this.confirmPopup.accept(); }
   reject() { this.confirmPopup.reject(); }
 
   /**
-   * === Subscribes to the confirmation service on deletion ===
+   * * Subscribes to the confirmation service on deletion
    */
   confirmDeletion(event: Event) {
     this.confirmationService.confirm({
@@ -171,7 +193,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * === Deletes a review from the DB using API Service Method ===
+   * * Deletes a review from the DB using API Service Method
    * 
    * This deletes a review by it's MongoDB ID. If successful, it emits the 
    * reviewDeleted event so that 'unit-overview' can refresh the reviews.
@@ -196,15 +218,16 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * === Method to toggle the expand/collapse state ===
+
+
+  /** 
+   * ! |=======================================================================|
+   * ! | LIKING AND DISLIKING                                                  |
+   * ! |=======================================================================|
    */
-  toggleExpand() {
-    this.expanded = !this.expanded;
-  }
 
   /**
-   * === Method to toggle the like state ===
+   * * Method to toggle the like state
    */
   toggleLike() {
     if (!this.currentUser) return;
@@ -239,7 +262,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * === Method to toggle the dislike state === 
+   * * Method to toggle the dislike state
    */
   toggleDislike() {
     if (!this.currentUser) return;
@@ -273,8 +296,23 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     });
   }
 
+
+
+  /** 
+   * ! |=======================================================================|
+   * ! | HELPER METHODS                                                        |
+   * ! |=======================================================================|
+   */
+
   /**
-   * * === Shows dialog to report review ===
+   * * Method to toggle the expand/collapse state
+   */
+  toggleExpand() {
+    this.expanded = !this.expanded;
+  }
+
+  /**
+   * * Shows dialog to report review
    */
   showReportDialog() {
     if (this.currentUser && this.reportReviewDialog) {

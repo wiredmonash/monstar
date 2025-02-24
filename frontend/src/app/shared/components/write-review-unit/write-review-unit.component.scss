@@ -8,12 +8,16 @@
     z-index: 1000 !important;
 }
 
-:host {
-    ::ng-deep .toast-override {
-        font-family: 'Fira Code'
+// Less padding for mobile devices
+::ng-deep .p-dialog {
+    @media screen and (max-width: 400px) {
+        .p-dialog-content {
+            padding: 0.5rem;
+        }
     }
 }
 
+// The wrapper for everything
 .dialog-wrapper {
     position: relative;
     display: flex;
@@ -21,6 +25,7 @@
     justify-content: center;
 }
 
+// Desktop & laptop navbar buttons
 .nav-button {
     position: absolute;
     top: 50%;
@@ -37,12 +42,41 @@
     }
 }
 
+// Tablet and mobile navbar buttons
+.mobile-nav-container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem;
+    z-index: 2000;
+    margin-bottom: 1rem;
+
+    border-bottom: 1px solid var(--surface-200);
+
+    .back-button, .next-button {
+        min-width: 100px;
+    }
+
+    &:has(.next-button:only-child) {
+        justify-content: flex-end;
+    }
+
+    &:has(.back-button:only-child) {
+        justify-content: flex-start;
+    }
+}
+
+// The content shown in the dialog
 .dialog-content {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
 
+    // Animation for the content
     > div {
         position: relative;
         width: 100%;
@@ -55,29 +89,41 @@
         animation-fill-mode: forwards;
         animation-timing-function: ease-out;
 
-        &.slide-next-enter {
-            animation-name: slideNextEnter;
+        &.slide-next-enter { animation-name: slideNextEnter; }
+        &.slide-next-leave { animation-name: slideNextLeave; }
+        &.slide-prev-enter { animation-name: slidePrevEnter; }
+        &.slide-prev-leave { animation-name: slidePrevLeave; }
+    }
+    
+    // Centered container for inputs
+    .centered-container {
+        width: 100%;
+        align-items: center;
+        padding: 0 1rem;
+
+        // Responsive input widths
+        input[type="text"],
+        textarea,
+        p-dropdown {
+            width: 100% !important;
+            max-width: 22rem;
         }
 
-        &.slide-next-leave {
-            animation-name: slideNextLeave;
+        // Adjust dropdown width for mobile
+        ::ng-deep .p-dropdown {
+            width: 100% !important;
+            max-width: 22rem;
         }
 
-        &.slide-prev-enter {
-            animation-name: slidePrevEnter;
-        }
-
-        &.slide-prev-leave {
-            animation-name: slidePrevLeave;
+        app-rating {
+            @media screen and (max-width: 400px) {
+                transform: scale(1.2) !important;
+            }
         }
     }
 }
 
-.centered-container {
-    width: 100%;
-    align-items: center;
-}
-
+// Animations for the dialog content
 @keyframes slideNextEnter {
     from {
         transform: translateX(100%);

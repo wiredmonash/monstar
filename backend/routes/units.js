@@ -224,8 +224,6 @@ router.get('/filter', async function (req, res) {
  * 
  * Creates a new Unit and adds it to the database.
  * 
- * TODO: Only admin can do this
- * 
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
  * @throws {500} If an error occurs whilst creating a unit

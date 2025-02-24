@@ -80,17 +80,19 @@
         font-weight: bold;
         color: white;
         text-align: center;
+        padding-right: 0;
       }
 
       .stars-overall {
         display: flex;
         flex-wrap: wrap;
         justify-content: center; 
+        align-items: center;
+        gap: 0.6rem;
         
         i {
           color: $primary-color;
           font-size: 30px;
-          margin: 0 0.5rem;
         }
 
         .filled {
@@ -262,11 +264,103 @@ h6 {
   border-right: 1px solid $primary-color-darker;
 }
 
-// Adjust border visibility for smaller screens
-@media (max-width: 767px) {
+// ? Desktop (1024px and above)
+@media (min-width: 1024px) {
   .review-card {
-    margin-left: 8%;
-    margin-right: 9%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  .stars-overall {
+    width: 220px;
+  }
+
+  .stars i {
+    font-size: 28px;
+  }
+
+  // Ensure categories are displayed in a horizontal row
+  .main-content-container .categories {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .main-content-container .categories > .category {
+    flex: 1 1 33.33%;
+    max-width: 33.33%;
+    text-align: left;
+  }
+  .main-content-container .categories .actions {
+    flex: 0 0 auto;
+  }
+}
+
+// ? Laptop (768px to 1024px)
+@media (min-width: 768px) and (max-width: 1023px) {
+  .review-card {
+    margin-left: 4%;
+    margin-right: 4%;
+    padding: 15px;
+  }
+
+  .stars i {
+    font-size: 24px;
+  }
+
+  .stars-overall {
+    width: 220px;
+    
+    i {
+      font-size: 26px;
+    }
+  }
+
+  h5 {
+    font-size: 18px;
+  }
+
+  h6 {
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  .review-column {
+    padding-right: 15px;
+  }
+
+  // Restore row layout for categories on laptop viewports
+  .main-content-container .categories {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .main-content-container .categories > .category {
+    flex: 1 1 33.33%;
+    max-width: 33.33%;
+    text-align: left;
+  }
+  .main-content-container .categories .actions {
+    flex: 0 0 auto;
+  }
+}
+// ? Makes sure that the two stars overflow into the next line
+@media (min-width: 768px) and (max-width: 878px) {
+  .stars-overall {
+    width: 130px;
+  }
+}
+
+// ? Tablet (400px to 768px)
+@media (min-width: 400px) and (max-width: 767px) {
+  .review-card {
+    margin-left: 3%;
+    margin-right: 3%;
+    padding: 12px;
   }
 
   .review-column {
@@ -274,109 +368,233 @@ h6 {
     padding-right: 0;
   }
 
-  .col-md-5 {
+  .stars {
     margin: 0;
     padding-right: 0;
-    padding-left: 0; /* Set padding-left to 0 */
+    width: 170px;
+
+    i {
+      font-size: 22px;
+    }
   }
 
-  .stars {
-    margin:0;
+  .stars-overall {
+    width: 150px;
+    
+    i {
+      font-size: 24px;
+      margin: 0 0.3rem;
+    }
+  }
+
+  h5 {
+    font-size: 24px;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    margin-bottom: 1rem;
+    padding-left: 24px;
+    padding-right: 24px;
+
+    .left-details {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    } 
+
+    .overall-section {
+      flex: 0 0 auto;
+      margin-left: 1rem;
+    }
+  }
+
+  .main-content-container {
+    .review {
+      min-height: 8rem;
+      margin-right: 0.5rem;
+    }
+
+    // Displaying the categories in a row format
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 0.75rem;
+
+      .overall-category-container {
+        flex: 0 0 100%;
+        text-align: center;
+        margin-bottom: 1rem;
+
+        .overall {
+          display: inline-block;
+
+          .category-header {
+            font-size: 16px;
+          }
+
+          .circles {
+            justify-content: center;
+            gap: 6px;
+
+            .circle {
+              width: 16px;
+              height: 16px;
+            }
+          }
+        }
+      }
+
+      // Displaying the categories in a row format
+      > .category {
+        flex: 1 1 33.33%;
+        max-width: 33.33%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      // Adding a margin top for the like/dislike buttons
+      .actions {
+        margin-top: 1.5rem;
+      }
+
+      // Decreased font size for category header
+      .category-header {
+        font-size: 16px;
+      }
+
+      .circle {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+// ? Mobile (below 400px)
+@media (max-width: 399px) {
+  .review-card {
+    margin-left: 2%;
+    margin-right: 2%;
+    padding: 10px;
+  }
+
+  .review-column {
+    border-right: none;
     padding-right: 0;
+  }
+
+  .stars-overall {
     width: 180px;
+    
+    i {
+      font-size: 22px;
+      margin: 0 0.25rem;
+    }
   }
 
-  .stars i{
-    font-size: 28px;
-  }
-
-  p{
-    font-size: 13px;
-   }
-
-}
-
-// Adjust stars-overall
-@media (max-width: 1200px) and (min-width: 768px) {
-  .review-card {
-    margin-left: 7%;
-    margin-right: 7%;
-  }
-
-  .col-md-5{
-    display:inline;
-  }
-  
-  .content {
-    width: 50%;
-    text-align: center;  /* Make each .col-md-5 take up the full row */
-    display: block;  /* Ensure it breaks to a new line */
-  }
-
-  .relevancy{
-    width: 50%;
-    text-align: center;
-  }
-
-  .stars i{
-    font-size: 28px;
-  }
-
-  .stars-overall {
-    width: 200px;
-  }
-
-  .faclt{
-    margin: auto;
-    width: 50%;
-  }
-
-  p{
-    font-size: 13px;
-   }
-}
-
-// Adjust border visibility for smaller screens
-@media (max-width: 500px){
-  .review-card {
-    margin-left: 10%;
-    margin-right: 10%;
-  }
-  .stars-overall {
-    margin: auto;
-    width: 210px;
-  }
-
-  .stars i{
-    font-size: 23px;
-  }
-
-  .stars-overall i{
-    font-size: 25px;
-  }
-
-
-}
-
-// Adjust border visibility for smaller screens
-@media (max-width: 930px) and (min-width: 767px){
-  .stars i{
-    font-size: 23px;
-  }
-
-  .stars-overall i{
-    font-size: 25px;
-  }
-
-  h5{
-    font-size: 17px;
-  }
-
-  h6{
+  h5 {
     font-size: 16px;
+    padding-right: 10px;
   }
 
-  p{
+  h6 {
     font-size: 14px;
+  }
+
+  p {
+    font-size: 13px;
+  }
+
+  .main-content-container {
+    .review {
+      min-height: 6rem;
+      padding: 0.75rem;
+      margin-right: 0.25rem;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-auto-rows: auto;
+      gap: 0.5rem;
+      padding: 0.5rem;
+
+      .overall-category-container {
+        grid-column: 1 / -1;
+        text-align: center;
+
+        // Overall (top Center)
+        .overall {
+          display: inline-block;
+
+          .category-header {
+            font-size: 14px;
+          }
+
+          .circles {
+            justify-content: center;
+            gap: 7px;
+
+            .circle {
+              width: 14px;
+              height: 14px;
+            }
+          }
+        }
+      }
+
+      .category {
+        text-align: center;
+
+        .circles {
+          justify-content: center;
+        }
+      }
+
+      // Content (Top Left)
+      .category.content {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: start;
+      }
+
+      // Faculty (Bottom Center)
+      .category.faculty {
+        grid-column: 1 / span 2;
+        grid-row: 3;
+        justify-self: center;
+        width: fit-content;
+        margin: 0 auto;
+      }
+
+      // Relevancy (Top Right)
+      .category.relevancy {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+      }
+
+      .actions {
+        grid-column: 1 / -1;
+        margin-top: 1rem;
+      }
+    }
+  }
+
+  .user-section {
+    .profile-picture {
+      width: 28px;
+      height: 28px;
+    }
+
+    .review-year {
+      font-size: 0.75rem;
+    }
   }
 }

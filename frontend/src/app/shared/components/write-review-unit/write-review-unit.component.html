@@ -14,13 +14,16 @@
 
   <!-- ! The Dialog Iteself -->
   <p-dialog 
+    #writeReviewDialog
     header="Review for {{ unit.unitCode | uppercase }}" 
     [modal]="true" 
     [(visible)]="visible" 
     [style]="{ width: '40rem', height: '50%', 'text-align': 'center', 'z-index': 2000 }"
     [draggable]="false"
+    [maximizable]="true"
     appendTo="body"
-    (onHide)="onDialogHide();"
+    (onShow)="onDialogShow(writeReviewDialog)"
+    (onHide)="onDialogHide()"
   >
     <!-- ! Error Toast -->
     <p-toast 
@@ -30,166 +33,187 @@
       [style]="{ 'margin-top': '4rem' }"
     ></p-toast>
 
-    @if (stateIndex > 0) {
-      <p-button
-        icon="pi pi-angle-left"
-        class="nav-button left-nav"
-        styleClass="p-button-rounded p-button-text"
-        [style]="{ color: 'white' }"
-        (click)="prevState();"
-      ></p-button>
-    }
+    <!-- The navigation buttons on the outside are only shown if the viewport type
+         is desktop or laptop. -->
+    @if (viewportType === 'desktop' || viewportType === 'laptop') {
+      <!-- ! Navigation buttons -->
+      @if (stateIndex > 0) {
+        <p-button
+          icon="pi pi-angle-left"
+          class="nav-button left-nav"
+          styleClass="p-button-rounded p-button-text"
+          [style]="{ color: 'white' }"
+          (click)="prevState();"
+        ></p-button>
+      }
 
-    @if (stateIndex < stateList.length-1) {
-      <p-button
-        icon="pi pi-angle-right"
-        class="nav-button right-nav"
-        styleClass="p-button-rounded p-button-text"
-        [style]="{ color: 'white' }"
-        (click)="nextState();"
-      ></p-button>
+      @if (stateIndex < stateList.length-1) {
+        <p-button
+          icon="pi pi-angle-right"
+          class="nav-button right-nav"
+          styleClass="p-button-rounded p-button-text"
+          [style]="{ color: 'white' }"
+          (click)="nextState();"
+        ></p-button>
+      }
+    } @else {
+      <div class="mobile-nav-container">
+        <p-button
+          *ngIf="stateIndex > 0"
+          label="Back"
+          icon="pi pi-angle-left"
+          class="back-button"
+          (click)="prevState()"
+        />
+        <p-button
+          *ngIf="stateIndex < stateList.length-1"
+          label="Next"
+          icon="pi pi-angle-right"
+          class="next-button"
+          (click)="nextState()"
+        />
+      </div>
     }
 
     <div class="dialog-content">
       <div>
-      @switch (stateList[stateIndex]) {
-        <!-- * Title -->
-        @case ('title') {
-          <span class="p-text-secondary block mb-3">Give your review a title (sum it up)</span>
+        @switch (stateList[stateIndex]) {
+          <!-- * Title -->
+          @case ('title') {
+            <span class="p-text-secondary block mb-3">Give your review a title (sum it up)</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <input 
-              #titleInput
-              pInputText 
-              id="reviewTitle" 
-              [(ngModel)]="review.title" 
-              [style]="{ 'width': '22rem' }"
-              autocomplete="off"
-            />
-          </div>
-        }
-        <!-- * Description -->
-        @case ('description') {
-          <span class="p-text-secondary block mb-3">Describe your experience with this unit</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <input 
+                #titleInput
+                pInputText 
+                id="reviewTitle" 
+                [(ngModel)]="review.title" 
+                autocomplete="off"
+              />
+            </div>
+          }
+          <!-- * Description -->
+          @case ('description') {
+            <span class="p-text-secondary block mb-3">Describe your experience with this unit</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <textarea 
-              #descriptionInput
-              pInputTextarea 
-              id="reviewDescription" 
-              [(ngModel)]="review.description" 
-              [style]="{ 'width': '22rem', 'height': '10rem', 'resize': 'none !important', 'white-space': 'pre-wrap' }"
-              autocomplete="off"
-              [autoResize]="false"
-            ></textarea>
-          </div>
-        }
-        <!-- * Semester -->
-        @case ('semester') {
-          <span class="p-text-secondary block mb-3">What semester did you take this unit?</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <textarea 
+                #descriptionInput
+                pInputTextarea 
+                id="reviewDescription" 
+                [(ngModel)]="review.description" 
+                [style]="{ 'width': '22rem', 'height': '10rem', 'resize': 'none !important', 'white-space': 'pre-wrap' }"
+                autocomplete="off"
+                [autoResize]="false"
+              ></textarea>
+            </div>
+          }
+          <!-- * Semester -->
+          @case ('semester') {
+            <span class="p-text-secondary block mb-3">What semester did you take this unit?</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <p-dropdown
-              #semesterInput
-              [options]="semesterOptions"
-              [(ngModel)]="review.semester"
-              [style]="{ 'width': '22rem' }"
-              (selectOnFocus)="true"
-              (focusOnHover)="true"
-              appendTo="body"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Select a semester"
-            ></p-dropdown>
-          </div>
-        }
-        <!-- * Year -->
-        @case ('year') {
-          <span class="p-text-secondary block mb-3">What year did you take this unit?</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <p-dropdown
+                #semesterInput
+                [options]="semesterOptions"
+                [(ngModel)]="review.semester"
+                [style]="{ 'width': '22rem' }"
+                (selectOnFocus)="true"
+                (focusOnHover)="true"
+                appendTo="body"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select a semester"
+              ></p-dropdown>
+            </div>
+          }
+          <!-- * Year -->
+          @case ('year') {
+            <span class="p-text-secondary block mb-3">What year did you take this unit?</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <p-dropdown
-              #yearInput
-              [options]="yearOptions"
-              [(ngModel)]="review.year"
-              [style]="{ 'width': '200px' }"
-              appendTo="body"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Select a year"
-            ></p-dropdown>
-          </div>
-        }
-        <!-- * Grade -->
-        @case ('grade') {
-          <span class="p-text-secondary block mb-3">What grade did you get?<br/>(this won't be shown in your review)</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <p-dropdown
+                #yearInput
+                [options]="yearOptions"
+                [(ngModel)]="review.year"
+                [style]="{ 'width': '200px' }"
+                appendTo="body"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select a year"
+              ></p-dropdown>
+            </div>
+          }
+          <!-- * Grade -->
+          @case ('grade') {
+            <span class="p-text-secondary block mb-3">What grade did you get?<br/>(this won't be shown in your review)</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <p-dropdown
-              #gradeInput
-              [options]="gradeOptions"
-              [(ngModel)]="review.grade"
-              [style]="{ 'margin-bottom': '1.4rem' }"
-              appendTo="body"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Select a grade"
-            ></p-dropdown>
-          </div>
-        }
-        <!-- * Relevancy Rating -->
-        @case ('relevancyRating') {
-          <span class="p-text-secondary block mb-4">How relevant was this unit to your degree?</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <p-dropdown
+                #gradeInput
+                [options]="gradeOptions"
+                [(ngModel)]="review.grade"
+                [style]="{ 'margin-bottom': '1.4rem' }"
+                appendTo="body"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select a grade"
+              ></p-dropdown>
+            </div>
+          }
+          <!-- * Relevancy Rating -->
+          @case ('relevancyRating') {
+            <span class="p-text-secondary block mb-4">How relevant was this unit to your degree?</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <app-rating
-              #relevancyRatingInput
-              [(rating)]="review.relevancyRating"
-              [stars]="5"
-              [style]="{ 'transform': 'scale(1.5)' }"
-            ></app-rating>
-          </div>
-        }
-        <!-- * Faculty Rating -->
-        @case ('facultyRating') {
-          <span class="p-text-secondary block mb-4">How was the teaching team? Were they supportive?</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <app-rating
+                #relevancyRatingInput
+                [(rating)]="review.relevancyRating"
+                [stars]="5"
+                [style]="{ 'transform': 'scale(1.5)' }"
+              ></app-rating>
+            </div>
+          }
+          <!-- * Faculty Rating -->
+          @case ('facultyRating') {
+            <span class="p-text-secondary block mb-4">How was the teaching team? Were they supportive?</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <app-rating
-              #facultyRatingInput
-              [(rating)]="review.facultyRating"
-              [stars]="5"
-              [style]="{ 'transform': 'scale(1.5)' }"
-            ></app-rating>
-          </div>
-        }
-        <!-- * Content Rating -->
-        @case ('contentRating') {
-          <span class="p-text-secondary block mb-4">What about the actual content?</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <app-rating
+                #facultyRatingInput
+                [(rating)]="review.facultyRating"
+                [stars]="5"
+                [style]="{ 'transform': 'scale(1.5)' }"
+              ></app-rating>
+            </div>
+          }
+          <!-- * Content Rating -->
+          @case ('contentRating') {
+            <span class="p-text-secondary block mb-4">What about the actual content?</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <app-rating
-              #contentRatingInput
-              [(rating)]="review.contentRating"
-              [stars]="5"
-              [style]="{ 'transform': 'scale(1.5)' }"
-            ></app-rating>
-          </div>
-        }
-        <!-- * Submit Review -->
-        @case ('submit') {
-          <span class="p-text-secondary block mb-3">Ready to post your review?</span>
+            <div class="flex flex-column mb-4 centered-container">
+              <app-rating
+                #contentRatingInput
+                [(rating)]="review.contentRating"
+                [stars]="5"
+                [style]="{ 'transform': 'scale(1.5)' }"
+              ></app-rating>
+            </div>
+          }
+          <!-- * Submit Review -->
+          @case ('submit') {
+            <span class="p-text-secondary block mb-3">Ready to post your review?</span>
 
-          <div class="flex flex-column mb-4 centered-container">
-            <p-button
-              #submitReviewButton
-              label="Post (Enter)"
-              icon="pi pi-check"
-              (click)="postReview()"
-            ></p-button>
-          </div>
+            <div class="flex flex-column mb-4 centered-container">
+              <p-button
+                #submitReviewButton
+                label="Post (Enter)"
+                icon="pi pi-check"
+                (click)="postReview()"
+              ></p-button>
+            </div>
+          }
         }
-      }
       </div>
     </div>
   </p-dialog>

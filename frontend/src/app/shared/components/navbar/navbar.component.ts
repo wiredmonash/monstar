@@ -105,7 +105,7 @@ export class NavbarComponent implements OnInit {
    * - Updates the navbar color
    * - Subcribes to viewport changes
    */
-  ngOnInit() {  
+  ngOnInit(): void {  
     this.updateNavbarColor();
 
     // Subscribe to viewport changes
@@ -119,7 +119,7 @@ export class NavbarComponent implements OnInit {
    * 
    * This method updates the navbar color based no the current route.
    */
-  private updateNavbarColor() {
+  private updateNavbarColor(): void {
     this.navbarColor = this.router.url === '/' ? 'var(--primary-color)' : 'var(--fg-dark-color)';
     this.titleColor = this.router.url === '/' ? 'black' : 'var(--primary-color)';
     this.hamburgColor = this.router.url === '/' ? 'black' : 'white';
@@ -174,6 +174,9 @@ export class NavbarComponent implements OnInit {
   /**
    * * Called when the dialog is closed
    * 
+   * This method emits an event to the children that the dialog was closed.
+   * It will also set the profile state to 'logged out' if the user is in the 'signed up' state.
+   * 
    * @event dialogClosedEvent Event emitter for when the dialog is closed.
    */
   onDialogClose() {
@@ -191,15 +194,19 @@ export class NavbarComponent implements OnInit {
   /**
    * * Called when the dialog is opened
    * 
+   * This will set the confirm the profile dialog reference and maximise the dialog
+   * if the user is not logged in and the viewport is mobile. Also maximises the dialog
+   * if the user is logged in and the viewport is laptop, tablet, or mobile.
+   * 
    * @event dialogOpenedEvent Event emitter for when the dialog is opened.
    * @param dialog The dialog that was opened.
    */
   onDialogOpen(dialog: Dialog) {
     this.profileDialog = dialog;
 
-    // if (dialog && this.profileState !== 'logged in' && this.viewportType === 'mobile') { 
-    //   dialog.maximize(); 
-    // }
+    if (dialog && this.profileState !== 'logged in' && this.viewportType === 'mobile') { 
+      dialog.maximize(); 
+    }
 
     if (dialog && this.profileState === 'logged in' && (this.viewportType === 'laptop' || this.viewportType === 'tablet' || this.viewportType === 'mobile')) {
       dialog.maximize();
@@ -217,6 +224,8 @@ export class NavbarComponent implements OnInit {
 
   /**
    * * Called when the profile auth state is changed.
+   * 
+   * This method updates the username in the sidebar based on the auth state.
    */
   authStateChange(state: 'logged out' | 'logged in' | 'signed out' | 'signed up' | 'forgot password') {
     this.profileState = state;
@@ -234,6 +243,11 @@ export class NavbarComponent implements OnInit {
 
   /**
    * * Method to create a toast
+   * 
+   * This method creates a toast with the provided event data.
+   * 
+   * @param event The event data for the toast
+   * @event messageService The message service will display the toast.
    */
   handleToastEvent(event: { severity: string, summary: string, detail: string }) {
     this.messageService.add({ severity: event.severity, summary: event.summary, detail: event.detail });

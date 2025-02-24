@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
+import { Dialog, DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
 import { ApiService } from '../../services/api.service';
@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth.service';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { RatingComponent } from '../rating/rating.component';
 import { AutoFocusModule } from 'primeng/autofocus';
+import { ViewportService, ViewportType } from '../../services/viewport.service';
 
 @Component({
   selector: 'app-write-review-unit',
@@ -49,16 +50,16 @@ import { AutoFocusModule } from 'primeng/autofocus';
     ])
   ]
 })
-export class WriteReviewUnitComponent {
+export class WriteReviewUnitComponent implements OnInit {
   // View children for the input fields and buttons
   @ViewChild('titleInput') titleInput?: ElementRef;
   @ViewChild('semesterInput') semesterInput?: Dropdown;
   @ViewChild('gradeInput') gradeInput?: Dropdown;
   @ViewChild('yearInput') yearInput?: Dropdown;
   @ViewChild('descriptionInput') descriptionInput?: ElementRef;
-  @ViewChild('relevancyRatingInput') relevancyRatingInput?: ElementRef;
-  @ViewChild('facultyRatingInput') facultyRatingInput?: ElementRef;
-  @ViewChild('contentRatingInput') contentRatingInput?: ElementRef;
+  @ViewChild('relevancyRatingInput') relevancyRatingInput!: ElementRef;
+  @ViewChild('facultyRatingInput') facultyRatingInput!: ElementRef;
+  @ViewChild('contentRatingInput') contentRatingInput!: ElementRef;
   @ViewChild('submitReviewButton') submitReviewButton?: ElementRef;
 
   // Input property to receive the unit data from the parent component
@@ -103,6 +104,9 @@ export class WriteReviewUnitComponent {
   // List of dangerous characters
   dangerousChars = ['{', '}', '/', '>', '<', '+', '\\', '*'];
 
+  // Viewport type
+  viewportType: ViewportType = 'desktop';
+
   /** 
    * === Constructor ===
    * - Calls initialiseYearOptions
@@ -110,16 +114,50 @@ export class WriteReviewUnitComponent {
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private viewportService: ViewportService
   ) {
     this.initialiseYearOptions();
+  } 
+
+  /**
+   * * Runs on initialisation
+   * 
+   * - Subscribes to the viewport service to get the viewport type.
+   */
+  ngOnInit(): void {
+    // Get the viewport type from the viewport service
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
   }
 
-  // === Opens the create review dialog ===
+  /**
+   * * Opens the dialog
+   * 
+   * - Sets the visible property to true.
+   * - Calls the focusCurrentInput method.
+   * - Adds a toast message for the keyboard shortcuts (only for desktop and laptop)
+   */
   openDialog() {
     this.visible = true;
     this.focusCurrentInput();
-    this.messageService.add({ key: 'helper-toast', severity: 'contrast', summary: 'Use thee keyboard shortcuts!', detail: 'Enter: Next , [ or ]: Navigate , 1-0: Keyboard rate', sticky: true, closable: false });
+
+    // Only show the keyboard shortcut helper toast on desktop and laptop viewports
+    if (this.viewportType === 'desktop' || this.viewportType === 'laptop') {
+      this.messageService.add({ key: 'helper-toast', severity: 'contrast', summary: 'Use thee keyboard shortcuts!', detail: 'Enter: Next , [ or ]: Navigate , 1-0: Keyboard rate', sticky: true, closable: false });
+    }
+  }
+
+  /**
+   * * Called when the dialog is shown
+   * 
+   * - Maximises the dialog if the viewport is not desktop or laptop.
+   */
+  onDialogShow(dialog: Dialog) {
+    if (this.viewportType !== 'desktop' && this.viewportType !== 'laptop') {
+      dialog.maximize();
+    }
   }
 
   // === Closes the create review dialog ===
@@ -226,15 +264,6 @@ export class WriteReviewUnitComponent {
             this.gradeInput?.focus();
             this.gradeInput?.show();
           }
-          break;
-        case 'relevancyRating':
-          this.relevancyRatingInput?.nativeElement.focus();
-          break;
-        case 'facultyRating':
-          this.facultyRatingInput?.nativeElement.focus();
-          break;
-        case 'contentRating':
-          this.contentRatingInput?.nativeElement.focus();
           break;
         case 'submit':
           this.submitReviewButton?.nativeElement.focus();

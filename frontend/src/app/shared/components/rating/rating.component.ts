@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ViewportService, ViewportType } from '../../services/viewport.service';
 
 @Component({
   selector: 'app-rating',
@@ -21,14 +22,24 @@ export class RatingComponent implements OnInit {
   starsArray: number[] = [];
   // Rating on hover
   hoverRating: number = 0;
+  // Viewport type
+  viewportType: ViewportType = 'desktop';
+
+  constructor(private viewportService: ViewportService) { }
 
   /**
    * * Initialise the stars array
    * 
-   * Create an array of length `stars` to loop over in the template
+   * - Create an array of length `stars` to loop over in the template
+   * - Subscribes to viewport changes
    */
   ngOnInit(): void {
     this.starsArray = Array(this.stars).fill(0);
+
+    // Subscribe to viewport changes
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
   }
 
   /**
@@ -46,30 +57,65 @@ export class RatingComponent implements OnInit {
   }
 
   /** 
-   * * Handle a click on star at index i
+   * * Handle touch end event
    * 
-   * Determine the horizontal click position within the star element to decide
-   * if the click was in the left half (set rating to index + 0.5) or right half
-   * (index + 1)
-  */
-  onStarClick(event: MouseEvent, index: number): void {
+   * Determines the horizontal touch position within the star element to decide
+   * if the touch is in the left half (set rating to index + 0.5) or right half.
+   */
+  onTouchEnd(event: TouchEvent, index: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const touch = event.changedTouches[0];
     const starElem = event.currentTarget as HTMLElement;
     const rect = starElem.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
+    const touchX = touch.clientX - rect.left;
     const starWidth = rect.width;
-    // If click is in the left half, then select a half star; otherwise, full star.
-    const newRating = (clickX < starWidth / 2) ? index + 0.5 : index + 1;
+    const newRating = (touchX < starWidth / 2) ? index + 0.5 : index + 1;
+
+    // Reset rating if tapping the same value
+    if (Math.abs(this.rating - newRating) < 0.1) {
+      this.resetRating(event);
+      return;
+    }
+
     this.rating = newRating;
     this.ratingChange.emit(newRating);
   }
 
+  /** 
+   * * Handle click event (for desktop only)
+   * 
+   * Determines the horizontal mouse position within the star element to decide
+   * whether the click is in the left half (set rating to index + 0.5) or right half.
+   */
+  onStarClick(event: MouseEvent, index: number): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const starElem = event.currentTarget as HTMLElement;
+    const rect = starElem.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    
+    const starWidth = rect.width;
+    const newRating = (clickX < starWidth / 2) ? index + 0.5 : index + 1;
+
+    if (Math.abs(this.rating - newRating) < 0.1) {
+      this.resetRating(event);
+      return;
+    }
+
+    this.rating = newRating;
+    this.ratingChange.emit(newRating);
+  }
+  
   /**
    * * Reset the rating to 0
    * 
    * Resets the rating to zero, emitting the change to the parent component.
    * This is used for the reset button.
    */
-  resetRating(event: MouseEvent) {
+  resetRating(event: MouseEvent | TouchEvent): void {
     event.stopPropagation();
     this.rating = 0;
     this.ratingChange.emit(this.rating);

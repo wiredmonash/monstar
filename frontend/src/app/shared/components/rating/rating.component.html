@@ -13,6 +13,9 @@
             <div 
                 class="star" 
                 (click)="onStarClick($event, $index)"
+                (touchend)="onTouchEnd($event, $index)"
+                (touchmove)="$event.preventDefault(); $event.stopPropagation()"
+                (touchstart)="$event.preventDefault(); $event.stopPropagation()"
             >
                 <i *ngIf="getStarType($index) === 'full'" class="bi bi-star-fill"></i>
                 <i *ngIf="getStarType($index) === 'half'" class="bi bi-star-half"></i>
