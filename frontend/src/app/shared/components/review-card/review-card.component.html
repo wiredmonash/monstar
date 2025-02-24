@@ -120,9 +120,9 @@
                                             <i
                                             class="circle"
                                             [ngClass]="{
-                                                'full-circle': Math.floor(review.facultyRating) >= circle,
-                                                'half-circle': Math.floor(review.facultyRating) < circle && Math.ceil(review.facultyRating) >= circle,
-                                                'empty-circle': Math.ceil(review.facultyRating) < circle
+                                                'full-circle': Math.floor(review.overallRating) >= circle,
+                                                'half-circle': Math.floor(review.overallRating) < circle && Math.ceil(review.overallRating) >= circle,
+                                                'empty-circle': Math.ceil(review.overallRating) < circle
                                             }"
                                             ></i>
                                         }
