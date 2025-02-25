@@ -197,7 +197,7 @@
         min-width: 140px;
 
         p {
-          font-size: 1rem;
+          font-size: 1rem !important;
         }
 
         // :host ::ng-deep .p-knob {
@@ -293,6 +293,14 @@
       grid-template-columns: 1fr 1fr;
       grid-gap: 1rem;
 
+      .rating-section {
+        padding: 1rem;
+
+        p {
+          font-size: 1.1rem;
+        }
+      }
+
       /* First two rating sections: one in each column */
       .rating-section:nth-child(1) {
         grid-column: 1 / 2;
@@ -329,6 +337,12 @@
     .detailed-ratings {
       gap: 2.5rem;
       margin-right: 1rem;
+
+      .rating-section {
+        P {
+          font-size: 1.1rem;
+        }
+      }
     }
 
     // Make sure the action buttons are centered and shown in a row
