@@ -2,11 +2,11 @@
 <div class="hero-section">
   <div class="hero-content">
     <!-- BIG Title -->
-    <h1 class="prevent-select">Welcome to MonSTAR</h1>
+    <h1 class="prevent-select">Welcome to<br/><span [style]="{ 'color': 'var(--primary-color)' }">MonSTAR</span></h1>
 
     <!-- Description -->
     <div class="subheader-container">
-      <p class="prevent-select" [@fadeInOut]="subheaderState">
+      <p class="prevent-select" [@fadeInOut]="subheaderState" [innerHTML]="getSafeHtml(subheaders[subheaderCurrentIndex])">
         {{ subheaders[subheaderCurrentIndex] }}
       </p>
     </div>
@@ -29,6 +29,15 @@
   <span class="shooting-star"></span>
   <span class="shooting-star"></span>
   <span class="shooting-star"></span>
+
+  <!-- Floating Emotes -->
+  <div class="floating-emotes-container">
+    @if (emoteLoadingComplete) {
+      @for (emote of emotes; track $index) {
+        <img [src]="emote" class="floating-emote">
+      }
+    }
+  </div>
 </div>
 
 <!-- Centered Content -->

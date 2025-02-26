@@ -40,11 +40,37 @@
   .hero-content {
     max-width: 800px;
     position: relative;
-    z-index: 1; // Ensures hero content is above the stars
+    z-index: 10; // Ensures hero content is above the stars
+    padding: 0 30px;
 
+    // Subtle backdrop for improved readability
+    &::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      bottom: -20px;
+      left: 50%;
+      width: 700px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.4);
+      border-radius: 3rem;
+      backdrop-filter: blur(3px);
+      z-index: -1;
+
+      @media (max-width: 768px) {
+        width: 450px;
+      }
+      @media (max-width: 400px) {
+        width: 350px;
+      }
+    }
+
+    // Header
     h1 {
       font-size: 4rem;
       font-weight: bold;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      position: relative;
       margin-bottom: 1rem;
 
       @media (max-width: 768px) {
@@ -55,12 +81,19 @@
     p {
       font-size: 1.5rem;
       margin-bottom: 1.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 
       @media (max-width: 768px) {
         font-size: 1.2rem;
       }
+      @media (max-width: 400px) {
+        font-size: 1rem;
+      }
     }
   }
+
+
+
 
   // Shooting Stars styling (now using rotate(45deg) for bottom-right movement)
   .shooting-star {
@@ -124,6 +157,110 @@
     }
   }
 }
+
+
+// Floating emotes
+.floating-emotes-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+.floating-emote {
+  position: absolute;
+  width: 128px;
+  height: 128px;
+  opacity: 0;
+  animation: fade-in 0.5s forwards;
+  object-fit: contain;
+  will-change: transform;
+
+  // Give each emote a different animation path and timing
+  &:nth-child(1) {
+    top: 15%;
+    animation: fade-in 0.5s forwards, float-right 25s linear infinite, float-up-down 8s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+  
+  &:nth-child(2) {
+    top: 35%;
+    animation: fade-in 0.5s forwards, float-right 22s linear infinite, float-up-down 6s ease-in-out infinite;
+    animation-delay: 0s;
+    transform: scale(0.8);
+  }
+  
+  &:nth-child(3) {
+    top: 60%;
+    animation: fade-in 0.5s forwards, float-right 28s linear infinite, float-up-down 9s ease-in-out infinite;
+    animation-delay: 0s;
+    transform: scale(1.2);
+  }
+  
+  &:nth-child(4) {
+    top: 60%;
+    animation: fade-in 0.5s forwards, float-left 24s linear infinite, float-up-down 7s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+  
+  &:nth-child(5) {
+    top: 35%;
+    animation: fade-in 0.5s forwards, float-left 30s linear infinite, float-up-down 10s ease-in-out infinite;
+    animation-delay: 0s;
+    transform: scale(0.9);
+  }
+
+  &:nth-child(6) {
+    top: 15%;
+    animation: fade-in 0.5s forwards, float-left 28s linear infinite, float-up-down 8s ease-in-out infinite;
+    animation-delay: 0s;
+    transform: scale(0.9);
+  }
+}
+
+// Animation for fade-in for emote
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 0.8; }
+}
+
+// Animation for right-to-left floating
+@keyframes float-right {
+  0% {
+    left: -5%;
+    transform: translateX(0);
+  }
+  100% {
+    left: 105%;
+    transform: translateX(0);
+  }
+}
+
+// Animation for left-to-right floating
+@keyframes float-left {
+  0% {
+    right: -5%;
+    transform: translateX(0);
+  }
+  100% {
+    right: 105%;
+    transform: translateX(0);
+  }
+}
+
+// Animation for vertical bobbing
+@keyframes float-up-down {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
+}
+
+
+
 
 // * Popular Units Heading 2
 h2 {
