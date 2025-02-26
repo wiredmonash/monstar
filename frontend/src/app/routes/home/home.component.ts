@@ -11,6 +11,7 @@ import { Unit } from '../../shared/models/unit.model';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { RatingComponent } from '../../shared/components/rating/rating.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -45,24 +46,34 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Reference to the navbar child
   @ViewChild(NavbarComponent) navbar!: NavbarComponent;
 
-  myRating: number = 0;
-
   // Subheader variables
   subheaders: string[] = [
-    'Browse, Review, and Share Feedback on Monash University Units', 
-    'Find the Best Units for Your Degree!', 
-    'Hmmm, what units should I take next semester?',
-    'Discover the best units at Monash University',
+    'Best reviews for Monash Uni',
+    'Login with your Monash Google',
+    'Find the best units for you!', 
+    "Don't be afraid, just do it! 💪",
+    'What units should I take next semester?',
     'Rate and review your favourite units!',
+    'Sigma unit reviews 😎',
     "What's a WAM booster?",
     'What unit should I do bro?',
-    'Yes, we have all the units you need!'
+    'Yes, we have all the units you need!',
+    'I forgor 🤪',
+    'Also check out our unit map!',
+    'Cheeky insta plug <a href="https://www.instagram.com/jenul_ferdinand/" target="_blank" style="color: var(--primary-color);">@jenul_ferdinand</a>',
   ];
   subheaderCurrentIndex: number = 0;
+  subheaderPreviousIndex: number = 0;
   subheaderState: 'in' | 'out' = 'in';
-  subheaderChangeSeconds: number = 5;
+  subheaderChangeSeconds: number = 4;
   subheaderChangeSecondsBuffer: number = 0.5;
   private intervalId: any; // The ID of the interval used for deletion
+
+  // Emotes
+  emotes: string[] = [];
+  emoteLoadingComplete: boolean = false;
+  loadedEmotes: number = 0;
+  totalEmotes: number = 0;
 
   // Carousel responsive options (for resizing the popular units carousel)
   responsiveOptions = [
@@ -78,6 +89,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   ];  
 
+
   /**
    * * Constructor
    * 
@@ -87,7 +99,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor (
     private router: Router,
     private apiService: ApiService,
+    private sanitizer: DomSanitizer
   ) { }
+
 
   /**
    * * Runs on init
@@ -96,6 +110,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   ngOnInit() {
     this.startSubheaderRotation();
+    this.preloadEmotes();
   }
 
   ngAfterViewInit() {
@@ -103,21 +118,61 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
+   * * Preload all emote images before displaying
+   */
+  private preloadEmotes(): void {
+    const emoteList = [
+      'emotes/emote-angry.webp',
+      "emotes/emote-cool.webp",
+      "emotes/emote-default.webp",
+      "emotes/emote-fine.webp",
+      "emotes/emote-nerd.webp",
+      "emotes/emote-study.webp",
+    ];
+
+    this.totalEmotes = emoteList.length;
+
+    // Only populate emotes array after all images are loaded
+    emoteList.forEach(emotePath => {
+      const img = new Image();
+      img.onload = () => {
+        this.loadedEmotes++;
+        if (this.loadedEmotes === this.totalEmotes) {
+          this.emotes = emoteList;
+          this.emoteLoadingComplete = true;
+        }
+      };
+      img.onerror = () => {
+        // Still count errors to avoid hanging if images fail to load
+        this.loadedEmotes++;
+      }
+      img.src = emotePath;
+    });
+  }
+
+  /**
    * * Starts the subheader rotation animation
    */
   private startSubheaderRotation() {
     this.intervalId = setInterval(() => {
-      // Start fade out
       this.subheaderState = 'out';
 
       // Update text and fade in after animation
       setTimeout(() => { 
+        // Store previous index
+        const prevIndex = this.subheaderCurrentIndex;
+
+        // Generate array of all possible indices except current
+        const availableIndices = Array.from(
+          { length: this.subheaders.length },
+          (_, i) => i
+        ).filter(i => i !== prevIndex);
+
         // Get a random index
-        this.subheaderCurrentIndex = Math.floor(Math.random() * ((this.subheaders.length-1) - 0 + 1) + 0);
-        // Increment the index
-        // this.subheaderCurrentIndex = (this.subheaderCurrentIndex + 1) % this.subheader.length;
-        
-        // Start fade in
+        const randomIndex = Math.floor(Math.random() * availableIndices.length);
+        this.subheaderCurrentIndex = availableIndices[randomIndex];
+
+        // Fade in the new subheader
         this.subheaderState = 'in';
       }, this.subheaderChangeSecondsBuffer * 1000);
     }, this.subheaderChangeSeconds * 1000);
@@ -164,5 +219,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.intervalId)
       clearInterval(this.intervalId);
+  }
+
+  /**
+   * * Safely renders HTML content
+   * 
+   * @param html The HTML string to sanitize
+   * @returns SafeHtml that can be rendered with innerHTML
+   */
+  getSafeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 }
