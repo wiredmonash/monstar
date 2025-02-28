@@ -161,14 +161,14 @@
               ></p-dropdown>
             </div>
           }
-          <!-- * Relevancy Rating -->
-          @case ('relevancyRating') {
-            <span class="p-text-secondary block mb-4">How relevant was this unit to your degree?</span>
+          <!-- * Content Rating -->
+          @case ('contentRating') {
+            <span class="p-text-secondary block mb-4">How much did you enjoy this unit?</span>
 
             <div class="flex flex-column mb-4 centered-container">
               <app-rating
-                #relevancyRatingInput
-                [(rating)]="review.relevancyRating"
+                #contentRatingInput
+                [(rating)]="review.contentRating"
                 [stars]="5"
                 [style]="{ 'transform': 'scale(1.5)' }"
               ></app-rating>
@@ -176,7 +176,7 @@
           }
           <!-- * Faculty Rating -->
           @case ('facultyRating') {
-            <span class="p-text-secondary block mb-4">How was the teaching team? Were they supportive?</span>
+            <span class="p-text-secondary block mb-4">How manageable was the unit content?</span>
 
             <div class="flex flex-column mb-4 centered-container">
               <app-rating
@@ -187,14 +187,14 @@
               ></app-rating>
             </div>
           }
-          <!-- * Content Rating -->
-          @case ('contentRating') {
-            <span class="p-text-secondary block mb-4">What about the actual content?</span>
+          <!-- * Relevancy Rating -->
+          @case ('relevancyRating') {
+            <span class="p-text-secondary block mb-4">How useful was it for your future career or studies?</span>
 
             <div class="flex flex-column mb-4 centered-container">
               <app-rating
-                #contentRatingInput
-                [(rating)]="review.contentRating"
+                #relevancyRatingInput
+                [(rating)]="review.relevancyRating"
                 [stars]="5"
                 [style]="{ 'transform': 'scale(1.5)' }"
               ></app-rating>
