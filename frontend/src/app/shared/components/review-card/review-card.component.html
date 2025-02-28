@@ -42,46 +42,56 @@
 
             <div class="row">
                 <!-- * Left Side (Anonymous, Semester, Overall Rating) -->
-                <div class="col-md-4 review-column">
-                    <!-- Title -->
-                    <h5>{{ review.title || 'No Title' }}</h5>
+                <div class="col-md-4 review-column header-container">
+                    <div class="main-details">
+                        <!-- Title -->
+                        <h5>{{ review.title || 'No Title' }}</h5>
+                        
+                        <!-- User -->
+                        <p class="d-flex align-items-center user-section">
+                            <!-- Profile picture -->
+                            <img
+                                [src]="review.author.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
+                                alt="Profile Picture"
+                                class="mr-2 profile-picture"
+                                loading="lazy"
+                                crossOrigin="anonymous"
+                                referrerpolicy="no-referrer"
+                                (error)="review.author.profileImg = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
+                            />
+                            <!-- Username -->
+                            <span>{{ review.author.username || 'Anonymous' }}</span>
+                            <!-- A primeng badge for the year taken -->
+                            <p-badge 
+                                [value]="review.year" 
+                                [style]="{ 'background-color': 'white' }"
+                                class="ms-2"
+                            ></p-badge>
+                        </p>
+                    </div>
                     
-                    <!-- User -->
-                    <p class="d-flex align-items-center user-section">
-                        <!-- Profile picture -->
-                        <img
-                            [src]="review.author.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
-                            alt="Profile Picture"
-                            class="mr-2 profile-picture"
-                            loading="lazy"
-                            crossOrigin="anonymous"
-                            referrerpolicy="no-referrer"
-                            (error)="review.author.profileImg = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
-                        />
-                        <!-- Username -->
-                        <span>{{ review.author.username || 'Anonymous' }}</span>
-                        <span class="review-year">(taken in {{review.year}})</span>
-                    </p>
-
-                    <div class="overall-section">
-                        <!-- Overall Rating -->
-                        <h5 class="heading">Overall Rating</h5>
-                        <!-- Stars -->
-                        <div class="d-flex justify-content-center">
-                            <div class="stars-overall">
-                                <ng-container *ngFor="let star of [1,2,3,4,5]">
-                                    <i
-                                        class="bi"
-                                        [ngClass]="{
-                                        'bi-star-fill': Math.floor(review.overallRating) >= star,
-                                        'bi-star-half': Math.floor(review.overallRating) < star && Math.ceil(review.overallRating) >= star,
-                                        'bi-star': Math.ceil(review.overallRating) < star
-                                        }"
-                                    ></i>
-                                </ng-container>
+                    <!-- Overall Rating (only shown for desktop or laptop viewport widths) -->
+                    @if (viewportType === 'desktop' || viewportType === 'laptop') {
+                        <div class="overall-section">
+                            <!-- Heading -->
+                            <h5 class="heading">Overall Rating</h5>
+                            <!-- Stars -->
+                            <div class="d-flex justify-content-center">
+                                <div class="stars-overall">
+                                    <ng-container *ngFor="let star of [1,2,3,4,5]">
+                                        <i
+                                            class="bi"
+                                            [ngClass]="{
+                                            'bi-star-fill': Math.floor(review.overallRating) >= star,
+                                            'bi-star-half': Math.floor(review.overallRating) < star && Math.ceil(review.overallRating) >= star,
+                                            'bi-star': Math.ceil(review.overallRating) < star
+                                            }"
+                                        ></i>
+                                    </ng-container>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
 
                 <!-- * Right Side (Review Heading, Categories, Stars, Description) -->
@@ -98,13 +108,36 @@
                     }
 
                     <div class="row categories">
+                        <!-- Overall Rating (only shown in tablet or mobile viewport widths) -->
+                        @if (viewportType === 'tablet' || viewportType === 'mobile') {
+                            <div class="col-12 overall-category-container">
+                                <div class="category overall">
+                                    <!-- Category header -->
+                                    <h6 class="category-header">Overall</h6>
+                                    <!-- Stars for overall rating -->
+                                    <div class="circles">
+                                        @for (circle of [1,2,3,4,5]; track $index) {
+                                            <i
+                                            class="circle"
+                                            [ngClass]="{
+                                                'full-circle': Math.floor(review.overallRating) >= circle,
+                                                'half-circle': Math.floor(review.overallRating) < circle && Math.ceil(review.overallRating) >= circle,
+                                                'empty-circle': Math.ceil(review.overallRating) < circle
+                                            }"
+                                            ></i>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                         <!-- Content Category -->
-                        <div class="col-md-3 col-lg-3 category">
+                        <div class="category content">
                             <!-- Category header -->
-                            <h6 class="category-header">Content</h6>
+                            <h6 class="category-header">Enjoyment</h6>
                             <!-- Circles for Content Rating -->
                             <div >
-                                <div class="circles mr-3">
+                                <div class="circles">
                                     @for (circle of [1,2,3,4,5]; track $index) {
                                         <i 
                                             class="circle"
@@ -120,18 +153,18 @@
                         </div>
 
                         <!-- Faculty Category -->
-                        <div class="col-md-3 col-lg-3 category">
+                        <div class="category faculty">
                             <!-- Category header -->
-                            <h6 class="category-header">Faculty</h6>
+                            <h6 class="category-header">Simplicity</h6>
                             <!-- Circles for faculty rating -->
-                            <div class="circles mr-3">
+                            <div class="circles">
                                 @for (circle of [1,2,3,4,5]; track $index) {
                                     <i
                                         class="circle"
                                         [ngClass]="{
-                                        'full-circle': Math.floor(review.facultyRating) >= circle,
-                                        'half-circle': Math.floor(review.facultyRating) < circle && Math.ceil(review.facultyRating) >= circle,
-                                        'empty-circle': Math.ceil(review.facultyRating) < circle
+                                            'full-circle': Math.floor(review.facultyRating) >= circle,
+                                            'half-circle': Math.floor(review.facultyRating) < circle && Math.ceil(review.facultyRating) >= circle,
+                                            'empty-circle': Math.ceil(review.facultyRating) < circle
                                         }"
                                     ></i>
                                 }
@@ -139,25 +172,25 @@
                         </div>
 
                         <!-- Relevancy Category -->
-                        <div class="col-md-3 col-lg-3 category">
+                        <div class="category relevancy">
                             <!-- Category header -->
-                            <h6 class="category-header">Relevancy</h6>
+                            <h6 class="category-header">Usefulness</h6>
                             <!-- Circles for relevancy rating -->
-                            <div class="circles mr-3">
+                            <div class="circles">
                                 @for (circle of [1,2,3,4,5]; track $index) {
                                     <i
                                         class="circle"
                                         [ngClass]="{
-                                        'full-circle': Math.floor(review.relevancyRating) >= circle,
-                                        'half-circle': Math.floor(review.relevancyRating) < circle && Math.ceil(review.relevancyRating) >= circle,
-                                        'empty-circle': Math.ceil(review.relevancyRating) < circle
+                                            'full-circle': Math.floor(review.relevancyRating) >= circle,
+                                            'half-circle': Math.floor(review.relevancyRating) < circle && Math.ceil(review.relevancyRating) >= circle,
+                                            'empty-circle': Math.ceil(review.relevancyRating) < circle
                                         }"
                                     ></i>
                                 }
                             </div>
                         </div>
 
-                        <div class="col-md-3 col-lg-3 d-flex flex-column justify-content-end">
+                        <div class="col-md-3 col-lg-3 d-flex flex-column justify-content-end actions">
                             <!-- Report and dislike/like buttons -->
                             <div class="action-buttons-container">
                                 <!-- Thumbs up/down -->

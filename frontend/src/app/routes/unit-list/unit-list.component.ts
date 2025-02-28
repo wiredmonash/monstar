@@ -71,7 +71,7 @@ export class UnitListComponent implements OnInit {
   isSearchFocused: boolean = false;
 
   // NgModel value for the sort by dropdown (default: Alphabetic)
-  sortBy: string = 'Alphabetic'; 
+  sortBy: string = 'Most Reviews'; 
 
   // Advanced filtering overlay panel reference
   @ViewChild('op') overlayPanel!: OverlayPanel;

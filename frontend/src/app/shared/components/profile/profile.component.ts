@@ -1,4 +1,4 @@
-import { assertPlatform, HostListener, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ApiService } from '../../services/api.service';
@@ -17,10 +17,12 @@ import { User } from '../../models/user.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { TableModule } from 'primeng/table';
-import { DatePipe, UpperCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, UpperCasePipe } from '@angular/common';
 import { RatingModule } from 'primeng/rating';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { MenubarModule } from 'primeng/menubar';
+import { ViewportService, ViewportType } from '../../services/viewport.service';
 declare var google: any;
 
 @Component({
@@ -44,7 +46,9 @@ declare var google: any;
     UpperCasePipe,
     RatingModule,
     DatePipe,
-    SkeletonModule
+    SkeletonModule,
+    MenubarModule,
+    CommonModule,
   ],
   providers: [
     ConfirmationService
@@ -53,96 +57,82 @@ declare var google: any;
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  // used to get the google sign in button element
+  // Making window available for use in the template
+  window = window;
+
+  // & |==== View Children ====|
   @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
+  @ViewChild('usernameInput') usernameInput!: ElementRef;
 
-  // Outputs user change to parent
+  // & |==== Component Events (Outputs) ====|
   @Output() userChangeEvent = new EventEmitter<User | null>();
-
-  // Event to emit to the navbar to change the title of the dialog
   @Output() titleChangeEvent = new EventEmitter<string>();
-
-  // Event to emit to the navbar when our state changes
   @Output() stateChangeEvent = new EventEmitter<'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password'>();
-
-  // Event to emit to the navbar to create a toast
   @Output() createToast = new EventEmitter<{ severity: string, summary: string, detail: string }>();
 
-  // Input to listen for dialogClosedEvent
+  // & |==== Dialog Events (Inputs) ====|
   @Input() dialogClosedEvent!: EventEmitter<void>;
-
-  // Input to listen for dialogOpenedEvent
   @Input() dialogOpenedEvent!: EventEmitter<void>;
 
-  // Stores the subscription to this dialogClosedEvent from navbar
+  // & |==== Subscriptions ====|
   private dialogClosedSubscription!: Subscription;
-  // Stores the subscription to this dialogOpenedEvent from navbar
   private dialogOpenedSubscription!: Subscription;
-
-  // Stores the subscription for currentUser from AuthService
   private userSubscription: Subscription = new Subscription();
+  viewportType: ViewportType = 'desktop';
 
-  // Stores the user
+  // & |==== User Data ====|
   user: User | null = null;
-
-  // Stores the user reviews
   reviews: any[] = [];
 
-  // Current input value for the email
+  // & |==== Forms Inputs ====|
+  // Login/Signup
   inputEmail: string = '';
-
-  // Current input value for the password
   inputPassword: string = '';
-  // Current input value for confirm password
   inputPassword2: string = '';
 
-  // Current input value for the forgot password email
+  // Password Reset
   inputForgotPasswordEmail: string = '';
-  // Boolean to check if the reset email has been sent too many times
-  isResetEmailSentCapped: boolean = false;
-  // Boolean to check if the reset email button is disabled
-  resetEmailButtonDisabled: boolean = false;
-  // Timer for the reset email button
-  resetEmailTimer: any;
-
-  // Email input of duplicate nature status
-  isUserSignUpDuplicate: boolean = false;
-  // Email input is verified status
-  isEmailInputVerified: boolean = true;
-  // Email input validity status
-  isEmailInputValid: boolean = true;
-  // Password input validity status
-  isPasswordsInputValid: boolean = true;
-  // Email verification sent capped status
-  isVerifyEmailSentCapped: boolean = false;
-  // User input validity status
-  isUsernameInputValid: boolean = true;
-
-  // Signing up and logging in state
-  signingUp: boolean = false;
-  loggingIn: boolean = false;
-
-  // Profile menu
-  profileMenuItems: MenuItem[] = [];
-  profileMenuState: 'details' | 'reviews' | 'friends' | 'settings' = 'details';
-
-  // Updating username and password
-  inputUpdateUsername: string | undefined = undefined;
   inputUpdatePassword: string = '';
 
-  // Profile loading state
+  // Profile Update
+  inputUpdateUsername: string | undefined = undefined;
+
+  // & |==== State Flags ====|
+  // Authentication States
+  signingUp: boolean = false;
+  loggingIn: boolean = false;
   profileLoading = false;
 
-  // Google Sign In button skeleton state
+  // Username Update State
+  isEditingUsername = false;
+
+  // Input Validation States
+  isUserSignUpDuplicate: boolean = false;
+  isEmailInputVerified: boolean = true;
+  isEmailInputValid: boolean = true;
+  isPasswordsInputValid: boolean = true;
+  isVerifyEmailSentCapped: boolean = false;
+  isUsernameInputValid: boolean = true;
+
+  // Reset Email States
+  isResetEmailSentCapped: boolean = false;
+  resetEmailButtonDisabled: boolean = false;
+  resetEmailTimer: any;
+
+  // & |==== Profile Menu ====|
+  profileMenuItems: MenuItem[] = [];
+  profileMenuState: 'details' | 'reviews' | 'friends' | 'settings' = 'details';
+  menuStates = ['details', 'reviews', 'settings'];
+
+  // & |==== Google Sign In States ====|
   showGoogleSkeleton: boolean = false;
-  // Google Sign In button loading state
   isGoogleLoading: boolean = false;
-  // Google Sign In button error state
   googleLoadError: boolean = false;
 
-  // All user auth states can be inputted by parent as well
+  // & |==== Component State ====|
   private _state: 'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password' = 'logged out';
-  // Getter and setter for the state 
+  
+  // & |==== State Getters & Setters ====|
   @Input()
   get state(): 'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password' { return this._state; }
   set state(value: 'logged in' | 'signed up' | 'logged out' | 'signed out' | 'forgot password') {
@@ -166,10 +156,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  mobileLimit: number = 950;
-  // Boolean to determine whether the user is on a mobile device
-  isMobile: boolean = window.innerWidth <= this.mobileLimit;
-
 
   /**
    * ! Constructor
@@ -177,15 +163,34 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @param apiService The API service
    * @param authService The Auth service
    * @param confirmService The Confirmation service
+   * @param viewportService The Viewport service
    */
   constructor (
     private apiService: ApiService,
     private authService: AuthService,
-    private confirmService: ConfirmationService
+    private confirmService: ConfirmationService,
+    private viewportService: ViewportService
   ) { }
 
 
-  // * Change title on initialisation
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | ANGULAR LIFECYCLE HOOKS                                              |
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Runs on initialisation of this component
+   * 
+   * - Validates the session and changes the state accordingly
+   * - Subscribes to the current user
+   * - Sets the profile menu items
+   * - Subscribes to the dialogClosedEvent
+   * - Subscribes to the dialogOpenedEvent
+   * - Gets viewport changes
+   * - Changes dialog title based on state
+   */
   ngOnInit(): void {
     // Validate session and change state accordingly
     this.authService.validateSession().subscribe({
@@ -246,50 +251,43 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Set profile menu items
     this.profileMenuItems = [
-      {
-        label: `User: ${this.user?.username || 'Guest'}`,
-        items: [
-          {
-            label: 'Details',
-            icon: 'pi pi-user',
-            command: () => {
-              this.profileMenuState = 'details';
-            }
-          },
-          {
-            label: 'Reviews',
-            icon: 'pi pi-address-book',
-            command: () => {
-              this.profileMenuState = 'reviews';
-            }
-          },
-          {
-            label: 'Friends',
-            icon: 'pi pi-users',
-            disabled: true,
-            command: () => {
-              this.profileMenuState = 'friends';
-            }
-          },
-          {
-            label: 'Settings',
-            icon: 'pi pi-cog',
-            command: () => {
-              this.profileMenuState = 'settings';
-            }
-          },
-          {
-            separator: true
-          },
-          {
-            label: 'Logout',
-            icon: 'pi pi-sign-out',
-            command: () => {
-              this.logout();
-            }
+        {
+          label: 'Profile',
+          icon: 'pi pi-user',
+          command: () => {
+            this.profileMenuState = 'details';
           }
-        ]
-      }
+        },
+        {
+          label: 'Reviews',
+          icon: 'pi pi-address-book',
+          command: () => {
+            this.profileMenuState = 'reviews';
+          }
+        },
+        {
+          label: 'Friends',
+          icon: 'pi pi-users',
+          disabled: true,
+          command: () => {
+            this.profileMenuState = 'friends';
+          }
+        },
+        {
+          label: 'Settings',
+          icon: 'pi pi-cog',
+          command: () => {
+            this.profileMenuState = 'settings';
+          }
+        },
+        {
+          label: 'Logout',
+          icon: 'pi pi-sign-out',
+          style: { 'background-color': 'var(--red-300)', 'border-radius': '6px' },
+          command: () => {
+            this.logout();
+          }
+        }
     ];
 
     // Subscribe to the dialogClosedEvent
@@ -299,6 +297,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.inputEmail = '';
       this.inputPassword = '';
       this.inputPassword2 = '';
+      this.isEditingUsername = false;
     });
 
     // Subscribe to the dialogOpenedEvent
@@ -311,12 +310,41 @@ export class ProfileComponent implements OnInit, OnDestroy {
       setTimeout(() => { this.showGoogleSkeleton = false; }, 1000);
     });
 
+    // Get viewport changes
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
+    
     // Changing dialog title based on state
     if (this.state == 'signed up') { this.titleChangeEvent.emit('Verify your email'); }
     else if (this.state == 'logged in') { this.titleChangeEvent.emit('Profile'); }
     else if (this.state == 'signed out') { this.titleChangeEvent.emit('Sign Up'); }
     else if (this.state == 'logged out') { this.titleChangeEvent.emit('Login'); }
   }
+
+  /**
+   * * Runs on removal of this component
+   * 
+   * Called when the component is removed. Will clean up all subscriptions and
+   * clear the reset email timer.
+   */
+  ngOnDestroy(): void {
+    // Clean up subscriptions to avoid memory leaks
+    if (this.userSubscription) { this.userSubscription.unsubscribe(); }
+    if (this.dialogClosedSubscription) { this.dialogClosedSubscription.unsubscribe(); }
+    if (this.dialogOpenedSubscription) { this.dialogOpenedSubscription.unsubscribe(); }
+
+    // Clear the timer on destroy
+    if (this.resetEmailTimer) { clearInterval(this.resetEmailTimer); }
+  }
+
+
+
+  /** 
+   * ! |=======================================================================|
+   * ! | GOOGLE AUTHENTICATION                                                 |
+   * ! |=======================================================================|
+   */
 
   /** 
    * * Renders the Google Sign In button
@@ -428,12 +456,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * * Reloads the page
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | NORMAL AUTHENTICATION & USER MANAGEMENT                              |
+   *  ! |======================================================================|
    */
-  reloadPage() {
-    return window.location.reload();
-  }
 
   /**
    * * Signs up the user
@@ -806,10 +835,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.isUsernameInputValid = false;
       this.inputUpdateUsername = '';
       this.inputUpdatePassword = '';
-      this.createToast.emit({ severity: 'error', summary: 'Invalid username', detail: 'Please enter a valid username' });
+      this.createToast.emit({ severity: 'error', summary: 'Invalid username', detail: 'Invalid Username (Please enter an alphanumeric username <= 20 characters)' });
       console.log('Profile | Not a valid username')
     }
-    }
+  }
 
   /**
    * * Uploads the user's avatar
@@ -854,6 +883,63 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     input.click();
   }
+
+  /**
+   * * Deletes the user's account
+   * 
+   * Called to delete the user's account. Will call the backend API to delete 
+   * the user's account and log the user out.
+   * 
+   * @subscribes authService.deleteUserAccount(userId)
+   * @throws {success toast} Account deleted
+   * @throws {error toast} Error deleting account
+   */
+  deleteUserAccount() {
+    if (!this.user) return;
+    
+    this.authService.deleteUserAccount(this.user._id.toString()).subscribe({
+      next: (response) => {
+        window.location.reload();
+        this.createToast.emit({ severity: 'success', summary: 'Account Deleted', detail: 'Your account has been deleted successfully.' });
+        console.log('Profile | Account deleted successfully', response);
+      },
+      error: (error) => {
+        this.createToast.emit({ severity: 'error', summary: 'Error deleting account', detail: 'There was an error whilst deleting your account' });
+        console.error('Profile | Error whilst deleting account', error.message);
+      }
+    })
+  }
+  
+  /**
+   * * Controls the delete account confirmation popup
+   * 
+   * @param event The event that triggered the confirmation
+   * @event confirmService.confirm(options) Opens the confirmation dialog
+   * @event confirmService.(options).accept() Runs the accept function
+   * @event confirmService.confirm(options).reject() Runs the reject function
+   */
+  deleteAccountConfirmation(event: Event) {
+    this.confirmService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure about this?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        console.log('Deleting account');
+        this.deleteUserAccount();
+      },
+      reject: () => {
+        console.log('User canceled');
+      }
+    });
+  }
+
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | REVIEWS HANDLERS                                                     |
+   *  ! |======================================================================|
+   */
 
   /**
    * * Gets the user's reviews
@@ -918,76 +1004,51 @@ export class ProfileComponent implements OnInit, OnDestroy {
     })
   }
 
-  /**
-   * * Deletes the user's account
-   * 
-   * Called to delete the user's account. Will call the backend API to delete 
-   * the user's account and log the user out.
-   * 
-   * @subscribes authService.deleteUserAccount(userId)
-   * @throws {success toast} Account deleted
-   * @throws {error toast} Error deleting account
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | FRONTEND LOGIC                                                       |
+   *  ! |======================================================================|
    */
-  deleteUserAccount() {
-    if (!this.user) return;
-    
-    this.authService.deleteUserAccount(this.user._id.toString()).subscribe({
-      next: (response) => {
-        window.location.reload();
-        this.createToast.emit({ severity: 'success', summary: 'Account Deleted', detail: 'Your account has been deleted successfully.' });
-        console.log('Profile | Account deleted successfully', response);
-      },
-      error: (error) => {
-        this.createToast.emit({ severity: 'error', summary: 'Error deleting account', detail: 'There was an error whilst deleting your account' });
-        console.error('Profile | Error whilst deleting account', error.message);
-      }
-    })
+
+  /**
+   * * Arrow navigation logic
+   * 
+   * Navigates the profile menu states using the arrows on the profile menu for 
+   * tablet and mobile devices.
+   */
+  navigateMenu(direction: 'prev' | 'next') {
+    const currentIndex = this.menuStates.indexOf(this.profileMenuState);
+    let newIndex: number;
+
+    if (direction === 'next') {
+      newIndex = (currentIndex + 1) % this.menuStates.length;
+    } else {
+      newIndex = (currentIndex - 1 + this.menuStates.length) % this.menuStates.length; 
+    }
+
+    this.profileMenuState = this.menuStates[newIndex] as 'details' | 'reviews' | 'friends' | 'settings';
   }
 
   /**
-   * * Controls the delete account confirmation popup
+   * * Starts editing the username
    * 
-   * @param event The event that triggered the confirmation
-   * @event confirmService.confirm(options) Opens the confirmation dialog
-   * @event confirmService.(options).accept() Runs the accept function
-   * @event confirmService.confirm(options).reject() Runs the reject function
+   * Called to start editing the username. Will set the isEditingUsername to true
+   * and focus on the username input.
    */
-  deleteAccountConfirmation(event: Event) {
-    this.confirmService.confirm({
-      target: event.target as EventTarget,
-      message: 'Are you sure about this?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        console.log('Deleting account');
-        this.deleteUserAccount();
-      },
-      reject: () => {
-        console.log('User canceled');
-      }
+  startEditingUsername() {
+    this.isEditingUsername = true;
+    this.inputUpdateUsername = this.user?.username || '';
+    setTimeout(() => {
+      this.usernameInput.nativeElement.focus();
     });
   }
 
   /**
-   * * Runs on removal of this component
-   * 
-   * Called when the component is removed. Will clean up all subscriptions and
-   * clear the reset email timer.
+   * * Reloads the page
    */
-  ngOnDestroy(): void {
-    // Clean up subscriptions to avoid memory leaks
-    if (this.userSubscription) { this.userSubscription.unsubscribe(); }
-    if (this.dialogClosedSubscription) { this.dialogClosedSubscription.unsubscribe(); }
-    if (this.dialogOpenedSubscription) { this.dialogOpenedSubscription.unsubscribe(); }
-
-    // Clear the timer on destroy
-    if (this.resetEmailTimer) { clearInterval(this.resetEmailTimer); }
-  }
-
-  /**
-   * * Listens for window resize events
-   */
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.isMobile = window.innerWidth <= this.mobileLimit;
+  reloadPage() {
+    return window.location.reload();
   }
 }
