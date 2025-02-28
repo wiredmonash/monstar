@@ -15,7 +15,6 @@ const ReviewRouter = require('./routes/reviews');
 const AuthRouter = require('./routes/auth');
 
 // === Middleware ===
-app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
 app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
@@ -32,6 +31,14 @@ app.use((obj, req, res, next) => {
     })
 });
 
+// === Routes ===
+app.use('/api/v1/units', UnitRouter);
+app.use('/api/v1/reviews', ReviewRouter);
+app.use('/api/v1/auth', AuthRouter);
+
+// === Serving Static Files ===
+app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
+
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
 async function connect(url) { 
@@ -44,20 +51,15 @@ connect(url)
     })
     .catch((error) => console.log(error));
 
-// === Routes ===
-app.use('/api/v1/units', UnitRouter);
-app.use('/api/v1/reviews', ReviewRouter);
-app.use('/api/v1/auth', AuthRouter);
-
 // === Services ===
 cron.schedule('0 * * * *', async function() {
     await tagManager.updateMostReviewsTag(1);
 })
 
-// === Debugging Root Route ===
-// app.get('/', (req, res) => {
-//     return res.status(200).json({ msg : "Hello frontend... From backend." });
-// });
+// === Catch all route ===
+app.get('*', (req, res) => {
+    return res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
+});
 
 // === Start Server ===
 const PORT = process.env.PORT || 8080;                                          // Default to 8080 if no port specified
