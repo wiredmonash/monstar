@@ -262,4 +262,6 @@ export class NavbarComponent implements OnInit {
   navigateTo(route: string) {
     this.navigationService.navigateTo([route]);
   }
+
+  
 }
