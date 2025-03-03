@@ -86,7 +86,7 @@
                             class="unit-info-label"
                             pTooltip="The number of credit points this unit is worth."
                             tooltipZIndex="9999"
-                        >Credit Points <i class="pi pi-info-circle"></i></dt>
+                        >Credit Points 🛈</dt>
                         <dd 
                             class="unit-info-value"
                         >{{ unit?.creditPoints }}</dd>
@@ -100,7 +100,7 @@
                             [style]="{ 'color': 'rgb(34, 197, 94)' }"
                             pTooltip="Prerequisites are units that must be completed before this unit."
                             tooltipZIndex="9999"
-                        >Prerequisites <i class="pi pi-info-circle"></i></dt>
+                        >Prerequisites 🛈</dt>
                         <dd 
                             class="unit-info-value" 
                             [style]="{ 'color': 'rgba(34, 197, 94, 0.75)' }"
@@ -112,7 +112,7 @@
                             class="unit-info-label"
                             pTooltip="The number of prerequisites needed to be completed before this unit."
                             tooltipZIndex="9999"
-                        >No. of Prerequisites <i class="pi pi-info-circle"></i></dt>
+                        >No. of Prerequisites 🛈</dt>
                         <dd class="unit-info-value">{{ prerequisiteNumReq > 0 ? prerequisiteNumReq : 'None' }} of the above</dd>
                     </div>
                     <!-- Divider -->
@@ -124,7 +124,7 @@
                             [style]="{ 'color': 'rgb(249, 115, 22)' }"
                             pTooltip="Parent units are units where {{ unit?.unitCode | uppercase }} is a prerequisite."
                             tooltipZIndex="9999"
-                        >Parent Units <i class="pi pi-info-circle"></i></dt>
+                        >Parent Units 🛈</dt>
                         <dd class="unit-info-value" [style]="{ 'color': 'rgba(249, 115, 22, 0.75)' }">{{ parentUnitCodes }}</dd>
                     </div>
                 </dl>
