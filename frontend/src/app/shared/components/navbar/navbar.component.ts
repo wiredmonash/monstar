@@ -252,4 +252,11 @@ export class NavbarComponent implements OnInit {
   handleToastEvent(event: { severity: string, summary: string, detail: string }) {
     this.messageService.add({ severity: event.severity, summary: event.summary, detail: event.detail });
   }
+
+  /**
+   * * Navigates to a page (but scrolls to top)
+   */
+  navigateTo(route: string) {
+    this.navigationService.navigateTo([route]);
+  }
 }
