@@ -14,6 +14,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { BadgeModule } from 'primeng/badge';
 import { filter } from 'rxjs/operators';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-navbar',
@@ -88,7 +89,8 @@ export class NavbarComponent implements OnInit {
   constructor (
     private messageService: MessageService,
     private router: Router,
-    private viewportService: ViewportService
+    private viewportService: ViewportService,
+    private navigationService: NavigationService
   ) {
     // Subscribes to changes in navigation
     this.router.events.pipe(
@@ -252,6 +254,7 @@ export class NavbarComponent implements OnInit {
   handleToastEvent(event: { severity: string, summary: string, detail: string }) {
     this.messageService.add({ severity: event.severity, summary: event.summary, detail: event.detail });
   }
+
 
   /**
    * * Navigates to a page (but scrolls to top)
