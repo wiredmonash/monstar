@@ -60,9 +60,6 @@ export class UnitListComponent implements OnInit {
   loading: boolean = true;
   testing: boolean = true;
 
-  // Skeletons for loading state
-  skeletons: any[] = new Array(6);
-
   // Sort by dropdown reference
   @ViewChild('sortByDropdown') sortByDropdown!: Dropdown;
   // Is sort by dropdown focused?

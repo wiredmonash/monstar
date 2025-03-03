@@ -23,37 +23,48 @@ Ensure you have the following installed:
 - Node.js (v20.15.1 or higher)
 - MongoDB
 
-### Installation Steps
-1. Clone the repository:
+### Deployment Setup/Installation Steps
+1. Install Angular Globally:
 ```shell
-git clone https://github.com/wiredmonash/monstar.git
+npm i -g @angular/cli@18
 ```
 2. Navigate to the project directory:
 ```shell
 cd monstar
 ```
-3. Install dependencies
+3. Navigate to frontend directory and install packages
 ```shell
-npm install
+cd frontend
+npm i --legacy-peer-deps
+```
+4. Navigate to backend directory and install packages
+```shell
+cd ..
+cd backend
+npm i
 ```
 4. Create a `.env` file in the `backend/.` directory and add the following variables:
 ```shell
-MONGODB_CONN_STRING='(mongodb atlas connection string)'
+MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/?retryWrites=true&w=majority&appName=unit-review'
 PORT=8080
-JWT_SECRET='(secret key for the jwt)'
-EMAIL_USERNAME=(email of the account used to send emails)
-EMAIL_PASSWORD=(app password from google account)
-FRONTEND_URL=(url of the frontend app)
+JWT_SECRET='1e1859169d62ce4dd61400c9036b2c1c96df908b4b670ad8fb6f247ff6557d84'
 
-CLOUDINARY_NAME='(name of the cloudinary cloud)'
-CLOUDINARY_API_KEY='(api key for the cloudinary account)'
-CLOUDINARY_API_SECRET='(secret key for the cloudinary account)'
-CLOUDINARY_URL='(full url to the cloudinary)'
+EMAIL_USERNAME=(gmail here, used for nodemailer;)
+EMAIL_PASSWORD=(google app password here, used for nodemailer) 
+FRONTEND_URL=http://localhost:4200 (this should be replaced with the IP address of the server with port)
+
+CLOUDINARY_CLOUD_NAME='dd1a4cx9e'
+CLOUDINARY_API_KEY='937851319752153'
+CLOUDINARY_API_SECRET='qZ6riJThQ3_zi03vjwtaXOSUaJE'
+CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx9e'
 
 GOOGLE_CLIENT_ID='923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com'
 ```
-5. Start the application `npm start`
-
+5. Start the application
+```
+cd backend
+node server.js
+```
 ---
 
 ## Project Structure
@@ -71,7 +82,7 @@ monstar/
 - Cloud Database: MongoDB
 - Frontend: Angular.js
 - Cloud Storage (profile pictures): Cloudinary
-- Deployment: EC2 (Amazon Web Services)
+- Deployment: Linode
 
 ---
 
