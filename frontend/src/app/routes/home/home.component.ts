@@ -12,8 +12,6 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { RatingComponent } from '../../shared/components/rating/rating.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ViewportScroller } from '@angular/common';
-import { NavigationService } from '../../shared/services/navigation.service';
 
 @Component({
   selector: 'app-home',
@@ -101,8 +99,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor (
     private router: Router,
     private apiService: ApiService,
-    private sanitizer: DomSanitizer,
-    private navigationService: NavigationService
+    private sanitizer: DomSanitizer
   ) { }
 
 
@@ -212,13 +209,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   exploreUnits() {
     this.router.navigate(['/unit-list']);
-  }
-
-  /**
-   * * Navigates to the about page
-   */
-  navigateToAbout() {
-    this.navigationService.navigateTo(['/about']);
   }
 
   /**
