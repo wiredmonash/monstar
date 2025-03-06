@@ -1,4 +1,8 @@
-# MonSTAR
+# Production Branch
+This branch is for production, and this is what https://monstar.wired.org.au is currently serving.
+
+The frontend application is built and the backend server serves the frontend pages.
+
 MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
 
 ---
