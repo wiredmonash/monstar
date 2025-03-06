@@ -49,7 +49,7 @@ npm i
 ```
 4. Create a `.env` file in the `backend/.` directory and add the following variables:
 ```shell
-MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/?retryWrites=true&w=majority&appName=unit-review'
+MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/dev_test?retryWrites=true&w=majority&appName=unit-review'
 PORT=8080
 JWT_SECRET='1e1859169d62ce4dd61400c9036b2c1c96df908b4b670ad8fb6f247ff6557d84'
 
