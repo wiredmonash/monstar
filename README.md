@@ -49,8 +49,8 @@ MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/
 PORT=8080
 JWT_SECRET='1e1859169d62ce4dd61400c9036b2c1c96df908b4b670ad8fb6f247ff6557d84'
 
-EMAIL_USERNAME=(gmail here, used for nodemailer;)
-EMAIL_PASSWORD=(google app password here, used for nodemailer) 
+EMAIL_USERNAME=monstarapp@gmail.com
+EMAIL_PASSWORD=zieycfirwdraaith
 FRONTEND_URL=http://localhost:4200 (this should be replaced with the IP address of the server with port)
 
 CLOUDINARY_CLOUD_NAME='dd1a4cx9e'
