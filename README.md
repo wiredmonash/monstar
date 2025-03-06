@@ -1,12 +1,7 @@
-# MonSTAR
+# Development Branch
+This branch is for development.
+
 MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
-
----
-
-## Key Features
-- **Comprehensive Unit Database:** Access a complete list of units offered at Monash University.
-- **User Reviews:** Write and read reviews to gain valuable insights into unit content, teaching quality, and assessment structure.
-- **Community Engagement:** Share your experiences and help others navigate their academic journey.
 
 ---
 
@@ -49,8 +44,8 @@ MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/
 PORT=8080
 JWT_SECRET='1e1859169d62ce4dd61400c9036b2c1c96df908b4b670ad8fb6f247ff6557d84'
 
-EMAIL_USERNAME=(gmail here, used for nodemailer;)
-EMAIL_PASSWORD=(google app password here, used for nodemailer) 
+EMAIL_USERNAME=monstarapp@gmail.com
+EMAIL_PASSWORD=zieycfirwdraaith
 FRONTEND_URL=http://localhost:4200 (this should be replaced with the IP address of the server with port)
 
 CLOUDINARY_CLOUD_NAME='dd1a4cx9e'
@@ -60,8 +55,10 @@ CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx
 
 GOOGLE_CLIENT_ID='923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com'
 ```
-5. Start the application
+5. Start the app
 ```
+cd frontend
+ng serve
 cd backend
 node server.js
 ```
