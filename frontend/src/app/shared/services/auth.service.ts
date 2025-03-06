@@ -9,7 +9,7 @@ import { ObjectId } from 'mongoose';
 })
 export class AuthService {
   // URL for backend endpoints
-  private url = '/api/v1/auth';
+  private url = 'http://localhost:8080/api/v1';
 
   // Stores the current user as behaviour subject of type User (nullable)
   private currentUser = new BehaviorSubject<User | null>(null);
