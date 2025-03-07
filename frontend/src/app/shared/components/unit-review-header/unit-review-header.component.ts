@@ -21,6 +21,8 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { KnobModule } from 'primeng/knob';
 import { RippleModule } from 'primeng/ripple';
+import { Review, ReviewData } from '../../models/review.model';
+import { Unit } from '../../models/unit.model';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -55,7 +57,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   Math = Math;
 
   // Receives the unit data from the parent component (UnitOverviewComponent)
-  @Input() unit: any;
+  @Input() unit!: Unit;
 
   // Emits the sorting criteria to the parent component (UnitOverviewComponent)
   @Output() sortBy = new EventEmitter<string>();
@@ -78,6 +80,9 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     { name: 'Highest Rating', value: 'highest-rating'}
   ];
 
+  // Boolean to check if the user has reviewed this unit already
+  hasReviewed: boolean = false;
+
 
   /**
    * === Constructor ===
@@ -94,6 +99,11 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     private router: Router
   ) { }
 
+  /** 
+   *  ! |======================================================================|
+   *  ! | ANGULAR LIFECYCLE HOOKS                                              |
+   *  ! |======================================================================|
+   */
 
   /**
    * * Runs on Init
@@ -104,6 +114,12 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authService.getCurrentUser().subscribe({
       next: (currentUser: User | null) => {
         this.user = currentUser;
+
+        // Check if the user has already reviewed this unit
+        if (this.user && this.unit) {
+          this.checkHasReviewed();
+        }
+
         console.log('UnitReviewHeader | Current User:', this.user);
       }
     });
@@ -144,9 +160,29 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     this.reviewAdded.emit();
   }
 
-  // * Navigate to the unit map page
-  navigateToUnitMap() {
-    this.router.navigate(['/unit-map', this.unit?.unitCode]);
+  checkHasReviewed() {
+    if (!this.user || !this.unit || !this.user._id) return;
+
+    this.apiService.getUserReviewsGET(this.user._id.toString()).subscribe({
+      next: (reviewsData: any) => {
+        const reviews = reviewsData.map((data: ReviewData) => new Review(data));
+
+        this.hasReviewed = reviews.some((review: Review) => {
+          if (review.hasPopulatedUnit()) {
+            return review.getUnitCode() === this.unit.unitCode;
+          }
+
+          return review.unit && this.unit._id && review.unit.toString() === this.unit._id.toString();
+        });
+
+        console.log(`User has ${this.hasReviewed ? 'already' : 'not yet'} reviewed this unit.`);
+      },
+      error: (error) => {
+        console.error('UnitReviewHeader | Error whilst fetching user reviews:', error);
+        // Default to false on error to allow reviews
+        this.hasReviewed = false;
+      }
+    });
   }
 
   /** 
@@ -182,6 +218,17 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
     console.info('UnitReviewHeader | verifyUnitGraph false boundary case');
     return this.unitMapButtonDisabled = true;
+  }
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | HELPERS                                                              |
+   *  ! |======================================================================|
+   */
+
+  // * Navigate to the unit map page
+  navigateToUnitMap() {
+    this.router.navigate(['/unit-map', this.unit?.unitCode]);
   }
 
   /**

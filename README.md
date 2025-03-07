@@ -7,10 +7,7 @@ MonSTAR is an online platform designed for Monash University students to browse,
 
 ---
 
-## Key Features
-- **Comprehensive Unit Database:** Access a complete list of units offered at Monash University.
-- **User Reviews:** Write and read reviews to gain valuable insights into unit content, teaching quality, and assessment structure.
-- **Community Engagement:** Share your experiences and help others navigate their academic journey.
+MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
 
 ---
 
@@ -64,8 +61,10 @@ CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx
 
 GOOGLE_CLIENT_ID='671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com'
 ```
-5. Start the application
+5. Start the app
 ```
+cd frontend
+ng serve
 cd backend
 node server.js
 ```

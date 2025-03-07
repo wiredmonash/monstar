@@ -4,7 +4,7 @@ import { Review } from '../models/review.model';
 import { Observable, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { Unit } from '../models/unit.model';
 
 interface ReportPayload {
@@ -19,7 +19,7 @@ interface ReportPayload {
 })
 export class ApiService {
   // The URL of where the API Server is located
-  private url = '/api/v1';
+  private url = 'http://localhost:8080/api/v1';
 
 
   // ! Inject HttpClient
@@ -56,10 +56,25 @@ export class ApiService {
 
   /**
    * * GET Gets the reviews written by a user
+   * 
+   * Retrieves all reviews written by a specific user.
+   * 
+   * @param {string} userId The ID of the user
+   * @returns {Observable<any>} An observable containing the reviews data
    */
-  getUserReviewsGET(userID: string): Observable<any> {
-    const url = `${this.url}/reviews/author/${userID}`;
-    return this.http.get(url);
+  getUserReviewsGET(userId: string): Observable<any> {
+    return this.http.get(
+      `${this.url}/reviews/user/${userId}`
+    ).pipe(
+      tap({
+        next: (response) => {
+          console.log('ApiService | Successfully fetched user reviews:', response);
+        },
+        error: (error) => {
+          console.log('ApiService | Error whilst fetching user reviews:', error.error);
+        }
+      })
+    );
   }
 
   /**
