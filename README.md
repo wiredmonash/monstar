@@ -1,5 +1,11 @@
-# Development Branch
-This branch is for development.
+# Production Branch
+This branch is for production, and this is what https://monstar.wired.org.au is currently serving.
+
+The frontend application is built and the backend server serves the frontend pages.
+
+MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
+
+---
 
 MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
 
@@ -53,7 +59,7 @@ CLOUDINARY_API_KEY='937851319752153'
 CLOUDINARY_API_SECRET='qZ6riJThQ3_zi03vjwtaXOSUaJE'
 CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx9e'
 
-GOOGLE_CLIENT_ID='923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com'
+GOOGLE_CLIENT_ID='671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com'
 ```
 5. Start the app
 ```
