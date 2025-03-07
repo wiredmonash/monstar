@@ -9,7 +9,7 @@ import { ObjectId } from 'mongoose';
 })
 export class AuthService {
   // URL for backend endpoints
-  private url = 'http://localhost:8080/api/v1';
+  private url = 'http://localhost:8080/api/v1/auth';
 
   // Stores the current user as behaviour subject of type User (nullable)
   private currentUser = new BehaviorSubject<User | null>(null);
@@ -58,18 +58,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username, 
-          response.data.isGoogleUser,
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -95,18 +84,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username,
-          response.data.isGoogleUser, 
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -173,18 +151,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username, 
-          response.data.isGoogleUser,
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -208,18 +175,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username, 
-          response.data.isGoogleUser,
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log

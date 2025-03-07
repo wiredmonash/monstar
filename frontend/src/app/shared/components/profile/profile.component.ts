@@ -23,6 +23,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenubarModule } from 'primeng/menubar';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { Review } from '../../models/review.model';
 declare var google: any;
 
 @Component({
@@ -226,21 +227,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Set the current username in the update username field in details page
         this.inputUpdateUsername = this.user?.username;
 
-        // Update the profile menu label with the new username
-        const userItem = this.profileMenuItems.find(item => item.label?.startsWith('User:'));
-        if (userItem) {
-          userItem.label = `User: ${this.user?.username || 'Guest'}`;
-        }
-
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
 
         console.log('Fetching user reviews for:', this.user?.username);
 
         // Gets the user reviews if the user is not null
-        if (this.user?.username) {
-          this.getUserReviews(this.user.username);
-        }
+        if (this.user) this.getUserReviews(this.user._id);
         
         // console.log(this.reviews)
 
@@ -691,11 +684,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * Called to get the user's reviews. Will call the backend API to get the user's
    * reviews and store them in the reviews array.
    * 
-   * @subscribes apiService.getUserReviewsGET(userID)
+   * @subscribes apiService.getUserReviewsGET(userId)
    */
-  getUserReviews(userID: any) {
-    this.apiService.getUserReviewsGET(userID).subscribe(
-      (reviews: any) => {
+  getUserReviews(userId: any) {
+    this.apiService.getUserReviewsGET(userId).subscribe({
+      next: (reviews: Review[]) => {
         this.reviews = reviews;
 
         // Update the reviews property in the user object
@@ -704,11 +697,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         console.log(this.reviews)
       },
-      (error: any) => {
+      error: (error) => {
         // ? Debug log: Error
         console.log('ERROR DURING: GET Get All Reviews', error)
       }
-    );
+    });
   }
 
   /**
