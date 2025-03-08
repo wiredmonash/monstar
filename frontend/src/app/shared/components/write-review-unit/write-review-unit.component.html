@@ -15,7 +15,7 @@
   <!-- ! The Dialog Iteself -->
   <p-dialog 
     #writeReviewDialog
-    header="Review for {{ unit.unitCode | uppercase }}" 
+    header="Review for {{ unit ? (unit.unitCode | uppercase) : 'Placaeholder' }}" 
     [modal]="true" 
     [(visible)]="visible" 
     [style]="{ width: '40rem', height: '50%', 'text-align': 'center', 'z-index': 2000 }"

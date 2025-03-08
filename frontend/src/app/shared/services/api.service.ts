@@ -269,6 +269,42 @@ export class ApiService {
   }
 
   /**
+   * * PATCH Update a Review by ID
+   * 
+   * Updates a review by its ID.
+   * 
+   * @param {Review} review The review object containing the updated review details
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
+  editReviewPUT(review: Review): Observable<any> {
+    return this.http.put(
+      `${this.url}/update/${review._id}`, {
+        review_title: review.title,
+        review_semester: review.semester,
+        review_grade: review.grade,
+        review_year: review.year,
+        review_overall_rating: review.overallRating,
+        review_relevancy_rating: review.relevancyRating,
+        review_faculty_rating: review.facultyRating,
+        review_content_rating: review.contentRating,
+        review_description: review.description,
+        review_author: review.author
+      }
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully updated review:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst updating review:', error.error);
+        }
+      })
+    );
+  }
+
+  /**
    * * POST send a report for a review
    * 
    * Sends a report for a given review

@@ -23,6 +23,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenubarModule } from 'primeng/menubar';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { Review } from '../../models/review.model';
+import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
+import { Unit } from '../../models/unit.model';
 declare var google: any;
 
 @Component({
@@ -49,6 +52,7 @@ declare var google: any;
     SkeletonModule,
     MenubarModule,
     CommonModule,
+    WriteReviewUnitComponent
   ],
   providers: [
     ConfirmationService
@@ -59,6 +63,9 @@ declare var google: any;
 export class ProfileComponent implements OnInit, OnDestroy {
   // Making window available for use in the template
   window = window;
+  
+  // ViewChild to reference the WriteReviewUnitComponent
+  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
 
   // & |==== View Children ====|
   @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
@@ -74,6 +81,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @Input() dialogClosedEvent!: EventEmitter<void>;
   @Input() dialogOpenedEvent!: EventEmitter<void>;
 
+  // Emits that the user has edited a review
+  @Output() reviewEdited = new EventEmitter<void>();
+
   // & |==== Subscriptions ====|
   private dialogClosedSubscription!: Subscription;
   private dialogOpenedSubscription!: Subscription;
@@ -83,6 +93,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // & |==== User Data ====|
   user: User | null = null;
   reviews: any[] = [];
+
+  unit: Unit | null = null;
 
   // & |==== Forms Inputs ====|
   // Login/Signup
@@ -192,6 +204,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * - Changes dialog title based on state
    */
   ngOnInit(): void {
+    this.unit = null;
     // Validate session and change state accordingly
     this.authService.validateSession().subscribe({
       next: (response) => {
@@ -747,6 +760,19 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     })
   }
+
+  showDialog(review: any) {
+    this.unit = review.unit;
+    
+    if (this.writeReviewDialog && this.user)
+      
+      this.writeReviewDialog.openDialog();
+  }
+
+  handleReviewEdited() {
+    this.reviewEdited.emit();
+  }
+
 
 
 

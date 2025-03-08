@@ -63,7 +63,9 @@ export class WriteReviewUnitComponent implements OnInit {
   @ViewChild('submitReviewButton') submitReviewButton?: ElementRef;
 
   // Input property to receive the unit data from the parent component
-  @Input() unit: any;
+  @Input() unit?: any;
+
+  @Input() editMode: boolean = false;
 
   // Input property to receive the visible boolean data from the parent component
   @Input() visible: boolean = false;
@@ -317,6 +319,10 @@ export class WriteReviewUnitComponent implements OnInit {
 
       // If the current state is 'submit', post the review
       if (currentState === 'submit') {
+        console.log(this.editMode);
+        if (this.editMode) {
+          return this.editReview();
+        }
         return this.postReview();
       }
 
@@ -358,6 +364,10 @@ export class WriteReviewUnitComponent implements OnInit {
       }
     }
 
+  }
+
+  editReview() {
+    
   }
 
   /**

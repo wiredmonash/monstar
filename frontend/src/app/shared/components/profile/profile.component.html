@@ -188,7 +188,7 @@
                                 <!-- Actions to edit and delete the review -->
                                 <td>
                                     <!-- TODO: Edit button is disabled because there is no functionality for this yet -->
-                                    <button pButton [disabled]="true" icon="pi pi-pencil" class="p-button-rounded p-button-text" ></button>
+                                    <button pButton [disabled]="false" icon="pi pi-pencil" class="p-button-rounded p-button-text" (click)="this.showDialog(review)"></button>
                                     <!-- Button to delete the current review -->
                                     <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text" (click)="this.deleteReview(review._id)"></button>
                                 </td>
@@ -196,6 +196,12 @@
                         </ng-template>
                     </p-table>
                 </div>
+                <app-write-review-unit
+                    [unit]="unit"
+                    [user]="user"
+                    [editMode]="true"
+                    (reviewPosted)="handleReviewEdited()"
+                ></app-write-review-unit>
             }
             <!-- Friends -->
             @else if (profileMenuState === 'friends') {
