@@ -1,0 +1,17 @@
+<li class="flex align-items-center gap-2">
+  <img [src]="notification.profileImg" style="width: 32px" />
+  <div (click)="goToUnitPage()" pTooltip="Go to review" tooltipPosition="top">
+    <div class="text-sm text-color-secondary">
+      {{ notification.username }} liked your review on {{ notification.unit }}
+    </div>
+  </div>
+  <div
+    class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm"
+  >
+    <i
+      class="pi pi-times"
+      style="color: red"
+      (click)="removeNotification()"
+    ></i>
+  </div>
+</li>

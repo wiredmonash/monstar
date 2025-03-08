@@ -8,21 +8,35 @@
     transform: 'scale(1.2)'
   }"
 >
+  @if (notifications.length > 0) {
   <i
     class="pi pi-bell"
     tooltipStyleClass="mt-2"
     [style.color]="profileColor"
-  ></i
-></p-button>
+    pBadge
+    [value]="notifications.length"
+    severity="danger"
+  >
+  </i>
+  } @else {
+  <i class="pi pi-bell" tooltipStyleClass="mt-2" [style.color]="profileColor">
+  </i>
+  }
+</p-button>
 
-<p-overlayPanel (btnClick)="op.toggle($event)" #op>
+<p-overlayPanel #op>
   <div class="flex flex-column gap-3 w-25rem">
-    <div>
-      <span class="font-medium text-900 block mb-2">Notification 1</span>
-      <span class="font-medium text-900 block mb-2">Notification 2</span>
-      <span class="font-medium text-900 block mb-2">Notification 3</span>
-      <span class="font-medium text-900 block mb-2">Notification 4</span>
-    </div>
+    <ul class="list-none p-0 m-0 flex flex-column gap-3">
+      @if (notifications.length == 0) {
+      <div class="text-sm text-color-secondary">Nothing to display</div>
+      } @else {
+      <app-notification-card
+        *ngFor="let notification of notifications"
+        [notification]="notification"
+        (btnClick)="removeNotification($event)"
+      ></app-notification-card>
+      }
+    </ul>
   </div>
 </p-overlayPanel>
 }
