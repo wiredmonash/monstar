@@ -21,8 +21,7 @@ export class NotificationCardComponent {
 
   goToUnitPage() {
     // Navigate to unit page, passing the unit code as a parameter
-    console.log(`redirect to ${this.notification.unit}`);
-    this.router.navigate(['/unit-overview', this.notification.unit]);
+    this.router.navigate([this.notification.navigateTo]);
   }
 
   removeNotification() {

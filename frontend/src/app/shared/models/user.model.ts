@@ -11,6 +11,7 @@ export class User {
     verified: boolean;
     likedReviews: Types.ObjectId[];
     dislikedReviews: Types.ObjectId[];
+    notifications: Object[];
 
     constructor (
         _id?: Types.ObjectId, 
@@ -22,7 +23,8 @@ export class User {
         admin?: boolean, 
         verified?: boolean, 
         likedReviews?: Types.ObjectId[],
-        dislikedReviews?: Types.ObjectId[]
+        dislikedReviews?: Types.ObjectId[],
+        notifications?: Object[]
     ) {
         this._id = _id || new Types.ObjectId();
         this.email = email || '';
@@ -34,6 +36,7 @@ export class User {
         this.verified = verified || false;
         this.likedReviews = likedReviews || [];
         this.dislikedReviews = dislikedReviews || [];
+        this.notifications = notifications || [];
     }
 
     addLikedReview(reviewId: Types.ObjectId): void {
@@ -50,5 +53,11 @@ export class User {
 
     removeDislikedReview(reviewId: Types.ObjectId): void {
         this.dislikedReviews = this.dislikedReviews.filter(id => id !== reviewId);
+    }
+
+    removeNotification(notificationId: Types.ObjectId) {
+        this.notifications = this.notifications.filter(
+            id => id !== notificationId
+        );
     }
 }

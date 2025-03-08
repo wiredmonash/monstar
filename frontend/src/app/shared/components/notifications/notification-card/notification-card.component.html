@@ -1,8 +1,8 @@
 <li class="flex align-items-center gap-2">
-  <img [src]="notification.profileImg" style="width: 32px" />
+  <img [src]="notification.data.user.profileImg" style="width: 32px" />
   <div (click)="goToUnitPage()" pTooltip="Go to review" tooltipPosition="top">
     <div class="text-sm text-color-secondary">
-      {{ notification.username }} liked your review on {{ notification.unit }}
+      {{ notification.data.message }}
     </div>
   </div>
   <div

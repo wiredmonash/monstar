@@ -1,23 +1,31 @@
-import { Unit } from './unit.model';
-import { User } from './user.model';
+import { Types } from 'mongoose';
 
 export class Notification {
-  id: number;
-  username: User['username'];
-  profileImg: User['profileImg'];
-  unit: Unit['unitCode'];
-
+  _id: Types.ObjectId;
+  data: ReviewData;
+  navigateTo: String;
+  isRead: boolean;
   constructor(
-    id: number,
-    username: User['username'],
-    profileImg: User['profileImg'],
-    unit: Unit['unitCode']
+    _id: Types.ObjectId,
+    data: ReviewData,
+    navigateTo: String,
+    isRead: boolean
   ) {
-    this.id = id;
-    this.username = username;
-    this.profileImg =
-      profileImg ||
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s';
-    this.unit = unit;
+    this._id = _id;
+    this.data = data;
+    this.navigateTo = navigateTo;
+    this.isRead = isRead;
+  }
+}
+
+export class ReviewData {
+  message: String;
+  user: {
+    profileImg: String;
+    username: String;
+  };
+  constructor(message: String, user: any) {
+    this.message = message;
+    this.user = user;
   }
 }

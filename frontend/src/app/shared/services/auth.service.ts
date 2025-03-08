@@ -68,7 +68,8 @@ export class AuthService {
           response.data.admin, 
           response.data.verified,
           response.data.likedReviews,
-          response.data.dislikedReviews 
+          response.data.dislikedReviews,
+          response.data.notifications 
         );
         this.currentUser.next(user);
 
@@ -183,7 +184,8 @@ export class AuthService {
           response.data.admin, 
           response.data.verified,
           response.data.likedReviews,
-          response.data.dislikedReviews 
+          response.data.dislikedReviews,
+          response.data.notifications,
         );
         this.currentUser.next(user);
 
