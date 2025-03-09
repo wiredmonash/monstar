@@ -25,12 +25,12 @@ router.get('/user/:userId', async function (req, res) {
     try {
         const userId = req.params.userId;
         const user = await User.findById(userId);
-        console.log(`Fetching notifications for user: ${user}`);
+        // console.log(`Fetching notifications for user: ${user}`);
 
         // Find all notifications associated with this user
         const notifications = await Notification.find({ user });
-        console.log(`Found ${notifications.length} notifications`);
-        console.log({notifications})
+        // console.log(`Found ${notifications.length} notifications`);
+        // console.log({notifications})
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(notifications);
@@ -75,11 +75,11 @@ router.delete('/:notificationId',
 
         // Delete the notification from the User's notifications array
         user.notifications.pull(notification._id);
-        console.log("user updated");
+        // console.log("user updated");
 
         // Delete the notification from the database
         await Notification.deleteOne(notification); 
-        console.log("notification deleted");
+        // console.log("notification deleted");
 
         // Save the user
         await user.save()

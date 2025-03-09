@@ -362,7 +362,7 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
                 // Create the notification
                 const newNotification = new Notification({
                     data: {
-                        message: `${user.username} liked your review on ${unit.unitCode}`,
+                        message: `${user.username} liked your review on ${unit.unitCode.toUpperCase()}`,
                         user: { username: user.username, profileImg: user.profileImg }
                     },
                     navigateTo: `/unit-overview/${unit.unitCode}`,
