@@ -23,6 +23,9 @@ import { KnobModule } from 'primeng/knob';
 import { RippleModule } from 'primeng/ripple';
 import { Review, ReviewData } from '../../models/review.model';
 import { Unit } from '../../models/unit.model';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ListboxModule } from 'primeng/listbox';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -42,6 +45,8 @@ import { Unit } from '../../models/unit.model';
     TooltipModule,
     KnobModule,
     RippleModule,
+    OverlayPanelModule,
+    ListboxModule
   ], 
   providers: [
     MessageService
@@ -72,13 +77,16 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   unitMapButtonDisabled: boolean = true;
 
   // The currently selected sorting option for the dropdown
-  selectedSort: string = 'recent';
+  selectedSort: string = 'highest-rating';
   // Sorting options used for the dropdown
   sortOptions = [
     { name: 'Recent', value: 'recent'}, 
+    { name: 'Oldest', value: 'oldest'}, 
     { name: 'Lowest Rating', value: 'lowest-rating'}, 
     { name: 'Highest Rating', value: 'highest-rating'}
   ];
+
+  @ViewChild('sortMenu') sortMenu!: OverlayPanel;
 
   // Boolean to check if the user has reviewed this unit already
   hasReviewed: boolean = false;
@@ -136,6 +144,13 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * * Handles the dropdown toggle action.
+   */
+  toggleDropdown(event: Event) {
+    this.sortMenu.toggle(event);
+  }
+
+  /**
    * * Handles the sorting action and emits the chosen criteria to the parent component.
    * 
    * @param {any} event - The event object containing the sorting criteria.
@@ -143,6 +158,9 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   onSort(event: any) {
     console.log('Sorting by: ', event.value);
     this.sortBy.emit(event.value);
+
+    // Closes the dropdown menu after selection
+    this.sortMenu.hide(); 
   }
 
   // * Shows the dialog to write a review
