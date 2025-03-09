@@ -269,7 +269,7 @@ export class ApiService {
   }
 
   /**
-   * * PATCH Update a Review by ID
+   * * PATCH Update a Review for a unit
    * 
    * Updates a review by its ID.
    * 
@@ -278,19 +278,17 @@ export class ApiService {
    */
   editReviewPUT(review: Review): Observable<any> {
     return this.http.put(
-      `${this.url}/update/${review._id}`, {
-        review_title: review.title,
-        review_semester: review.semester,
-        review_grade: review.grade,
-        review_year: review.year,
-        review_overall_rating: review.overallRating,
-        review_relevancy_rating: review.relevancyRating,
-        review_faculty_rating: review.facultyRating,
-        review_content_rating: review.contentRating,
-        review_description: review.description,
-        review_author: review.author
-      }
-    ).pipe(
+      `${this.url}/reviews/update/${review._id}`, {
+        title:            review.title,
+        semester:         review.semester,
+        grade:            review.grade,
+        year:             review.year,
+        overallRating:    review.overallRating,
+        relevancyRating:  review.relevancyRating,
+        facultyRating:    review.facultyRating,
+        contentRating:    review.contentRating,
+        description:      review.description,
+      }, { withCredentials: true }).pipe(
       tap({
         next: (response) => {
           // ? Debug log

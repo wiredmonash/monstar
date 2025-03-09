@@ -202,14 +202,14 @@
           }
           <!-- * Submit Review -->
           @case ('submit') {
-            <span class="p-text-secondary block mb-3">Ready to post your review?</span>
+            <span class="p-text-secondary block mb-3">Ready to {{editMode ? "edit" : "post"}} your review?</span>
 
             <div class="flex flex-column mb-4 centered-container">
               <p-button
                 #submitReviewButton
-                label="Post (Enter)"
+                [label]="(editMode ? 'Edit' : 'Post') + ' (Enter)'"
                 icon="pi pi-check"
-                (click)="postReview()"
+                (click)="this.editMode ? editReview() : postReview()"
               ></p-button>
             </div>
           }

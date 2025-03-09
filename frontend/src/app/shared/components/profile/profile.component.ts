@@ -94,7 +94,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   user: User | null = null;
   reviews: any[] = [];
 
+  // & |==== Review Details ====|
   unit: Unit | null = null;
+  review: Review = new Review();
 
   // & |==== Forms Inputs ====|
   // Login/Signup
@@ -204,7 +206,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * - Changes dialog title based on state
    */
   ngOnInit(): void {
-    this.unit = null;
     // Validate session and change state accordingly
     this.authService.validateSession().subscribe({
       next: (response) => {
@@ -762,10 +763,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   showDialog(review: any) {
+    // Restate review and unit to be passed to write-review-unit component
+    this.review = new Review(review._id, review.title, review.semester, review.grade, review.year, review.overallRating, review.relevancyRating, review.facultyRating, review.contentRating, review.description, review.author);
     this.unit = review.unit;
     
+    // Opens the dialog box if coniditions are met
     if (this.writeReviewDialog && this.user)
-      
       this.writeReviewDialog.openDialog();
   }
 

@@ -199,8 +199,9 @@
                 <app-write-review-unit
                     [unit]="unit"
                     [user]="user"
+                    [review]="review"
                     [editMode]="true"
-                    (reviewPosted)="handleReviewEdited()"
+                    (reviewEdited)="handleReviewEdited()"
                 ></app-write-review-unit>
             }
             <!-- Friends -->

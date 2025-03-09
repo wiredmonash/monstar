@@ -74,10 +74,12 @@ export class WriteReviewUnitComponent implements OnInit {
   @Input() user: User | null = null;
 
   // Event to notify that the review was posted
-  @Output() reviewPosted = new EventEmitter<void>(); 
+  @Output() reviewPosted = new EventEmitter<void>();
+
+  @Output() reviewEdited = new EventEmitter<void>(); 
 
   // Review object and it's properties
-  review: Review = new Review();
+  @Input() review: Review = new Review();
 
   // List of years to choose from (see initialiseYearOptions)
   yearOptions: Array<{ label: string; value: number }> = [];
@@ -367,7 +369,57 @@ export class WriteReviewUnitComponent implements OnInit {
   }
 
   editReview() {
-    
+    //Checking if user is logged in
+    if (!this.user) {
+      console.error('User data not available.');
+      return;
+    }
+
+    //Checking if unit is assigned to us
+    if (!this.unit) {
+      console.error('Unit data not available.');
+      return;
+    }
+
+    // Ensure all defaults are set in the review object
+    this.review.ensureDefaults();
+
+    // Push the new review to the currentUser's reviews array
+    this.user.reviews.push(this.review._id);
+
+    // ? Debug log
+    console.log('Updating review:', this.review);
+
+    // Calculate the overall rating
+    this.review.calcOverallRating();
+
+    // Send the review using the API service
+    this.apiService.editReviewPUT(this.review).subscribe({
+      next: (response) => {
+        // Update the current user in AuthService
+        this.authService.setCurrentUser(this.user!);
+
+        // ? Debug log
+        console.log('WriteReviewUnit | Update current user:', this.user);
+
+        // Close the pop up write review
+        this.closeDialog();
+
+        // Emit that we posted the review
+        this.reviewEdited.emit();
+
+        // Show success toast 
+        this.messageService.add({ key: 'success-toast', severity: 'success', summary: 'Review Modified!', detail: 'Review has been published publicly' });
+
+        // Reset form after successful submission
+        this.review = new Review();
+      },
+      error: (error) => { 
+        // Show error toast 
+        this.messageService.add({ key: 'error-toast', severity: 'error', summary: 'Failed to submit review :(', detail: 'Make sure you give it a title and description dummy!' });
+      }
+    });
+
   }
 
   /**
