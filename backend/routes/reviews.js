@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const Review = require('../models/review');
 const Unit = require('../models/unit');
 const User = require('../models/user');
+const Notification = require('../models/notification');
 
 // Function Imports
 const { verifyToken }= require('../utils/verify_token.js');
@@ -50,20 +51,16 @@ router.get('/:unit', async function (req, res) {
     try {
         // Get the unit code from the request parameters and convert it to lowercase
         const unitCode = req.params.unit.toLowerCase();
-        //console.log(`Fetching reviews for unit: ${unitCode}`);
 
         // Find the unit in the database by its unit code
         const unitDoc = await Unit.findOne({ unitCode: unitCode });
 
         // If the unit is not found, return a 404 error
-        if (!unitDoc) {
-            console.error(`Unit with code ${unitCode} not found`);
+        if (!unitDoc)
             return res.status(404).json({ error: `Unit with code ${unitCode} not found` });
-        }
 
         // Find all reviews associated with this unit
         const reviews = await Review.find({ unit: unitDoc._id }).populate('author');
-        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(reviews);
@@ -76,34 +73,26 @@ router.get('/:unit', async function (req, res) {
 
 
 /**
- * ! GET Get All Reviews by Author
+ * ! GET Get All Reviews by User Id
  *
- * Gets all reviews for a unit from the database.
+ * Gets all reviews by a specific user from the database.
  *
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
  * @throws {404} If the unit is not found in the database.
  */
-router.get('/author/:author', async function (req, res) {
+router.get('/user/:userId', async function (req, res) {
     try {
-        // Get the author's name from the request parameters and convert it to lowercase
-        const authorName = req.params.author;
-        console.log(`Searching for ${authorName}`)
-        // const authors = await User.find({})
-        // console.log(authors)
-        const author = await User.findOne({username: authorName})
-        console.log(`Fetching reviews for author: ${author}`);
-
-        // Find all reviews associated with this unit
-        const reviews = await Review.find({ author: author._id }).populate('author').populate('unit');
-        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
+        // Find all reviews by this user id directly
+        const reviews = await Review.find({ author: req.params.userId })
+            .populate('unit')
+            .populate('author');
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(reviews);
     } catch (error) {
         // Handle any errors that occur during the process
-        console.error(`An error occurred: ${error.message}`);
         return res.status(500).json({ error: `An error occurred while fetching reviews: ${error.message}` });
     }
 });
@@ -128,6 +117,16 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
         // Check if unit exists, if not, return 404 error
         if (!unitDoc)
            return res.status(404).json({ error: `Unit with code ${unitCode} not found in DB` });
+
+        // Check if the user has already reviewed this unit
+        const existingReview = await Review.findOne({
+            author: req.body.review_author,
+            unit: unitDoc._id
+        });
+
+        if (existingReview) {
+            return res.status(400).json({ error: 'You have already reviewed this unit' });
+        }
 
         // The new Review object
         const review = new Review({
@@ -331,8 +330,13 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
 
         // Find the review by ID
         const review = await Review.findById(req.params.reviewId);
+        const unit = await Unit.findById(review.unit);
         if (!review) return res.status(404).json({ error: 'Review not found' });
 
+        // Find the author
+        const author = await User.findById(review.author);
+        if (!author) return res.status(404).json({ error: 'Author not found' });
+        
         // Find the user by ID
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
@@ -342,10 +346,34 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
                 // Unlike the review
                 review.likes--;
                 user.likedReviews.pull(review._id);
+
+                // Delete the like notification
+                const notification = await Notification.findOne({ user: author._id, review: review._id});
+                await Notification.deleteOne(notification);
+                author.notifications.pull(notification._id);
+
             } else {
                 // Like the review
                 review.likes++;
                 user.likedReviews.push(review._id);
+
+                // Create the notification
+                const newNotification = new Notification({
+                    data: {
+                        message: `${user.username} liked your review on ${unit.unitCode.toUpperCase()}`,
+                        user: { username: user.username, profileImg: user.profileImg }
+                    },
+                    navigateTo: `/unit-overview/${unit.unitCode}`,
+                    review: review._id,
+                    user: author._id
+                })
+                await newNotification.save();
+
+                // Ensure author.notifications is initialized
+                if (!author.notifications) {
+                    author.notifications = [];
+                }
+                author.notifications.push(newNotification._id);
 
                 // If the user had disliked the review, remove the dislike
                 if (user.dislikedReviews.includes(review._id)) {
@@ -368,12 +396,21 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
                     review.likes--;
                     user.likedReviews.pull(review._id);
                 }
+
+                // Remove the notification regarding the like
+                const notification = await Notification.findOne({ user: author._id, review: review._id});
+                await Notification.deleteOne(notification);
+                author.notifications.pull(notification._id);
             }
         } else if (action === 'unlike') {
             if (user.likedReviews.includes(review._id)) {
                 // Unlike the review
                 review.likes--;
                 user.likedReviews.pull(review._id);
+
+                const notification = await Notification.findOne({ user: author._id, review: review._id});
+                await Notification.deleteOne(notification);
+                author.notifications.pull(notification._id);
             } else {
                 return res.status(400).json({ error: 'Review not liked by user' });
             }
@@ -389,9 +426,10 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
             return res.status(400).json({ error: 'Invalid action' });
         }
 
-        // Save the updated review and user
+        // Save the updated review and users
         await review.save();
         await user.save();
+        await author.save();
 
         // Return the updated review
         return res.status(200).json(review);

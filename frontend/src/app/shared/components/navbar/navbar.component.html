@@ -52,32 +52,37 @@
       [style.color]="titleColor"
     >MonSTAR</a>
 
-    <!-- Profile -->
-    <div class="profile position-absolute end-0 mr-2" type="button" (click)="showProfileDialog()">
-      @if (user) {
-        <!-- Avatar shown if logged in -->
-        <div 
-          class="profile-pic pt-1" 
-          style="transform: scale(0.9);" 
-          pTooltip="Profile (CTRL + P)" 
-          tooltipStyleClass="mt-1"
-        >
-          <p-avatar 
-            [image]="user.profileImg" 
-            shape="circle"
-          ></p-avatar>
-          <span class="online-badge"></span>
-        </div>
-      } @else {
-        <!-- Icon shown if not logged in -->
-        <i 
-          class="pi pi-user-plus mr-1 mb-2" 
-          pTooltip="Sign In (CTRL + P)" 
-          tooltipStyleClass="mt-2" 
-          [style]="{ 'transform': 'scale(1.2)' }"
-          [style.color]="profileColor"
-        ></i>
-      }
+    <div class="d-flex align-items-center position-absolute end-0">
+      <!-- Notifications -->
+      <app-notifications-popup [profileColor]="profileColor"></app-notifications-popup>
+
+      <!-- Profile -->
+      <div class="profile mr-2" type="button" (click)="showProfileDialog()">
+        @if (user) {
+          <!-- Avatar shown if logged in -->
+          <div 
+            class="profile-pic pt-1" 
+            style="transform: scale(0.9);" 
+            pTooltip="Profile (CTRL + P)" 
+            tooltipStyleClass="mt-1"
+          >
+            <p-avatar 
+              [image]="user.profileImg" 
+              shape="circle"
+            ></p-avatar>
+            <span class="online-badge"></span>
+          </div>
+        } @else {
+          <!-- Icon shown if not logged in -->
+          <i 
+            class="pi pi-user-plus mr-1 mb-2" 
+            pTooltip="Sign In (CTRL + P)" 
+            tooltipStyleClass="mt-2" 
+            [style]="{ 'transform': 'scale(1.2)' }"
+            [style.color]="profileColor"
+          ></i>
+        }
+      </div>
     </div>
   </div>
 </nav>

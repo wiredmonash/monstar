@@ -123,7 +123,7 @@
   <div class="actions">
     <!-- Write a Review Button -->
     <div
-      [pTooltip]="user == null ? 'You must be logged in to write a review.' : 'Write a review for this unit.'"
+      [pTooltip]="user == null ? 'You must be logged in to write a review.' : hasReviewed ? 'You have already reviewed this unit.' : 'Write a review for this unit.'"
       tooltipPosition="top"
     >
       <p-button 
@@ -133,7 +133,7 @@
         (click)="showDialog()"
         rounded="true"
         [style]="{ 'background-color': 'var(--primary-color)', 'border': 'none' }"
-        [disabled]="user == null ? true : false"
+        [disabled]="user == null ? true : hasReviewed"
       ></p-button>
     </div>
 

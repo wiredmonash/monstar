@@ -53,7 +53,7 @@ CLOUDINARY_API_KEY='937851319752153'
 CLOUDINARY_API_SECRET='qZ6riJThQ3_zi03vjwtaXOSUaJE'
 CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx9e'
 
-GOOGLE_CLIENT_ID='923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com'
+GOOGLE_CLIENT_ID='671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com'
 ```
 5. Start the app
 ```

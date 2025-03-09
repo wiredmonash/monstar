@@ -1,0 +1,42 @@
+@if (user) {
+<p-button
+  class="notifications mr-3"
+  (click)="op.toggle($event)"
+  [style]="{
+    'background-color': 'transparent',
+    border: 'none',
+    transform: 'scale(1.2)'
+  }"
+>
+  @if (notifications.length > 0) {
+  <i
+    class="pi pi-bell"
+    tooltipStyleClass="mt-2"
+    [style.color]="profileColor"
+    pBadge
+    [value]="notifications.length"
+    severity="danger"
+  >
+  </i>
+  } @else {
+  <i class="pi pi-bell" tooltipStyleClass="mt-2" [style.color]="profileColor">
+  </i>
+  }
+</p-button>
+
+<p-overlayPanel #op>
+  <div class="flex flex-column gap-3 w-25rem">
+    <ul class="list-none p-0 m-0 flex flex-column gap-3">
+      @if (notifications.length == 0) {
+      <div class="text-sm text-color-secondary">Nothing to display</div>
+      } @else {
+      <app-notification-card
+        *ngFor="let notification of notifications"
+        [notification]="notification"
+        (btnClick)="removeNotification($event)"
+      ></app-notification-card>
+      }
+    </ul>
+  </div>
+</p-overlayPanel>
+}

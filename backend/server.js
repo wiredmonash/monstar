@@ -12,6 +12,7 @@ require('dotenv').config();
 const UnitRouter = require('./routes/units');
 const ReviewRouter = require('./routes/reviews');
 const AuthRouter = require('./routes/auth');
+const NotificationRouter = require('./routes/notifications');
 
 // === Middleware ===
 app.use(cors({ 
@@ -49,6 +50,7 @@ connect(url)
 app.use('/api/v1/units', UnitRouter);
 app.use('/api/v1/reviews', ReviewRouter);
 app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/notifications', NotificationRouter);
 
 // === Services ===
 cron.schedule('0 * * * *', async function() {

@@ -15,6 +15,7 @@ import { BadgeModule } from 'primeng/badge';
 import { filter } from 'rxjs/operators';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { NavigationService } from '../../services/navigation.service';
+import { NotificationsPopupComponent } from '../notifications/notifications-popup/notifications-popup.component';
 
 @Component({
   selector: 'app-navbar',
@@ -31,6 +32,7 @@ import { NavigationService } from '../../services/navigation.service';
     ToastModule,
     TooltipModule,
     BadgeModule,
+    NotificationsPopupComponent
   ],
   providers: [
     MessageService

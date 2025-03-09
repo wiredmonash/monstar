@@ -188,14 +188,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   getPopularUnits() {
     this.loading = true;
     this.apiService.getPopularUnitsGET().subscribe({
-      next: (response: Unit[]) => {
+      next: (unitData) => {
         // Map the response data to Unit objects
-        this.popularUnits = response.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings));
+        this.popularUnits = unitData.map(data => new Unit(data));
 
         this.loading = false;
 
         // ? Debug log success
-        console.log('Home | Popular units:', response);
+        console.log('Home | Popular units:', this.popularUnits);
       },
       error: (error) => {
         // ? Debug log error

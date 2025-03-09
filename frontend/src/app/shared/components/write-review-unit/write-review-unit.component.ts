@@ -475,9 +475,9 @@ export class WriteReviewUnitComponent implements OnInit {
 
     // Send the review using the API service
     this.apiService.createReviewForUnitPOST(this.unit.unitCode, this.review).subscribe({
-      next: (response) => {
+      next: (data) => {
         // Create the review object from the response
-        const review = new Review(response._id, response.title, response.semester, response.grade, response.year, response.overallRating, response.relevancyRating, response.facultyRating, response.contentRating, response.description, response.author);
+        const review = new Review(data);
 
         // Update the user's reviews array
         this.user!.reviews.push(review._id);
