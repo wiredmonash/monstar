@@ -6,6 +6,7 @@ const { cloudinary } = require('../utils/cloudinary');
 // Model imports
 const Review = require('./review.js');
 const Unit = require('./unit.js');
+const Notification = require('./notification.js');
 
 // User Schema
 const userSchema = new Schema({
@@ -56,6 +57,9 @@ const userSchema = new Schema({
     likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
     // Disliked reviews
     dislikedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+
+    // Notifications
+    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification', default: [] }],
 });
 
 // Middleware to set default username as authcate from email
@@ -118,6 +122,9 @@ async function handleUserDeletion(user) {
 
             // Delete all reviews by this user
             await Review.deleteMany({ author: user._id }).session(session);
+
+            // Delete all user notifications
+            await Notification.deleteMany({user}).session();
             
             // Delete reviews from units and update averages
             if (unitIds.length > 0) {

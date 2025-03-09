@@ -13,6 +13,7 @@ require('dotenv').config();
 const UnitRouter = require('./routes/units');
 const ReviewRouter = require('./routes/reviews');
 const AuthRouter = require('./routes/auth');
+const NotificationRouter = require('./routes/notifications');
 
 // === Middleware ===
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
@@ -35,6 +36,7 @@ app.use((obj, req, res, next) => {
 app.use('/api/v1/units', UnitRouter);
 app.use('/api/v1/reviews', ReviewRouter);
 app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/notifications', NotificationRouter);
 
 // === Serving Static Files ===
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));

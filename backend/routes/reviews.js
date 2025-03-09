@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const Review = require('../models/review');
 const Unit = require('../models/unit');
 const User = require('../models/user');
+const Notification = require('../models/notification');
 
 // Function Imports
 const { verifyToken }= require('../utils/verify_token.js');
@@ -329,8 +330,13 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
 
         // Find the review by ID
         const review = await Review.findById(req.params.reviewId);
+        const unit = await Unit.findById(review.unit);
         if (!review) return res.status(404).json({ error: 'Review not found' });
 
+        // Find the author
+        const author = await User.findById(review.author);
+        if (!author) return res.status(404).json({ error: 'Author not found' });
+        
         // Find the user by ID
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
@@ -340,10 +346,34 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
                 // Unlike the review
                 review.likes--;
                 user.likedReviews.pull(review._id);
+
+                // Delete the like notification
+                const notification = await Notification.findOne({ user: author._id, review: review._id});
+                await Notification.deleteOne(notification);
+                author.notifications.pull(notification._id);
+
             } else {
                 // Like the review
                 review.likes++;
                 user.likedReviews.push(review._id);
+
+                // Create the notification
+                const newNotification = new Notification({
+                    data: {
+                        message: `${user.username} liked your review on ${unit.unitCode.toUpperCase()}`,
+                        user: { username: user.username, profileImg: user.profileImg }
+                    },
+                    navigateTo: `/unit-overview/${unit.unitCode}`,
+                    review: review._id,
+                    user: author._id
+                })
+                await newNotification.save();
+
+                // Ensure author.notifications is initialized
+                if (!author.notifications) {
+                    author.notifications = [];
+                }
+                author.notifications.push(newNotification._id);
 
                 // If the user had disliked the review, remove the dislike
                 if (user.dislikedReviews.includes(review._id)) {
@@ -366,12 +396,21 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
                     review.likes--;
                     user.likedReviews.pull(review._id);
                 }
+
+                // Remove the notification regarding the like
+                const notification = await Notification.findOne({ user: author._id, review: review._id});
+                await Notification.deleteOne(notification);
+                author.notifications.pull(notification._id);
             }
         } else if (action === 'unlike') {
             if (user.likedReviews.includes(review._id)) {
                 // Unlike the review
                 review.likes--;
                 user.likedReviews.pull(review._id);
+
+                const notification = await Notification.findOne({ user: author._id, review: review._id});
+                await Notification.deleteOne(notification);
+                author.notifications.pull(notification._id);
             } else {
                 return res.status(400).json({ error: 'Review not liked by user' });
             }
@@ -387,9 +426,10 @@ router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req,
             return res.status(400).json({ error: 'Invalid action' });
         }
 
-        // Save the updated review and user
+        // Save the updated review and users
         await review.save();
         await user.save();
+        await author.save();
 
         // Return the updated review
         return res.status(200).json(review);
