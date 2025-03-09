@@ -51,20 +51,16 @@ router.get('/:unit', async function (req, res) {
     try {
         // Get the unit code from the request parameters and convert it to lowercase
         const unitCode = req.params.unit.toLowerCase();
-        //console.log(`Fetching reviews for unit: ${unitCode}`);
 
         // Find the unit in the database by its unit code
         const unitDoc = await Unit.findOne({ unitCode: unitCode });
 
         // If the unit is not found, return a 404 error
-        if (!unitDoc) {
-            console.error(`Unit with code ${unitCode} not found`);
+        if (!unitDoc)
             return res.status(404).json({ error: `Unit with code ${unitCode} not found` });
-        }
 
         // Find all reviews associated with this unit
         const reviews = await Review.find({ unit: unitDoc._id }).populate('author');
-        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(reviews);
@@ -77,34 +73,26 @@ router.get('/:unit', async function (req, res) {
 
 
 /**
- * ! GET Get All Reviews by Author
+ * ! GET Get All Reviews by User Id
  *
- * Gets all reviews for a unit from the database.
+ * Gets all reviews by a specific user from the database.
  *
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
  * @throws {404} If the unit is not found in the database.
  */
-router.get('/author/:author', async function (req, res) {
+router.get('/user/:userId', async function (req, res) {
     try {
-        // Get the author's name from the request parameters and convert it to lowercase
-        const authorName = req.params.author;
-        console.log(`Searching for ${authorName}`)
-        // const authors = await User.find({})
-        // console.log(authors)
-        const author = await User.findOne({username: authorName})
-        console.log(`Fetching reviews for author: ${author}`);
-
-        // Find all reviews associated with this unit
-        const reviews = await Review.find({ author: author._id }).populate('author').populate('unit');
-        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
+        // Find all reviews by this user id directly
+        const reviews = await Review.find({ author: req.params.userId })
+            .populate('unit')
+            .populate('author');
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(reviews);
     } catch (error) {
         // Handle any errors that occur during the process
-        console.error(`An error occurred: ${error.message}`);
         return res.status(500).json({ error: `An error occurred while fetching reviews: ${error.message}` });
     }
 });
@@ -129,6 +117,16 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
         // Check if unit exists, if not, return 404 error
         if (!unitDoc)
            return res.status(404).json({ error: `Unit with code ${unitCode} not found in DB` });
+
+        // Check if the user has already reviewed this unit
+        const existingReview = await Review.findOne({
+            author: req.body.review_author,
+            unit: unitDoc._id
+        });
+
+        if (existingReview) {
+            return res.status(400).json({ error: 'You have already reviewed this unit' });
+        }
 
         // The new Review object
         const review = new Review({
