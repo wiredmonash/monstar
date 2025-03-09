@@ -15,7 +15,7 @@ import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { Unit } from '../../shared/models/unit.model';
+import { Unit, UnitData } from '../../shared/models/unit.model';
 import { ScrollTopModule } from 'primeng/scrolltop';
 
 @Component({
@@ -59,9 +59,6 @@ export class UnitListComponent implements OnInit {
   // Loading state of unit cards
   loading: boolean = true;
   testing: boolean = true;
-
-  // Skeletons for loading state
-  skeletons: any[] = new Array(6);
 
   // Sort by dropdown reference
   @ViewChild('sortByDropdown') sortByDropdown!: Dropdown;
@@ -162,7 +159,7 @@ export class UnitListComponent implements OnInit {
     this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
       next: (response: any) => {
         // Map the response data to Unit objects
-        this.filteredUnits = response.units.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings, unitData.tags));
+        this.filteredUnits = response.units.map((unitData: UnitData) => new Unit(unitData));
 
         // Update the total records
         this.totalRecords = response.total;

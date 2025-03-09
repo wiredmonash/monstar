@@ -4,7 +4,7 @@ import { Review } from '../models/review.model';
 import { Observable, tap } from 'rxjs';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { Unit } from '../models/unit.model';
 
 interface ReportPayload {
@@ -19,7 +19,7 @@ interface ReportPayload {
 })
 export class ApiService {
   // The URL of where the API Server is located
-  private url = 'http://localhost:8080/api/v1';
+  private url = '/api/v1';
 
 
   // ! Inject HttpClient
@@ -56,11 +56,61 @@ export class ApiService {
 
   /**
    * * GET Gets the reviews written by a user
+   * 
+   * Retrieves all reviews written by a specific user.
+   * 
+   * @param {string} userId The ID of the user
+   * @returns {Observable<any>} An observable containing the reviews data
    */
-  getUserReviewsGET(userID: string): Observable<any> {
-    const url = `${this.url}/reviews/author/${userID}`;
+  getUserReviewsGET(userId: string): Observable<any> {
+    return this.http.get(
+      `${this.url}/reviews/user/${userId}`
+    ).pipe(
+      tap({
+        next: (response) => {
+          console.log('ApiService | Successfully fetched user reviews:', response);
+        },
+        error: (error) => {
+          console.log('ApiService | Error whilst fetching user reviews:', error.error);
+        }
+      })
+    );
+  }
+
+  /**
+   * * GET Gets the notifications of a user
+   */
+  getUserNotificationsGET(userID: string): Observable<any> {
+    const url = `${this.url}/notifications/user/${userID}`;
     return this.http.get(url);
   }
+
+  /**
+   * * DELETE Delete a notification by ID
+   * 
+   * Deletes a notification by its ID.
+   * 
+   * @param {string} notificationId The ID of the notification
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
+  deleteNotificationByIdDELETE(notificationId: Types.ObjectId): Observable<any> {
+    return this.http.delete(
+      `${this.url}/notifications/${notificationId}`,
+      { withCredentials: true }
+    ).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully deleted notification:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst deleting notification:', error.error);
+        }
+      })
+    );
+  }
+
 
   /**
    * * PATCH Toggle Like/Dislike a Review by ID
@@ -263,6 +313,40 @@ export class ApiService {
         error: (error) => {
           // ? Debug log
           console.log('ApiService | Error whilst deleting review:', error.error);
+        }
+      })
+    );
+  }
+
+  /**
+   * * PATCH Update a Review for a unit
+   * 
+   * Updates a review by its ID.
+   * 
+   * @param {Review} review The review object containing the updated review details
+   * @returns {Observable<any>} An observable containing the response from the server
+   */
+  editReviewPUT(review: Review): Observable<any> {
+    return this.http.put(
+      `${this.url}/reviews/update/${review._id}`, {
+        title:            review.title,
+        semester:         review.semester,
+        grade:            review.grade,
+        year:             review.year,
+        overallRating:    review.overallRating,
+        relevancyRating:  review.relevancyRating,
+        facultyRating:    review.facultyRating,
+        contentRating:    review.contentRating,
+        description:      review.description,
+      }, { withCredentials: true }).pipe(
+      tap({
+        next: (response) => {
+          // ? Debug log
+          console.log('ApiService | Successfully updated review:', response);
+        },
+        error: (error) => {
+          // ? Debug log
+          console.log('ApiService | Error whilst updating review:', error.error);
         }
       })
     );

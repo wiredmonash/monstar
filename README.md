@@ -1,12 +1,13 @@
-# MonSTAR
+# Production Branch
+This branch is for production, and this is what https://monstar.wired.org.au is currently serving.
+
+The frontend application is built and the backend server serves the frontend pages.
+
 MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
 
 ---
 
-## Key Features
-- **Comprehensive Unit Database:** Access a complete list of units offered at Monash University.
-- **User Reviews:** Write and read reviews to gain valuable insights into unit content, teaching quality, and assessment structure.
-- **Community Engagement:** Share your experiences and help others navigate their academic journey.
+MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
 
 ---
 
@@ -23,37 +24,50 @@ Ensure you have the following installed:
 - Node.js (v20.15.1 or higher)
 - MongoDB
 
-### Installation Steps
-1. Clone the repository:
+### Deployment Setup/Installation Steps
+1. Install Angular Globally:
 ```shell
-git clone https://github.com/wiredmonash/monstar.git
+npm i -g @angular/cli@18
 ```
 2. Navigate to the project directory:
 ```shell
 cd monstar
 ```
-3. Install dependencies
+3. Navigate to frontend directory and install packages
 ```shell
-npm install
+cd frontend
+npm i --legacy-peer-deps
+```
+4. Navigate to backend directory and install packages
+```shell
+cd ..
+cd backend
+npm i
 ```
 4. Create a `.env` file in the `backend/.` directory and add the following variables:
 ```shell
-MONGODB_CONN_STRING='(mongodb atlas connection string)'
+MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/dev_test?retryWrites=true&w=majority&appName=unit-review'
 PORT=8080
-JWT_SECRET='(secret key for the jwt)'
-EMAIL_USERNAME=(email of the account used to send emails)
-EMAIL_PASSWORD=(app password from google account)
-FRONTEND_URL=(url of the frontend app)
+JWT_SECRET='1e1859169d62ce4dd61400c9036b2c1c96df908b4b670ad8fb6f247ff6557d84'
 
-CLOUDINARY_NAME='(name of the cloudinary cloud)'
-CLOUDINARY_API_KEY='(api key for the cloudinary account)'
-CLOUDINARY_API_SECRET='(secret key for the cloudinary account)'
-CLOUDINARY_URL='(full url to the cloudinary)'
+EMAIL_USERNAME=monstarapp@gmail.com
+EMAIL_PASSWORD=zieycfirwdraaith
+FRONTEND_URL=http://localhost:4200
 
-GOOGLE_CLIENT_ID='923998517143-95jlbb9v6vi97km61nfod8c3pg754q49.apps.googleusercontent.com'
+CLOUDINARY_CLOUD_NAME='dd1a4cx9e'
+CLOUDINARY_API_KEY='937851319752153'
+CLOUDINARY_API_SECRET='qZ6riJThQ3_zi03vjwtaXOSUaJE'
+CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx9e'
+
+GOOGLE_CLIENT_ID='671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com'
 ```
-5. Start the application `npm start`
-
+5. Start the app
+```
+cd frontend
+ng serve
+cd backend
+node server.js
+```
 ---
 
 ## Project Structure
@@ -71,7 +85,7 @@ monstar/
 - Cloud Database: MongoDB
 - Frontend: Angular.js
 - Cloud Storage (profile pictures): Cloudinary
-- Deployment: EC2 (Amazon Web Services)
+- Deployment: Linode
 
 ---
 

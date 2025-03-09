@@ -1,0 +1,32 @@
+<li class="flex align-items-center gap-2">
+  <!-- Profile image -->
+  <img 
+    [src]="notification.data.user.profileImg || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'" 
+    style="width: 32px; border-radius: 50%" 
+    loading="lazy"
+    crossOrigin="anonymous"
+    referrerpolicy="no-referrer"
+    (error)="'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'"
+  />
+  <!-- Text -->
+  <div 
+    (click)="goToUnitPage()" 
+    style="cursor: pointer" 
+    pTooltip="Go to review" 
+    tooltipPosition="top"
+  >
+    <div class="text-sm text-color-secondary">
+      {{ notification.data.message }}
+    </div>
+  </div>
+  <!-- Remove X button -->
+  <div
+    class="flex align-items-center gap-2 text-color-secondary ml-auto text-sm"
+  >
+    <i
+      class="pi pi-times"
+      style="color: rgb(246, 12, 101); cursor: pointer;"
+      (click)="removeNotification()"
+    ></i>
+  </div>
+</li>

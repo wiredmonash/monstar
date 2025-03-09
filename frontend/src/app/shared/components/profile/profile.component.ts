@@ -23,6 +23,9 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenubarModule } from 'primeng/menubar';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { Review } from '../../models/review.model';
+import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
+import { Unit } from '../../models/unit.model';
 declare var google: any;
 
 @Component({
@@ -49,6 +52,7 @@ declare var google: any;
     SkeletonModule,
     MenubarModule,
     CommonModule,
+    WriteReviewUnitComponent
   ],
   providers: [
     ConfirmationService
@@ -59,6 +63,9 @@ declare var google: any;
 export class ProfileComponent implements OnInit, OnDestroy {
   // Making window available for use in the template
   window = window;
+  
+  // ViewChild to reference the WriteReviewUnitComponent
+  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
 
   // & |==== View Children ====|
   @ViewChild('googleSignInButton') googleSignInButton!: ElementRef;
@@ -74,6 +81,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   @Input() dialogClosedEvent!: EventEmitter<void>;
   @Input() dialogOpenedEvent!: EventEmitter<void>;
 
+  // Emits that the user has edited a review
+  @Output() reviewEdited = new EventEmitter<void>();
+
   // & |==== Subscriptions ====|
   private dialogClosedSubscription!: Subscription;
   private dialogOpenedSubscription!: Subscription;
@@ -83,6 +93,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   // & |==== User Data ====|
   user: User | null = null;
   reviews: any[] = [];
+
+  // & |==== Review Details ====|
+  unit: Unit | null = null;
+  review: Review = new Review();
 
   // & |==== Forms Inputs ====|
   // Login/Signup
@@ -226,21 +240,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Set the current username in the update username field in details page
         this.inputUpdateUsername = this.user?.username;
 
-        // Update the profile menu label with the new username
-        const userItem = this.profileMenuItems.find(item => item.label?.startsWith('User:'));
-        if (userItem) {
-          userItem.label = `User: ${this.user?.username || 'Guest'}`;
-        }
-
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
 
         console.log('Fetching user reviews for:', this.user?.username);
 
         // Gets the user reviews if the user is not null
-        if (this.user?.username) {
-          this.getUserReviews(this.user.username);
-        }
+        if (this.user) this.getUserReviews(this.user._id);
         
         // console.log(this.reviews)
 
@@ -691,11 +697,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * Called to get the user's reviews. Will call the backend API to get the user's
    * reviews and store them in the reviews array.
    * 
-   * @subscribes apiService.getUserReviewsGET(userID)
+   * @subscribes apiService.getUserReviewsGET(userId)
    */
-  getUserReviews(userID: any) {
-    this.apiService.getUserReviewsGET(userID).subscribe(
-      (reviews: any) => {
+  getUserReviews(userId: any) {
+    this.apiService.getUserReviewsGET(userId).subscribe({
+      next: (reviews: Review[]) => {
         this.reviews = reviews;
 
         // Update the reviews property in the user object
@@ -704,11 +710,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         console.log(this.reviews)
       },
-      (error: any) => {
+      error: (error) => {
         // ? Debug log: Error
         console.log('ERROR DURING: GET Get All Reviews', error)
       }
-    );
+    });
   }
 
   /**
@@ -747,6 +753,32 @@ export class ProfileComponent implements OnInit, OnDestroy {
       }
     })
   }
+
+  showDialog(review: any) {
+    // Restate review and unit to be passed to write-review-unit component
+    this.review = new Review({
+      _id: review._id,
+      title: review.title,
+      semester: review.semester,
+      grade: review.grade,
+      year: review.year,
+      overallRating: review.overallRating,
+      relevancyRating: review.relevancyRating,
+      facultyRating: review.facultyRating,
+      contentRating: review.contentRating,
+      description: review.description
+    });
+    this.unit = review.unit;
+    
+    // Opens the dialog box if coniditions are met
+    if (this.writeReviewDialog && this.user)
+      this.writeReviewDialog.openDialog();
+  }
+
+  handleReviewEdited() {
+    this.reviewEdited.emit();
+  }
+
 
 
 
