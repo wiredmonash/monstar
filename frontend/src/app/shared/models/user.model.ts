@@ -12,6 +12,7 @@ export interface UserData {
   verified?: boolean;
   likedReviews?: Types.ObjectId[];
   dislikedReviews?: Types.ObjectId[];
+  notifications?: Object[]
 }
 
 export class User {
@@ -25,6 +26,7 @@ export class User {
   verified!: boolean;
   likedReviews!: Types.ObjectId[];
   dislikedReviews!: Types.ObjectId[];
+  notifications!: Object[];
 
   constructor(data?: UserData) {
     // Default avatar URL
@@ -42,6 +44,7 @@ export class User {
       this.verified = false;
       this.likedReviews = [];
       this.dislikedReviews = [];
+      this.notifications = [];
       return;
     }
 
@@ -59,6 +62,7 @@ export class User {
     this.verified = data.verified ?? false;
     this.likedReviews = data.likedReviews ?? [];
     this.dislikedReviews = data.dislikedReviews ?? [];
+    this.notifications = data.notifications ?? [];
   }
 
   // Maintain backward compaitibility for constructing User objects
@@ -72,12 +76,19 @@ export class User {
     admin?: boolean, 
     verified?: boolean, 
     likedReviews?: Types.ObjectId[],
-    dislikedReviews?: Types.ObjectId[]
+    dislikedReviews?: Types.ObjectId[],
+    notifications?: Object[]
   ): User {
     return new User({
       _id, email, username, isGoogleUser, reviews,
-      profileImg, admin, verified, likedReviews, dislikedReviews
+      profileImg, admin, verified, likedReviews, dislikedReviews, notifications
     });
+  }
+
+  removeNotification(notificationId: Types.ObjectId) {
+    this.notifications = this.notifications.filter(
+      id => id !== notificationId
+    );
   }
 
   addLikedReview(reviewId: Types.ObjectId): void {
