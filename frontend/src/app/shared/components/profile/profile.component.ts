@@ -756,7 +756,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   showDialog(review: any) {
     // Restate review and unit to be passed to write-review-unit component
-    this.review = new Review(review._id, review.title, review.semester, review.grade, review.year, review.overallRating, review.relevancyRating, review.facultyRating, review.contentRating, review.description, review.author);
+    this.review = new Review({
+      _id: review._id,
+      title: review.title,
+      semester: review.semester,
+      grade: review.grade,
+      year: review.year,
+      overallRating: review.overallRating,
+      relevancyRating: review.relevancyRating,
+      facultyRating: review.facultyRating,
+      contentRating: review.contentRating,
+      description: review.description
+    });
     this.unit = review.unit;
     
     // Opens the dialog box if coniditions are met
