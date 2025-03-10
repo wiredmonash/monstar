@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cron = require('node-cron');
 const cors = require('cors');
 const app = express();
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const tagManager = require('./services/tagManager.service');
 require('dotenv').config();
@@ -16,6 +15,11 @@ const AuthRouter = require('./routes/auth');
 const NotificationRouter = require('./routes/notifications');
 
 // === Middleware ===
+app.use(cors({ 
+        origin: 'http://localhost:4200',
+        credentials: true 
+    })
+);
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
 app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
@@ -32,20 +36,9 @@ app.use((obj, req, res, next) => {
     })
 });
 
-// === Routes ===
-app.use('/api/v1/units', UnitRouter);
-app.use('/api/v1/reviews', ReviewRouter);
-app.use('/api/v1/auth', AuthRouter);
-app.use('/api/v1/notifications', NotificationRouter);
-
-// === Serving Static Files ===
-app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
-
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
-async function connect(url) { 
-    await mongoose.connect(url); 
-}
+async function connect(url) { await mongoose.connect(url); }
 connect(url)
     .then(() => { 
         console.log('Connected to MongoDB Database')
@@ -53,15 +46,21 @@ connect(url)
     })
     .catch((error) => console.log(error));
 
+// === Routes ===
+app.use('/api/v1/units', UnitRouter);
+app.use('/api/v1/reviews', ReviewRouter);
+app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/notifications', NotificationRouter);
+
 // === Services ===
 cron.schedule('0 * * * *', async function() {
     await tagManager.updateMostReviewsTag(1);
 })
 
-// === Catch all route ===
-app.get('*', (req, res) => {
-    return res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
-});
+// === Debugging Root Route ===
+// app.get('/', (req, res) => {
+//     return res.status(200).json({ msg : "Hello frontend... From backend." });
+// });
 
 // === Start Server ===
 const PORT = process.env.PORT || 8080;                                          // Default to 8080 if no port specified

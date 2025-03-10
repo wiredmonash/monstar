@@ -26,6 +26,7 @@ import { Unit } from '../../models/unit.model';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ListboxModule } from 'primeng/listbox';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { Meta, Title } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-unit-review-header',
@@ -104,7 +105,10 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private apiService: ApiService,
     private messageService: MessageService,
-    private router: Router
+    private router: Router,
+    private meta: Meta,
+    private titleService: Title
+
   ) { }
 
   /** 
@@ -119,6 +123,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * Subscribes to the current user observable to get the current user.
    */
   ngOnInit(): void {
+    this.updateMetaTags();
     this.userSubscription = this.authService.getCurrentUser().subscribe({
       next: (currentUser: User | null) => {
         this.user = currentUser;
@@ -255,4 +260,22 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   openHandbookNewTab() {
     return window.open(`https://handbook.monash.edu/2025/units/${this.unit?.unitCode}?year=${new Date().getFullYear()}`, '_blank');
   }
+
+    /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                              |
+   *  ! |======================================================================|
+   */
+
+  updateMetaTags() {
+    this.titleService.setTitle(`${this.unit.unitCode} Review | MonSTAR`)
+    this.meta.updateTag({ name: 'description', content: `Read student reviews for ${this.unit.unitCode}! Find out what Monash students think about this unit.` });
+    this.meta.addTag({ name: 'keywords', content: `MonSTAR, Monash, Monash University, Wired, ${this.unit.unitCode}, Monash Reviews, Monash Unit Reviews, ${this.unit.unitCode} reviews`})
+
+    this.meta.updateTag({ property: 'og:title', content: `${this.unit.unitCode} Review | MonSTAR` });
+    this.meta.updateTag({ property: 'og:description', content: `Read student reviews for ${this.unit.unitCode}! Find out what Monash students think about this unit.` });
+
+  }
 }
+
+
