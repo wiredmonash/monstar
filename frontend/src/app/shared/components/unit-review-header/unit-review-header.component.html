@@ -139,23 +139,12 @@
 
     <!-- Filter Button -->
     <p-button
-      label="Sort"
+      label="Filter"
       icon="pi pi-sliders-h"
       rounded="true"
-      pTooltip="Sorting options"
+      pTooltip="Filtering options"
       tooltipPosition="bottom"
-      (click)="toggleDropdown($event)"
     ></p-button>
-
-    <!-- Dropdown Menu -->
-     <p-overlayPanel #sortMenu appendTo="body">
-      <p-listbox
-        [options]="sortOptions"
-        [(ngModel)]="selectedSort" 
-        optionLabel="name"
-        (onChange)="onSort($event.value)">
-      </p-listbox>
-     </p-overlayPanel>
 
     <!-- Unit Map Button -->
     <div
