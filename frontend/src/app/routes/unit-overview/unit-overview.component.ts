@@ -8,6 +8,7 @@ import { ToastModule } from 'primeng/toast';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-unit-overview',
@@ -19,6 +20,7 @@ import { CommonModule } from '@angular/common';
     ProgressSpinnerModule,
     SkeletonModule,
     CommonModule,
+    FormsModule
   ],
   providers: [
     MessageService,
@@ -69,6 +71,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (unitCode) {
       this.getUnitByUnitcode(unitCode); // Get the unit
       this.getAllReviews(unitCode); // Get the reviews
+      this.sortReviews('highest-rating') // Sort by highest-rating by default
     }
   }
 
@@ -147,17 +150,19 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   sortReviews(criteria: string) {
     // ? Debug log: Sorting reviews message
-    console.log('Sorting reviews', criteria);
-
+    console.log('Sorting reviews', criteria); 
+    
     // Criterion
     switch (criteria) {
+
+      // Sorting by oldest
+      case 'oldest':
+        this.reviews.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        break;
+
       // Sorting by most recent
       case 'recent':
-        this.reviews.sort((a,b) => {
-          const dateA = new Date(a.createdAt);
-          const dateB = new Date(b.createdAt);
-          return dateB.getTime() - dateA.getTime(); // Most recent first
-        });
+        this.reviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
 
       // Sorting by lowest rating
