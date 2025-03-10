@@ -111,26 +111,26 @@ export class ApiService {
     );
   }
 
-
   /**
-   * * PATCH Toggle Like/Dislike a Review by ID
+   * * PATCH Toggle a reaction (like or dislike) on a review
    * 
-   * Toggles a like or dislike on a review by its ID.
+   * @param reviewId - The ID of the review to react to
+   * @param userId - The ID of the user reacting
+   * @param reactionType - The type of reaction ('like' or 'dislike')
+   * @returns An observable of the updated review with reaction status
    */
-  toggleLikeDislikeReviewPATCH(reviewId: string, userId: Types.ObjectId, action: 'like' | 'dislike' | 'unlike' | 'undislike'): Observable<any> {
-    return this.http.patch(
-      `${this.url}/reviews/toggle-like-dislike/${reviewId}`, 
-      { userId: userId, action: action }, 
+  toggleReactionPATCH(reviewId: string, userId: string, reactionType: 'like' | 'dislike'): Observable<any> {
+    return this.http.patch<any>(
+      `${this.url}/reviews/toggle-reaction/${reviewId}`, 
+      { userId, reactionType }, 
       { withCredentials: true }
     ).pipe(
       tap({
         next: (response) => {
-          // ? Debug log
-          console.log('ApiService | Successfully toggled like/dislike:', response);
+          console.log('ApiService | Successfully toggled like/dislike', response);
         },
         error: (error) => {
-          // ? Debug log
-          console.log('ApiService | Error whilst toggling like/dislike:', error.error);
+          console.error('ApiService | Error whilst toggling like/dislike', error.error);
         }
       })
     );
