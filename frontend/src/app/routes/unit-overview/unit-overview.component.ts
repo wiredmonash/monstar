@@ -9,6 +9,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-unit-overview',
@@ -55,7 +56,9 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor (
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private meta: Meta,
+    private titleService: Title
   ) { }
 
 
@@ -69,7 +72,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     const unitCode = this.route.snapshot.paramMap.get('unitcode');
 
     if (unitCode) {
-      this.getUnitByUnitcode(unitCode); // Get the unit
+      this.getUnitByUnitcode(unitCode) // Get the unit
       this.getAllReviews(unitCode); // Get the reviews
       this.sortReviews('highest-rating') // Sort by highest-rating by default
     }
@@ -81,6 +84,29 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.updateSkeletonHeight();
     window.addEventListener('resize', () => this.updateSkeletonHeight());
+  }
+
+  /**
+   * * On Component Destruction
+   * 
+   * - Removes the event listener for window resize
+   */
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', () => this.updateSkeletonHeight());
+
+    // Reset title
+    this.titleService.setTitle('MonSTAR | Browse and Review Monash University Units');
+    
+    // Remove all custom meta tags
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    this.meta.removeTag("property='og:title'");
+    this.meta.removeTag("property='og:description'");
+    this.meta.removeTag("property='og:url'");
+    this.meta.removeTag("property='og:type'");
+    this.meta.removeTag("name='twitter:card'");
+    this.meta.removeTag("name='twitter:title'");
+    this.meta.removeTag("name='twitter:description'");
   }
 
 
@@ -126,6 +152,9 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       (unit: any) => {
         // Store the unit
         this.unit = unit;
+
+        // Update meta tags AFTER unit data is available
+        this.updateMetaTags();
 
         // ? Debug log: Success
         console.log('GET Get Unit by Unitcode', unit);
@@ -212,12 +241,55 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.skeletonHeight = height;
   }
 
-  /**
-   * * On Component Destruction
-   * 
-   * - Removes the event listener for window resize
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                            
+   *  ! |======================================================================|
    */
-  ngOnDestroy(): void {
-    window.removeEventListener('resize', () => this.updateSkeletonHeight());
+
+  /**
+   * * Updates Meta Tags
+   */
+  updateMetaTags(): void {
+    if (!this.unit || !this.unit.unitCode) {
+      console.warn('Cannot update meta tags: Unit data is not available');
+      return;
+    }
+
+    const unitCode = this.unit.unitCode.toUpperCase();
+    const unitName = this.unit.name;
+    const baseUrl = 'https://monstar.wired.org.au'; // Replace with your actual domain
+    const pageUrl = `${baseUrl}/unit/${this.unit.unitCode}`;
+    
+    // Basic meta tags
+    this.titleService.setTitle(`${unitCode} (${unitName}) Student Reviews at Monash University`);
+    
+    this.meta.updateTag({ 
+      name: 'description', 
+      content: `Read ${this.unit.reviews.length} student reviews for ${unitCode} (${unitName}) at Monash University. See ratings, difficulty level, and student experiences.` 
+    });
+    
+    this.meta.updateTag({ 
+      name: 'keywords', 
+      content: `${unitCode}, ${unitName}, Monash, Monash Uni, Monash University, unit reviews, student reviews, course reviews, MonSTAR, ${unitCode} reviews, ${unitCode} difficulty, ${unitCode} ratings`
+    });
+
+    // Open Graph tags for social sharing
+    this.meta.updateTag({ property: 'og:title', content: `${unitCode} - ${unitName} | Student Reviews` });
+    this.meta.updateTag({ 
+      property: 'og:description', 
+      content: `See what students think about ${unitCode}. Average rating: ${this.unit.avgOverallRating.toFixed(1)}/5 from ${this.unit.reviews.length} reviews.` 
+    });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: `${unitCode} Student Reviews at Monash University` });
+    this.meta.updateTag({ 
+      name: 'twitter:description', 
+      content: `See what Monash students think about ${unitCode} (${unitName}). Average rating: ${this.unit.avgOverallRating.toFixed(1)}/5.` 
+    });
   }
 }

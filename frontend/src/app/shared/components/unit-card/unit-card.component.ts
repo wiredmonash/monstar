@@ -296,7 +296,7 @@ export class UnitCardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // * Navigates to the unit overview page for the selected unit.
   onCardClick() {
-    this.router.navigate(['/unit-overview', this.unit?.unitCode]);
+    this.router.navigate(['/unit', this.unit?.unitCode]);
   }
 
   // * Returns the string to display for the number of reviews.

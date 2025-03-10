@@ -389,7 +389,7 @@ router.patch('/toggle-reaction/:reviewId', verifyToken, async function (req, res
                         message: `${user.username} liked your review on ${unit.unitCode.toUpperCase()}`,
                         user: { username: user.username, profileImg: user.profileImg }
                     },
-                    navigateTo: `/unit-overview/${unit.unitCode}`,
+                    navigateTo: `/unit/${unit.unitCode}`,
                     review: review._id,
                     user: author._id
                 };
