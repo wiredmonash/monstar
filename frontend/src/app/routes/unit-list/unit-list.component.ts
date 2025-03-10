@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UnitCardComponent } from "../../shared/components/unit-card/unit-card.component";
 import { ApiService } from '../../shared/services/api.service';
@@ -17,6 +17,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { Unit, UnitData } from '../../shared/models/unit.model';
 import { ScrollTopModule } from 'primeng/scrolltop';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-unit-list',
@@ -42,7 +43,7 @@ import { ScrollTopModule } from 'primeng/scrolltop';
   templateUrl: './unit-list.component.html',
   styleUrl: './unit-list.component.scss',
 })
-export class UnitListComponent implements OnInit {
+export class UnitListComponent implements OnInit, OnDestroy {
   // Array to hold the filtered list of units
   filteredUnits: Unit[] = []; 
 
@@ -102,11 +103,20 @@ export class UnitListComponent implements OnInit {
   hasPrerequisites: boolean = false;
 
   /**
-   * * Constructor
-   * 
-   * @param apiService Injects the ApiService to communicate with the backend APIs
+   * ! Constructor
    */
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private meta: Meta,
+    private titleService: Title
+  ) { }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | LIFECYCLE HOOKS                                                            
+   *  ! |======================================================================|
+   */
 
   /**
    * * Angular lifecycle hook called after the component has been initalised.
@@ -114,6 +124,9 @@ export class UnitListComponent implements OnInit {
    * This method is used to trigger data fetching when the component loads.
    */
   ngOnInit(): void {
+    // Update meta tags for this page
+    this.updateMetaTags();
+
     // Retrieve the sortBy state from local storage
     const savedSortBy = localStorage.getItem('sortBy');
     if (savedSortBy) 
@@ -142,6 +155,32 @@ export class UnitListComponent implements OnInit {
     // Fetches the paginated units from the backend
     this.fetchPaginatedUnits(); 
   }
+
+  /**
+   * * Angular lifecycle hook called on deletion
+   */
+  ngOnDestroy(): void {
+    // Reset title
+    this.titleService.setTitle('MonSTAR | Browse and Review Monash University Units');
+    
+    // Remove all custom meta tags
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    this.meta.removeTag("property='og:title'");
+    this.meta.removeTag("property='og:description'");
+    this.meta.removeTag("property='og:url'");
+    this.meta.removeTag("property='og:type'");
+    this.meta.removeTag("name='twitter:card'");
+    this.meta.removeTag("name='twitter:title'");
+    this.meta.removeTag("name='twitter:description'");
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | PAGINATION & UNITS RETRIEVAL                                                     
+   *  ! |======================================================================|
+   */
 
   /**
    * * Fetch paginated units from the backend and update the filteredUnits array.
@@ -223,6 +262,13 @@ export class UnitListComponent implements OnInit {
     this.fetchPaginatedUnits();
   }
 
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | KEYBOARD SHORTCUTS                                                            
+   *  ! |======================================================================|
+   */
+
   /**
    * * Handles focusing via keybinds
    * 
@@ -282,5 +328,52 @@ export class UnitListComponent implements OnInit {
         this.filterUnits();
       }
     }
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                            
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Update meta tags for SEO
+   */
+  private updateMetaTags(): void {
+    const baseUrl = 'https://monstar.wired.org.au';
+    const pageUrl = `${baseUrl}/list`;
+    
+    // Basic meta tags
+    this.titleService.setTitle('Student Reviews of Monash Units | MonSTAR');
+    
+    this.meta.updateTag({ 
+      name: 'description', 
+      content: 'Find and read student reviews of Monash University units. Compare ratings, difficulty levels, and experiences from real students to choose the best units for your degree.'
+    });
+    
+    this.meta.updateTag({ 
+      name: 'keywords', 
+      content: 'Monash University, unit reviews, course reviews, student ratings, Monash units, unit selection, Monash subjects, subject reviews, MonSTAR'
+    });
+
+    // Open Graph tags for social sharing
+    this.meta.updateTag({ property: 'og:title', content: 'Monash University Unit Reviews by Students | MonSTAR' });
+    this.meta.updateTag({ 
+      property: 'og:description', 
+      content: 'Find honest reviews of Monash University units from fellow students. Filter by faculty, semester, campus, and more.'
+    });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Browse Monash Unit Reviews | MonSTAR' });
+    this.meta.updateTag({ 
+      name: 'twitter:description', 
+      content: 'Search and filter student reviews of Monash University units to make informed choices about your studies.'
+    });
+
+    console.log('Unit List meta tags updated');
   }
 }

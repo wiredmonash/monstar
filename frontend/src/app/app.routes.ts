@@ -15,11 +15,11 @@ export const routes: Routes = [
     // Homepage
     { path: "", component: HomeComponent },
     // Unit List 
-    { path: "unit-list", component: UnitListComponent },
+    { path: "list", component: UnitListComponent },
     // Unit Overview
-    { path: 'unit-overview/:unitcode', component: UnitOverviewComponent },
+    { path: 'unit/:unitcode', component: UnitOverviewComponent },
     // Unit Map
-    { path: 'unit-map/:unitcode', component: UnitMapComponent },
+    { path: 'map/:unitcode', component: UnitMapComponent },
     // Email Verification
     { path: 'verify-email/:token', component: VerifiedComponent }, 
     // Reset Password

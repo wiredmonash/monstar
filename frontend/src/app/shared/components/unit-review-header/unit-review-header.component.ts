@@ -1,6 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { NavbarComponent } from '../navbar/navbar.component'; 
-import { FooterComponent } from '../footer/footer.component'; 
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -26,7 +24,6 @@ import { Unit } from '../../models/unit.model';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ListboxModule } from 'primeng/listbox';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { Meta, Title } from '@angular/platform-browser'
 
 @Component({
   selector: 'app-unit-review-header',
@@ -106,9 +103,6 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private messageService: MessageService,
     private router: Router,
-    private meta: Meta,
-    private titleService: Title
-
   ) { }
 
   /** 
@@ -123,7 +117,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * Subscribes to the current user observable to get the current user.
    */
   ngOnInit(): void {
-    this.updateMetaTags();
+    // Subscribe to the ucrrent user
     this.userSubscription = this.authService.getCurrentUser().subscribe({
       next: (currentUser: User | null) => {
         this.user = currentUser;
@@ -145,44 +139,25 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * * Runs on destroy
    */
   ngOnDestroy(): void {
+    // Unsubscribe to the current user
     if (this.userSubscription) { this.userSubscription.unsubscribe(); }
   }
 
-  /**
-   * * Handles the dropdown toggle action.
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | VALIDATION                                                           |
+   *  ! |======================================================================|
    */
-  toggleDropdown(event: Event) {
-    this.sortMenu.toggle(event);
-  }
 
   /**
-   * * Handles the sorting action and emits the chosen criteria to the parent component.
+   * * Checks if a user has already reviewed this unit
    * 
-   * @param {any} event - The event object containing the sorting criteria.
+   * It will call the "GET Get User Reviews" API endpoint and check if the user
+   * has reviewed this unit.
+   * 
+   * @subscribes getUserReviewsGET()
    */
-  onSort(event: any) {
-    console.log('Sorting by: ', event.value);
-    this.sortBy.emit(event.value);
-
-    // Closes the dropdown menu after selection
-    this.sortMenu.hide(); 
-  }
-
-  // * Shows the dialog to write a review
-  showDialog() {
-    if (this.user == null) {
-      this.messageService.add({ severity: 'warn', summary: 'Not Logged In!', detail: 'You must be logged in to write a review.' });
-    }
-
-    if (this.writeReviewDialog && this.user)
-      this.writeReviewDialog.openDialog();
-  }
-
-  // * Emits the reviewAdded signal to be received by unit-overview component.
-  handleReviewPosted() {
-    this.reviewAdded.emit();
-  }
-
   checkHasReviewed() {
     if (!this.user || !this.unit || !this.user._id) return;
 
@@ -243,15 +218,51 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     return this.unitMapButtonDisabled = true;
   }
 
+
   /** 
    *  ! |======================================================================|
    *  ! | HELPERS                                                              |
    *  ! |======================================================================|
    */
 
+  /**
+   * * Handles the dropdown toggle action.
+   */
+  toggleDropdown(event: Event) {
+    this.sortMenu.toggle(event);
+  }
+
+  /**
+   * * Handles the sorting action and emits the chosen criteria to the parent component.
+   * 
+   * @param {any} event - The event object containing the sorting criteria.
+   */
+  onSort(event: any) {
+    console.log('Sorting by: ', event.value);
+    this.sortBy.emit(event.value);
+
+    // Closes the dropdown menu after selection
+    this.sortMenu.hide(); 
+  }
+
+  // * Shows the dialog to write a review
+  showDialog() {
+    if (this.user == null) {
+      this.messageService.add({ severity: 'warn', summary: 'Not Logged In!', detail: 'You must be logged in to write a review.' });
+    }
+
+    if (this.writeReviewDialog && this.user)
+      this.writeReviewDialog.openDialog();
+  }
+
+  // * Emits the reviewAdded signal to be received by unit-overview component.
+  handleReviewPosted() {
+    this.reviewAdded.emit();
+  }
+
   // * Navigate to the unit map page
   navigateToUnitMap() {
-    this.router.navigate(['/unit-map', this.unit?.unitCode]);
+    this.router.navigate(['/map', this.unit?.unitCode]);
   }
 
   /**
@@ -259,22 +270,6 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    */
   openHandbookNewTab() {
     return window.open(`https://handbook.monash.edu/2025/units/${this.unit?.unitCode}?year=${new Date().getFullYear()}`, '_blank');
-  }
-
-    /** 
-   *  ! |======================================================================|
-   *  ! | META TAGS                                                              |
-   *  ! |======================================================================|
-   */
-
-  updateMetaTags() {
-    this.titleService.setTitle(`${this.unit.unitCode} Review | MonSTAR`)
-    this.meta.updateTag({ name: 'description', content: `Read student reviews for ${this.unit.unitCode}! Find out what Monash students think about this unit.` });
-    this.meta.addTag({ name: 'keywords', content: `MonSTAR, Monash, Monash University, Wired, ${this.unit.unitCode}, Monash Reviews, Monash Unit Reviews, ${this.unit.unitCode} reviews`})
-
-    this.meta.updateTag({ property: 'og:title', content: `${this.unit.unitCode} Review | MonSTAR` });
-    this.meta.updateTag({ property: 'og:description', content: `Read student reviews for ${this.unit.unitCode}! Find out what Monash students think about this unit.` });
-
   }
 }
 
