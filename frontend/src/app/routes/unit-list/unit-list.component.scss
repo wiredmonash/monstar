@@ -132,3 +132,79 @@ $padding: 40px;
 .prevent-select {
     user-select: none;
 }
+
+@media (max-width: 768px) {
+    .dropdown-container {
+        position: static;
+    }
+
+    .toolbar-container {
+        // Modify toolbar behavior
+        ::ng-deep .p-toolbar {
+            display: flex;
+            flex-direction: column !important;
+            padding: 1rem !important;
+            gap: 1rem;
+            
+            // Make each group take full width and center contents
+            .p-toolbar-group-start,
+            .p-toolbar-group-center,
+            .p-toolbar-group-end {
+                width: 100% !important;
+                justify-content: center !important;
+                margin: 0 !important;
+            }
+            
+            // Update dropdown and search containers to be full width
+            .dropdown-container {
+                width: 100%;
+                
+                ::ng-deep .p-dropdown {
+                    width: 100% !important;
+                }
+            }
+            
+            .p-toolbar-group-center {
+                .p-input-icon-left {
+                    width: 100%;
+                    
+                    input {
+                        width: 100% !important;
+                    }
+                }
+            }
+            
+            // Make filter button also take up more width
+            .p-toolbar-group-end {
+                button {
+                    font-size: 0.8rem !important;
+                    padding: 0.4rem 0.8rem !important;
+                }
+            }
+        }
+    }
+    
+    // Adjust overlay panel for mobile
+    ::ng-deep #advancedFiltering {
+        width: 90vw !important;
+        max-width: 90vw !important;
+        
+        .filter-option {
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    // Font size of the advanced filtering 
+    .filter-options {
+        font-size: 14px;
+    }
+
+    // Fitler panel that opens
+    ::ng-deep .p-multiselect-panel {
+        width: 300px;
+
+        .p-component {
+            font-size: 14px !important;;
+        }
+    }
+}

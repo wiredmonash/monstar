@@ -96,7 +96,7 @@ export class WriteReviewUnitComponent implements OnInit {
   isAnimating: boolean = false;
 
   // State of the dialog
-  stateList = ['title', 'description', 'semester', 'year', 'grade', 'contentRating', 'facultyRating', 'relevancyRating', 'submit'];
+  stateList = ['title', 'description', 'semester', 'year', 'contentRating', 'facultyRating', 'relevancyRating', 'submit'];
   stateIndex = 0;
 
   // Stores the last key pressed, used for resetting the rating
@@ -263,7 +263,7 @@ export class WriteReviewUnitComponent implements OnInit {
             this.yearInput?.show();
           }
           break;
-        case 'grade':
+        case 'grade': // ! REMOVED
           if (!this.isAnimating) {
             this.gradeInput?.focus();
             this.gradeInput?.show();

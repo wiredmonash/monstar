@@ -62,6 +62,29 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     'I forgor 🤪',
     'Also check out our unit map!',
     'Cheeky insta plug <a href="https://www.instagram.com/jenul_ferdinand/" target="_blank" style="color: var(--primary-color);">@jenul_ferdinand</a>',
+    'Made by students for students!',
+    'Discover units with highest satisfaction',
+    'Find units that align with your interests',
+    'Your one-stop shop for unit reviews',
+    'Learn from others\' experiences',
+    'Honest reviews from real students',
+    'Plan your degree path with confidence',
+    'Stay ahead with student recommendations',
+    'Helping you choose better units since 2023',
+    'Get the inside scoop on assessments',
+    'Did someone say HD? 🎓',
+    'Maximize your learning potential',
+    'Units rated by students like you',
+    'Easy units? Hard units? We got you covered!',
+    'Find the units everyone is raving about',
+    'By WIRED, for Monash students everywhere',
+    'Procrastinating unit selection? We can help!',
+    'Unlock the secrets of unit selection',
+    'Pro tip: check reviews before enrolling',
+    'Make informed choices for your degree',
+    'Time to level up your unit game!',
+    'The units students actually recommend',
+    'Find your next favorite unit here'
   ];
   subheaderCurrentIndex: number = 0;
   subheaderPreviousIndex: number = 0;
@@ -286,8 +309,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * * Navigates to the about page
    */
-  navigateToAbout() {
-    this.navigationService.navigateTo(['/about']);
+  navigateTo(nav: string) {
+    this.navigationService.navigateTo([nav]);
   }
 
 

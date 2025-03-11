@@ -24,6 +24,7 @@ import { Unit } from '../../models/unit.model';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ListboxModule } from 'primeng/listbox';
 import { OverlayPanel } from 'primeng/overlaypanel';
+import { ViewportService } from '../../services/viewport.service';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -89,6 +90,9 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   // Boolean to check if the user has reviewed this unit already
   hasReviewed: boolean = false;
 
+  // Stores the viewport type given from the viewport service
+  viewportType: string = 'desktop';
+
 
   /**
    * === Constructor ===
@@ -103,6 +107,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private messageService: MessageService,
     private router: Router,
+    private viewportService: ViewportService,
   ) { }
 
   /** 
@@ -129,6 +134,11 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
         console.log('UnitReviewHeader | Current User:', this.user);
       }
+    });
+
+    // Subscribe to the viewport service and get the viewport type
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
     });
 
     // * Check if the unit has prerequisites or parent units
