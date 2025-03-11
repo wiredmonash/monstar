@@ -479,8 +479,8 @@ h6 {
 // ? Mobile (below 400px)
 @media (max-width: 399px) {
   .review-card {
-    margin-left: 2%;
-    margin-right: 2%;
+    margin-left: 1%;
+    margin-right: 1%;
     padding: 10px;
   }
 
@@ -511,11 +511,32 @@ h6 {
     font-size: 13px;
   }
 
+  // Making header smaller
+  .header-container {
+    padding: 5px !important;
+
+    .main-details h5 {
+      font-size: 14px;
+      margin-bottom: 0;
+      padding-top: 0;
+      padding-bottom: 2px;
+    }
+  }
+
+  // Main content (i.e. review, categories, and buttons)
   .main-content-container {
+    padding: 0;
+
     .review {
       min-height: 6rem;
-      padding: 0.75rem;
-      margin-right: 0.25rem;
+      padding: 0.5rem;
+      margin-left: 0;
+      margin-right: 0 !important;
+    }
+
+    .btn-link {
+      font-size: 12px;
+      padding: 0.25rem 0.5rem !important;
     }
 
     .categories {
@@ -523,7 +544,9 @@ h6 {
       grid-template-columns: 1fr 1fr;
       grid-auto-rows: auto;
       gap: 0.5rem;
-      padding: 0.5rem;
+      padding: 0.3rem;
+      margin-left: 0.25rem;
+      margin-right: 0.25rem;
 
       .overall-category-container {
         grid-column: 1 / -1;

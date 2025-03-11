@@ -1,4 +1,9 @@
-// ! You can add global styles to this file, and also import other style files
+/** 
+*  ! |======================================================================|
+*  ! | LAYERING FOR STYLES (BOOTSTRAP & PRIMENG)
+*  ! |======================================================================|
+*/
+
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css' layer(bootstrap);
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css" layer(bootstrap);
 @import "../node_modules/primeicons/primeicons.css" layer(primeng);
@@ -6,6 +11,13 @@
 @import "../node_modules/primeng/resources/primeng.css" layer(primeng);
 @import "../node_modules/primeflex/primeflex.css" layer(primeng);
 @import "./app/_variables.scss";
+
+
+/** 
+*  ! |======================================================================|
+*  ! | DISABLE SCROLLBAR AND FULL HEIGHT PAGES
+*  ! |======================================================================|
+*/
 
 html, body {
 	height: 100%; // Make sure the entire document height is considered
@@ -32,6 +44,13 @@ body::-webkit-scrollbar {
 	user-select: none; /* Standard syntax */
 }
 
+
+/** 
+*  ! |======================================================================|
+*  ! | GLOBAL VARIABLES
+*  ! |======================================================================|
+*/
+
 // CSS Custom Properies (GLOBAL)
 :root {
 	// Colours
@@ -48,4 +67,69 @@ body::-webkit-scrollbar {
 $desktop-limit: 1024px;
 $tablet-limit: 768px;
 $mobile-limit: 400px;
+
+/** 
+*  ! |======================================================================|
+*  ! | RESPONSIVE MEDIA QUERIES
+*  ! |======================================================================|
+*/
+
+// Override PrimeNG toast styling for mobile
+@media screen and (max-width: 576px) {
+	// Target the toast container
+	.p-toast {
+		width: 90vw !important;
+		max-width: 90vw !important;
+		right: 5vw !important; // Center it with 5% padding on each side
+	}
+
+	// Target the toast messages
+	.p-toast-message {
+		width: 100% !important;
+		margin: 0 !important;
+	}
+
+	// Make the message text smaller
+	.p-toast-message-content {
+		padding: 0.75rem !important;
+	}
+
+	// Smaller font for toast title
+	.p-toast-message-text .p-toast-summary {
+		font-size: 0.9rem !important;
+	}
+
+	// Smaller font for toast details
+	.p-toast-message-text .p-toast-detail {
+		font-size: 0.8rem !important;
+	}
+}
+
+// Make toast responsive
+:host ::ng-deep {
+	@media screen and (max-width: 576px) {
+		.p-toast {
+			width: 90vw !important;
+			max-width: 90vw !important;
+			right: 5vw !important;	
+		}
+
+		.p-toast-message {
+			width: 100% !important;
+		}
+
+		.p-toast-message-content {
+			padding: 0.75rem !important;
+		}
+
+		.p-toast-message-text .p-toast-summary {
+			font-size: 0.9rem !important;
+		}
+
+		.p-toast-message-text .p-toast-detail {
+			font-size: 0.8rem !important;
+		}
+	}
+}
+
 

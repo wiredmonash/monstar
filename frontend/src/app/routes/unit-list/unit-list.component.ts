@@ -18,6 +18,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { Unit, UnitData } from '../../shared/models/unit.model';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { Meta, Title } from '@angular/platform-browser';
+import { ViewportService } from '../../shared/services/viewport.service';
 
 @Component({
   selector: 'app-unit-list',
@@ -102,13 +103,17 @@ export class UnitListComponent implements OnInit, OnDestroy {
   // Prerequisites
   hasPrerequisites: boolean = false;
 
+  // Viewport type
+  viewportType: string = 'desktop';
+
   /**
    * ! Constructor
    */
   constructor(
     private apiService: ApiService,
     private meta: Meta,
-    private titleService: Title
+    private titleService: Title,
+    private viewportService: ViewportService,
   ) { }
 
 
@@ -154,6 +159,11 @@ export class UnitListComponent implements OnInit, OnDestroy {
 
     // Fetches the paginated units from the backend
     this.fetchPaginatedUnits(); 
+
+    // Subscribe to the viewport service and get the viewport type
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
   }
 
   /**

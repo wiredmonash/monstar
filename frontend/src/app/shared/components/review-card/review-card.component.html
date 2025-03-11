@@ -95,7 +95,10 @@
                 </div>
 
                 <!-- * Right Side (Review Heading, Categories, Stars, Description) -->
-                <div class="col-md-8 px-4 main-content-container"> 
+                <div 
+                    class="col-md-8 main-content-container" 
+                    [ngClass]="viewportType === 'mobile' ? '' : 'px-4'"
+                > 
                     <!-- Review Description -->
                     <p class="review">{{ expanded ? review.description : (review.description | slice:0:350) + (review.description.length > 350 ? '...' : '') }}</p>
 

@@ -170,7 +170,7 @@
         label="Map"
         icon="pi pi-map-marker"
         rounded="true"
-        [disabled]="unitMapButtonDisabled"
+        [disabled]="unitMapButtonDisabled || viewportType === 'mobile'"
         (click)="navigateToUnitMap()"
       ></p-button>
     </div>
