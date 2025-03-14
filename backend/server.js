@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cron = require('node-cron');
 const cors = require('cors');
 const app = express();
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const tagManager = require('./services/tagManager.service');
 const { exec } = require('child_process');
@@ -17,11 +18,6 @@ const AuthRouter = require('./routes/auth');
 const NotificationRouter = require('./routes/notifications');
 
 // === Middleware ===
-app.use(cors({ 
-        origin: 'http://localhost:4200',
-        credentials: true 
-    })
-);
 app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
 app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
@@ -38,21 +34,26 @@ app.use((obj, req, res, next) => {
     })
 });
 
+// === Routes ===
+app.use('/api/v1/units', UnitRouter);
+app.use('/api/v1/reviews', ReviewRouter);
+app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/notifications', NotificationRouter);
+
+// === Serving Static Files ===
+app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
+
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
-async function connect(url) { await mongoose.connect(url); }
+async function connect(url) { 
+    await mongoose.connect(url); 
+}
 connect(url)
     .then(() => { 
         console.log('Connected to MongoDB Database')
         tagManager.updateMostReviewsTag(1);
     })
     .catch((error) => console.log(error));
-
-// === Routes ===
-app.use('/api/v1/units', UnitRouter);
-app.use('/api/v1/reviews', ReviewRouter);
-app.use('/api/v1/auth', AuthRouter);
-app.use('/api/v1/notifications', NotificationRouter);
 
 // === Services ===
 // Update the most reviews tag every hour
@@ -81,6 +82,11 @@ cron.schedule('0 3 * * *', function() {
         
         console.log(`Sitemap generation complete: ${stdout}`);
     });
+});
+
+// === Catch all route ===
+app.get('*', (req, res) => {
+    return res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
 });
 
 // === Start Server ===
