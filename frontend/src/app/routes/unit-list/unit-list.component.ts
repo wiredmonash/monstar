@@ -19,6 +19,9 @@ import { Unit, UnitData } from '../../shared/models/unit.model';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { Meta, Title } from '@angular/platform-browser';
 import { ViewportService } from '../../shared/services/viewport.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-unit-list',
@@ -106,6 +109,9 @@ export class UnitListComponent implements OnInit, OnDestroy {
   // Viewport type
   viewportType: string = 'desktop';
 
+  // Debouncing search
+  private searchSubject = new Subject<string>();
+
   /**
    * ! Constructor
    */
@@ -114,6 +120,8 @@ export class UnitListComponent implements OnInit, OnDestroy {
     private meta: Meta,
     private titleService: Title,
     private viewportService: ViewportService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) { }
 
 
@@ -131,6 +139,27 @@ export class UnitListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Update meta tags for this page
     this.updateMetaTags();
+
+    // Setup the debounced search
+    this.searchSubject.pipe(
+      debounceTime(400), // Wait 400ms after the user stops typing
+      distinctUntilChanged() // Only emit if the search string changed
+    ).subscribe(searchTerm => {
+      this.updateSearchQueryParams(searchTerm);
+      this.filterUnits();
+    });
+
+    // Subscribe to route paramter changes
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        if (this.search !== params['search']) {
+          this.search = params['search'];
+          this.fetchPaginatedUnits();
+        } 
+      } else if (this.search) {
+        this.search = '';
+      }
+    });
 
     // Retrieve the sortBy state from local storage
     const savedSortBy = localStorage.getItem('sortBy');
@@ -183,6 +212,9 @@ export class UnitListComponent implements OnInit, OnDestroy {
     this.meta.removeTag("name='twitter:card'");
     this.meta.removeTag("name='twitter:title'");
     this.meta.removeTag("name='twitter:description'");
+
+    // Unsubscribe from the subject
+    this.searchSubject.complete();
   }
 
 
@@ -232,8 +264,33 @@ export class UnitListComponent implements OnInit, OnDestroy {
     });
   }
 
+  onSearchInput() {
+    this.searchSubject.next(this.search);
+  }
+
+  updateSearchQueryParams(searchTerm: string) {
+    if (searchTerm) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: searchTerm },
+        queryParamsHandling: 'merge'
+      });
+    } else {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: null },
+        queryParamsHandling: 'merge'
+      });
+    }
+  }
+
   /**
    * * Updates the filteredUnits array based on the current search query
+   * 
+   * - Updates the URL with the current search
+   * - Removes old local storage items
+   * - Saves current filters to local storage
+   * - Fetches the units
    */
   filterUnits() {
     // Remove old local storage items
@@ -385,5 +442,22 @@ export class UnitListComponent implements OnInit, OnDestroy {
     });
 
     console.log('Unit List meta tags updated');
+
+    // Canonical URLs
+    const canonicalUrl = this.search 
+    ? `https://monstar.wired.org.au/list?search=${encodeURIComponent(this.search)}`
+    : 'https://monstar.wired.org.au/list';
+    
+    // Remove previous canonical if it exists
+    const existingCanonical = document.querySelector('link[rel="canonical"]');
+    if (existingCanonical) {
+      existingCanonical.remove();
+    }
+
+    // Add new canonical
+    const canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    canonicalLink.setAttribute('href', canonicalUrl);
+    document.head.appendChild(canonicalLink);
   }
 }

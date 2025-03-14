@@ -6,6 +6,8 @@ const cors = require('cors');
 const app = express();
 const cookieParser = require('cookie-parser');
 const tagManager = require('./services/tagManager.service');
+const { exec } = require('child_process');
+const path = require('path');
 require('dotenv').config();
 
 // Router Imports 
@@ -53,14 +55,33 @@ app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/notifications', NotificationRouter);
 
 // === Services ===
+// Update the most reviews tag every hour
 cron.schedule('0 * * * *', async function() {
     await tagManager.updateMostReviewsTag(1);
-})
+});
 
-// === Debugging Root Route ===
-// app.get('/', (req, res) => {
-//     return res.status(200).json({ msg : "Hello frontend... From backend." });
-// });
+// Generate sitemaps daily at 3:00 AM
+cron.schedule('0 3 * * *', function() {
+    console.log('Running daily sitemap generation...');
+    
+    // Path to the sitemap generator script
+    const scriptPath = path.join(__dirname, 'utils', 'generate-sitemap.js');
+    
+    // Use Node to execute the script
+    exec(`node ${scriptPath}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Sitemap generation error: ${error.message}`);
+            return;
+        }
+        
+        if (stderr) {
+            console.error(`Sitemap stderr: ${stderr}`);
+            return;
+        }
+        
+        console.log(`Sitemap generation complete: ${stdout}`);
+    });
+});
 
 // === Start Server ===
 const PORT = process.env.PORT || 8080;                                          // Default to 8080 if no port specified

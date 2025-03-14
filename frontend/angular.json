@@ -92,6 +92,16 @@
                 {
                   "glob": "**/*",
                   "input": "public"
+                },
+                {
+                  "glob": "sitemap.xml",
+                  "input": "public",
+                  "output": "/"
+                },
+                {
+                  "glob": "robots.txt",
+                  "input": "public",
+                  "output": "/"
                 }
               ],
               "styles": [
