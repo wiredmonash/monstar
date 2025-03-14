@@ -1,0 +1,8 @@
+User-Agent: *
+Allow: /
+
+# Main sitemap index (main entry point for all sitemaps)
+Sitemap: https://monstar.wired.org.au/sitemap-index.xml
+
+# Individual sitemaps (backward compatibility)
+Sitemap: https://monstar.wired.org.au/sitemap.xml

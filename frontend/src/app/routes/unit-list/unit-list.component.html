@@ -43,7 +43,7 @@
               variant='filled'
               [style]="{ 'border-radius': '3rem', 'width': '18rem', 'height': '2.5rem', 'font-size': '1rem' }"
               [(ngModel)]="search" 
-              (input)="filterUnits()"
+              (input)="onSearchInput();"
               (focus)="isSearchFocused = true;"
               (blur)="isSearchFocused = false;"
               pTooltip="Search for unitcode"

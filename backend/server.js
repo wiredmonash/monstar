@@ -7,6 +7,8 @@ const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const tagManager = require('./services/tagManager.service');
+const { exec } = require('child_process');
+const path = require('path');
 require('dotenv').config();
 
 // Router Imports 
@@ -54,9 +56,33 @@ connect(url)
     .catch((error) => console.log(error));
 
 // === Services ===
+// Update the most reviews tag every hour
 cron.schedule('0 * * * *', async function() {
     await tagManager.updateMostReviewsTag(1);
-})
+});
+
+// Generate sitemaps daily at 3:00 AM
+cron.schedule('0 3 * * *', function() {
+    console.log('Running daily sitemap generation...');
+    
+    // Path to the sitemap generator script
+    const scriptPath = path.join(__dirname, 'utils', 'generate-sitemap.js');
+    
+    // Use Node to execute the script
+    exec(`node ${scriptPath}`, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Sitemap generation error: ${error.message}`);
+            return;
+        }
+        
+        if (stderr) {
+            console.error(`Sitemap stderr: ${stderr}`);
+            return;
+        }
+        
+        console.log(`Sitemap generation complete: ${stdout}`);
+    });
+});
 
 // === Catch all route ===
 app.get('*', (req, res) => {
