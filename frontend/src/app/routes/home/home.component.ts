@@ -204,11 +204,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loading = false;
 
         // ? Debug log success
-        console.log('Home | Popular units:', this.popularUnits);
+        // console.log('Home | Popular units:', this.popularUnits);
       },
       error: (error) => {
         // ? Debug log error
-        console.log('Home | Error getting popular units:', error.error);
+        // console.log('Home | Error getting popular units:', error.error);
       }
     })
   }
