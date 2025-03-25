@@ -132,7 +132,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
           this.checkHasReviewed();
         }
 
-        console.log('UnitReviewHeader | Current User:', this.user);
+        // console.log('UnitReviewHeader | Current User:', this.user);
       }
     });
 
@@ -183,7 +183,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
           return review.unit && this.unit._id && review.unit.toString() === this.unit._id.toString();
         });
 
-        console.log(`User has ${this.hasReviewed ? 'already' : 'not yet'} reviewed this unit.`);
+        // console.log(`User has ${this.hasReviewed ? 'already' : 'not yet'} reviewed this unit.`);
       },
       error: (error) => {
         console.error('UnitReviewHeader | Error whilst fetching user reviews:', error);
@@ -248,7 +248,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * @param {any} event - The event object containing the sorting criteria.
    */
   onSort(event: any) {
-    console.log('Sorting by: ', event.value);
+    // console.log('Sorting by: ', event.value);
     this.sortBy.emit(event.value);
 
     // Closes the dropdown menu after selection
