@@ -371,13 +371,13 @@ export class WriteReviewUnitComponent implements OnInit {
   editReview() {
     //Checking if user is logged in
     if (!this.user) {
-      console.error('User data not available.');
+      // console.error('User data not available.');
       return;
     }
 
     //Checking if unit is assigned to us
     if (!this.unit) {
-      console.error('Unit data not available.');
+      // console.error('Unit data not available.');
       return;
     }
 
@@ -442,13 +442,13 @@ export class WriteReviewUnitComponent implements OnInit {
   postReview() {
     // Checking if user is logged in
     if (!this.user) {
-      console.error('User data not available.');
+      // console.error('User data not available.');
       return;
     }
 
     // Checking if unit is assigned to us
     if (!this.unit) {
-      console.error('Unit data not available.');
+      // console.error('Unit data not available.');
       return;
     }
 

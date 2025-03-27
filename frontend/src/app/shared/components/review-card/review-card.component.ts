@@ -260,7 +260,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         // console.log(`Review like toggled successfully:`, response);
       },
       error: (error) => {
-        console.error('Error while toggling like:', error);
+        // console.error('Error while toggling like:', error);
       }
     });
   }
@@ -298,7 +298,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         // console.log(`Review dislike toggled successfully:`, response);
       },
       error: (error) => {
-        console.error('Error while toggling dislike:', error);
+        // console.error('Error while toggling dislike:', error);
       }
     });
   }
