@@ -44,11 +44,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully fetched reviews:', response);
+          // console.log('ApiService | Successfully fetched reviews:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst fetching reviews:', error.error);
+          // console.log('ApiService | Error whilst fetching reviews:', error.error);
         }
       })
     );
@@ -68,10 +68,10 @@ export class ApiService {
     ).pipe(
       tap({
         next: (response) => {
-          console.log('ApiService | Successfully fetched user reviews:', response);
+          // console.log('ApiService | Successfully fetched user reviews:', response);
         },
         error: (error) => {
-          console.log('ApiService | Error whilst fetching user reviews:', error.error);
+          // console.log('ApiService | Error whilst fetching user reviews:', error.error);
         }
       })
     );
@@ -101,11 +101,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully deleted notification:', response);
+          // console.log('ApiService | Successfully deleted notification:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst deleting notification:', error.error);
+          // console.log('ApiService | Error whilst deleting notification:', error.error);
         }
       })
     );
@@ -127,10 +127,10 @@ export class ApiService {
     ).pipe(
       tap({
         next: (response) => {
-          console.log('ApiService | Successfully toggled like/dislike', response);
+          // console.log('ApiService | Successfully toggled like/dislike', response);
         },
         error: (error) => {
-          console.error('ApiService | Error whilst toggling like/dislike', error.error);
+          // console.error('ApiService | Error whilst toggling like/dislike', error.error);
         }
       })
     );
@@ -151,11 +151,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully fetched unit:', response);
+          // console.log('ApiService | Successfully fetched unit:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst fetching unit:', error.error);
+          // console.log('ApiService | Error whilst fetching unit:', error.error);
         }
       })
     );
@@ -175,11 +175,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully fetched all units:', response);
+          // console.log('ApiService | Successfully fetched all units:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst fetching all units:', error.error);
+          // console.log('ApiService | Error whilst fetching all units:', error.error);
         }
       })  
     );
@@ -199,11 +199,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully fetched popular units:', response);
+          // console.log('ApiService | Successfully fetched popular units:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst fetching popular units:', error.error);
+          // console.log('ApiService | Error whilst fetching popular units:', error.error);
         }
       })
     );
@@ -248,11 +248,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully fetched filtered units:', response);
+          // console.log('ApiService | Successfully fetched filtered units:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst fetching filtered units:', error.error);
+          // console.log('ApiService | Error whilst fetching filtered units:', error.error);
         }
       })
     );
@@ -283,11 +283,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('AuthService | Successfully created review:', response);
+          // console.log('AuthService | Successfully created review:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('AuthService | Error whilst creating review:', error.error);
+          // console.log('AuthService | Error whilst creating review:', error.error);
         }
       })
     );
@@ -308,11 +308,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully deleted review:', response);
+          // console.log('ApiService | Successfully deleted review:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst deleting review:', error.error);
+          // console.log('ApiService | Error whilst deleting review:', error.error);
         }
       })
     );
@@ -342,11 +342,11 @@ export class ApiService {
       tap({
         next: (response) => {
           // ? Debug log
-          console.log('ApiService | Successfully updated review:', response);
+          // console.log('ApiService | Successfully updated review:', response);
         },
         error: (error) => {
           // ? Debug log
-          console.log('ApiService | Error whilst updating review:', error.error);
+          // console.log('ApiService | Error whilst updating review:', error.error);
         }
       })
     );
@@ -363,8 +363,12 @@ export class ApiService {
     this.http.post(`${this.url}/reviews/send-report`,
       reportPayload,
       { withCredentials: true }).subscribe({
-        next: (response) => console.log('ApiService | Successfully sent review report:', response),
-        error: (error) => console.log('ApiService | Error whilst sending review report:', error)
+        next: (response) => {
+          // console.log('ApiService | Successfully sent review report:', response)
+        },
+        error: (error) => {
+          // console.log('ApiService | Error whilst sending review report:', error)
+        }
       });
    }
   
@@ -380,10 +384,10 @@ export class ApiService {
     return this.http.get<Unit[]>(`${this.url}/units/${unitCode}/required-by`).pipe(
       tap({
         next: (units) => {
-          console.log('ApiService | Sucessfully got units requiring unit:', units);
+          // console.log('ApiService | Sucessfully got units requiring unit:', units);
         },
         error: (error) => {
-          console.log('ApiService | Error whilst getting units requiring unit:', error.error);
+          // console.log('ApiService | Error whilst getting units requiring unit:', error.error);
         }
       })
     )
