@@ -74,7 +74,6 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     if (unitCode) {
       this.getUnitByUnitcode(unitCode) // Get the unit
       this.getAllReviews(unitCode); // Get the reviews
-      this.sortReviews('highest-rating') // Sort by highest-rating by default
     }
   }
 
@@ -119,12 +118,13 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   getAllReviews(unitCode?: any) {
     this.apiService.getAllReviewsGET(unitCode).subscribe(
       (reviews: any) => {
-        // Store the fetched reviews 
+        // Store the fetched reviews
         this.reviews = reviews;
 
+        this.sortReviews('most-likes'); // Sort by most-likes by default
+
         // Update the reviews property in the unit object
-        if (this.unit)
-          this.unit.reviews = this.reviews;
+        if (this.unit) this.unit.reviews = this.reviews;
 
         // Not loading anymore
         this.reviewsLoading = false;
@@ -176,6 +176,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * - 'recent': Sorts the reviews by most recent first based on `createdAt` property.
    * - 'lowest-rating': Sorts the reviews by the lowest rating (`overallRating`) first.
    * - 'highest-rating': Sorts the reviews by the highest rating (`overallRating`) first.
+   * - 'most-likes': Sorts the reviews by the most likes first.
    */
   sortReviews(criteria: string) {
     // ? Debug log: Sorting reviews message
@@ -202,6 +203,16 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       // Sorting by highest rating
       case 'highest-rating':
         this.reviews.sort((a, b) => b.overallRating - a.overallRating);
+        break;
+      
+      // Sorting by most likes
+      case 'most-likes':
+        this.reviews.sort((a, b) => (b.likes - b.dislikes) - (a.likes - a.dislikes));
+        break;
+      
+      // Sorting by most dislikes
+      case 'most-dislikes':
+        this.reviews.sort((a, b) => (a.likes - a.dislikes) - (b.likes - b.dislikes));
         break;
     }
   }
