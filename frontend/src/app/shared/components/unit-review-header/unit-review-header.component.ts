@@ -1,10 +1,18 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
-import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
+import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
@@ -45,17 +53,16 @@ import { ViewportService } from '../../services/viewport.service';
     KnobModule,
     RippleModule,
     OverlayPanelModule,
-    ListboxModule
-  ], 
-  providers: [
-    MessageService
+    ListboxModule,
   ],
+  providers: [MessageService],
   templateUrl: './unit-review-header.component.html',
-  styleUrls: ['./unit-review-header.component.scss'] 
+  styleUrls: ['./unit-review-header.component.scss'],
 })
 export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   // ViewChild to reference the WriteReviewUnitComponent
-  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
+  @ViewChild(WriteReviewUnitComponent)
+  writeReviewDialog!: WriteReviewUnitComponent;
 
   // Provide Math to the template
   Math = Math;
@@ -79,10 +86,12 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   selectedSort: string = 'highest-rating';
   // Sorting options used for the dropdown
   sortOptions = [
-    { name: 'Recent', value: 'recent'}, 
-    { name: 'Oldest', value: 'oldest'}, 
-    { name: 'Lowest Rating', value: 'lowest-rating'}, 
-    { name: 'Highest Rating', value: 'highest-rating'}
+    { name: 'Recent', value: 'recent' },
+    { name: 'Oldest', value: 'oldest' },
+    { name: 'Lowest Rating', value: 'lowest-rating' },
+    { name: 'Highest Rating', value: 'highest-rating' },
+    { name: 'Most Likes', value: 'most-likes' },
+    { name: 'Most Dislikes', value: 'most-dislikes' },
   ];
 
   @ViewChild('sortMenu') sortMenu!: OverlayPanel;
@@ -93,24 +102,23 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   // Stores the viewport type given from the viewport service
   viewportType: string = 'desktop';
 
-
   /**
    * === Constructor ===
-   * 
+   *
    * @param {AuthService} authService - The authentication service.
    * @param {ApiService} apiService - The API service.
-   * @param {MessageService} messageService - The message service.  
+   * @param {MessageService} messageService - The message service.
    * @param {Router} router - The router service.
    */
-  constructor (
+  constructor(
     private authService: AuthService,
     private apiService: ApiService,
     private messageService: MessageService,
     private router: Router,
-    private viewportService: ViewportService,
-  ) { }
+    private viewportService: ViewportService
+  ) {}
 
-  /** 
+  /**
    *  ! |======================================================================|
    *  ! | ANGULAR LIFECYCLE HOOKS                                              |
    *  ! |======================================================================|
@@ -118,7 +126,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
   /**
    * * Runs on Init
-   * 
+   *
    * Subscribes to the current user observable to get the current user.
    */
   ngOnInit(): void {
@@ -137,7 +145,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     });
 
     // Subscribe to the viewport service and get the viewport type
-    this.viewportService.viewport$.subscribe(type => {
+    this.viewportService.viewport$.subscribe((type) => {
       this.viewportType = type;
     });
 
@@ -150,11 +158,12 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     // Unsubscribe to the current user
-    if (this.userSubscription) { this.userSubscription.unsubscribe(); }
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
-
-  /** 
+  /**
    *  ! |======================================================================|
    *  ! | VALIDATION                                                           |
    *  ! |======================================================================|
@@ -162,10 +171,10 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
   /**
    * * Checks if a user has already reviewed this unit
-   * 
+   *
    * It will call the "GET Get User Reviews" API endpoint and check if the user
    * has reviewed this unit.
-   * 
+   *
    * @subscribes getUserReviewsGET()
    */
   checkHasReviewed() {
@@ -180,7 +189,11 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
             return review.getUnitCode() === this.unit.unitCode;
           }
 
-          return review.unit && this.unit._id && review.unit.toString() === this.unit._id.toString();
+          return (
+            review.unit &&
+            this.unit._id &&
+            review.unit.toString() === this.unit._id.toString()
+          );
         });
 
         // console.log(`User has ${this.hasReviewed ? 'already' : 'not yet'} reviewed this unit.`);
@@ -189,19 +202,19 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
         // console.error('UnitReviewHeader | Error whilst fetching user reviews:', error);
         // Default to false on error to allow reviews
         this.hasReviewed = false;
-      }
+      },
     });
   }
 
-  /** 
+  /**
    * * Check if unit has prerequisites and/or parent units
-   * 
+   *
    * This checks if the unit has prerequisites or parent units by checking the unit object.
    * - If the unit object doesn't have prerequisites, the unit map button is disabled.
    * - If the unit object doesn't have parent units, the unit map button is disabled.
-   * 
+   *
    * @returns {boolean} Returns true if the unit has prerequisites or parent units, false otherwise.
-   */ 
+   */
   verifyUnitGraph(): boolean {
     if (this.unit!.requisites! && this.unit!.requisites!.prerequisites!) {
       // console.info(`UnitReviewHeader | Unit has requisites.`);
@@ -228,8 +241,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     return this.unitMapButtonDisabled = true;
   }
 
-
-  /** 
+  /**
    *  ! |======================================================================|
    *  ! | HELPERS                                                              |
    *  ! |======================================================================|
@@ -244,7 +256,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
   /**
    * * Handles the sorting action and emits the chosen criteria to the parent component.
-   * 
+   *
    * @param {any} event - The event object containing the sorting criteria.
    */
   onSort(event: any) {
@@ -252,13 +264,17 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     this.sortBy.emit(event.value);
 
     // Closes the dropdown menu after selection
-    this.sortMenu.hide(); 
+    this.sortMenu.hide();
   }
 
   // * Shows the dialog to write a review
   showDialog() {
     if (this.user == null) {
-      this.messageService.add({ severity: 'warn', summary: 'Not Logged In!', detail: 'You must be logged in to write a review.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Not Logged In!',
+        detail: 'You must be logged in to write a review.',
+      });
     }
 
     if (this.writeReviewDialog && this.user)
@@ -279,8 +295,11 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * * Opens the unit handbook for this unit in a new tab
    */
   openHandbookNewTab() {
-    return window.open(`https://handbook.monash.edu/2025/units/${this.unit?.unitCode}?year=${new Date().getFullYear()}`, '_blank');
+    return window.open(
+      `https://handbook.monash.edu/2025/units/${
+        this.unit?.unitCode
+      }?year=${new Date().getFullYear()}`,
+      '_blank'
+    );
   }
 }
-
-
