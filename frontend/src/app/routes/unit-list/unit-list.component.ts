@@ -234,7 +234,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     // ? Debug log the fetch request details
-    console.log('UnitList | Fetching units:', this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses);
+    // console.log('UnitList | Fetching units:', this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses);
     
     // Fetch the paginated units from the backend
     this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
@@ -249,16 +249,16 @@ export class UnitListComponent implements OnInit, OnDestroy {
         this.loading = false;
 
         // ? Debug log success
-        console.log('UnitList | Fetched units:', this.filteredUnits);
+        // console.log('UnitList | Fetched units:', this.filteredUnits);
       },
       error: (error) => {
         if (error.status == 404) {
           this.filteredUnits = [];
           this.totalRecords = 0;
-          console.error('No matching units found:', error.message);
+          // console.error('No matching units found:', error.message);
         }
 
-        console.error('Error fetching units:', error);
+        // console.error('Error fetching units:', error);
         this.loading = false;
       }
     });
@@ -441,7 +441,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
       content: 'Search and filter student reviews of Monash University units to make informed choices about your studies.'
     });
 
-    console.log('Unit List meta tags updated');
+    // console.log('Unit List meta tags updated');
 
     // Canonical URLs
     const canonicalUrl = this.search 

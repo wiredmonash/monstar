@@ -145,7 +145,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         this.disliked = this.currentUser?.dislikedReviews.includes(this.review._id) || false;
 
         // ? Debug log change of current user
-        console.log('ReviewCard | Current User:', this.currentUser);
+        // console.log('ReviewCard | Current User:', this.currentUser);
       }
     });
 
@@ -209,11 +209,11 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         this.currentUser?.reviews.splice(this.currentUser.reviews.indexOf(this.review._id), 1); 
 
         // ? Debug log
-        console.log(message);
+        // console.log(message);
       },
       error: (error) => {
         // ? Debug log 
-        console.log(error);
+        // console.log(error);
       }
     });
   }
@@ -257,10 +257,10 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
           this.currentUser?.removeLikedReview(this.review._id);
         }
 
-        console.log(`Review like toggled successfully:`, response);
+        // console.log(`Review like toggled successfully:`, response);
       },
       error: (error) => {
-        console.error('Error while toggling like:', error);
+        // console.error('Error while toggling like:', error);
       }
     });
   }
@@ -295,10 +295,10 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
           this.currentUser?.removeDislikedReview(this.review._id);
         }
 
-        console.log(`Review dislike toggled successfully:`, response);
+        // console.log(`Review dislike toggled successfully:`, response);
       },
       error: (error) => {
-        console.error('Error while toggling dislike:', error);
+        // console.error('Error while toggling dislike:', error);
       }
     });
   }

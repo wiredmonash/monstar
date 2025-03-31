@@ -140,8 +140,8 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
           this.checkHasReviewed();
         }
 
-        console.log('UnitReviewHeader | Current User:', this.user);
-      },
+        // console.log('UnitReviewHeader | Current User:', this.user);
+      }
     });
 
     // Subscribe to the viewport service and get the viewport type
@@ -196,17 +196,10 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
           );
         });
 
-        console.log(
-          `User has ${
-            this.hasReviewed ? 'already' : 'not yet'
-          } reviewed this unit.`
-        );
+        // console.log(`User has ${this.hasReviewed ? 'already' : 'not yet'} reviewed this unit.`);
       },
       error: (error) => {
-        console.error(
-          'UnitReviewHeader | Error whilst fetching user reviews:',
-          error
-        );
+        // console.error('UnitReviewHeader | Error whilst fetching user reviews:', error);
         // Default to false on error to allow reviews
         this.hasReviewed = false;
       },
@@ -224,31 +217,28 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    */
   verifyUnitGraph(): boolean {
     if (this.unit!.requisites! && this.unit!.requisites!.prerequisites!) {
-      console.info(`UnitReviewHeader | Unit has requisites.`);
-      return (this.unitMapButtonDisabled = false);
+      // console.info(`UnitReviewHeader | Unit has requisites.`);
+      return this.unitMapButtonDisabled = false;
     }
 
     this.apiService.getUnitsRequiringUnitGET(this.unit!.unitCode).subscribe({
       next: (units) => {
         if (units.length > 0) {
-          console.info('UnitReviewHeader | Unit has parent units.');
-          return (this.unitMapButtonDisabled = false);
+          // console.info('UnitReviewHeader | Unit has parent units.');
+          return this.unitMapButtonDisabled = false;
         } else {
-          console.warn('UnitReviewHeader | Unit has no parent units.');
-          return (this.unitMapButtonDisabled = true);
+          // console.warn('UnitReviewHeader | Unit has no parent units.');
+          return this.unitMapButtonDisabled = true;
         }
       },
       error: (error) => {
-        console.error(
-          'UnitReviewHeader | Error whilst fetching parent units:',
-          error.error
-        );
-        return (this.unitMapButtonDisabled = true);
-      },
+        // console.error('UnitReviewHeader | Error whilst fetching parent units:', error.error);k
+        return this.unitMapButtonDisabled = true;
+      }
     });
 
-    console.info('UnitReviewHeader | verifyUnitGraph false boundary case');
-    return (this.unitMapButtonDisabled = true);
+    // console.info('UnitReviewHeader | verifyUnitGraph false boundary case');
+    return this.unitMapButtonDisabled = true;
   }
 
   /**
@@ -270,7 +260,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * @param {any} event - The event object containing the sorting criteria.
    */
   onSort(event: any) {
-    console.log('Sorting by: ', event.value);
+    // console.log('Sorting by: ', event.value);
     this.sortBy.emit(event.value);
 
     // Closes the dropdown menu after selection

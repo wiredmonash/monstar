@@ -54,7 +54,7 @@ export class NotificationsPopupComponent {
     this.userSubscription = this.authService.getCurrentUser().subscribe({
       next: (currentUser: User | null) => {
         this.user = currentUser;
-        console.log('NotificationPopup | Current User:', this.user);
+        // console.log('NotificationPopup | Current User:', this.user);
 
         // Gets user notifications if user not null
         if (this.user?._id) {
@@ -95,11 +95,11 @@ export class NotificationsPopupComponent {
         // Update the notifications property in the user object
         if (this.user) this.user.notifications = this.notifications;
 
-        console.log(this.notifications);
+        // console.log(this.notifications);
       },
       (error: any) => {
         // ? Debug log: Error
-        console.log('ERROR DURING: GET Get All notifications', error);
+        // console.log('ERROR DURING: GET Get All notifications', error);
       }
     );
   }
@@ -112,11 +112,11 @@ export class NotificationsPopupComponent {
         this.notifications = this.notifications.filter(
           (n) => n._id !== notification._id
         );
-        console.log('Notification successfully removed');
+        // console.log('Notification successfully removed');
       },
       error: (error) => {
         // ? Debug log error
-        console.error('Error while toggling like:', error);
+        // console.error('Error while toggling like:', error);
       },
     });
   }
