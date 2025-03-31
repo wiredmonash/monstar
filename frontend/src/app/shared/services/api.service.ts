@@ -303,8 +303,8 @@ export class ApiService {
    */
   deleteReviewByIdDELETE(id: string): Observable<any> {
     return this.http.delete(
-      `${this.url}/reviews/delete/${id}`
-    ).pipe(
+      `${this.url}/reviews/delete/${id}`,
+      { withCredentials: true }).pipe(
       tap({
         next: (response) => {
           // ? Debug log
