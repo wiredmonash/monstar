@@ -123,7 +123,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
     this.apiService.getUnitByUnitcodeGET(unitCode).subscribe({
       next: (unit: Unit) => {
         // ? Debug log: Current unit
-        console.log('Current unit:', unit);
+        // console.log('Current unit:', unit);
 
         // Save the unit
         this.unit = unit;
@@ -138,7 +138,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
           }
         };
         // ? Debug log: Current node
-        console.log('Current node:', currentNode);
+        // console.log('Current node:', currentNode);
 
         // Initalise arrays for prerequisites
         let prereqNodes: UnitNode[] = [];
@@ -178,7 +178,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
         this.apiService.getUnitsRequiringUnitGET(unit.unitCode).subscribe({
           next: (parentUnits) => {
             // ? Debug log: Fetched parent units
-            console.log('Parent units:', parentUnits);
+            // console.log('Parent units:', parentUnits);
             
             // Add parent nodes
             const parentNodes: UnitNode[] = parentUnits.map(parent => ({
@@ -194,7 +194,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
             this.parentUnitCodes = parentNodes.map(node => ' ' + node.label);
 
             // ? Debug log: Parent nodes
-            console.log('Parent nodes:', parentNodes);
+            // console.log('Parent nodes:', parentNodes);
   
             // Add edges from current node to parent nodes
             const parentEdges: UnitEdge[] = parentNodes.map(node => ({
@@ -205,17 +205,17 @@ export class UnitMapComponent implements OnInit, OnDestroy {
             }));
 
             // ? Debug log: Parent edges
-            console.log('Parent edges:', parentEdges);
+            // console.log('Parent edges:', parentEdges);
             
             // Add parent nodes and edges to the graph
             this.nodes = [...this.nodes, ...parentNodes];
             this.edges = [...this.edges, ...parentEdges];
             
             // ? Debug log: Final graph state
-            console.log('Final graph state:', {
-              nodes: this.nodes,
-              edges: this.edges
-            });
+            // console.log('Final graph state:', {
+            //   nodes: this.nodes,
+            //   edges: this.edges
+            // });
 
             // Center the graph
             this.centerGraph();

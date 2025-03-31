@@ -44,16 +44,16 @@ export class ViewportService {
   private getCurrentViewportType(): ViewportType {
     const width = window.innerWidth;
     if (width <= this.mobileLimit) {
-      console.log('ViewportService | getCurrentViewportType: mobile');
+      // console.log('ViewportService | getCurrentViewportType: mobile');
       return 'mobile';
     } else if (width <= this.tabletLimit) {
-      console.log('ViewportService | getCurrentViewportType: tablet');
+      // console.log('ViewportService | getCurrentViewportType: tablet');
       return 'tablet';
     } else if (width <= this.desktopLimit) {
-      console.log('ViewportService | getCurrentViewportType: laptop');
+      // console.log('ViewportService | getCurrentViewportType: laptop');
       return 'laptop';
     } else {
-      console.log('ViewportService | getCurrentViewportType: desktop');
+      // console.log('ViewportService | getCurrentViewportType: desktop');
       return 'desktop';
     }
   }

@@ -62,7 +62,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | Logged in as:', this.currentUser);
+        // console.log('AuthService | Logged in as:', this.currentUser);
       })
     );
   }
@@ -88,7 +88,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | Logged in as:', this.currentUser);
+        // console.log('AuthService | Logged in as:', this.currentUser);
       })
     );
   }
@@ -108,7 +108,7 @@ export class AuthService {
         this.currentUser.next(null);
 
         // ? Console log
-        console.log('AuthService | Logged out.')
+        // console.log('AuthService | Logged out.')
       })
     );
   }
@@ -155,7 +155,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | validated user as:', this.currentUser);
+        // console.log('AuthService | validated user as:', this.currentUser);
       })
     );
   }
@@ -179,7 +179,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
+        // console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
       })
     );
   }
@@ -205,7 +205,7 @@ export class AuthService {
           this.currentUser.value.username = response.username;
 
           // ? Debug log
-          console.log('AuthService | Updated user details:', this.currentUser);
+          // console.log('AuthService | Updated user details:', this.currentUser);
         }
       })
     );
@@ -235,7 +235,7 @@ export class AuthService {
           this.currentUser.value.profileImg = response.profileImg;
 
           // ? Debug log
-          console.log('AuthService | Uploaded avatar:', this.currentUser);
+          // console.log('AuthService | Uploaded avatar:', this.currentUser);
         }
       })
     );
@@ -257,7 +257,7 @@ export class AuthService {
           this.currentUser.next(null);
 
           // ? Debug log
-          console.log('AuthService | Deleted user account.')
+          // console.log('AuthService | Deleted user account.')
         })
       );
   }

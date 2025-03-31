@@ -163,7 +163,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Try to render the Google Sign In button asynchronously
         try { await this.renderGoogleButton(); } 
         // Log the error and set the error state
-        catch (error) { console.error('Profile | Google Sign In failed to load:', error); await this.renderGoogleButton(); }
+        catch (error) { 
+          // console.error('Profile | Google Sign In failed to load:', error); 
+          await this.renderGoogleButton(); 
+        }
         // Hide the skeleton
         finally { setTimeout(() => { this.showGoogleSkeleton = false; }, 1000); }
       });
@@ -209,14 +212,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     // Validate session and change state accordingly
     this.authService.validateSession().subscribe({
       next: (response) => {
-        console.log('Profile | User is authenticated:', response);
+        // console.log('Profile | User is authenticated:', response);
         this.state = 'logged in';
         this.createToast.emit({ severity: 'success', summary: 'Validated Session & Logged in', detail: 'You are logged in!' });
         this.titleChangeEvent.emit('Profile');
         this.stateChangeEvent.emit(this.state);
       },
       error: (error) => {
-        console.log('Profile | User is not authenticated:', error);
+        // console.log('Profile | User is not authenticated:', error);
         this.state = 'logged out';
         this.createToast.emit({ severity: 'warn', summary: 'Session Expired & Logged out', detail: 'You are logged out!' });
         this.titleChangeEvent.emit('Login');
@@ -243,7 +246,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // Output to parent the updated current user
         this.userChangeEvent.emit(this.user);
 
-        console.log('Fetching user reviews for:', this.user?.username);
+        // console.log('Fetching user reviews for:', this.user?.username);
 
         // Gets the user reviews if the user is not null
         if (this.user) this.getUserReviews(this.user._id);
@@ -251,7 +254,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         // console.log(this.reviews)
 
         // ? Debug log change of current user
-        console.log('Profile | Current User:', this.user);
+        // console.log('Profile | Current User:', this.user);
       }
     });
 
@@ -298,7 +301,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Subscribe to the dialogClosedEvent
     this.dialogClosedSubscription = this.dialogClosedEvent.subscribe(() => {
-      console.log('Profile | Dialog closed event');
+      // console.log('Profile | Dialog closed event');
       this.inputUpdateUsername = this.user?.username;
       this.inputEmail = '';
       this.inputPassword = '';
@@ -308,7 +311,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // Subscribe to the dialogOpenedEvent
     this.dialogOpenedSubscription = this.dialogOpenedEvent.subscribe(() => {
-      console.log('Profile | Dialog opened event');
+      // console.log('Profile | Dialog opened event');
 
       // Show the Google Sign In button skeleton when the dialog is opened
       this.showGoogleSkeleton = true;
@@ -369,7 +372,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       if (typeof google === 'undefined') {
         if (retryCount > 5) {
           this.googleLoadError = true;
-          console.error('Profile | Google Sign In failed to load after 5 retries');
+          // console.error('Profile | Google Sign In failed to load after 5 retries');
           return;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -388,7 +391,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         use_fedcm_for_prompt: true,
       });
 
-      console.log('Profile | Google Sign In initialized successfully');
+      // console.log('Profile | Google Sign In initialized successfully');
   
       // https://developers.google.com/identity/gsi/web/guides/display-button#javascript
       await google.accounts.id.renderButton(
@@ -404,7 +407,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
       );
 
-      console.log('Profile | Google Sign In loaded successfully');
+      // console.log('Profile | Google Sign In loaded successfully');
   
       // One tap prompt removed
       //google.accounts.id.prompt();
@@ -414,7 +417,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     catch (error) {
       this.googleLoadError = true;
       this.isGoogleLoading = false;
-      console.error('Profile | Google Sign In failed to load:', error);
+      // console.error('Profile | Google Sign In failed to load:', error);
     }
   }
 
@@ -446,7 +449,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.createToast.emit({ severity: 'success', summary: 'Logged in', detail: 'You are logged in!' });
 
         // ? Debug log success
-        console.log('Profile | Logged in succesfully!', response);
+        // console.log('Profile | Logged in succesfully!', response);
       },
       error: (error: HttpErrorResponse) => {
         if (error.status == 409) {
@@ -457,7 +460,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
 
         // ? Debug log error on signed up
-        console.error('Profile | Google Authenticate failed:', error.error);
+        // console.error('Profile | Google Authenticate failed:', error.error);
       }
     });
   }
@@ -497,11 +500,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.createToast.emit({ severity: 'warn', summary: 'Logged out', detail: 'You are logged out!' });
 
         // ? Log success
-        console.log('Profile | Logged out successfully!');
+        // console.log('Profile | Logged out successfully!');
       },
       error: (error: HttpErrorResponse) => {
         // ? Debug log error on logout
-        console.error('Profile | Logout failed:', error.error);
+        // console.error('Profile | Logout failed:', error.error);
       }
     });
   }
@@ -538,7 +541,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     // If the payload is empty we don't update
     if (Object.keys(updatePayload).length === 0) {
-      console.log('Profile | No fields to update');
+      // console.log('Profile | No fields to update');
       return;
     }
 
@@ -566,7 +569,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.createToast.emit({ severity: 'success', summary: 'Updated details!', detail: 'You have updated your details' });
 
             // ? Debug log show success
-            console.log('Profile | Details updated successfully', response);
+            // console.log('Profile | Details updated successfully', response);
           },
           error: (error) => {
             // Show error toast
@@ -577,7 +580,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             });
 
             // ? Debug log show error message
-            console.error('Profile | Error updating details', error);
+            // console.error('Profile | Error updating details', error);
           }
         });
     }
@@ -586,7 +589,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.inputUpdateUsername = '';
       this.inputUpdatePassword = '';
       this.createToast.emit({ severity: 'error', summary: 'Invalid username', detail: 'Invalid Username (Please enter an alphanumeric username <= 20 characters)' });
-      console.log('Profile | Not a valid username')
+      // console.log('Profile | Not a valid username')
     }
   }
 
@@ -651,11 +654,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       next: (response) => {
         window.location.reload();
         this.createToast.emit({ severity: 'success', summary: 'Account Deleted', detail: 'Your account has been deleted successfully.' });
-        console.log('Profile | Account deleted successfully', response);
+        // console.log('Profile | Account deleted successfully', response);
       },
       error: (error) => {
         this.createToast.emit({ severity: 'error', summary: 'Error deleting account', detail: 'There was an error whilst deleting your account' });
-        console.error('Profile | Error whilst deleting account', error.message);
+        // console.error('Profile | Error whilst deleting account', error.message);
       }
     })
   }
@@ -674,11 +677,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
       message: 'Are you sure about this?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        console.log('Deleting account');
+        // console.log('Deleting account');
         this.deleteUserAccount();
       },
       reject: () => {
-        console.log('User canceled');
+        // console.log('User canceled');
       }
     });
   }
@@ -708,11 +711,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
         if (this.user)
           this.user.reviews = this.reviews;
 
-        console.log(this.reviews)
+        // console.log(this.reviews)
       },
       error: (error) => {
         // ? Debug log: Error
-        console.log('ERROR DURING: GET Get All Reviews', error)
+        // console.log('ERROR DURING: GET Get All Reviews', error)
       }
     });
   }
@@ -742,14 +745,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.createToast.emit({ severity: 'success', summary: 'Review Deleted', detail: 'Your review has been deleted successfully.' });
 
         // ? Debug log: Success
-        console.log('Profile | Review deleted successfully', response);
+        // console.log('Profile | Review deleted successfully', response);
       },
       error: (error: any) => {
         // Emit an error toast
         this.createToast.emit({ severity: 'error', summary: 'Error deleting review', detail: 'There was an error whilst deleting your review' });
 
         // ? Debug log: Error
-        console.error('Profile | Error whilst deleting review', error.message);
+        // console.error('Profile | Error whilst deleting review', error.message);
       }
     })
   }
