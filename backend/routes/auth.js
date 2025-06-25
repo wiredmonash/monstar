@@ -2,8 +2,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const crypto = require('crypto');
 const { storage, cloudinary } = require('../utils/cloudinary');
 const multer = require('multer');
 const upload = multer({ storage });
