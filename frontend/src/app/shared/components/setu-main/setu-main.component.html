@@ -1,0 +1,185 @@
+<!-- Loading State -->
+@if (loading) {
+<div class="loading-container">
+  <p-progressSpinner
+    styleClass="custom-spinner"
+    strokeWidth="3"
+  ></p-progressSpinner>
+  <p class="loading-text">Loading SETU data...</p>
+</div>
+}
+
+<!-- Error State -->
+@else if (error) {
+<div class="error-container">
+  <div class="error-content">
+    <i class="pi pi-exclamation-triangle error-icon"></i>
+    <h3>Unable to Load SETU Data</h3>
+    <p>{{ error }}</p>
+    <p-button
+      label="Go Back"
+      icon="pi pi-arrow-left"
+      (click)="navigateBack()"
+      severity="secondary"
+    ></p-button>
+  </div>
+</div>
+}
+
+<!-- SETU Data Display -->
+@else if (setuData.length === 0) {
+<div class="no-data-container">
+  <div class="no-data-content">
+    <i class="pi pi-info-circle no-data-icon"></i>
+    <h3>No SETU Data Available</h3>
+    <p>
+      There is no SETU evaluation data available for {{ unitCode | uppercase }}.
+    </p>
+    <p-button
+      label="Go Back"
+      icon="pi pi-arrow-left"
+      (click)="navigateBack()"
+      severity="secondary"
+    ></p-button>
+  </div>
+</div>
+} @else {
+<!-- Header Section -->
+<div class="setu-header">
+  <div class="header-content">
+    <div class="unit-info">
+      <div class="back-button">
+        <p-button
+          icon="pi pi-arrow-left"
+          [rounded]="true"
+          [text]="true"
+          (click)="navigateBack()"
+          pTooltip="Go back to unit overview"
+          tooltipPosition="right"
+        ></p-button>
+      </div>
+      <h1 class="unit-code">{{ unitCode | uppercase }}</h1>
+      <h2 class="page-title">SETU Evaluation Results</h2>
+    </div>
+
+    @if (getMostRecentSetu()) {
+    <div class="setu-info">
+      <div class="info-item">
+        <span class="label">Latest Evaluation:</span>
+        <span class="value">{{
+          getSeasonDisplay(getMostRecentSetu()!.Season)
+        }}</span>
+      </div>
+      <div class="info-item">
+        <span class="label">Responses:</span>
+        <span class="value"
+          >{{ getMostRecentSetu()!.Responses }} /
+          {{ getMostRecentSetu()!.Invited }}</span
+        >
+        <p-badge
+          [value]="getResponseRatePercent(getMostRecentSetu()!) + '%'"
+          severity="info"
+          class="ml-2"
+        ></p-badge>
+      </div>
+      @if (getMostRecentSetu()!.getAggregateScore() > 0) {
+      <div class="info-item">
+        <span class="label">Overall Score:</span>
+        <span
+          class="value aggregate-score"
+          [style.color]="
+            getScoreColor(getMostRecentSetu()!.getAggregateScore())
+          "
+        >
+          {{ getFormattedScore(getMostRecentSetu()!.getAggregateScore()) }}/5.0
+        </span>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>
+
+<p-divider></p-divider>
+
+<!-- SETU Criteria Grid -->
+@if (getMostRecentSetu()) {
+<div class="criteria-container">
+  <h3 class="criteria-title">Evaluation Criteria</h3>
+  <div class="criteria-grid">
+    @for (criteria of getMostRecentSetu()!.getAllCriteriaScores(); track
+    criteria.key) {
+    <div class="criteria-card">
+      <p-card [style]="{ height: '100%' }">
+        <div class="criteria-content">
+          <!-- Criteria Label -->
+          <h4 class="criteria-label">{{ criteria.label }}</h4>
+
+          <!-- Score Display -->
+          <div class="score-display">
+            <span
+              class="score-number"
+              [style.color]="getScoreColor(criteria.score)"
+            >
+              {{ getFormattedScore(criteria.score) }}
+            </span>
+            <span class="score-max">/5.0</span>
+          </div>
+
+          <!-- Circle Rating Display -->
+          <div class="circles">
+            @for (circle of [1,2,3,4,5]; track $index) {
+            <i
+              class="circle"
+              [ngClass]="getCircleClass(criteria.score, circle)"
+            ></i>
+            }
+          </div>
+        </div>
+      </p-card>
+    </div>
+    }
+  </div>
+</div>
+}
+
+<!-- Historical Data Section -->
+@if (setuData.length > 1) {
+<p-divider></p-divider>
+
+<div class="historical-container">
+  <h3 class="historical-title">Historical SETU Data</h3>
+  <div class="historical-grid">
+    @for (setu of setuData; track setu._id) {
+    <div class="historical-card">
+      <p-card>
+        <div class="historical-content">
+          <div class="historical-header">
+            <h4>{{ getSeasonDisplay(setu.Season) }}</h4>
+            <div class="historical-info">
+              <span class="responses">{{ setu.Responses }} responses</span>
+              <p-badge
+                [value]="getResponseRatePercent(setu) + '%'"
+                severity="info"
+              ></p-badge>
+            </div>
+          </div>
+
+          @if (setu.getAggregateScore() > 0) {
+          <div class="aggregate-display">
+            <span class="aggregate-label">Overall Score:</span>
+            <span
+              class="aggregate-value"
+              [style.color]="getScoreColor(setu.getAggregateScore())"
+            >
+              {{ getFormattedScore(setu.getAggregateScore()) }}/5.0
+            </span>
+          </div>
+          }
+        </div>
+      </p-card>
+    </div>
+    }
+  </div>
+</div>
+} }
