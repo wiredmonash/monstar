@@ -1,15 +1,24 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ApiService } from '../../shared/services/api.service';
-import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
-import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { SkeletonModule } from 'primeng/skeleton';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+
+// Services
+import { ApiService } from '../../shared/services/api.service';
+import { MessageService } from 'primeng/api';
+import { FooterService } from '../../shared/services/footer.service';
+
+// Components
+import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
+import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
+
+// Modules
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { ToastModule } from 'primeng/toast';
+import { FullPageLayoutDirective } from '../../shared/directives/full-page-layout.directive';
 
 @Component({
   selector: 'app-unit-overview',
@@ -20,8 +29,10 @@ import { Meta, Title } from '@angular/platform-browser';
     ToastModule,
     ProgressSpinnerModule,
     SkeletonModule,
+    ScrollPanelModule,
     CommonModule,
-    FormsModule
+    FormsModule,
+    FullPageLayoutDirective
   ],
   providers: [
     MessageService,
@@ -58,7 +69,8 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private messageService: MessageService,
     private meta: Meta,
-    private titleService: Title
+    private titleService: Title,
+    private footerService: FooterService
   ) { }
 
 
@@ -68,6 +80,9 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * Gets the unitcode from the URL param and uses it to get the unit and reviews.
    */ 
   ngOnInit(): void {
+    // Hide the footer
+    this.footerService.hideFooter();
+
     // Get unit code from the route parameters
     const unitCode = this.route.snapshot.paramMap.get('unitcode');
 
@@ -92,6 +107,9 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   ngOnDestroy(): void {
     window.removeEventListener('resize', () => this.updateSkeletonHeight());
+
+    // Show the footer again
+    this.footerService.showFooter();
 
     // Reset title
     this.titleService.setTitle('MonSTAR | Browse and Review Monash University Units');

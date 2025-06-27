@@ -44,6 +44,15 @@ body::-webkit-scrollbar {
 	user-select: none; /* Standard syntax */
 }
 
+// Full page container class used by the full page layout directive
+// for making the unit overview page full height.
+.full-page-container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+}
+
 
 /** 
 *  ! |======================================================================|

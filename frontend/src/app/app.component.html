@@ -1,17 +1,20 @@
 <div class="wrapper">
   <!-- Navbar -->
-  <header>
-    <app-navbar></app-navbar>
-  </header>
+  <!-- <header>
+    
+  </header> -->
 
   <!-- Main Content -->
   <main class="content">
+    <app-navbar></app-navbar>
     <router-outlet></router-outlet>
   </main>
   
   <!-- Footer -->
-  <footer>
-    <app-footer></app-footer>
-  </footer>
+  @if (showFooter) {
+    <footer>
+      <app-footer></app-footer>
+    </footer>
+  }
 </div>
   

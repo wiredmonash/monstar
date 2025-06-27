@@ -1,12 +1,12 @@
 @import './_variables.scss';
 
-/* Ensure the html and body elements occupy full height */
+// Ensure the html and body elements occupy full height 
 html, body {
   height: 100%;
   margin: 0;
 }
 
-/* Make the wrapper a flex container */
+// Make the wrapper a flex container 
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -14,7 +14,7 @@ html, body {
   background-color: $bg-dark-color;
 }
 
-/* Allow the content area to grow and fill space */
+// Allow the content area to grow and fill space
 .content {
   flex: 1;
   display: flex;
