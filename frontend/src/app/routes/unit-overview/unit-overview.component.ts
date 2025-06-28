@@ -12,7 +12,7 @@ import { FooterService } from '../../shared/services/footer.service';
 // Components
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
-
+import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
 // Modules
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -26,6 +26,7 @@ import { FullPageLayoutDirective } from '../../shared/directives/full-page-layou
   imports: [
     ReviewCardComponent, 
     UnitReviewHeaderComponent,
+    SetuCardComponent,
     ToastModule,
     ProgressSpinnerModule,
     SkeletonModule,
