@@ -105,40 +105,78 @@
 <!-- SETU Criteria Grid -->
 @if (getMostRecentSetu()) {
 <div class="criteria-container">
-  <h3 class="criteria-title">Evaluation Criteria</h3>
-  <div class="criteria-grid">
-    @for (criteria of getMostRecentSetu()!.getAllCriteriaScores(); track
-    criteria.key) {
-    <div class="criteria-card">
-      <p-card [style]="{ height: '100%' }">
-        <div class="criteria-content">
-          <!-- Criteria Label -->
-          <h4 class="criteria-label">{{ criteria.label }}</h4>
-
-          <!-- Score Display -->
-          <div class="score-display">
-            <span
-              class="score-number"
-              [style.color]="getScoreColor(criteria.score)"
+  <!-- University Wide Items (First 8 Criteria) -->
+  <div class="criteria-section">
+    <h3 class="criteria-title">University Wide Items</h3>
+    <div class="criteria-grid">
+      @for (criteria of getMostRecentSetu()!.getAllCriteriaScores().slice(0, 8);
+      track criteria.key) {
+      <div class="criteria-card">
+        <p-card [style]="{ height: '100%' }">
+          <div class="criteria-content">
+            <!-- Criteria Label with Tooltip -->
+            <h4
+              class="criteria-label"
+              [pTooltip]="getCriteriaTooltip(criteria.key)"
+              tooltipPosition="top"
             >
-              {{ getFormattedScore(criteria.score) }}
-            </span>
-            <span class="score-max">/5.0</span>
-          </div>
+              {{ criteria.label }} <i class="pi pi-info-circle"></i>
+            </h4>
 
-          <!-- Circle Rating Display -->
-          <div class="circles">
-            @for (circle of [1,2,3,4,5]; track $index) {
-            <i
-              class="circle"
-              [ngClass]="getCircleClass(criteria.score, circle)"
-            ></i>
-            }
+            <!-- Knob Rating Display -->
+            <p-knob
+              [(ngModel)]="criteria.score"
+              [readonly]="true"
+              [size]="80"
+              [strokeWidth]="16"
+              [valueColor]="getScoreColor(criteria.score)"
+              [rangeColor]="'rgba(255,255,255,0.2)'"
+              [valueTemplate]="getFormattedScore(criteria.score)"
+              [max]="5"
+              [step]="0.1"
+            ></p-knob>
           </div>
-        </div>
-      </p-card>
+        </p-card>
+      </div>
+      }
     </div>
-    }
+  </div>
+
+  <!-- Faculty Wide Items (Last 5 Criteria) -->
+  <div class="criteria-section">
+    <h3 class="criteria-title">Faculty Wide Items</h3>
+    <div class="criteria-grid">
+      @for (criteria of getMostRecentSetu()!.getAllCriteriaScores().slice(8);
+      track criteria.key) {
+      <div class="criteria-card">
+        <p-card [style]="{ height: '100%' }">
+          <div class="criteria-content">
+            <!-- Criteria Label with Tooltip -->
+            <h4
+              class="criteria-label"
+              [pTooltip]="getCriteriaTooltip(criteria.key)"
+              tooltipPosition="top"
+            >
+              {{ criteria.label }} <i class="pi pi-info-circle"></i>
+            </h4>
+
+            <!-- Knob Rating Display -->
+            <p-knob
+              [(ngModel)]="criteria.score"
+              [readonly]="true"
+              [size]="80"
+              [strokeWidth]="16"
+              [valueColor]="getScoreColor(criteria.score)"
+              [rangeColor]="'rgba(255,255,255,0.2)'"
+              [valueTemplate]="getFormattedScore(criteria.score)"
+              [max]="5"
+              [step]="0.1"
+            ></p-knob>
+          </div>
+        </p-card>
+      </div>
+      }
+    </div>
   </div>
 </div>
 }

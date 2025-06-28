@@ -120,11 +120,24 @@
   margin-bottom: 2rem;
   padding: 0 2rem;
 
+  .criteria-section {
+    margin-bottom: 3rem;
+
+    &:last-child {
+      margin-bottom: 2rem;
+    }
+  }
+
   .criteria-title {
     color: white;
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
     text-align: center;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(226, 136, 226, 0.3);
+    max-width: 400px;
+    margin: 0 auto 1.5rem auto;
   }
 
   .criteria-grid {
@@ -160,6 +173,13 @@
           min-height: 2.5rem;
           display: flex;
           align-items: center;
+          justify-content: center;
+
+          .pi-info-circle {
+            margin-left: 0.5rem;
+            color: #888;
+            font-size: 0.9rem;
+          }
         }
 
         .score-display {

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -9,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DividerModule } from 'primeng/divider';
+import { KnobModule } from 'primeng/knob';
 import { SetuService } from '../../services/setu.service';
 import { Setu } from '../../models/setu.model';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
@@ -18,6 +20,7 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     CardModule,
     ProgressSpinnerModule,
     SkeletonModule,
@@ -25,6 +28,7 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
     ButtonModule,
     BadgeModule,
     DividerModule,
+    KnobModule,
   ],
   templateUrl: './setu-main.component.html',
   styleUrl: './setu-main.component.scss',
@@ -158,5 +162,27 @@ export class SetuMainComponent implements OnInit, OnDestroy {
   getResponseRatePercent(setu: Setu): number {
     if (setu.Invited === 0) return 0;
     return Math.round((setu.Responses / setu.Invited) * 100);
+  }
+
+  /**
+   * Get tooltip description for each SETU criteria
+   */
+  getCriteriaTooltip(criteriaKey: string): string {
+    const tooltips: { [key: string]: string } = {
+      I1: 'How clearly the learning outcomes were communicated to students',
+      I2: 'How clearly assessment tasks and requirements were explained',
+      I3: 'How well assessment tasks aligned with and demonstrated the learning outcomes',
+      I4: 'How effectively feedback helped students achieve the learning outcomes',
+      I5: 'How well the provided resources supported achievement of learning outcomes',
+      I6: 'How effectively learning activities helped students achieve the outcomes',
+      I7: "Students' self-assessment of their engagement level in the unit",
+      I8: 'Overall satisfaction with the unit experience',
+      I9: 'How well assessment tasks developed knowledge and skills',
+      I10: 'How clearly students could see connections between different topics',
+      I11: 'The balance between theoretical content and practical application',
+      I12: 'How much the unit encouraged students to actively participate',
+      I13: "How effectively the unit improved students' critical thinking abilities",
+    };
+    return tooltips[criteriaKey] || 'SETU evaluation criteria';
   }
 }
