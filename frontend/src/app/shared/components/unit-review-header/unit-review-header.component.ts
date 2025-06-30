@@ -113,6 +113,9 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   }
   skeletonHeight: string = this.SKELETON_HEIGHTS.desktop;
 
+  // Resize handler for skeleton heights
+  private resizeHandler = () => this.updateSkeletonHeight();
+
   /**
    * === Constructor ===
    *
@@ -168,16 +171,18 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    * ! Runs after view has initialised
    */
   ngAfterViewInit(): void {
+    // Resize listener to update the skeleton height
     this.updateSkeletonHeight();
-    window.addEventListener('resize', () => {
-      this.updateSkeletonHeight();
-    });
+    window.addEventListener('resize', this.resizeHandler);
   }
 
   /**
    * ! Runs on destroy
    */
   ngOnDestroy(): void {
+    // Destroy the resize listener
+    window.removeEventListener('resize', this.resizeHandler);
+
     // Unsubscribe to the current user
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();

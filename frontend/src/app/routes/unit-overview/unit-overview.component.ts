@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -51,6 +51,12 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   isSplitView: boolean = false;
   splitViewMinWidth: number = 1414;
 
+  // Resize handler 
+  private resizeHandler = () => {
+    this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
+    this.updateContainerHeight();
+  }
+
   /**
    * === Constructor ===
    * 
@@ -92,11 +98,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * * Runs after the view has been initialised
    */
   ngAfterViewInit(): void {
-    window.addEventListener('resize', () => { 
-      this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
-
-      this.updateContainerHeight();
-    });
+    window.addEventListener('resize', this.resizeHandler);
   }
 
   /**
@@ -104,7 +106,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   ngOnDestroy(): void {
     // Remove the event listener
-    window.removeEventListener('resize', () => this.updateContainerHeight());
+    window.removeEventListener('resize', this.resizeHandler);
 
     // Reset height of the unit overview container
     this.unitOverviewContainer.nativeElement.style.height = ''
