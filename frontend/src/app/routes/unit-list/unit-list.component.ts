@@ -56,7 +56,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
 
   // Current page
   first: number = 0; 
-  // Number of unit cards shown on the page
+  // Total no. of rows of unit cards shown on the page
   rows: number = 20; 
   // Total number of unit cards
   totalRecords: number = 0; 
