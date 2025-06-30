@@ -14,6 +14,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ReportReviewComponent } from './report-review/report-review.component';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { BadgeModule } from 'primeng/badge';
+import { HighlightUnitPipe } from '../../pipes/highlight-unit.pipe';
 
 @Component({
   selector: 'app-review-card',
@@ -27,7 +28,8 @@ import { BadgeModule } from 'primeng/badge';
     ButtonModule,
     TooltipModule,
     ReportReviewComponent,
-    BadgeModule
+    BadgeModule,
+    HighlightUnitPipe
   ],
   providers: [
     ConfirmationService,
