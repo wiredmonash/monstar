@@ -28,12 +28,12 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Enable PrimeNG ripple effect globally
-    this.primengConfig.ripple = true;
-
     // Subscribe to footer visibility changes
     this.footerService.showFooter$.subscribe(show => {
       this.showFooter = show;
-    })
+    });
+
+    // Enable PrimeNG ripple effect globally
+    this.primengConfig.ripple = true;
   }
 }

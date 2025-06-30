@@ -20,23 +20,36 @@
 */
 
 html, body {
-	height: 100%; // Make sure the entire document height is considered
+	// height: 100%;
 	overflow-x: hidden;
-	overflow: hidden;
+	// overflow: hidden;
 	background-color: $fg-dark-color;
+
+	margin: 0;
+	padding: 0;
 }
 
 body {
-	//scrollbar-color: rgb(39, 39, 39) rgb(25, 25, 25);
 	overflow-y: auto; // Allow vertical scrolling without showing the scrollbar
-	-ms-overflow-style: none; // Hide scrollbar for Internet Explorer and Edge 
-	scrollbar-width: none; //Hide scrollbar for Firefox 
+
+	// Hide scrollbar for Internet Explorer and Edge 
+	-ms-overflow-style: none; 
+
+	//Hide scrollbar for Firefox 
+	scrollbar-width: none; 
+
+	// Hide the scrollbar for Chrome, and other WebKit browsers
+	::-webkit-scrollbar {
+		display: none;
+	}
 }
 
-// Hide scrollbar for Chrome, Safari, and other WebKit browsers
-body::-webkit-scrollbar {
-	display: none;
-}
+
+/** 
+*  ! |======================================================================|
+*  ! | GLOBAL CLASSES
+*  ! |======================================================================|
+*/
 
 .prevent-select {
 	-webkit-user-select: none; /* Safari */
