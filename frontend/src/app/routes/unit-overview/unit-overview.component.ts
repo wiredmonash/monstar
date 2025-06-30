@@ -19,6 +19,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
 import { Review } from '../../shared/models/review.model';
+import { NAVBAR_HEIGHT } from '../../shared/constants';
 
 @Component({
   selector: 'app-unit-overview',
@@ -291,7 +292,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     else if (this.reviews.length <= 1) {
       // Prevent scrolling and calculate height based on navbar height
-      this.unitOverviewContainer.nativeElement.style.height = 'calc(100vh - 57.2px)';
+      this.unitOverviewContainer.nativeElement.style.height = `calc(100vh - ${NAVBAR_HEIGHT})`;
       this.unitOverviewContainer.nativeElement.style.overflow = 'hidden';
     }
   }
