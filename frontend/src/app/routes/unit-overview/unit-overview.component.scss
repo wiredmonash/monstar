@@ -19,7 +19,7 @@
 @media (min-width: 1414px) {
     .unit-overview-container {
         flex-direction: row;
-        height: 100vh;
+        height: calc(100vh - 57.2px);
 
         .left-column {
             flex: 0 0 40%;

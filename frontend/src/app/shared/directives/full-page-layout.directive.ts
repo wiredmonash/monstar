@@ -20,7 +20,9 @@ export class FullPageLayoutDirective implements OnInit, OnDestroy {
 
     // Small delay then disable scrolling if requested
     setTimeout(() => {
-      if (this.disableScrolling) document.body.style.overflow = 'hidden';  
+      if (this.disableScrolling) { 
+        document.body.style.overflow = 'hidden';
+      }
     }, 1500);
 
     // Apply styles to make this element fill the available space

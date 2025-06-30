@@ -10,12 +10,13 @@ html, body {
 .wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Full viewport height */
-  background-color: $bg-dark-color;
+  min-height: 100%;
+  background-color: $bg-dark-color;;
 }
 
 // Allow the content area to grow and fill space
 .content {
+  height: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
