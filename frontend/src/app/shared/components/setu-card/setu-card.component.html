@@ -3,14 +3,56 @@
     <ng-template pTemplate="header">
       <div class="setu-header">
         <h2 class="setu-title">SETU Overview</h2>
-    
-        <button 
-          class="custom-btn" 
-          (click)="goToSetuOverview($event)">
+
+        <button class="custom-btn" (click)="goToSetuOverview($event)">
           <i class="pi pi-arrow-right"></i>
         </button>
       </div>
     </ng-template>
+
+    <div class="setu-controls">
+      <p-button 
+        label="Semester 2 - 2024" 
+        icon="pi pi-calendar" 
+        styleClass="p-button-outlined semester-btn">
+      </p-button>
+
+      <div class="setu-footer">
+        Response: 100/300 (33.3%)
+        <!-- Responses: {{responses}} / {{invited}} ({{responseRate}}%) -->
+      </div>
+    </div>
+
+    <div class="setu-cards">
+      <div class="card">
+        <h3>Aggerate Score</h3>
+        <div class="value-progress">
+          <div class="value">4.2</div>
+          <div class="bar">
+            <p-progressBar [value]="84" [showValue]="false"></p-progressBar>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>University Wide Average</h3>
+        <div class="value-progress">
+          <div class="value">4.2</div>
+          <div class="bar">
+            <p-progressBar [value]="84" [showValue]="false"></p-progressBar>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Faculty Wide Average</h3>
+        <div class="value-progress">
+          <div class="value">4.2</div>
+          <div class="bar">
+            <p-progressBar [value]="84" [showValue]="false"></p-progressBar>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </p-accordionTab>
 </p-accordion>
-

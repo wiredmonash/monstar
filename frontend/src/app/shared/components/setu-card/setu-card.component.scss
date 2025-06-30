@@ -7,6 +7,10 @@
     margin: 0 auto;
 }
 
+:host ::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link {
+    padding: 0.5rem;
+}
+
 p-accordion {
     border: none;
 }
@@ -18,8 +22,9 @@ p-accordion {
 }
 
 .setu-title {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     margin: 0;
+    margin-left: 0.6rem;
 }
 
 .arrow {
@@ -27,10 +32,11 @@ p-accordion {
 }
 
 .setu-controls {
-    padding-top: 10px;
+    padding-top: 15px;
+    padding-bottom: 5px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 .semester-btn {
@@ -42,12 +48,8 @@ p-accordion {
     border-radius: 4px;
     padding: 0.25rem 0.75rem;
     cursor: pointer;
-    margin-right: 1rem;
 }
 
-.semester-btn .pi {
-    margin-right: 0.5rem;
-}
 
 .toggle-group {
     display: inline-flex;
@@ -78,7 +80,7 @@ p-accordion {
 }
 
 .card {
-    background-color: #E3DFFF;
+    background-color: #e288e2;
     color: #333;
     padding: 1rem;
     border-radius: 8px;
@@ -88,27 +90,30 @@ p-accordion {
 .card h3 {
     margin: 0;
     font-size: 1rem;
-    font-weight: normal;
 }
 
-.value {
-    font-size: 1.1rem;
-    margin: 0.5rem 0;
+.value-progress {
+    display: flex;
+    align-items: center;
+    margin: 0;
 }
 
-.p-progressbar {
-    background-color: #fff !important;
+.value-progress .value {
+    font-size: 1rem;
+    margin: 0;
+    margin-top: 0.7rem;
+}
+
+.value-progress .bar {
+    flex: 1;
+    margin: 0;
+    margin-left: 1rem;
     height: 8px;
     border-radius: 4px;
 }
 
-.p-progressbar .p-progressbar-value {
-    background-color: #fbbf24 !important;
-}
-
 .setu-footer {
-    margin-top: 0.75rem;
-    text-align: right;
+    text-align: left;
     font-size: 0.9rem;
     opacity: 0.8;
     font-style: italic;
@@ -131,30 +136,37 @@ p-accordion {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: white; /* Primary button color */
+    background-color: white;
+    /* Primary button color */
     color: black;
     border: none;
-    border-radius: 50%; /* Circular button */
-    width: 30px;
-    height: 30px;
+    border-radius: 50%;
+    /* Circular button */
+    width: 28px;
+    height: 28px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-left: 0.5rem;
-  }
-  
-  .custom-btn:hover {
-    background-color: black; /* Darker shade for hover */
-    color:#e288e2;
-    transform: scale(1.1); /* Slight zoom effect */
-  }
-  
-  .custom-btn:focus {
-    outline: 2px solid #fbbf24; /* Focus outline for accessibility */
+}
+
+.custom-btn:hover {
+    background-color: black;
+    /* Darker shade for hover */
+    color: #e288e2;
+    transform: scale(1.1);
+    /* Slight zoom effect */
+}
+
+.custom-btn:focus {
+    outline: 2px solid #fbbf24;
+    /* Focus outline for accessibility */
     outline-offset: 2px;
-  }
-  
-  .custom-btn:active {
-    background-color: #003f7a; /* Even darker shade for active state */
-    transform: scale(0.95); /* Slight shrink effect */
-  }
+}
+
+.custom-btn:active {
+    background-color: #003f7a;
+    /* Even darker shade for active state */
+    transform: scale(0.95);
+    /* Slight shrink effect */
+}
