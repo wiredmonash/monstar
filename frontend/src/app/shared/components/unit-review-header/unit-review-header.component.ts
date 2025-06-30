@@ -33,6 +33,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { ListboxModule } from 'primeng/listbox';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { ViewportService } from '../../services/viewport.service';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-unit-review-header',
@@ -54,6 +55,7 @@ import { ViewportService } from '../../services/viewport.service';
     RippleModule,
     OverlayPanelModule,
     ListboxModule,
+    SkeletonModule
   ],
   providers: [MessageService],
   templateUrl: './unit-review-header.component.html',
@@ -68,7 +70,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   Math = Math;
 
   // Receives the unit data from the parent component (UnitOverviewComponent)
-  @Input() unit!: Unit;
+  @Input() unit?: Unit;
 
   // Emits the sorting criteria to the parent component (UnitOverviewComponent)
   @Output() sortBy = new EventEmitter<string>();
@@ -102,6 +104,15 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   // Stores the viewport type given from the viewport service
   viewportType: string = 'desktop';
 
+  // Skeleton height for the header when it's loading (pixels)
+  private readonly SKELETON_HEIGHTS = {
+    mobile: '606px',
+    tablet: '431.6px',
+    laptop: '273.2px',
+    desktop: '438px'
+  }
+  skeletonHeight: string = this.SKELETON_HEIGHTS.desktop;
+
   /**
    * === Constructor ===
    *
@@ -125,7 +136,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    */
 
   /**
-   * * Runs on Init
+   * ! Runs on Init
    *
    * Subscribes to the current user observable to get the current user.
    */
@@ -154,7 +165,17 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * * Runs on destroy
+   * ! Runs after view has initialised
+   */
+  ngAfterViewInit(): void {
+    this.updateSkeletonHeight();
+    window.addEventListener('resize', () => {
+      this.updateSkeletonHeight();
+    });
+  }
+
+  /**
+   * ! Runs on destroy
    */
   ngOnDestroy(): void {
     // Unsubscribe to the current user
@@ -180,19 +201,24 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   checkHasReviewed() {
     if (!this.user || !this.unit || !this.user._id) return;
 
-    this.apiService.getUserReviewsGET(this.user._id.toString()).subscribe({
+    const user = this.user;
+    const unit = this.unit;
+
+    // Get the users reviews
+    this.apiService.getUserReviewsGET(user._id.toString()).subscribe({
       next: (reviewsData: any) => {
         const reviews = reviewsData.map((data: ReviewData) => new Review(data));
-
-        this.hasReviewed = reviews.some((review: Review) => {
-          if (review.hasPopulatedUnit()) {
-            return review.getUnitCode() === this.unit.unitCode;
+        
+        // Check if user has reviewed this unit
+        this.hasReviewed = reviews.some((userReview: Review) => {
+          if (userReview.hasPopulatedUnit()) {
+            return userReview.getUnitCode() === unit.unitCode;
           }
 
           return (
-            review.unit &&
-            this.unit._id &&
-            review.unit.toString() === this.unit._id.toString()
+            userReview.unit &&
+            unit._id &&
+            userReview.unit.toString() === unit._id.toString()
           );
         });
 
@@ -249,6 +275,23 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
 
     console.info('UnitReviewHeader | verifyUnitGraph false boundary case');
     return (this.unitMapButtonDisabled = true);
+  }
+
+  /**
+   *  ! |======================================================================|
+   *  ! | UI MANIPULATORS                                     
+   *  ! |======================================================================|
+   */
+
+  private updateSkeletonHeight() { 
+    const width = window.innerWidth;
+    let height = this.SKELETON_HEIGHTS.desktop;
+
+    if (width < 768) { height = this.SKELETON_HEIGHTS.mobile; }
+    else if (width < 976) { height = this.SKELETON_HEIGHTS.tablet; }
+    else if (width < 1414) { height = this.SKELETON_HEIGHTS.laptop; }
+
+    this.skeletonHeight = height;
   }
 
   /**

@@ -1,12 +1,18 @@
 @import '../../_variables.scss';
 
+:host {
+    background-color: $bg-dark-color;
+}
+
 .unit-overview-container {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .left-column, 
 .right-column {
+    height: auto;
     width: 100%;
     overflow: visible;
     padding: 0 1rem;
@@ -195,7 +201,6 @@
 
 .reviews-skeleton-container {
     display: flex;
-    justify-content: center;
     flex-direction: column;
     align-items: center;
     height: 100%;

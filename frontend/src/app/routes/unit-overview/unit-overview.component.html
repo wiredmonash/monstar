@@ -2,30 +2,24 @@
 <p-toast></p-toast>
 
 <!-- ! Unit Overview -->
-<div class="unit-overview-container" appFullPageLayout>
+<div 
+    #unitOverviewContainer 
+    class="unit-overview-container" 
+>
     <div class="left-column">
         <!-- ! CHILD: UnitHeaderComponent -->
-        @if (unit) {
-            <!-- Unit review header -->
-            <app-unit-review-header 
-                [unit]="unit" 
-                (sortBy)="sortReviews($event)"
-                (reviewAdded)="refreshReviews()"
-            />
-        } @else {
-            <!-- Show unit review header skeleton if there is no unit yet -->
-            <div class="header-skeleton-container">
-                <p-skeleton 
-                    #headerSkeleton
-                    class="header-skeleton" 
-                    [height]="skeletonHeight"
-                    borderRadius="16px"
-                />
-            </div>
-        }
+        <!-- Unit review header -->
+        <app-unit-review-header 
+            [unit]="unit"
+            (sortBy)="sortReviews($event)"
+            (reviewAdded)="refreshReviews()"
+        />
     </div>
     <div class="right-column">
-        <p-scrollPanel styleClass="reviews-scroll" [style]="{ 'width': '100%', height: '100%' }">
+        <p-scrollPanel 
+            styleClass="reviews-scroll" 
+            [style]="{ 'width': '100%', 'height': '100%' }"
+        >
             <!-- ! Show all the reviews  -->
             @if (!reviewsLoading) {
                 <!-- Review cards -->
@@ -66,15 +60,31 @@
             @if (reviews.length > 0) {
                 <h3 
                     class="text-center prevent-select"
-                    [style]="{ 'color': 'var(--text-color)' }"
-                >You have reached the end...</h3>
+                    [style]="{ 'color': 'var(--text-color)', 'margin-top': '5rem' }"
+                >
+                    That's all the reviews...
+                </h3>
+                <h4
+                    class="text-center prevent-select"
+                    [style]="{ 'color': 'var(--text-color)', 'margin-bottom': '5rem' }"
+                >
+                    Have you done this unit? You should write a review!
+                </h4>
             } 
             <!-- ! Show no reviews message if there are no reviews -->
             @else {
                 <h3 
                     class="text-center prevent-select"
-                    [style]="{ 'color': 'var(--text-color)', 'margin-top': '5rem', 'margin-bottom': '5rem' }"
-                >No reviews for this unit...</h3>
+                    [style]="{ 'color': 'var(--text-color)', 'margin-top': '5rem', 'margin-bottom': '1rem' }"
+                >
+                    No reviews for this unit...
+                </h3>
+                <h4
+                    class="text-center prevent-select"
+                    [style]="{ 'color': 'var(--text-color)', 'margin-bottom': '5rem' }"
+                >
+                    Have you done this unit? You should write a review!
+                </h4>
             }
 
             <!-- Spacer for the message above -->

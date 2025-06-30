@@ -18,7 +18,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
-import { FullPageLayoutDirective } from '../../shared/directives/full-page-layout.directive';
+import { Review } from '../../shared/models/review.model';
 
 @Component({
   selector: 'app-unit-overview',
@@ -32,7 +32,6 @@ import { FullPageLayoutDirective } from '../../shared/directives/full-page-layou
     ScrollPanelModule,
     CommonModule,
     FormsModule,
-    FullPageLayoutDirective
   ],
   providers: [
     MessageService,
@@ -42,20 +41,15 @@ import { FullPageLayoutDirective } from '../../shared/directives/full-page-layou
 })
 export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('headerSkeleton') headerSkeleton!: ElementRef;
+  @ViewChild('unitOverviewContainer') unitOverviewContainer!: ElementRef;
 
   unit: any = null;
-  reviews: any[] = [];
+  reviews: Review[] = [];
   reviewsLoading: boolean = true;
 
-  // Header skeleton heights for different screen sizes
-  private readonly SKELETON_HEIGHTS = {
-    mobile: '606px',
-    tablet: '431.6px',
-    laptop: '273.2px',
-    desktop: '255.2px'
-  }
-  skeletonHeight: string = this.SKELETON_HEIGHTS.desktop;
-
+  // Split view boolean
+  isSplitView: boolean = false;
+  splitViewMinWidth: number = 1414;
 
   /**
    * === Constructor ===
@@ -83,6 +77,8 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     // Hide the footer
     this.footerService.hideFooter();
 
+    this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
+
     // Get unit code from the route parameters
     const unitCode = this.route.snapshot.paramMap.get('unitcode');
 
@@ -96,17 +92,22 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * * Runs after the view has been initialised
    */
   ngAfterViewInit(): void {
-    this.updateSkeletonHeight();
-    window.addEventListener('resize', () => this.updateSkeletonHeight());
+    window.addEventListener('resize', () => { 
+      this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
+
+      this.updateContainerHeight();
+    });
   }
 
   /**
    * * On Component Destruction
-   * 
-   * - Removes the event listener for window resize
    */
   ngOnDestroy(): void {
-    window.removeEventListener('resize', () => this.updateSkeletonHeight());
+    // Remove the event listener
+    window.removeEventListener('resize', () => this.updateContainerHeight());
+
+    // Reset height of the unit overview container
+    this.unitOverviewContainer.nativeElement.style.height = ''
 
     // Show the footer again
     this.footerService.showFooter();
@@ -135,7 +136,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   getAllReviews(unitCode?: any) {
     this.apiService.getAllReviewsGET(unitCode).subscribe(
-      (reviews: any) => {
+      (reviews: Review[]) => {
         // Store the fetched reviews
         this.reviews = reviews;
 
@@ -153,7 +154,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       (error: any) => {
         // ? Debug log: Error
         console.log('ERROR DURING: GET Get All Reviews', error)
-      }
+      },
+      (() => {
+        // Update the height of the whole container
+        this.updateContainerHeight();
+      })
     );
   }
 
@@ -252,23 +257,43 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /**
-   * * Updates the height of the header skeleton based on the screen size
+  /** 
+   *  ! |======================================================================|
+   *  ! | UI Manipulators
+   *  ! |======================================================================|
    */
-  private updateSkeletonHeight() {
-    const width = window.innerWidth;
-    let height = this.SKELETON_HEIGHTS.desktop;
 
-    if (width < 768) {
-      height = this.SKELETON_HEIGHTS.mobile;
-    } else if (width < 976) {
-      height = this.SKELETON_HEIGHTS.tablet;
-    } else if (width < 1110) {
-      height = this.SKELETON_HEIGHTS.laptop;
+  /**
+   * * Updates unit overview container height
+   * 
+   * Runs on window resize and component initialisation
+   * 
+   * - If we're in split view we use 100vh
+   * - If we have 1 review then we use 100vh minus the height of the navbar and 
+   * prevent scrolling.
+   * - If we have more than 2 reviews, then we use 100% to grow to full height.
+   */
+  updateContainerHeight() {
+    // Start of with 100vh to work with split view
+    this.unitOverviewContainer.nativeElement.style.height = '100vh';
+
+    // No change if we're in split view
+    if (this.isSplitView) {
+      this.unitOverviewContainer.nativeElement.style.height = '';
+      return
     }
 
-    this.skeletonHeight = height;
+    if (this.reviews.length > 1) {
+      // 2 or more reviews, grow to full height.
+      this.unitOverviewContainer.nativeElement.style.height = '100%';
+    }
+    else if (this.reviews.length <= 1) {
+      // Prevent scrolling and calculate height based on navbar height
+      this.unitOverviewContainer.nativeElement.style.height = 'calc(100vh - 57.2px)';
+      this.unitOverviewContainer.nativeElement.style.overflow = 'hidden';
+    }
   }
+
 
 
   /** 
