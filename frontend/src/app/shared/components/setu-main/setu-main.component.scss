@@ -246,10 +246,34 @@
     margin: 0 auto;
 
     .historical-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+
+        ::ng-deep .p-card {
+          border-color: rgba(226, 136, 226, 0.4);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      &.selected {
+        ::ng-deep .p-card {
+          border-color: $primary-color;
+          box-shadow: 0 0 0 2px rgba(226, 136, 226, 0.3);
+        }
+      }
+
       ::ng-deep .p-card {
         background-color: $bg-dark-color;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 6px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+        &.selected-card {
+          border-color: $primary-color;
+          background-color: rgba(226, 136, 226, 0.05);
+        }
 
         .p-card-body {
           padding: 1.25rem;
@@ -263,11 +287,21 @@
           align-items: flex-start;
           margin-bottom: 1rem;
           gap: 1rem;
+          position: relative;
 
           h4 {
             color: white;
             margin: 0;
             font-size: 1.2rem;
+          }
+
+          .selected-indicator {
+            color: $primary-color;
+            font-size: 1.2rem;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            animation: pulse 2s infinite;
           }
 
           .historical-info {
@@ -287,6 +321,7 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
+          margin-bottom: 1rem;
 
           .aggregate-label {
             color: #888;
@@ -298,8 +333,37 @@
             font-size: 1.1rem;
           }
         }
+
+        .click-hint {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding: 0.5rem;
+          background-color: rgba(226, 136, 226, 0.1);
+          border-radius: 4px;
+          color: $primary-color;
+          font-size: 0.85rem;
+          margin-top: 0.5rem;
+
+          .pi-hand-pointer {
+            font-size: 0.9rem;
+          }
+        }
       }
     }
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
   }
 }
 

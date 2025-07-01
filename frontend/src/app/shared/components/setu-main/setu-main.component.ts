@@ -36,6 +36,7 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
 export class SetuMainComponent implements OnInit, OnDestroy {
   unitCode: string = '';
   setuData: Setu[] = [];
+  selectedSetu: Setu | null = null; // Track which SETU data is currently selected for detailed view
   loading = true;
   error: string | null = null;
   viewportType: ViewportType = 'desktop';
@@ -81,6 +82,8 @@ export class SetuMainComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.setuData = data;
+          // Set the most recent SETU as the initially selected one
+          this.selectedSetu = this.getMostRecentSetu();
           this.loading = false;
         },
         error: (error) => {
@@ -104,6 +107,28 @@ export class SetuMainComponent implements OnInit, OnDestroy {
   getMostRecentSetu(): Setu | null {
     if (this.setuData.length === 0) return null;
     return this.setuData[0]; // Data is sorted by season descending
+  }
+
+  /**
+   * Get the currently selected SETU data for detailed view
+   */
+  getSelectedSetu(): Setu | null {
+    return this.selectedSetu || this.getMostRecentSetu();
+  }
+
+  /**
+   * Select a specific SETU data for detailed view
+   */
+  selectSetuData(setu: Setu): void {
+    this.selectedSetu = setu;
+  }
+
+  /**
+   * Check if a SETU data is currently selected
+   */
+  isSetuSelected(setu: Setu): boolean {
+    const selected = this.getSelectedSetu();
+    return selected ? selected._id === setu._id : false;
   }
 
   /**

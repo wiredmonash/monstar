@@ -62,36 +62,34 @@
       <h2 class="page-title">SETU Evaluation Results</h2>
     </div>
 
-    @if (getMostRecentSetu()) {
+    @if (getSelectedSetu()) {
     <div class="setu-info">
       <div class="info-item">
-        <span class="label">Latest Evaluation:</span>
+        <span class="label">Viewing Evaluation:</span>
         <span class="value">{{
-          getSeasonDisplay(getMostRecentSetu()!.Season)
+          getSeasonDisplay(getSelectedSetu()!.Season)
         }}</span>
       </div>
       <div class="info-item">
         <span class="label">Responses:</span>
         <span class="value"
-          >{{ getMostRecentSetu()!.Responses }} /
-          {{ getMostRecentSetu()!.Invited }}</span
+          >{{ getSelectedSetu()!.Responses }} /
+          {{ getSelectedSetu()!.Invited }}</span
         >
         <p-badge
-          [value]="getResponseRatePercent(getMostRecentSetu()!) + '%'"
+          [value]="getResponseRatePercent(getSelectedSetu()!) + '%'"
           severity="info"
           class="ml-2"
         ></p-badge>
       </div>
-      @if (getMostRecentSetu()!.getAggregateScore() > 0) {
+      @if (getSelectedSetu()!.getAggregateScore() > 0) {
       <div class="info-item">
         <span class="label">Overall Score:</span>
         <span
           class="value aggregate-score"
-          [style.color]="
-            getScoreColor(getMostRecentSetu()!.getAggregateScore())
-          "
+          [style.color]="getScoreColor(getSelectedSetu()!.getAggregateScore())"
         >
-          {{ getFormattedScore(getMostRecentSetu()!.getAggregateScore()) }}/5.0
+          {{ getFormattedScore(getSelectedSetu()!.getAggregateScore()) }}/5.0
         </span>
       </div>
       }
@@ -103,13 +101,13 @@
 <p-divider></p-divider>
 
 <!-- SETU Criteria Grid -->
-@if (getMostRecentSetu()) {
+@if (getSelectedSetu()) {
 <div class="criteria-container">
   <!-- University Wide Items (First 8 Criteria) -->
   <div class="criteria-section">
     <h3 class="criteria-title">University Wide Items</h3>
     <div class="criteria-grid">
-      @for (criteria of getMostRecentSetu()!.getAllCriteriaScores().slice(0, 8);
+      @for (criteria of getSelectedSetu()!.getAllCriteriaScores().slice(0, 8);
       track criteria.key) {
       <div class="criteria-card">
         <p-card [style]="{ height: '100%' }">
@@ -146,7 +144,7 @@
   <div class="criteria-section">
     <h3 class="criteria-title">Faculty Wide Items</h3>
     <div class="criteria-grid">
-      @for (criteria of getMostRecentSetu()!.getAllCriteriaScores().slice(8);
+      @for (criteria of getSelectedSetu()!.getAllCriteriaScores().slice(8);
       track criteria.key) {
       <div class="criteria-card">
         <p-card [style]="{ height: '100%' }">
@@ -186,11 +184,17 @@
 <p-divider></p-divider>
 
 <div class="historical-container">
-  <h3 class="historical-title">Historical SETU Data</h3>
+  <h3 class="historical-title">
+    All Available SETU Data - Click to View Details
+  </h3>
   <div class="historical-grid">
     @for (setu of setuData; track setu._id) {
-    <div class="historical-card">
-      <p-card>
+    <div class="historical-card" [class.selected]="isSetuSelected(setu)">
+      <p-card
+        (click)="selectSetuData(setu)"
+        [style]="{ cursor: 'pointer', height: '100%' }"
+        [class]="isSetuSelected(setu) ? 'selected-card' : ''"
+      >
         <div class="historical-content">
           <div class="historical-header">
             <h4>{{ getSeasonDisplay(setu.Season) }}</h4>
