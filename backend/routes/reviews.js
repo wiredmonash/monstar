@@ -110,11 +110,6 @@ router.get('/user/:userId', async function (req, res) {
  */
 router.post('/:unit/create', verifyToken, async function (req, res) {
     try {
-        // Verify that the author in the request body matches the authenticated user
-        if (req.body.review_author.toString() !== req.user.id.toString()) {
-            return res.status(403).json({ error: 'You are not authorized to created a review for this unit' });
-        }
-
         // Get the unit code from parameter
         const unitCode = req.params.unit.toLowerCase();
         // Find the unit by UnitCode
@@ -258,30 +253,15 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
  * @returns {JSON} Responds with the deleted review in JSON format
  * @throws {500} If an error occurs whilst deleting the review.
  */
-router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
+router.delete('/delete/:reviewId', 
+    async function (req, res) {
     try {
-        // Get the review ID from the parameter
-        const reviewId = req.params.reviewId;
-
         // Find the Review
-        const review = await Review.findById(reviewId);
+        const review = await Review.findById(req.params.reviewId);
 
         // Throw error if Review doesn't exist
         if (!review)
             return res.status(404).json({error: "Review not found"});
-
-        // Get the requesting user from token
-        const requestingUser = await User.findById(req.user.id);
-        if (!requestingUser) 
-            return res.status(404).json({ error: 'Requesting user not found' });
-
-        // Check if the user is authorised (review author or admin)
-        const isAuthor = review.author.toString() === requestingUser._id.toString();
-        const isAdmin = requestingUser.admin;
-
-        if (!isAuthor && !isAdmin) {
-            return res.status(403).json({ error: 'You are not authorised to delete this review' });
-        }
 
         // Extract the unit ID from the review
         const unitId = review.unit;

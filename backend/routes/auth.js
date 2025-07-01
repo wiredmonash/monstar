@@ -2,6 +2,8 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const { storage, cloudinary } = require('../utils/cloudinary');
 const multer = require('multer');
 const upload = multer({ storage });
@@ -166,7 +168,6 @@ router.delete('/delete/:userId', verifyToken, async function (req, res) {
         return res.status(500).json({ error: `Error occured while deleting user: ${error.message}` });
     }
 });
-
 
 /**
  * ! POST Logout a User

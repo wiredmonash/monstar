@@ -1,0 +1,18 @@
+meta {
+  name: Update User Details
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:8080/api/v1/auth/update/67a9b7c18151d28fd097d3f4
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "testaccount",
+    "password": ""
+  }
+}

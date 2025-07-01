@@ -226,36 +226,62 @@ router.post("/create-bulk", verifyAdmin, async function (req, res) {
         .json({ error: "Request body should be an array of SETU entries" });
     }
 
-    // Build bulk operations: upsert each entry, skip if it already exists
-    const operations = setuEntries.map(entry => {
+    const results = [];
+
+    for (const entry of setuEntries) {
+      // Convert unit_code to lowercase
       const unitCode = entry.unit_code.toLowerCase();
-      return {
-        updateOne: {
-          filter: { unit_code: unitCode, Season: entry.Season, code: entry.code },
-          update: { $setOnInsert: { ...entry, unit_code: unitCode } },
-          upsert: true, // Create if it doesn't exist
-        }
+
+      // Check if SETU entry already exists
+      const existingSetu = await SETU.findOne({
+        unit_code: unitCode,
+        Season: entry.Season,
+        code: entry.code,
+      });
+
+      if (existingSetu) {
+        results.push({
+          unit_code: unitCode,
+          Season: entry.Season,
+          code: entry.code,
+          status: "Skipped",
+          message: "SETU entry already exists",
+        });
+        continue;
+      }
+
+      // Update to ensure unit_code is lowercase
+      const setuData = {
+        ...entry,
+        unit_code: unitCode,
       };
-    });
 
-    // Execute all operations in one go
-    const bulkResult = await SETU.bulkWrite(operations);
+      // Create and save the new SETU entry
+      const setu = new SETU(setuData);
+      await setu.save();
 
-    // Summarise results
-    const created = bulkResult.upsertedCount;
-    const skipped = setuEntries.length - created;
+      results.push({
+        unit_code: unitCode,
+        Season: entry.Season,
+        code: entry.code,
+        status: "Created",
+      });
+    }
 
+    // Respond with the results
     return res.status(201).json({
-      message: 'Bulk SETU creation completed',
+      message: "Bulk creation completed",
       totalProcessed: setuEntries.length,
-      created,
-      skipped
+      created: results.filter((r) => r.status === "Created").length,
+      skipped: results.filter((r) => r.status === "Skipped").length,
+      results,
     });
-  } 
-  catch (error) {
-    return res.status(500).json({
-      error: `An error occurred whilst creating the SETU entries: ${error.message}`,
-    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        error: `An error occurred whilst creating the SETU entries: ${error.message}`,
+      });
   }
 });
 
