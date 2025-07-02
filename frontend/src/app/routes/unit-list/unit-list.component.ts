@@ -23,6 +23,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BASE_URL, META_BASIC_DESCRIPTION, META_BASIC_KEYWORDS, META_BASIC_OPEN_GRAPH_DESCRIPTION, META_BASIC_TITLE, META_BASIC_TWITTER_TITLE, META_UNIT_LIST_TITLE } from '../../shared/constants';
+import { scrollToTop } from '../../shared/helpers';
 
 @Component({
   selector: 'app-unit-list',
@@ -317,6 +318,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
     this.rows = event.rows;
     localStorage.setItem('rowsPerPage', JSON.stringify(this.rows)); // Save the rows per page to localStorage
     this.fetchPaginatedUnits();
+    scrollToTop(); // Scroll to top of page
   }
 
   /**
