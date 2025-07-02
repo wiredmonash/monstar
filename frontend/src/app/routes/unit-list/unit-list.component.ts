@@ -22,6 +22,8 @@ import { ViewportService } from '../../shared/services/viewport.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BASE_URL, META_BASIC_DESCRIPTION, META_BASIC_KEYWORDS, META_BASIC_OPEN_GRAPH_DESCRIPTION, META_BASIC_TITLE, META_BASIC_TWITTER_TITLE, META_UNIT_LIST_TITLE } from '../../shared/constants';
+import { scrollToTop } from '../../shared/helpers';
 
 @Component({
   selector: 'app-unit-list',
@@ -316,6 +318,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
     this.rows = event.rows;
     localStorage.setItem('rowsPerPage', JSON.stringify(this.rows)); // Save the rows per page to localStorage
     this.fetchPaginatedUnits();
+    scrollToTop(); // Scroll to top of page
   }
 
   /**
@@ -408,40 +411,25 @@ export class UnitListComponent implements OnInit, OnDestroy {
    * * Update meta tags for SEO
    */
   private updateMetaTags(): void {
-    const baseUrl = 'https://monstar.wired.org.au';
-    const pageUrl = `${baseUrl}/list`;
+    const pageUrl = `${BASE_URL}/list`;
     
     // Basic meta tags
-    this.titleService.setTitle('Student Reviews of Monash Units | MonSTAR');
-    
-    this.meta.updateTag({ 
-      name: 'description', 
-      content: 'Find and read student reviews of Monash University units. Compare ratings, difficulty levels, and experiences from real students to choose the best units for your degree.'
-    });
-    
-    this.meta.updateTag({ 
-      name: 'keywords', 
-      content: 'Monash University, unit reviews, course reviews, student ratings, Monash units, unit selection, Monash subjects, subject reviews, MonSTAR'
-    });
+    this.titleService.setTitle(META_UNIT_LIST_TITLE);
+    this.meta.updateTag({ name: 'description', content: META_BASIC_DESCRIPTION });
+    this.meta.updateTag({ name: 'keywords',  content: META_BASIC_KEYWORDS });
 
     // Open Graph tags for social sharing
-    this.meta.updateTag({ property: 'og:title', content: 'Monash University Unit Reviews by Students | MonSTAR' });
-    this.meta.updateTag({ 
-      property: 'og:description', 
-      content: 'Find honest reviews of Monash University units from fellow students. Filter by faculty, semester, campus, and more.'
-    });
+    this.meta.updateTag({ property: 'og:title', content: META_UNIT_LIST_TITLE });
+    this.meta.updateTag({ property: 'og:description', content: META_BASIC_OPEN_GRAPH_DESCRIPTION });
     this.meta.updateTag({ property: 'og:url', content: pageUrl });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     
     // Twitter Card tags
     this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Browse Monash Unit Reviews | MonSTAR' });
-    this.meta.updateTag({ 
-      name: 'twitter:description', 
-      content: 'Search and filter student reviews of Monash University units to make informed choices about your studies.'
-    });
+    this.meta.updateTag({ name: 'twitter:title', content: META_BASIC_TWITTER_TITLE });
+    this.meta.updateTag({ name: 'twitter:description', content: META_BASIC_DESCRIPTION });
 
-    console.log('Unit List meta tags updated');
+    console.log('[Unit List] Meta tags updated');
 
     // Canonical URLs
     const canonicalUrl = this.search 
@@ -450,9 +438,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
     
     // Remove previous canonical if it exists
     const existingCanonical = document.querySelector('link[rel="canonical"]');
-    if (existingCanonical) {
-      existingCanonical.remove();
-    }
+    if (existingCanonical) { existingCanonical.remove(); }
 
     // Add new canonical
     const canonicalLink = document.createElement('link');

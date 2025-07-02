@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 
+// Constants
+import { BASE_URL, getMetaUnitOverviewDescription, getMetaUnitOverviewKeywords, getMetaUnitOverviewOpenGraphDescription, getMetaUnitOverviewOpenGraphTitle, getMetaUnitOverviewTitle, getMetaUnitOverviewTwitterDescription, getMetaUnitOverviewTwitterTitle, NAVBAR_HEIGHT } from '../../shared/constants';
+
 // Services
 import { ApiService } from '../../shared/services/api.service';
 import { MessageService } from 'primeng/api';
@@ -19,7 +22,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
 import { Review } from '../../shared/models/review.model';
-import { NAVBAR_HEIGHT } from '../../shared/constants';
 
 @Component({
   selector: 'app-unit-overview',
@@ -315,39 +317,26 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    const unitReviewsCount = this.unit.reviews.length;
+    const unitAverageRating = this.unit.avgOverallRating.toFixed(1);
     const unitCode = this.unit.unitCode.toUpperCase();
     const unitName = this.unit.name;
-    const baseUrl = 'https://monstar.wired.org.au'; // Replace with your actual domain
-    const pageUrl = `${baseUrl}/unit/${this.unit.unitCode}`;
+    const pageUrl = `${BASE_URL}/unit/${this.unit.unitCode}`;
     
     // Basic meta tags
-    this.titleService.setTitle(`${unitCode} (${unitName}) Student Reviews at Monash University`);
-    
-    this.meta.updateTag({ 
-      name: 'description', 
-      content: `Read ${this.unit.reviews.length} student reviews for ${unitCode} (${unitName}) at Monash University. See ratings, difficulty level, and student experiences.` 
-    });
-    
-    this.meta.updateTag({ 
-      name: 'keywords', 
-      content: `${unitCode}, ${unitName}, Monash, Monash Uni, Monash University, unit reviews, student reviews, course reviews, MonSTAR, ${unitCode} reviews, ${unitCode} difficulty, ${unitCode} ratings`
-    });
+    this.titleService.setTitle(getMetaUnitOverviewTitle(unitCode, unitName));
+    this.meta.updateTag({ name: 'description', content: getMetaUnitOverviewDescription(unitReviewsCount, unitCode, unitName) });
+    this.meta.updateTag({ name: 'keywords', content: getMetaUnitOverviewKeywords(unitCode, unitName) });
 
     // Open Graph tags for social sharing
-    this.meta.updateTag({ property: 'og:title', content: `${unitCode} - ${unitName} | Student Reviews` });
-    this.meta.updateTag({ 
-      property: 'og:description', 
-      content: `See what students think about ${unitCode}. Average rating: ${this.unit.avgOverallRating.toFixed(1)}/5 from ${this.unit.reviews.length} reviews.` 
-    });
+    this.meta.updateTag({ property: 'og:title', content: getMetaUnitOverviewOpenGraphTitle(unitCode, unitName) });
+    this.meta.updateTag({ property: 'og:description', content: getMetaUnitOverviewOpenGraphDescription(unitCode, unitAverageRating, unitReviewsCount) });
     this.meta.updateTag({ property: 'og:url', content: pageUrl });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     
     // Twitter Card tags
     this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
-    this.meta.updateTag({ name: 'twitter:title', content: `${unitCode} Student Reviews at Monash University` });
-    this.meta.updateTag({ 
-      name: 'twitter:description', 
-      content: `See what Monash students think about ${unitCode} (${unitName}). Average rating: ${this.unit.avgOverallRating.toFixed(1)}/5.` 
-    });
+    this.meta.updateTag({ name: 'twitter:title', content: getMetaUnitOverviewTwitterTitle(unitCode) });
+    this.meta.updateTag({ name: 'twitter:description', content: getMetaUnitOverviewTwitterDescription(unitCode, unitName, unitAverageRating) });
   }
 }

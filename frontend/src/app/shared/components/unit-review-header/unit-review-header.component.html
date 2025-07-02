@@ -161,7 +161,7 @@
       <!-- Unit Map Button -->
       <div
         [pTooltip]="
-          unitMapButtonDisabled
+          !isUnitMapButtonEnabled
             ? 'This unit has no connections to other units at Monash' 
             : 'See prerequisites and other unit connections in a graph.'
         "
@@ -171,7 +171,7 @@
           label="Map"
           icon="pi pi-map-marker"
           rounded="true"
-          [disabled]="unitMapButtonDisabled || viewportType === 'mobile'"
+          [disabled]="!isUnitMapButtonEnabled || viewportType === 'mobile'"
           (click)="navigateToUnitMap()"
         ></p-button>
       </div>
