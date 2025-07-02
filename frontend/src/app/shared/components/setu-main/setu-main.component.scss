@@ -152,9 +152,35 @@
         background-color: $bg-dark-color;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); // Base elevation for all cards
+        transform: translateY(0);
+        transition: transform 0.2s ease, box-shadow 0.2s ease,
+          border-color 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+          border-color: rgba(255, 255, 255, 0.15);
+        }
 
         .p-card-body {
           padding: 1.5rem;
+        }
+      }
+
+      // Enhanced styling for university-wide items
+      &.university-wide-card {
+        ::ng-deep .p-card {
+          background-color: rgba(255, 255, 255, 0.03); // Slightly greyer
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); // Enhanced elevation
+          transform: translateY(0);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+          }
         }
       }
 
@@ -238,49 +264,103 @@
     text-align: center;
   }
 
-  .historical-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-    max-width: 1400px;
-    margin: 0 auto;
+  // Carousel wrapper styling
+  ::ng-deep .setu-carousel {
+    // Add padding to prevent clipping of raised cards
+    padding-top: 8px;
+    margin-top: 8px;
+
+    .p-carousel-content {
+      .p-carousel-container {
+        .p-carousel-items-content {
+          .p-carousel-items-container {
+            .p-carousel-item {
+              padding: 0 0.5rem;
+              // Add top padding to prevent clipping
+              padding-top: 8px;
+            }
+          }
+        }
+      }
+    }
+
+    // Carousel navigation buttons
+    .p-carousel-prev,
+    .p-carousel-next {
+      background: rgba(226, 136, 226, 0.2);
+      border: 1px solid rgba(226, 136, 226, 0.4);
+      color: $primary-color;
+
+      &:hover {
+        background: rgba(226, 136, 226, 0.3);
+        border-color: rgba(226, 136, 226, 0.6);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(226, 136, 226, 0.3);
+      }
+    }
+  }
+
+  .carousel-item-wrapper {
+    padding: 8px 0.5rem 0 0.5rem; // Add top padding
+    height: calc(100% - 8px); // Adjust height to account for padding
 
     .historical-card {
+      height: 100%;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
 
       &:hover {
-        transform: translateY(-2px);
+        transform: translateY(-4px); // Slightly reduced to prevent clipping
+        z-index: 10; // Ensure hovered card appears above others
 
         ::ng-deep .p-card {
-          border-color: rgba(226, 136, 226, 0.4);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          border-color: rgba(226, 136, 226, 0.6);
+          box-shadow: 0 8px 20px rgba(226, 136, 226, 0.2); // Enhanced shadow
         }
       }
 
       &.selected {
         ::ng-deep .p-card {
           border-color: $primary-color;
-          box-shadow: 0 0 0 2px rgba(226, 136, 226, 0.3);
+          box-shadow: 0 0 0 2px rgba(226, 136, 226, 0.4);
         }
       }
 
       ::ng-deep .p-card {
-        background-color: $bg-dark-color;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        background: linear-gradient(
+          135deg,
+          rgba(226, 136, 226, 0.08) 0%,
+          rgba(226, 136, 226, 0.04) 100%
+        );
+        border: 1px solid rgba(226, 136, 226, 0.2);
+        border-radius: 8px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease,
+          background 0.2s ease;
+        height: 100%;
 
         &.selected-card {
           border-color: $primary-color;
-          background-color: rgba(226, 136, 226, 0.05);
+          background: linear-gradient(
+            135deg,
+            rgba(226, 136, 226, 0.15) 0%,
+            rgba(226, 136, 226, 0.08) 100%
+          );
         }
 
         .p-card-body {
           padding: 1.25rem;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
         }
       }
 
       .historical-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
         .historical-header {
           display: flex;
           justify-content: space-between;
@@ -293,6 +373,7 @@
             color: white;
             margin: 0;
             font-size: 1.2rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
           }
 
           .selected-indicator {
@@ -311,7 +392,7 @@
             gap: 0.5rem;
 
             .responses {
-              color: #888;
+              color: rgba(255, 255, 255, 0.8);
               font-size: 0.9rem;
             }
           }
@@ -321,33 +402,16 @@
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 1rem;
+          margin-top: auto;
 
           .aggregate-label {
-            color: #888;
+            color: rgba(255, 255, 255, 0.8);
             font-weight: bold;
           }
 
           .aggregate-value {
             font-weight: bold;
             font-size: 1.1rem;
-          }
-        }
-
-        .click-hint {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-          padding: 0.5rem;
-          background-color: rgba(226, 136, 226, 0.1);
-          border-radius: 4px;
-          color: $primary-color;
-          font-size: 0.85rem;
-          margin-top: 0.5rem;
-
-          .pi-hand-pointer {
-            font-size: 0.9rem;
           }
         }
       }
@@ -423,10 +487,6 @@
 
   .historical-container {
     padding: 0 1rem;
-
-    .historical-grid {
-      grid-template-columns: 1fr;
-    }
   }
 }
 

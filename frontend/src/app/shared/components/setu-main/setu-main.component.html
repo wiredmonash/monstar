@@ -98,6 +98,65 @@
   </div>
 </div>
 
+<!-- Available SETU Data Section -->
+@if (setuData.length > 1) {
+<p-divider></p-divider>
+
+<div class="historical-container">
+  <h3 class="historical-title">
+    All Available SETU Data - Click to View Details
+  </h3>
+
+  <p-carousel
+    [value]="setuData"
+    [numVisible]="4"
+    [numScroll]="1"
+    [circular]="false"
+    [showNavigators]="true"
+    [showIndicators]="false"
+    [responsiveOptions]="responsiveOptions"
+    styleClass="setu-carousel"
+  >
+    <ng-template let-setu pTemplate="item">
+      <div class="carousel-item-wrapper">
+        <div class="historical-card" [class.selected]="isSetuSelected(setu)">
+          <p-card
+            (click)="selectSetuData(setu)"
+            [style]="{ cursor: 'pointer', height: '100%' }"
+            [class]="isSetuSelected(setu) ? 'selected-card' : ''"
+          >
+            <div class="historical-content">
+              <div class="historical-header">
+                <h4>{{ getSeasonDisplay(setu.Season) }}</h4>
+                <div class="historical-info">
+                  <span class="responses">{{ setu.Responses }} responses</span>
+                  <p-badge
+                    [value]="getResponseRatePercent(setu) + '%'"
+                    severity="info"
+                  ></p-badge>
+                </div>
+              </div>
+
+              @if (setu.getAggregateScore() > 0) {
+              <div class="aggregate-display">
+                <span class="aggregate-label">Overall Score:</span>
+                <span
+                  class="aggregate-value"
+                  [style.color]="getScoreColor(setu.getAggregateScore())"
+                >
+                  {{ getFormattedScore(setu.getAggregateScore()) }}/5.0
+                </span>
+              </div>
+              }
+            </div>
+          </p-card>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</div>
+}
+
 <p-divider></p-divider>
 
 <!-- SETU Criteria Grid -->
@@ -109,7 +168,7 @@
     <div class="criteria-grid">
       @for (criteria of getSelectedSetu()!.getAllCriteriaScores().slice(0, 8);
       track criteria.key) {
-      <div class="criteria-card">
+      <div class="criteria-card university-wide-card">
         <p-card [style]="{ height: '100%' }">
           <div class="criteria-content">
             <!-- Criteria Label with Tooltip -->
@@ -146,7 +205,7 @@
     <div class="criteria-grid">
       @for (criteria of getSelectedSetu()!.getAllCriteriaScores().slice(8);
       track criteria.key) {
-      <div class="criteria-card">
+      <div class="criteria-card university-wide-card">
         <p-card [style]="{ height: '100%' }">
           <div class="criteria-content">
             <!-- Criteria Label with Tooltip -->
@@ -175,53 +234,6 @@
       </div>
       }
     </div>
-  </div>
-</div>
-}
-
-<!-- Historical Data Section -->
-@if (setuData.length > 1) {
-<p-divider></p-divider>
-
-<div class="historical-container">
-  <h3 class="historical-title">
-    All Available SETU Data - Click to View Details
-  </h3>
-  <div class="historical-grid">
-    @for (setu of setuData; track setu._id) {
-    <div class="historical-card" [class.selected]="isSetuSelected(setu)">
-      <p-card
-        (click)="selectSetuData(setu)"
-        [style]="{ cursor: 'pointer', height: '100%' }"
-        [class]="isSetuSelected(setu) ? 'selected-card' : ''"
-      >
-        <div class="historical-content">
-          <div class="historical-header">
-            <h4>{{ getSeasonDisplay(setu.Season) }}</h4>
-            <div class="historical-info">
-              <span class="responses">{{ setu.Responses }} responses</span>
-              <p-badge
-                [value]="getResponseRatePercent(setu) + '%'"
-                severity="info"
-              ></p-badge>
-            </div>
-          </div>
-
-          @if (setu.getAggregateScore() > 0) {
-          <div class="aggregate-display">
-            <span class="aggregate-label">Overall Score:</span>
-            <span
-              class="aggregate-value"
-              [style.color]="getScoreColor(setu.getAggregateScore())"
-            >
-              {{ getFormattedScore(setu.getAggregateScore()) }}/5.0
-            </span>
-          </div>
-          }
-        </div>
-      </p-card>
-    </div>
-    }
   </div>
 </div>
 } }

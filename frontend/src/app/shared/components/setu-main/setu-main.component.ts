@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DividerModule } from 'primeng/divider';
 import { KnobModule } from 'primeng/knob';
+import { CarouselModule } from 'primeng/carousel';
 import { SetuService } from '../../services/setu.service';
 import { Setu } from '../../models/setu.model';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
@@ -29,6 +30,7 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
     BadgeModule,
     DividerModule,
     KnobModule,
+    CarouselModule,
   ],
   templateUrl: './setu-main.component.html',
   styleUrl: './setu-main.component.scss',
@@ -40,6 +42,26 @@ export class SetuMainComponent implements OnInit, OnDestroy {
   loading = true;
   error: string | null = null;
   viewportType: ViewportType = 'desktop';
+
+  // Carousel responsive options
+  responsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 3,
+      numScroll: 1,
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 2,
+      numScroll: 1,
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1,
+      numScroll: 1,
+    },
+  ];
+
   private destroy$ = new Subject<void>();
 
   constructor(
