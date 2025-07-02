@@ -267,9 +267,6 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
         if (!review)
             return res.status(404).json({error: "Review not found"});
 
-        // Extract the unit ID from the review
-        const unitId = review.unit;
-
         // Get the requesting user from token
         const requestingUser = await User.findById(req.user.id);
         if (!requestingUser) 
@@ -281,6 +278,9 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
         if (!isAuthor && !isAdmin) {
             return res.status(403).json({ error: 'You are not authorised to delete this review' });
         }
+
+        // Extract the unit ID from the review
+        const unitId = review.unit;
 
         // Delete the Review from the database
         await Review.findByIdAndDelete(req.params.reviewId); 
