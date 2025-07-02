@@ -1,23 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Setu } from '../../shared/models/setu.model';
+import { ViewportService, ViewportType } from '../../shared/services/viewport.service';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SetuService } from '../../shared/services/setu.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CarouselModule } from 'primeng/carousel';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
 import { CardModule } from 'primeng/card';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DividerModule } from 'primeng/divider';
 import { KnobModule } from 'primeng/knob';
-import { CarouselModule } from 'primeng/carousel';
-import { SetuService } from '../../services/setu.service';
-import { Setu } from '../../models/setu.model';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
 
 @Component({
-  selector: 'app-setu-main',
+  selector: 'app-setu-overview',
   standalone: true,
   imports: [
     CommonModule,
@@ -32,10 +32,10 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
     KnobModule,
     CarouselModule,
   ],
-  templateUrl: './setu-main.component.html',
-  styleUrl: './setu-main.component.scss',
+  templateUrl: './setu-overview.component.html',
+  styleUrl: './setu-overview.component.scss',
 })
-export class SetuMainComponent implements OnInit, OnDestroy {
+export class SetuOverviewComponent implements OnInit, OnDestroy {
   unitCode: string = '';
   setuData: Setu[] = [];
   selectedSetu: Setu | null = null; // Track which SETU data is currently selected for detailed view
