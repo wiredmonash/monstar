@@ -2,9 +2,11 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -61,7 +63,7 @@ import { SkeletonModule } from 'primeng/skeleton';
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'],
 })
-export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
+export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
   // ViewChild to reference the WriteReviewUnitComponent
   @ViewChild(WriteReviewUnitComponent)
   writeReviewDialog!: WriteReviewUnitComponent;
@@ -82,7 +84,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
   userSubscription: Subscription | null = null;
 
   // Boolean to disable the unit map button if the unit has no prerequisites or parent units
-  unitMapButtonDisabled: boolean = true;
+  isUnitMapButtonEnabled: boolean = true;
 
   // The currently selected sorting option for the dropdown
   selectedSort: string = 'highest-rating';
@@ -162,9 +164,6 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     this.viewportService.viewport$.subscribe((type) => {
       this.viewportType = type;
     });
-
-    // * Check if the unit has prerequisites or parent units
-    this.unitMapButtonDisabled = this.verifyUnitGraph();
   }
 
   /**
@@ -174,10 +173,39 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
     // Resize listener to update the skeleton height
     this.updateSkeletonHeight();
     window.addEventListener('resize', this.resizeHandler);
+
+    // Check if the unit has prerequisites or parent units
+    if (this.unit) {
+      this.isUnitMapButtonEnabled = this.unitHasRequisites();
+    }
+  }
+
+  /**
+   * ! Runs on changes
+   * 
+   * Verifies the unit graph again on changes of the `unit` variable.
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    /**
+     * Check if:
+     * 1. The 'unit' property has changed.
+     * 2. AND the new value is not null/undefined.
+     * 3. AND EITHER:
+     *  a. There was no previous value (first time the unit is set)
+     *  b. OR the unit code has changed (it's a different unit)
+     */
+    if (changes['unit'] && changes['unit'].currentValue &&
+      (!changes['unit'].previousValue ||
+        changes['unit'].currentValue.unitCode !== changes['unit'].previousValue.unitCode)) {
+      this.isUnitMapButtonEnabled = this.unitHasRequisites();
+    }
   }
 
   /**
    * ! Runs on destroy
+   * 
+   * - Removes the resize event listener to prevent memory leaks.
+   * - Unsubscribes from the user subscription.
    */
   ngOnDestroy(): void {
     // Destroy the resize listener
@@ -253,33 +281,34 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy {
    *
    * @returns {boolean} Returns true if the unit has prerequisites or parent units, false otherwise.
    */
-  verifyUnitGraph(): boolean {
-    if (this.unit!.requisites! && this.unit!.requisites!.prerequisites!) {
+  unitHasRequisites(): boolean {
+    if (!this.unit || !this.unit.unitCode) return false;
+
+    if (
+      this.unit?.requisites?.prerequisites &&
+      this.unit.requisites.prerequisites.length > 0
+    ) {
       console.info(`UnitReviewHeader | Unit has requisites.`);
-      return (this.unitMapButtonDisabled = false);
+      return true;
     }
 
-    this.apiService.getUnitsRequiringUnitGET(this.unit!.unitCode).subscribe({
+    this.apiService.getUnitsRequiringUnitGET(this.unit.unitCode).subscribe({
       next: (units) => {
         if (units.length > 0) {
           console.info('UnitReviewHeader | Unit has parent units.');
-          return (this.unitMapButtonDisabled = false);
+          this.isUnitMapButtonEnabled = true;
         } else {
           console.warn('UnitReviewHeader | Unit has no parent units.');
-          return (this.unitMapButtonDisabled = true);
+          this.isUnitMapButtonEnabled = false;
         }
       },
       error: (error) => {
-        console.error(
-          'UnitReviewHeader | Error whilst fetching parent units:',
-          error.error
-        );
-        return (this.unitMapButtonDisabled = true);
-      },
+        console.error('UnitReviewHeader | Error whilst fetching parent units:', error.error);
+        this.isUnitMapButtonEnabled = false;
+      }
     });
 
-    console.info('UnitReviewHeader | verifyUnitGraph false boundary case');
-    return (this.unitMapButtonDisabled = true);
+    return false;
   }
 
   /**

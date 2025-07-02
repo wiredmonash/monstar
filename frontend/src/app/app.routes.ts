@@ -10,7 +10,7 @@ import { ResetPasswordComponent } from './routes/reset-password/reset-password.c
 import { UnitMapComponent } from './routes/unit-map/unit-map.component';
 import { TermsAndCondsComponent } from './routes/terms-and-conds/terms-and-conds.component';
 import { AboutComponent } from './routes/about/about.component';
-import { SetuComponent } from './routes/setu/setu.component';
+import { SetuOverviewComponent } from './routes/setu-overview/setu-overview.component';
 
 export const routes: Routes = [
   // Homepage
@@ -22,7 +22,7 @@ export const routes: Routes = [
   // Unit Map
   { path: 'map/:unitcode', component: UnitMapComponent },
   // SETU Data
-  { path: 'setu/:unitCode', component: SetuComponent },
+  { path: 'setu/:unitCode', component: SetuOverviewComponent },
   // Email Verification
   { path: 'verify-email/:token', component: VerifiedComponent },
   // Reset Password
