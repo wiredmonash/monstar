@@ -15,8 +15,11 @@
             (reviewAdded)="refreshReviews()"
         />
 
-        <!-- SetuCardComponent -->
-        <app-setu-card/>
+        <!-- ! CHILD: SetuCardComponent -->
+         <!-- Setu header -->
+        <app-setu-card 
+            [unit]="unit"
+        />
     </div>
     <div class="right-column">
         <p-scrollPanel 
