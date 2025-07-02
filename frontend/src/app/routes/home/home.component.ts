@@ -1,18 +1,28 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
+
+// Constants
+import { BASE_URL, META_AUTHOR, META_BASIC_TITLE, META_BASIC_TWITTER_TITLE, META_HOME_DESCRIPTION, META_HOME_KEYWORDS, META_HOME_OPEN_GRAPH_DESCRIPTION, META_HOME_TWITTER_DESCRIPTION, META_SITENAME } from '../../shared/constants';
+
+// Models
+import { Unit } from '../../shared/models/unit.model';
+
+// Components
+import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+
+// Modules
 import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
-import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
-import { ApiService } from '../../shared/services/api.service';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Unit } from '../../shared/models/unit.model';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-import { RatingComponent } from '../../shared/components/rating/rating.component';
-import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
+
+// Services
 import { NavigationService } from '../../shared/services/navigation.service';
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -324,46 +334,31 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    * * Updates meta tags for SEO
    */
   private updateMetaTags(): void {
-    const baseUrl = 'https://monstar.wired.org.au';
-    const pageUrl = `${baseUrl}`;
+    const pageUrl = BASE_URL;
     
     // Set the document title
-    this.titleService.setTitle('MonSTAR | Student Reviews for Monash University Units');
+    this.titleService.setTitle(META_BASIC_TITLE);
     
     // Core meta tags
     this.meta.updateTag({ name: 'viewport', content: 'width=device-width, initial-scale=1' });
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });
     
     // Basic meta tags
-    this.meta.updateTag({ 
-      name: 'description', 
-      content: 'MonSTAR is a platform for Monash University students to browse, review, and share feedback on academic units. Find the best units for your degree.'
-    });
-    
-    this.meta.updateTag({ 
-      name: 'keywords', 
-      content: 'Monash University, Monash, student reviews, WAM booster, Monash reviews, Monash units, MonSTAR, WIRED Monash, best Monash units'
-    });
-    
-    this.meta.updateTag({ name: 'author', content: 'WIRED Monash' });
+    this.meta.updateTag({ name: 'description', content: META_HOME_DESCRIPTION });
+    this.meta.updateTag({ name: 'keywords', content: META_HOME_KEYWORDS });
+    this.meta.updateTag({ name: 'author', content: META_AUTHOR });
 
     // Open Graph tags for social sharing
-    this.meta.updateTag({ property: 'og:site_name', content: 'MonSTAR' });
-    this.meta.updateTag({ property: 'og:title', content: 'MonSTAR | Student Reviews for Monash University Units' });
-    this.meta.updateTag({ 
-      property: 'og:description', 
-      content: 'Find honest reviews of Monash University units from fellow students. Discover the best units for your degree path.'
-    });
+    this.meta.updateTag({ property: 'og:site_name', content: META_SITENAME });
+    this.meta.updateTag({ property: 'og:title', content: META_BASIC_TITLE });
+    this.meta.updateTag({ property: 'og:description', content: META_HOME_OPEN_GRAPH_DESCRIPTION });
     this.meta.updateTag({ property: 'og:url', content: pageUrl });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     this.meta.updateTag({ property: 'og:locale', content: 'en_AU' });
     
     // Twitter Card tags
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'MonSTAR - Monash Student Unit Reviews' });
-    this.meta.updateTag({ 
-      name: 'twitter:description', 
-      content: 'Find the best Monash University units based on student reviews and ratings.'
-    });
+    this.meta.updateTag({ name: 'twitter:title', content: META_BASIC_TWITTER_TITLE });
+    this.meta.updateTag({ name: 'twitter:description', content: META_HOME_TWITTER_DESCRIPTION });
   }
 }
