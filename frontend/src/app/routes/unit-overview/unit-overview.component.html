@@ -14,6 +14,12 @@
             (sortBy)="sortReviews($event)"
             (reviewAdded)="refreshReviews()"
         />
+
+        <!-- ! CHILD: SetuCardComponent -->
+         <!-- Setu header -->
+        <app-setu-card 
+            [unit]="unit"
+        />
     </div>
     <div class="right-column">
         <p-scrollPanel 

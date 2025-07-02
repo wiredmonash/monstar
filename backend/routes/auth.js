@@ -167,7 +167,6 @@ router.delete('/delete/:userId', verifyToken, async function (req, res) {
     }
 });
 
-
 /**
  * ! POST Logout a User
  * 

@@ -1,0 +1,172 @@
+:host {
+    display: block;
+    color: white;
+    padding: 1rem;
+    font-family: Arial, sans-serif;
+    max-width: 1230px;
+    margin: 0 auto;
+}
+
+:host ::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link {
+    padding: 0.5rem;
+}
+
+p-accordion {
+    border: none;
+}
+
+.setu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setu-title {
+    font-size: 1.1rem;
+    margin: 0;
+    margin-left: 0.6rem;
+}
+
+.arrow {
+    margin-left: 0.5rem;
+}
+
+.setu-controls {
+    padding-top: 15px;
+    padding-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.semester-btn {
+    display: flex;
+    align-items: center;
+    background: white;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+}
+
+
+.toggle-group {
+    display: inline-flex;
+    background: #837EFF;
+    border-radius: 999px;
+    padding: 3px;
+}
+
+.toggle-btn {
+    border: none;
+    background: transparent;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 6px;
+}
+
+.toggle-btn.selected {
+    background: white;
+    color: black;
+}
+
+.setu-cards {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.card {
+    background-color: #e288e2;
+    color: #333;
+    padding: 1rem;
+    border-radius: 8px;
+    flex: 1;
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.value-progress {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.value-progress .value {
+    font-size: 1rem;
+    margin: 0;
+    margin-top: 0.7rem;
+}
+
+.value-progress .bar {
+    flex: 1;
+    margin: 0;
+    margin-left: 1rem;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.setu-footer {
+    text-align: left;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+:host ::ng-deep .p-accordion .p-accordion-header-link {
+    border-radius: 16px 16px 0 0 !important;
+    background-color: #e288e2;
+    color: black;
+}
+
+:host ::ng-deep .p-accordion .p-accordion-content {
+    background-color: #2c2c2c !important;
+    border-color: #2c2c2c !important;
+    border-radius: 0 0 16px 16px !important;
+}
+
+// Custom button styles
+.custom-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    /* Primary button color */
+    color: black;
+    border: none;
+    border-radius: 50%;
+    /* Circular button */
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1.1rem;
+    margin-left: 0.5rem;
+}
+
+.custom-btn:hover {
+    background-color: black;
+    /* Darker shade for hover */
+    color: #e288e2;
+    transform: scale(1.1);
+    /* Slight zoom effect */
+}
+
+.custom-btn:focus {
+    outline: 2px solid #fbbf24;
+    /* Focus outline for accessibility */
+    outline-offset: 2px;
+}
+
+.custom-btn:active {
+    background-color: #003f7a;
+    /* Even darker shade for active state */
+    transform: scale(0.95);
+    /* Slight shrink effect */
+}
