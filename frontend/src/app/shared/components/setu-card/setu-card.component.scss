@@ -1,3 +1,4 @@
+// Host styles
 :host {
     display: block;
     color: white;
@@ -7,6 +8,7 @@
     margin: 0 auto;
 }
 
+// Accordion styles
 :host ::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link {
     padding: 0.5rem;
 }
@@ -15,6 +17,7 @@ p-accordion {
     border: none;
 }
 
+// Header styles
 .setu-header {
     display: flex;
     justify-content: space-between;
@@ -31,6 +34,7 @@ p-accordion {
     margin-left: 0.5rem;
 }
 
+// Controls section styles
 .setu-controls {
     padding-top: 15px;
     padding-bottom: 5px;
@@ -39,29 +43,24 @@ p-accordion {
     justify-content: space-between;
 }
 
-/* MODIFIED: Styles for p-splitButton to match the provided image */
+// Split button styles
 :host ::ng-deep .semester-btn.p-splitbutton .p-button {
-    background: #3a3a3c !important;
-    /* Dark grey background from image */
-    border: 1px solid #5c5c5c !important;
-    /* Light grey border from image */
-    color: #ffffff !important;
-    /* White text and icon */
+    background: #3a3a3c !important; // Dark grey background
+    border: 1px solid #5c5c5c !important; // Light grey border
+    color: #ffffff !important; // White text and icon
     transition: background-color 0.2s, border-color 0.2s;
 }
 
 :host ::ng-deep .semester-btn.p-splitbutton .p-button:not(:disabled):hover {
-    background: #4a4a4c !important;
-    /* Slightly lighter on hover */
+    background: #4a4a4c !important; // Slightly lighter on hover
     border-color: #6c6c6c !important;
 }
 
 :host ::ng-deep .semester-btn.p-splitbutton .p-button:focus {
-    box-shadow: 0 0 0 2px #2c2c2c, 0 0 0 4px #e288e2 !important;
-    /* Focus ring with theme color */
+    box-shadow: 0 0 0 2px #2c2c2c, 0 0 0 4px #e288e2 !important; // Focus ring
 }
 
-/* Ensure buttons are joined correctly */
+// Ensure buttons are joined correctly
 :host ::ng-deep .semester-btn.p-splitbutton .p-button:first-of-type {
     border-right: none;
     border-top-right-radius: 0;
@@ -73,7 +72,7 @@ p-accordion {
     border-bottom-left-radius: 0;
 }
 
-
+// Toggle button group styles
 .toggle-group {
     display: inline-flex;
     background: #837EFF;
@@ -96,6 +95,7 @@ p-accordion {
     color: black;
 }
 
+// Card section styles
 .setu-cards {
     display: flex;
     gap: 1rem;
@@ -116,6 +116,7 @@ p-accordion {
     color: white;
 }
 
+// Progress bar styles
 .value-progress {
     display: flex;
     align-items: center;
@@ -126,7 +127,7 @@ p-accordion {
     font-size: 1rem;
     margin: 0;
     margin-top: 0.7rem;
-    color: white
+    color: white;
 }
 
 :host ::ng-deep .p-progressbar .p-progressbar-value {
@@ -141,6 +142,7 @@ p-accordion {
     border-radius: 4px;
 }
 
+// Footer styles
 .setu-footer {
     text-align: left;
     font-size: 0.9rem;
@@ -148,6 +150,7 @@ p-accordion {
     font-style: italic;
 }
 
+// Accordion header and content styles
 :host ::ng-deep .p-accordion .p-accordion-header-link {
     border-radius: 16px 16px 0 0 !important;
     background-color: #e288e2;
@@ -165,14 +168,10 @@ p-accordion {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: transparent;
-    /* Transparent background */
-    color: black;
-    /* Black arrow for contrast on pink header */
-    border: 1.5px solid black;
-    /* White border for default state */
-    border-radius: 50%;
-    /* Circular button */
+    background-color: transparent; // Transparent background
+    color: black; // Black arrow for contrast
+    border: 1.5px solid black; // Black border
+    border-radius: 50%; // Circular button
     width: 25px;
     height: 25px;
     cursor: pointer;
@@ -182,44 +181,33 @@ p-accordion {
 }
 
 .custom-btn:hover {
-    background-color: black;
-    /* Black background on hover */
-    color: #e288e2;
-    /* Pink arrow color, matching the theme */
-    border-color: black;
-    /* Make border match background on hover */
-    transform: scale(1.1);
-    /* Slight zoom effect */
+    background-color: black; // Black background on hover
+    color: #e288e2; // Pink arrow color
+    border-color: black; // Match border with background
+    transform: scale(1.1); // Slight zoom effect
 }
 
 .custom-btn:focus {
-    outline: none;
-    /* Remove default outline */
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
-    /* Add a thematic white glow for focus */
+    outline: none; // Remove default outline
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7); // White glow for focus
 }
 
 .custom-btn:active {
-    background-color: black;
-    /* Maintain hover style on active */
+    background-color: black; // Maintain hover style
     color: #e288e2;
-    transform: scale(0.95);
-    /* Slight shrink effect on click */
+    transform: scale(0.95); // Slight shrink effect
 }
 
+// Responsive styles
 @media (max-width: 430px) {
     .setu-controls {
-        flex-direction: column;
-        /* Change flex direction from row to column */
+        flex-direction: column; // Stack controls vertically
         align-items: flex-start;
-        /* Align items to the start (left) */
         gap: 0.75rem;
-        /* Add some space between the button and the text */
     }
 
     .setu-cards {
-        flex-direction: column;
-        /* Change flex direction to stack cards vertically */
+        flex-direction: column; // Stack cards vertically
     }
 
     .card {
