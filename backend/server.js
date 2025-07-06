@@ -4,11 +4,12 @@ const mongoose = require("mongoose");
 const cron = require("node-cron");
 const cors = require("cors");
 const app = express();
-const cookieParser = require("cookie-parser");
-const tagManager = require("./services/tagManager.service");
-const { exec } = require("child_process");
-const path = require("path");
-require("dotenv").config();
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const tagManager = require('./services/tagManager.service');
+const { exec } = require('child_process');
+const path = require('path');
+require('dotenv').config();
 
 // Router Imports
 const UnitRouter = require("./routes/units");
@@ -18,14 +19,8 @@ const NotificationRouter = require("./routes/notifications");
 const SetuRouter = require("./routes/setus");
 
 // === Middleware ===
-app.use(
-  cors({
-    origin: "http://localhost:4200",
-    credentials: true,
-  })
-);
-app.use(express.json({ limit: "50mb" })); // Increased payload limit for JSON requests.
-app.use(express.urlencoded({ limit: "50mb", extended: true })); // Increased payload limit for URL-encoded requests.
+app.use(express.json({ limit: '50mb' }));                                       // Increased payload limit for JSON requests.
+app.use(express.urlencoded({ limit: '50mb', extended: true }));                 // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
 
 // Response handler middlware
@@ -40,10 +35,20 @@ app.use((obj, req, res, next) => {
   });
 });
 
+// === Routes ===
+app.use('/api/v1/units', UnitRouter);
+app.use('/api/v1/reviews', ReviewRouter);
+app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/notifications', NotificationRouter);
+app.use("/api/v1/setus", SetuRouter);
+
+// === Serving Static Files ===
+app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
+
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
-async function connect(url) {
-  await mongoose.connect(url);
+async function connect(url) { 
+    await mongoose.connect(url); 
 }
 connect(url)
   .then(() => {
@@ -51,13 +56,6 @@ connect(url)
     tagManager.updateMostReviewsTag(1);
   })
   .catch((error) => console.log(error));
-
-// === Routes ===
-app.use("/api/v1/units", UnitRouter);
-app.use("/api/v1/reviews", ReviewRouter);
-app.use("/api/v1/auth", AuthRouter);
-app.use("/api/v1/notifications", NotificationRouter);
-app.use("/api/v1/setus", SetuRouter);
 
 // === Services ===
 // Update the most reviews tag every hour
@@ -86,6 +84,11 @@ cron.schedule("0 3 * * *", function () {
 
     console.log(`Sitemap generation complete: ${stdout}`);
   });
+});
+
+// === Catch all route ===
+app.get('*', (req, res) => {
+    return res.sendFile(path.join(__dirname, '../frontend/dist/frontend/browser/index.html'));
 });
 
 // === Start Server ===
