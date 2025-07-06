@@ -8,7 +8,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const tagManager = require('./services/tagManager.service');
 const { exec } = require('child_process');
-const path = require('path');
 require('dotenv').config();
 
 // Router Imports
