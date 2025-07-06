@@ -8,7 +8,7 @@ import { Setu, SetuData } from '../models/setu.model';
   providedIn: 'root',
 })
 export class SetuService {
-  private apiUrl = 'http://localhost:8080/api/v1/setus';
+  private apiUrl = '/api/v1/setus';
 
   constructor(private http: HttpClient) {}
 
