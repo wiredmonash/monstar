@@ -4,7 +4,7 @@
       <div class="setu-header">
         <h2 class="setu-title">SETU Overview</h2>
         <button *ngIf="loading || selectedSetu" class="custom-btn" (click)="goToSetuOverview($event)"
-          [disabled]="!unitCode" pTooltip="View Full SETU Report" tooltipPosition="left">
+          [disabled]="!unitCode" pTooltip="View Full SETU Report" tooltipPosition="left" aria-label="View Full SETU Report">
           <i class="pi pi-arrow-right"></i>
         </button>
       </div>
