@@ -134,3 +134,6 @@ dist
 
 # Exclude generated sitempas
 frontend/public/sitemap*.xml
+
+# Exclude DS Store from Mac Users
+.DS_Store
