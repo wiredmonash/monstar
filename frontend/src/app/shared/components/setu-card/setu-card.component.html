@@ -1,58 +1,75 @@
 <p-accordion>
-  <p-accordionTab>
+  <p-accordionTab [pTooltip]="headerTooltip" tooltipPosition="bottom" [disabled]="loading || !!error || !selectedSetu">
     <ng-template pTemplate="header">
       <div class="setu-header">
         <h2 class="setu-title">SETU Overview</h2>
-
-        <button class="custom-btn" (click)="goToSetuOverview($event)">
+        <button *ngIf="loading || selectedSetu" class="custom-btn" type="button" (click)="goToSetuOverview($event)"
+          [disabled]="!unitCode" pTooltip="View Full SETU Report" tooltipPosition="left" aria-label="View Full SETU Report">
           <i class="pi pi-arrow-right"></i>
         </button>
       </div>
     </ng-template>
 
-    <div class="setu-controls">
-      <p-button 
-        label="Semester 2 - 2024" 
-        icon="pi pi-calendar" 
-        styleClass="p-button-outlined semester-btn">
-      </p-button>
-
-      <div class="setu-footer">
-        Response: 100/300 (33.3%)
-        <!-- Responses: {{responses}} / {{invited}} ({{responseRate}}%) -->
-      </div>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="setu-content-centered">
+      <p-progressSpinner strokeWidth="4" styleClass="custom-spinner-sm"></p-progressSpinner>
     </div>
 
-    <div class="setu-cards">
-      <div class="card">
-        <h3>Aggregate Score</h3>
-        <div class="value-progress">
-          <div class="value">4.2</div>
-          <div class="bar">
-            <p-progressBar [value]="84" [showValue]="false"></p-progressBar>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>University Wide Average</h3>
-        <div class="value-progress">
-          <div class="value">4.2</div>
-          <div class="bar">
-            <p-progressBar [value]="84" [showValue]="false"></p-progressBar>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Faculty Wide Average</h3>
-        <div class="value-progress">
-          <div class="value">4.2</div>
-          <div class="bar">
-            <p-progressBar [value]="84" [showValue]="false"></p-progressBar>
-          </div>
-        </div>
-      </div>
+    <!-- Error State -->
+    <div *ngIf="!loading && error" class="setu-content-centered">
+      <small class="p-error">{{ error }}</small>
     </div>
 
+    <!-- No Data State -->
+    <div *ngIf="!loading && !error && !selectedSetu" class="setu-content-centered">
+      <small>No SETU data available for this unit.</small>
+    </div>
+
+    <!-- Content Display -->
+    <ng-container *ngIf="!loading && !error && selectedSetu">
+      <div class="setu-controls">
+        <p-splitButton [label]="getSeasonDisplay(selectedSetu.Season)" icon="pi pi-calendar" [model]="semesterMenuItems"
+          styleClass="semester-btn" [disabled]="semesterMenuItems.length === 0">
+        </p-splitButton>
+
+        <div class="setu-footer">
+          Responses: {{selectedSetu.Responses}} / {{selectedSetu.Invited}} ({{getResponseRatePercent(selectedSetu)}}%)
+        </div>
+      </div>
+
+      <div class="setu-cards">
+        <div class="card">
+          <h3>Aggregate Score</h3>
+          <div class="value-progress">
+            <div class="value">{{ selectedSetu.getAggregateScore().toFixed(1) }}</div>
+            <div class="bar">
+              <p-progressBar [value]="getScoreAsPercentage(selectedSetu.getAggregateScore())"
+                [showValue]="false"></p-progressBar>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>University Wide Average</h3>
+          <div class="value-progress">
+            <div class="value">{{ selectedSetu.getUniversityWideAverage().toFixed(1) }}</div>
+            <div class="bar">
+              <p-progressBar [value]="getScoreAsPercentage(selectedSetu.getUniversityWideAverage())"
+                [showValue]="false"></p-progressBar>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Faculty Wide Average</h3>
+          <div class="value-progress">
+            <div class="value">{{ selectedSetu.getFacultyWideAverage().toFixed(1) }}</div>
+            <div class="bar">
+              <p-progressBar [value]="getScoreAsPercentage(selectedSetu.getFacultyWideAverage())"
+                [showValue]="false"></p-progressBar>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
 
   </p-accordionTab>
 </p-accordion>

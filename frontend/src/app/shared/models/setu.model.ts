@@ -160,4 +160,26 @@ export class Setu {
     if (!this.agg_score || this.agg_score.length === 0) return 0;
     return this.agg_score[0];
   }
+
+   // Get average of university-wide criteria scores (I1-I8)
+   getUniversityWideAverage(): number {
+    const universityCriteriaKeys = ['I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8'];
+    const scores = universityCriteriaKeys.map(key => 
+      this.getAverageScore(key as any)
+    ).filter(score => score > 0); // Filter out criteria with no data
+
+    if (scores.length === 0) return 0;
+    return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+  }
+
+   // Get average of faculty-wide criteria scores (I9-I13)
+   getFacultyWideAverage(): number {
+    const facultyCriteriaKeys = ['I9', 'I10', 'I11', 'I12', 'I13'];
+    const scores = facultyCriteriaKeys.map(key => 
+      this.getAverageScore(key as any)
+    ).filter(score => score > 0); // Filter out criteria with no data
+    
+    if (scores.length === 0) return 0;
+    return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+  }
 }
