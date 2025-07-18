@@ -286,17 +286,9 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     // No change if we're in split view
     if (this.isSplitView) {
       this.unitOverviewContainer.nativeElement.style.height = '';
-      return
-    }
-
-    if (this.reviews.length > 1) {
-      // 2 or more reviews, grow to full height.
+    } else {
       this.unitOverviewContainer.nativeElement.style.height = '100%';
-    }
-    else if (this.reviews.length <= 1) {
-      // Prevent scrolling and calculate height based on navbar height
-      this.unitOverviewContainer.nativeElement.style.height = `calc(100vh - ${NAVBAR_HEIGHT})`;
-      this.unitOverviewContainer.nativeElement.style.overflow = 'hidden';
+      this.unitOverviewContainer.nativeElement.style.overflow = '';
     }
   }
 
