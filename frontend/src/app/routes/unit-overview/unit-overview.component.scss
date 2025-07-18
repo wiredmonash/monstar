@@ -33,6 +33,14 @@
             overflow: hidden;
             padding-right: 1.5rem;
 
+            .left-column-scroll {
+                width: 100%;
+                height: 100%;
+                .p-scrollpanel-content {
+                    padding: 1rem;
+                }
+            }
+
             // Update unit review header styles
             ::ng-deep app-unit-review-header .unit-review-header {
                 padding: 0.75rem;
