@@ -30,7 +30,7 @@ npm i --legacy-peer-deps
 cd backend
 npm i
 ```
-4. Create an `.env` file in the `backend/.` directory and add the variables shown in `.env.sample`. You may need to create your own Cloudinary account (used for profile pictures) for an API key.
+4. Create an `.env` file in the `backend/.` directory and add the variables shown in `.env.template`. You may need to create your own Cloudinary account (used for profile pictures) for an API key.
 5. For the webapp to work as intended you'll need to populate your MongoDB (local or atlas) with the units, copy and paste the json from the `backend/scraper/processed_units.json` file and run the `POST localhost:8080/api/v1/units/create-bulk` endpoint to populate your database with the units.
 6. (Optional) If you would like to see the SETU results as well, you'll need to populate your database with the SETU data, you can copy and paste the json from the `backend/scraper/setu_data_2019_2024.json` file and run the `POST localhost:8080/api/v1/setus/create-bulk` endpoint to populate your database with the SETU data.
 5. Start the frontend app and backend server. Then you can start contributing!
