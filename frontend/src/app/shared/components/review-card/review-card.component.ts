@@ -14,6 +14,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ReportReviewComponent } from './report-review/report-review.component';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { BadgeModule } from 'primeng/badge';
+import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
+import { Review } from '../../models/review.model';
 
 @Component({
   selector: 'app-review-card',
@@ -27,7 +29,8 @@ import { BadgeModule } from 'primeng/badge';
     ButtonModule,
     TooltipModule,
     ReportReviewComponent,
-    BadgeModule
+    BadgeModule,
+    WriteReviewUnitComponent
   ],
   providers: [
     ConfirmationService,
@@ -80,6 +83,11 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   get reportReviewDialog(): ReportReviewComponent {
     return this._reportReviewDialog;
   }
+
+  // Child component: write review unit dialog
+  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
+  
+  @Output() reviewEdited = new EventEmitter<void>();
   
   // Expand state
   expanded: boolean = false;
@@ -102,6 +110,37 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
 
   // Viewport type
   viewportType: ViewportType = 'desktop';
+
+  // The unit that is being edited
+  unit: any = null;
+
+  // Review that is being edited
+  reviewEdit: Review = new Review();
+
+  startEditReview(review: any) {
+    this.reviewEdit = new Review({
+      _id: review._id,
+      title: review.title,
+      semester: review.semester,
+      grade: review.grade,
+      year: review.year,
+      overallRating: review.overallRating,
+      relevancyRating: review.relevancyRating,
+      facultyRating: review.facultyRating,
+      contentRating: review.contentRating,
+      description: review.description
+    });
+
+    this.unit = review.unit;
+
+    if (this.writeReviewDialog) {
+      this.writeReviewDialog.openDialog();
+    }
+  }
+
+  handleReviewEdited() {
+    this.reviewEdited.emit();
+  }
 
 
 

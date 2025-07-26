@@ -31,8 +31,8 @@
         <div class="review-card position-relative">
             <!-- ! Buttons for deletion and reporting (shown in top right of review card) -->
             @if (currentUser?.email == review.author.email) {
-                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
-                    <i class="pi pi-trash"></i>
+                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="startEditReview(review)">
+                    <i class="pi pi-ellipsis-v"></i>
                 </div>
             } @else if (currentUser) {
                 <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
@@ -245,6 +245,14 @@
             </div>
         </div>
     </div>
+
+    <app-write-review-unit
+        [unit]="unit"
+        [user]="currentUser"
+        [review]="reviewEdit"
+        [editMode]="true"
+        (reviewEdited)="handleReviewEdited()"
+    ></app-write-review-unit>
     
 
 
