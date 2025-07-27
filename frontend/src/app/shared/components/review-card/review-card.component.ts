@@ -73,6 +73,9 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
   @Output() reviewDeleted = new EventEmitter<void>();
 
+  // Event emitter for when the review is edited (used in unit overview to refresh the reviews shown)
+  @Output() reviewEdited = new EventEmitter<void>();
+
   // Child that is the confirmation popup on deletion
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
@@ -89,8 +92,6 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
 
   // Child component: write review unit dialog
   @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
-
-  @Output() reviewEdited = new EventEmitter<void>();
   
   items: MenuItem[] | undefined;
 
@@ -280,7 +281,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  
+
   /** 
    * ! |=======================================================================|
    * ! | LIKING AND DISLIKING                                                  |
