@@ -22,7 +22,8 @@
     </ng-template>
 </p-confirmPopup>
 
-
+<!-- Presents the user with the option to delete or update their review-->
+<p-menu #menu [model]="items" [popup]="true" appendTo="body"></p-menu>
 
 <!-- === Review Card Component === -->
 @if (review) {
@@ -31,7 +32,8 @@
         <div class="review-card position-relative">
             <!-- ! Buttons for deletion and reporting (shown in top right of review card) -->
             @if (currentUser?.email == review.author.email) {
-                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="startEditReview(review)">
+                <!--Review Modification Button -->
+                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="menu.toggle($event)">
                     <i class="pi pi-ellipsis-v"></i>
                 </div>
             } @else if (currentUser) {
@@ -246,6 +248,7 @@
         </div>
     </div>
 
+    <!-- === Child component: Edit Review -->
     <app-write-review-unit
         [unit]="unit"
         [user]="currentUser"

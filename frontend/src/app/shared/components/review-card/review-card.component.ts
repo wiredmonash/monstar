@@ -16,6 +16,8 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { BadgeModule } from 'primeng/badge';
 import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
 import { Review } from '../../models/review.model';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-review-card',
@@ -27,6 +29,7 @@ import { Review } from '../../models/review.model';
     ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
+    MenuModule,
     TooltipModule,
     ReportReviewComponent,
     BadgeModule,
@@ -86,9 +89,11 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
 
   // Child component: write review unit dialog
   @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
-  
+
   @Output() reviewEdited = new EventEmitter<void>();
   
+  items: MenuItem[] | undefined;
+
   // Expand state
   expanded: boolean = false;
 
@@ -192,6 +197,24 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     this.viewportService.viewport$.subscribe(type => {
       this.viewportType = type;
     });
+
+    // List of items for the menu
+    this.items = [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => {
+          this.startEditReview(this.review);
+        }
+      },
+      {
+        label: 'Delete',
+        icon: 'pi pi-trash',
+        command: () => {
+          this.deleteReview();
+        }
+      }
+    ];
   }
 
   /**
@@ -257,8 +280,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
+  
   /** 
    * ! |=======================================================================|
    * ! | LIKING AND DISLIKING                                                  |
