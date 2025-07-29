@@ -41,6 +41,7 @@ app.use('/api/v1/reviews', ReviewRouter);
 app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/notifications', NotificationRouter);
 app.use("/api/v1/setus", SetuRouter);
+app.use('/api/v1/github', GitHubRouter);
 
 // === Serving Static Files ===
 app.use(express.static(path.join(__dirname, '../frontend/dist/frontend/browser')));
