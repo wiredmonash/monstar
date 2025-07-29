@@ -13,6 +13,7 @@ const UnitRouter = require('./routes/units');
 const ReviewRouter = require('./routes/reviews');
 const AuthRouter = require('./routes/auth');
 const NotificationRouter = require('./routes/notifications');
+const GitHubRouter = require("./routes/github");
 
 // === Middleware ===
 app.use(cors({ 
@@ -51,6 +52,7 @@ app.use('/api/v1/units', UnitRouter);
 app.use('/api/v1/reviews', ReviewRouter);
 app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/notifications', NotificationRouter);
+app.use('/api/v1/github', GitHubRouter);
 
 // === Services ===
 cron.schedule('0 * * * *', async function() {
