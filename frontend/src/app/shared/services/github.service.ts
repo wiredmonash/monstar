@@ -23,7 +23,7 @@ interface BackendResponse {
   providedIn: 'root',
 })
 export class GitHubService {
-  private apiUrl = 'http://localhost:8080/api/v1/github';
+  private apiUrl = '/api/v1/github';
 
   constructor(private http: HttpClient) {}
 
