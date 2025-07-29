@@ -6,6 +6,8 @@
 /out-tsc
 /bazel-out
 
+sitemap*
+
 # Node
 /node_modules
 npm-debug.log
