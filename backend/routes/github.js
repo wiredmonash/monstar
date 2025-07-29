@@ -1,5 +1,8 @@
+// Module Imports
 const express = require("express");
 const axios = require("axios");
+
+// Router instance
 const router = express.Router();
 
 // GitHub API configuration
@@ -7,12 +10,16 @@ const GITHUB_API_BASE = "https://api.github.com";
 const REPO_OWNER = "wiredmonash";
 const REPO_NAME = "monstar";
 
-// Get GitHub token from environment variables
+/**
+ * Get GitHub token from environment variables
+ */
 const getGitHubToken = () => {
   return process.env.GITHUB_TOKEN;
 };
 
-// Get authenticated headers for GitHub API
+/**
+ * Get authenticated headers for GitHub API requests
+ */
 const getAuthHeaders = () => {
   const token = getGitHubToken();
   if (token) {
@@ -26,7 +33,14 @@ const getAuthHeaders = () => {
   };
 };
 
-// Fallback contributor data for private repository
+/**
+ * Get fallback contributor data for private repository
+ *
+ * Returns a predefined list of contributors when the GitHub API is unavailable
+ * or the repository is private and inaccessible
+ *
+ * @returns {Array} Array of contributor objects with username, name, avatar_url, contributions, html_url, and type
+ */
 const getFallbackContributors = () => {
   return [
     {
@@ -64,11 +78,20 @@ const getFallbackContributors = () => {
   ];
 };
 
-// GET /api/v1/github/contributors
-// Get contributors to the MonSTAR repository
+/**
+ * ! GET Get Contributors from GitHub Repository
+ *
+ * Fetches contributors from the MonSTAR GitHub repository. If the repository is private
+ * or the GitHub API is unavailable, returns fallback contributor data.
+ *
+ * @async
+ * @returns {JSON} Responds with a list of contributors in JSON format.
+ * @throws {500} If an error occurs whilst fetching contributors from GitHub API.
+ */
 router.get("/contributors", async (req, res) => {
   try {
     const headers = getAuthHeaders();
+    console.log("Fetching contributors from GitHub API");
 
     // Try to fetch contributors from GitHub API
     const response = await axios.get(
@@ -77,6 +100,8 @@ router.get("/contributors", async (req, res) => {
     );
 
     if (response.data && response.data.length > 0) {
+      console.log(`Found ${response.data.length} contributors from GitHub API`);
+
       // Filter and format contributors
       const contributors = response.data
         .filter((c) => c.type === "User")
@@ -91,6 +116,7 @@ router.get("/contributors", async (req, res) => {
           type: c.type,
         }));
 
+      console.log(`Returning ${contributors.length} formatted contributors`);
       return res.status(200).json({
         success: true,
         status: 200,
@@ -99,6 +125,7 @@ router.get("/contributors", async (req, res) => {
       });
     } else {
       // Return fallback data if no contributors found
+      console.log("No contributors found, using fallback data");
       const fallbackData = getFallbackContributors();
       return res.status(200).json({
         success: true,
@@ -128,6 +155,7 @@ router.get("/contributors", async (req, res) => {
     }
 
     // For other errors, return fallback data
+    console.log("GitHub API error, using fallback data");
     const fallbackData = getFallbackContributors();
     return res.status(200).json({
       success: true,
@@ -138,4 +166,5 @@ router.get("/contributors", async (req, res) => {
   }
 });
 
+// Export the router
 module.exports = router;
