@@ -10,11 +10,12 @@ const { exec } = require("child_process");
 const path = require("path");
 require("dotenv").config();
 
-// Router Imports
-const UnitRouter = require("./routes/units");
-const ReviewRouter = require("./routes/reviews");
-const AuthRouter = require("./routes/auth");
-const NotificationRouter = require("./routes/notifications");
+// Router Imports 
+const UnitRouter = require('./routes/units');
+const ReviewRouter = require('./routes/reviews');
+const AuthRouter = require('./routes/auth');
+const NotificationRouter = require('./routes/notifications');
+const GitHubRouter = require("./routes/github");
 const SetuRouter = require("./routes/setus");
 
 // === Middleware ===
@@ -53,11 +54,13 @@ connect(url)
   .catch((error) => console.log(error));
 
 // === Routes ===
-app.use("/api/v1/units", UnitRouter);
-app.use("/api/v1/reviews", ReviewRouter);
-app.use("/api/v1/auth", AuthRouter);
-app.use("/api/v1/notifications", NotificationRouter);
-app.use("/api/v1/setus", SetuRouter);
+app.use('/api/v1/units', UnitRouter);
+app.use('/api/v1/reviews', ReviewRouter);
+app.use('/api/v1/auth', AuthRouter);
+app.use('/api/v1/notifications', NotificationRouter);
+app.use('/api/v1/github', GitHubRouter);
+app.use('/api/v1/setus', SetuRouter);
+
 
 // === Services ===
 // Update the most reviews tag every hour
