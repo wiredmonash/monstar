@@ -14,6 +14,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ReportReviewComponent } from './report-review/report-review.component';
 import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { BadgeModule } from 'primeng/badge';
+import { WriteReviewUnitComponent } from "../write-review-unit/write-review-unit.component";
+import { Review } from '../../models/review.model';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
 import { HighlightUnitPipe } from '../../pipes/highlight-unit.pipe';
 
 @Component({
@@ -26,9 +30,11 @@ import { HighlightUnitPipe } from '../../pipes/highlight-unit.pipe';
     ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
+    MenuModule,
     TooltipModule,
     ReportReviewComponent,
     BadgeModule,
+    WriteReviewUnitComponent,
     HighlightUnitPipe
   ],
   providers: [
@@ -69,6 +75,9 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   // Event emitter for when the review is deleted (used in unit overview to refresh the reviews shown)
   @Output() reviewDeleted = new EventEmitter<void>();
 
+  // Event emitter for when the review is edited (used in unit overview to refresh the reviews shown)
+  @Output() reviewEdited = new EventEmitter<void>();
+
   // Child that is the confirmation popup on deletion
   @ViewChild(ConfirmPopup) confirmPopup!: ConfirmPopup;
 
@@ -82,7 +91,12 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   get reportReviewDialog(): ReportReviewComponent {
     return this._reportReviewDialog;
   }
+
+  // Child component: write review unit dialog
+  @ViewChild(WriteReviewUnitComponent) writeReviewDialog!: WriteReviewUnitComponent;
   
+  items: MenuItem[] | undefined;
+
   // Expand state
   expanded: boolean = false;
 
@@ -104,6 +118,37 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
 
   // Viewport type
   viewportType: ViewportType = 'desktop';
+
+  // The unit that is being edited
+  unit: any = null;
+
+  // Review that is being edited
+  reviewEdit: Review = new Review();
+
+  startEditReview(review: any) {
+    this.reviewEdit = new Review({
+      _id: review._id,
+      title: review.title,
+      semester: review.semester,
+      grade: review.grade,
+      year: review.year,
+      overallRating: review.overallRating,
+      relevancyRating: review.relevancyRating,
+      facultyRating: review.facultyRating,
+      contentRating: review.contentRating,
+      description: review.description
+    });
+
+    this.unit = review.unit;
+
+    if (this.writeReviewDialog) {
+      this.writeReviewDialog.openDialog();
+    }
+  }
+
+  handleReviewEdited() {
+    this.reviewEdited.emit();
+  }
 
 
 
@@ -155,6 +200,24 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     this.viewportService.viewport$.subscribe(type => {
       this.viewportType = type;
     });
+
+    // List of items for the menu
+    this.items = [
+      {
+        label: 'Edit',
+        icon: 'pi pi-pencil',
+        command: () => {
+          this.startEditReview(this.review);
+        }
+      },
+      {
+        label: 'Delete',
+        icon: 'pi pi-trash',
+        command: () => {
+          this.deleteReview();
+        }
+      }
+    ];
   }
 
   /**
@@ -219,7 +282,6 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
 
   /** 

@@ -264,8 +264,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.getUnitByUnitcode(this.unit.unitCode); // Get the unit again for updated avg ratings.
 
       if (toast == 'delete') {
-        // Show toast
+        // Show delete toast
         this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review has been deleted.` });
+      } else if (toast == 'edit') {
+        // Show edit toast
+        this.messageService.add({ severity: 'success', summary: 'Review edited!', detail: `Review has been updated.` });
       }
     }
   }
