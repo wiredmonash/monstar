@@ -10,11 +10,12 @@ const tagManager = require('./services/tagManager.service');
 const { exec } = require('child_process');
 require('dotenv').config();
 
-// Router Imports
-const UnitRouter = require("./routes/units");
-const ReviewRouter = require("./routes/reviews");
-const AuthRouter = require("./routes/auth");
-const NotificationRouter = require("./routes/notifications");
+// Router Imports 
+const UnitRouter = require('./routes/units');
+const ReviewRouter = require('./routes/reviews');
+const AuthRouter = require('./routes/auth');
+const NotificationRouter = require('./routes/notifications');
+const GitHubRouter = require("./routes/github");
 const SetuRouter = require("./routes/setus");
 
 // === Middleware ===
