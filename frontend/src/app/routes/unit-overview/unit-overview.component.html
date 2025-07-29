@@ -37,6 +37,7 @@
                         <app-review-card 
                             [review]="review" 
                             (reviewDeleted)="refreshReviews('delete')"
+                            (reviewEdited)="refreshReviews('edit')"
                         />
                     }
                 </div>
