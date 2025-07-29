@@ -43,11 +43,6 @@ export class GitHubService {
     );
   }
 
-  // Check if we have authentication (always false now since backend handles auth)
-  hasAuthentication(): boolean {
-    return false;
-  }
-
   private getFallbackContributors(): GitHubContributor[] {
     return [
       {

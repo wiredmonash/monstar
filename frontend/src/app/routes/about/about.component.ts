@@ -16,13 +16,11 @@ export class AboutComponent implements OnInit {
   contributors: GitHubContributor[] = [];
   loading: boolean = false;
   error: string = '';
-  hasAuth: boolean = false;
   totalContributions: number = 0;
 
   constructor(private githubService: GitHubService) {}
 
   ngOnInit(): void {
-    this.hasAuth = this.githubService.hasAuthentication();
     this.loadContributors();
   }
 
