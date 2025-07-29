@@ -62,7 +62,7 @@ export class VerifiedComponent implements OnInit {
         this.launchConfettiContinuously();
 
         // ? Debug log user
-        console.log('verified.component.ts: verify and login successful!');
+        // console.log('verified.component.ts: verify and login successful!');
       },
       (error) => {
         this.verificationSuccess = false;
@@ -70,7 +70,7 @@ export class VerifiedComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Email verification failed.', detail: 'Email verification failed, try again.' });
 
         // ? Debug log error 
-        console.log('verified.component.ts: verify and login failed');
+        // console.log('verified.component.ts: verify and login failed');
       }
     );
   }
