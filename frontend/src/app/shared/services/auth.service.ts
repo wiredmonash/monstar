@@ -58,19 +58,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username, 
-          response.data.isGoogleUser,
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews,
-          response.data.notifications 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -96,18 +84,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username,
-          response.data.isGoogleUser, 
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -174,19 +151,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username, 
-          response.data.isGoogleUser,
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews,
-          response.data.notifications,
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log
@@ -210,18 +175,7 @@ export class AuthService {
     ).pipe(
       tap((response: any) => {
         // Update the current user with the response data
-        const user = new User(
-          response.data._id, 
-          response.data.email, 
-          response.data.username, 
-          response.data.isGoogleUser,
-          response.data.reviews, 
-          response.data.profileImg, 
-          response.data.admin, 
-          response.data.verified,
-          response.data.likedReviews,
-          response.data.dislikedReviews 
-        );
+        const user = new User(response.data);
         this.currentUser.next(user);
 
         // ? Debug log

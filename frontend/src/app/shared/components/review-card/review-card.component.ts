@@ -233,29 +233,33 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     if (!this.currentUser) return;
     if (this.currentUser._id === this.review.author._id) return;
 
-    const action = this.liked ? 'unlike' : 'like';
-    this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({
-      next: (updatedReview) => {
-        this.review.likes = updatedReview.likes;
-        this.review.dislikes = updatedReview.dislikes;
-        this.liked = !this.liked;
+    this.apiService.toggleReactionPATCH(
+      this.review._id, 
+      this.currentUser._id.toString(), 
+      'like'
+    ).subscribe({
+      next: (response: any) => {
+        this.review.likes = response.review.likes;
+        this.review.dislikes = response.review.dislikes;
+        
+        // Update reaction states based on server response
+        this.liked = response.reactions.liked;
+        this.disliked = response.reactions.disliked;
 
+        // Update the user's liked/disliked reviews lists
         if (this.liked) {
           this.currentUser?.addLikedReview(this.review._id);
           
           if (this.disliked) {
-            this.disliked = false;
             this.currentUser?.removeDislikedReview(this.review._id);
           }
         } else {
           this.currentUser?.removeLikedReview(this.review._id);
         }
 
-        // ? Debug log successful like toggle
-        console.log(`Review ${action}d successfully:`, updatedReview);
+        console.log(`Review like toggled successfully:`, response);
       },
       error: (error) => {
-        // ? Debug log error
         console.error('Error while toggling like:', error);
       }
     });
@@ -268,29 +272,32 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
     if (!this.currentUser) return;
     if (this.currentUser._id === this.review.author._id) return;
 
-    const action = this.disliked ? 'undislike' : 'dislike';
-    this.apiService.toggleLikeDislikeReviewPATCH(this.review._id, this.currentUser._id, action).subscribe({
-      next: (updatedReview) => {
-        this.review.likes = updatedReview.likes;
-        this.review.dislikes = updatedReview.dislikes;
-        this.disliked = !this.disliked;
+    this.apiService.toggleReactionPATCH(
+      this.review._id, 
+      this.currentUser._id.toString(), 
+      'dislike'
+    ).subscribe({
+      next: (response) => {
+        this.review.likes = response.review.likes;
+        this.review.dislikes = response.review.dislikes;
+        
+        // Update reaction states based on server response
+        this.liked = response.reactions.liked;
+        this.disliked = response.reactions.disliked;
         
         if (this.disliked) {
           this.currentUser?.addDislikedReview(this.review._id);
-
+          
           if (this.liked) {
-            this.liked = false;
             this.currentUser?.removeLikedReview(this.review._id);
           }
         } else {
           this.currentUser?.removeDislikedReview(this.review._id);
         }
 
-        // ? Debug log successful dislike toggle
-        console.log(`Review ${action}d successfully`, updatedReview);
+        console.log(`Review dislike toggled successfully:`, response);
       },
       error: (error) => {
-        // ? Debug log error
         console.error('Error while toggling dislike:', error);
       }
     });

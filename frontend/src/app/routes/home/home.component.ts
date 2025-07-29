@@ -1,18 +1,28 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
+
+// Constants
+import { BASE_URL, META_AUTHOR, META_BASIC_TITLE, META_BASIC_TWITTER_TITLE, META_HOME_DESCRIPTION, META_HOME_KEYWORDS, META_HOME_OPEN_GRAPH_DESCRIPTION, META_HOME_TWITTER_DESCRIPTION, META_SITENAME } from '../../shared/constants';
+
+// Models
+import { Unit } from '../../shared/models/unit.model';
+
+// Components
+import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+
+// Modules
 import { AccordionModule } from 'primeng/accordion';
 import { CarouselModule } from 'primeng/carousel';
-import { UnitCardComponent } from '../../shared/components/unit-card/unit-card.component';
 import { DividerModule } from 'primeng/divider';
 import { ButtonModule } from 'primeng/button';
-import { ApiService } from '../../shared/services/api.service';
 import { SkeletonModule } from 'primeng/skeleton';
-import { Unit } from '../../shared/models/unit.model';
-import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { trigger, state, style, animate, transition } from '@angular/animations';
-import { RatingComponent } from '../../shared/components/rating/rating.component';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+// Services
 import { NavigationService } from '../../shared/services/navigation.service';
+import { ApiService } from '../../shared/services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -62,6 +72,29 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     'I forgor 🤪',
     'Also check out our unit map!',
     'Cheeky insta plug <a href="https://www.instagram.com/jenul_ferdinand/" target="_blank" style="color: var(--primary-color);">@jenul_ferdinand</a>',
+    'Made by students for students!',
+    'Discover units with highest satisfaction',
+    'Find units that align with your interests',
+    'Your one-stop shop for unit reviews',
+    'Learn from others\' experiences',
+    'Honest reviews from real students',
+    'Plan your degree path with confidence',
+    'Stay ahead with student recommendations',
+    'Helping you choose better units since 2023',
+    'Get the inside scoop on assessments',
+    'Did someone say HD? 🎓',
+    'Maximize your learning potential',
+    'Units rated by students like you',
+    'Easy units? Hard units? We got you covered!',
+    'Find the units everyone is raving about',
+    'By WIRED, for Monash students everywhere',
+    'Procrastinating unit selection? We can help!',
+    'Unlock the secrets of unit selection',
+    'Pro tip: check reviews before enrolling',
+    'Make informed choices for your degree',
+    'Time to level up your unit game!',
+    'The units students actually recommend',
+    'Find your next favorite unit here'
   ];
   subheaderCurrentIndex: number = 0;
   subheaderPreviousIndex: number = 0;
@@ -92,18 +125,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   /**
-   * * Constructor
-   * 
-   * @param router Angular router
-   * @param apiService API service for making HTTP requests
+   * ! Constructor
    */
   constructor (
     private router: Router,
     private apiService: ApiService,
     private sanitizer: DomSanitizer,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private meta: Meta,
+    private titleService: Title
   ) { }
 
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | LIFECYCLE HOOKS                                                            
+   *  ! |======================================================================|
+   */
 
   /**
    * * Runs on init
@@ -111,13 +149,86 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fetches popular units and starts the subheader rotation
    */
   ngOnInit() {
+    // Set meta tags for SEO
+    this.updateMetaTags();
+
     this.startSubheaderRotation();
     this.preloadEmotes();
   }
 
+  /**
+   * * Runs after view has initialised
+   * 
+   * Gets the popular units
+   */
   ngAfterViewInit() {
     this.getPopularUnits();
   }
+
+  /**
+   * * Runs on destroy
+   * 
+   * Clear the interval for the subheader rotation
+   */
+  ngOnDestroy(): void {
+    if (this.intervalId)
+      clearInterval(this.intervalId);
+
+    // Remove meta tags when navigating away from home
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    this.meta.removeTag("name='author'");
+    this.meta.removeTag("property='og:site_name'");
+    this.meta.removeTag("property='og:title'");
+    this.meta.removeTag("property='og:description'");
+    this.meta.removeTag("property='og:url'");
+    this.meta.removeTag("property='og:type'");
+    this.meta.removeTag("property='og:locale'");
+    this.meta.removeTag("name='twitter:card'");
+    this.meta.removeTag("name='twitter:title'");
+    this.meta.removeTag("name='twitter:description'");
+    
+    // Reset title to default
+    this.titleService.setTitle('MonSTAR | Browse and Review Monash University Units');
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | API CALLS     
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Fetches popular units from the API
+   * 
+   * Makes a GET request to the API to fetch popular units and stores them in the popularUnits array.
+   */
+  getPopularUnits() {
+    this.loading = true;
+    this.apiService.getPopularUnitsGET().subscribe({
+      next: (unitData) => {
+        // Map the response data to Unit objects
+        this.popularUnits = unitData.map(data => new Unit(data));
+
+        this.loading = false;
+
+        // ? Debug log success
+        console.log('Home | Popular units:', this.popularUnits);
+      },
+      error: (error) => {
+        // ? Debug log error
+        console.log('Home | Error getting popular units:', error.error);
+      }
+    })
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | HELPERS                                                            
+   *  ! |======================================================================|
+   */
 
   /**
    * * Preload all emote images before displaying
@@ -181,56 +292,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * * Fetches popular units from the API
-   * 
-   * Makes a GET request to the API to fetch popular units and stores them in the popularUnits array.
-   */
-  getPopularUnits() {
-    this.loading = true;
-    this.apiService.getPopularUnitsGET().subscribe({
-      next: (response: Unit[]) => {
-        // Map the response data to Unit objects
-        this.popularUnits = response.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings));
-
-        this.loading = false;
-
-        // ? Debug log success
-        console.log('Home | Popular units:', response);
-      },
-      error: (error) => {
-        // ? Debug log error
-        console.log('Home | Error getting popular units:', error.error);
-      }
-    })
-  }
-
-  /**
-   * * Navigates to the unit list page
-   * 
-   * This is used for the explore units button on the home page.
-   */
-  exploreUnits() {
-    this.router.navigate(['/unit-list']);
-  }
-
-  /**
-   * * Navigates to the about page
-   */
-  navigateToAbout() {
-    this.navigationService.navigateTo(['/about']);
-  }
-
-  /**
-   * * Runs on destroy
-   * 
-   * Clear the interval for the subheader rotation
-   */
-  ngOnDestroy(): void {
-    if (this.intervalId)
-      clearInterval(this.intervalId);
-  }
-
-  /**
    * * Safely renders HTML content
    * 
    * @param html The HTML string to sanitize
@@ -238,5 +299,66 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   getSafeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | NAVIGATION HELPERS                                                            
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Navigates to the unit list page
+   * 
+   * This is used for the explore units button on the home page.
+   */
+  exploreUnits() {
+    this.router.navigate(['/list']);
+  }
+
+  /**
+   * * Navigates to the about page
+   */
+  navigateTo(nav: string) {
+    this.navigationService.navigateTo([nav]);
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                            
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Updates meta tags for SEO
+   */
+  private updateMetaTags(): void {
+    const pageUrl = BASE_URL;
+    
+    // Set the document title
+    this.titleService.setTitle(META_BASIC_TITLE);
+    
+    // Core meta tags
+    this.meta.updateTag({ name: 'viewport', content: 'width=device-width, initial-scale=1' });
+    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
+    
+    // Basic meta tags
+    this.meta.updateTag({ name: 'description', content: META_HOME_DESCRIPTION });
+    this.meta.updateTag({ name: 'keywords', content: META_HOME_KEYWORDS });
+    this.meta.updateTag({ name: 'author', content: META_AUTHOR });
+
+    // Open Graph tags for social sharing
+    this.meta.updateTag({ property: 'og:site_name', content: META_SITENAME });
+    this.meta.updateTag({ property: 'og:title', content: META_BASIC_TITLE });
+    this.meta.updateTag({ property: 'og:description', content: META_HOME_OPEN_GRAPH_DESCRIPTION });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ property: 'og:locale', content: 'en_AU' });
+    
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: META_BASIC_TWITTER_TITLE });
+    this.meta.updateTag({ name: 'twitter:description', content: META_HOME_TWITTER_DESCRIPTION });
   }
 }

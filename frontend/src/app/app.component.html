@@ -10,8 +10,10 @@
   </main>
   
   <!-- Footer -->
-  <footer>
-    <app-footer></app-footer>
-  </footer>
+  @if (showFooter) {
+    <footer>
+      <app-footer></app-footer>
+    </footer>
+  }
 </div>
   

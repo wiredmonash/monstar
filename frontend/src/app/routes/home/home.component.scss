@@ -260,6 +260,66 @@
 }
 
 
+.sponsors-section {
+  margin: 3rem auto;
+  text-align: center;
+  
+  h2 {
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    color: white;
+    
+    @media (max-width: 576px) {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .sponsor-card {
+    background: rgba(44, 44, 44, 0.8);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    max-width: 500px;
+    margin: 0 auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 28px rgba(226, 136, 226, 0.2);
+    }
+    
+    a {
+      display: block;
+      text-decoration: none;
+    }
+    
+    .jane-street-logo {
+      // Make the SVG white
+      fill: white;
+      max-width: 100%;
+      height: auto;
+      transition: opacity 0.2s ease;
+      
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+  
+  // Mobile responsive adjustments
+  @media (max-width: 576px) {
+    margin: 2rem auto;
+    
+    .sponsor-card {
+      padding: 1.5rem;
+      
+      .jane-street-logo {
+        width: 120px;
+        height: auto;
+      }
+    }
+  }
+}
 
 
 // * Popular Units Heading 2

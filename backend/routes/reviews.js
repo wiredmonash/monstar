@@ -51,20 +51,16 @@ router.get('/:unit', async function (req, res) {
     try {
         // Get the unit code from the request parameters and convert it to lowercase
         const unitCode = req.params.unit.toLowerCase();
-        //console.log(`Fetching reviews for unit: ${unitCode}`);
 
         // Find the unit in the database by its unit code
         const unitDoc = await Unit.findOne({ unitCode: unitCode });
 
         // If the unit is not found, return a 404 error
-        if (!unitDoc) {
-            console.error(`Unit with code ${unitCode} not found`);
+        if (!unitDoc)
             return res.status(404).json({ error: `Unit with code ${unitCode} not found` });
-        }
 
         // Find all reviews associated with this unit
         const reviews = await Review.find({ unit: unitDoc._id }).populate('author');
-        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(reviews);
@@ -77,34 +73,26 @@ router.get('/:unit', async function (req, res) {
 
 
 /**
- * ! GET Get All Reviews by Author
+ * ! GET Get All Reviews by User Id
  *
- * Gets all reviews for a unit from the database.
+ * Gets all reviews by a specific user from the database.
  *
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
  * @throws {404} If the unit is not found in the database.
  */
-router.get('/author/:author', async function (req, res) {
+router.get('/user/:userId', async function (req, res) {
     try {
-        // Get the author's name from the request parameters and convert it to lowercase
-        const authorName = req.params.author;
-        console.log(`Searching for ${authorName}`)
-        // const authors = await User.find({})
-        // console.log(authors)
-        const author = await User.findOne({username: authorName})
-        console.log(`Fetching reviews for author: ${author}`);
-
-        // Find all reviews associated with this unit
-        const reviews = await Review.find({ author: author._id }).populate('author').populate('unit');
-        // console.log(`Found ${reviews.length} reviews for unit ${unitCode}`);
+        // Find all reviews by this user id directly
+        const reviews = await Review.find({ author: req.params.userId })
+            .populate('unit')
+            .populate('author');
 
         // Return the list of reviews with a 200 OK status
         return res.status(200).json(reviews);
     } catch (error) {
         // Handle any errors that occur during the process
-        console.error(`An error occurred: ${error.message}`);
         return res.status(500).json({ error: `An error occurred while fetching reviews: ${error.message}` });
     }
 });
@@ -122,6 +110,11 @@ router.get('/author/:author', async function (req, res) {
  */
 router.post('/:unit/create', verifyToken, async function (req, res) {
     try {
+        // Verify that the author in the request body matches the authenticated user
+        if (req.body.review_author.toString() !== req.user.id.toString()) {
+            return res.status(403).json({ error: 'You are not authorized to created a review for this unit' });
+        }
+
         // Get the unit code from parameter
         const unitCode = req.params.unit.toLowerCase();
         // Find the unit by UnitCode
@@ -129,6 +122,16 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
         // Check if unit exists, if not, return 404 error
         if (!unitDoc)
            return res.status(404).json({ error: `Unit with code ${unitCode} not found in DB` });
+
+        // Check if the user has already reviewed this unit
+        const existingReview = await Review.findOne({
+            author: req.body.review_author,
+            unit: unitDoc._id
+        });
+
+        if (existingReview) {
+            return res.status(400).json({ error: 'You have already reviewed this unit' });
+        }
 
         // The new Review object
         const review = new Review({
@@ -255,8 +258,7 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
  * @returns {JSON} Responds with the deleted review in JSON format
  * @throws {500} If an error occurs whilst deleting the review.
  */
-router.delete('/delete/:reviewId', 
-    async function (req, res) {
+router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
     try {
         // Find the Review
         const review = await Review.findById(req.params.reviewId);
@@ -264,6 +266,18 @@ router.delete('/delete/:reviewId',
         // Throw error if Review doesn't exist
         if (!review)
             return res.status(404).json({error: "Review not found"});
+
+        // Get the requesting user from token
+        const requestingUser = await User.findById(req.user.id);
+        if (!requestingUser) 
+            return res.status(404).json({ error: 'Requesting user not found' });
+
+        // Check if the user is authorised (review author or admin)
+        const isAuthor = review.author.toString() === requestingUser._id.toString();
+        const isAdmin = requestingUser.admin;
+        if (!isAuthor && !isAdmin) {
+            return res.status(403).json({ error: 'You are not authorised to delete this review' });
+        }
 
         // Extract the unit ID from the review
         const unitId = review.unit;
@@ -326,119 +340,155 @@ router.delete('/delete/:reviewId',
  * @throws {404} If the review or user is not found in the database.
  * @throws {500} If an error occurs while updating the review.
  */
-router.patch('/toggle-like-dislike/:reviewId', verifyToken, async function (req, res) {
+router.patch('/toggle-reaction/:reviewId', verifyToken, async function (req, res) {
     try {
-        const { userId, action } = req.body;
-
-        // Find the review by ID
-        const review = await Review.findById(req.params.reviewId);
-        const unit = await Unit.findById(review.unit);
+        const { userId, reactionType } = req.body;
+        
+        // Validate reaction type
+        if (!['like', 'dislike'].includes(reactionType)) {
+            return res.status(400).json({ error: 'Invalid reaction type. Must be "like" or "dislike"' });
+        }
+        
+        // Fetch all required documents in parallel for better performance
+        const [review, user] = await Promise.all([
+            Review.findById(req.params.reviewId),
+            User.findById(userId)
+        ]);
+        
+        // Check if review and user exist
         if (!review) return res.status(404).json({ error: 'Review not found' });
-
-        // Find the author
-        const author = await User.findById(review.author);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        
+        // Fetch additional required documents
+        const [unit, author] = await Promise.all([
+            Unit.findById(review.unit),
+            User.findById(review.author)
+        ]);
+        
+        if (!unit) return res.status(404).json({ error: 'Unit not found' });
         if (!author) return res.status(404).json({ error: 'Author not found' });
         
-        // Find the user by ID
-        const user = await User.findById(userId);
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        if (action === 'like') {
-            if (user.likedReviews.includes(review._id)) {
-                // Unlike the review
-                review.likes--;
+        // Initialize operations object to track changes
+        const operations = {
+            notificationToRemove: null,
+            notificationToAdd: null,
+            reactionAdded: false,
+            reactionRemoved: false,
+            oppositeReactionRemoved: false
+        };
+        
+        // Handle like/dislike toggle
+        if (reactionType === 'like') {
+            // Check if user already liked this review
+            const hasLiked = user.likedReviews.includes(review._id);
+            
+            if (hasLiked) {
+                // Remove like
+                review.likes = Math.max(0, review.likes - 1);
                 user.likedReviews.pull(review._id);
-
-                // Delete the like notification
-                const notification = await Notification.findOne({ user: author._id, review: review._id});
-                await Notification.deleteOne(notification);
-                author.notifications.pull(notification._id);
-
+                operations.reactionRemoved = true;
+                
+                // Find and mark notification for removal
+                operations.notificationToRemove = await Notification.findOne({ 
+                    user: author._id, 
+                    review: review._id 
+                });
             } else {
-                // Like the review
+                // Add like
                 review.likes++;
                 user.likedReviews.push(review._id);
-
-                // Create the notification
-                const newNotification = new Notification({
+                operations.reactionAdded = true;
+                
+                // Create notification data
+                operations.notificationToAdd = {
                     data: {
-                        message: `${user.username} liked your review on ${unit.unitCode}`,
+                        message: `${user.username} liked your review on ${unit.unitCode.toUpperCase()}`,
                         user: { username: user.username, profileImg: user.profileImg }
                     },
-                    navigateTo: `/unit-overview/${unit.unitCode}`,
+                    navigateTo: `/unit/${unit.unitCode}`,
                     review: review._id,
                     user: author._id
-                })
-                await newNotification.save();
-
-                // Ensure author.notifications is initialized
-                if (!author.notifications) {
-                    author.notifications = [];
-                }
-                author.notifications.push(newNotification._id);
-
-                // If the user had disliked the review, remove the dislike
+                };
+                
+                // Check if user had disliked this review
                 if (user.dislikedReviews.includes(review._id)) {
-                    review.dislikes--;
+                    // Remove the dislike
+                    review.dislikes = Math.max(0, review.dislikes - 1);
                     user.dislikedReviews.pull(review._id);
+                    operations.oppositeReactionRemoved = true;
                 }
             }
-        } else if (action === 'dislike') {
-            if (user.dislikedReviews.includes(review._id)) {
-                // Undislike the review
-                review.dislikes--;
+        } else { // dislike
+            // Check if user already disliked this review
+            const hasDisliked = user.dislikedReviews.includes(review._id);
+            
+            if (hasDisliked) {
+                // Remove dislike
+                review.dislikes = Math.max(0, review.dislikes - 1);
                 user.dislikedReviews.pull(review._id);
+                operations.reactionRemoved = true;
             } else {
-                // Dislike the review
+                // Add dislike
                 review.dislikes++;
                 user.dislikedReviews.push(review._id);
-
-                // If the user had liked the review, remove the like
+                operations.reactionAdded = true;
+                
+                // Check if user had liked this review
                 if (user.likedReviews.includes(review._id)) {
-                    review.likes--;
+                    // Remove the like
+                    review.likes = Math.max(0, review.likes - 1);
                     user.likedReviews.pull(review._id);
+                    operations.oppositeReactionRemoved = true;
+                    
+                    // Find and mark notification for removal
+                    operations.notificationToRemove = await Notification.findOne({
+                        user: author._id,
+                        review: review._id
+                    });
                 }
-
-                // Remove the notification regarding the like
-                const notification = await Notification.findOne({ user: author._id, review: review._id});
-                await Notification.deleteOne(notification);
-                author.notifications.pull(notification._id);
             }
-        } else if (action === 'unlike') {
-            if (user.likedReviews.includes(review._id)) {
-                // Unlike the review
-                review.likes--;
-                user.likedReviews.pull(review._id);
-
-                const notification = await Notification.findOne({ user: author._id, review: review._id});
-                await Notification.deleteOne(notification);
-                author.notifications.pull(notification._id);
-            } else {
-                return res.status(400).json({ error: 'Review not liked by user' });
-            }
-        } else if (action === 'undislike') {
-            if (user.dislikedReviews.includes(review._id)) {
-                // Undislike the review
-                review.dislikes--;
-                user.dislikedReviews.pull(review._id);
-            } else {
-                return res.status(400).json({ error: 'Review not disliked by user' });
-            }
-        } else {
-            return res.status(400).json({ error: 'Invalid action' });
         }
-
-        // Save the updated review and users
-        await review.save();
-        await user.save();
-        await author.save();
-
-        // Return the updated review
-        return res.status(200).json(review);
-    }
-    catch (error) {
-        // Handle general errors
-        return res.status(500).json({ error: `An error occured while toggling like/dislike: ${error.message}` });
+        
+        // Process notifications
+        if (operations.notificationToRemove) {
+            await Notification.deleteOne({ _id: operations.notificationToRemove._id });
+            
+            if (author.notifications && author.notifications.includes(operations.notificationToRemove._id)) {
+                author.notifications.pull(operations.notificationToRemove._id);
+            }
+        }
+        
+        if (operations.notificationToAdd) {
+            const newNotification = new Notification(operations.notificationToAdd);
+            await newNotification.save();
+            
+            // Ensure author.notifications is initialized
+            if (!author.notifications) {
+                author.notifications = [];
+            }
+            author.notifications.push(newNotification._id);
+        }
+        
+        // Save all documents in parallel
+        await Promise.all([
+            review.save(),
+            user.save(),
+            author.save()
+        ]);
+        
+        // Return the updated review with reaction status
+        return res.status(200).json({
+            review,
+            reactions: {
+                liked: user.likedReviews.includes(review._id),
+                disliked: user.dislikedReviews.includes(review._id)
+            }
+        });
+    } catch (error) {
+        console.error('Error in toggle-reaction:', error);
+        return res.status(500).json({ 
+            error: `An error occurred while toggling reaction: ${error.message}` 
+        });
     }
 });
 

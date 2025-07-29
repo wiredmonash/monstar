@@ -15,9 +15,23 @@
   <meta property="og:site_name" content="MonSTAR">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_AU">
+  <meta property="og:title" content="MonSTAR | Student Reviews for Monash University Units">
+  <meta property="og:description" content="Find honest reviews of Monash University units from fellow students. Discover the best units for your degree path.">
+  <meta property="og:url" content="https://monstar.wired.org.au/">
+  <!-- <meta property="og:image" content="https://monstar.wired.org.au/assets/images/social-preview.jpg"> -->
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MonSTAR - Monash Student Unit Reviews">
+  <meta name="twitter:description" content="Find the best Monash University units based on student reviews and ratings.">
+  <!-- <meta name="twitter:image" content="https://monstar.wired.org.au/assets/images/social-preview.jpg"> -->
+  <meta name="twitter:url" content="https://monstar.wired.org.au/">
   
   <!-- Favicon Icon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://monstar.wired.org.au/">
 
   <!-- Connect to Google Fonts API -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,6 +41,51 @@
 
   <!-- Google OAuth 2.0 Login -->
   <script src="https://accounts.google.com/gsi/client" async defer nonce="random-nonce"></script>
+
+  <!-- SEO -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "MonSTAR",
+      "url": "https://monstar.wired.org.au/",
+      "description": "Student Reviews for Monash University Units",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://monstar.wired.org.au/list?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MonSTAR",
+      "url": "https://monstar.wired.org.au",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://monstar.wired.org.au/favicon.png",
+        "width": "256",
+        "height": "256",
+        "caption": "MonSTAR Logo"
+      },
+      "sameAs": [
+        "https://www.facebook.com/wiredmonash",
+        "https://www.instagram.com/wiredmonash",
+        "https://twitter.com/wiredmonash",
+        "https://www.linkedin.com/company/wired-monash"
+      ],
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "WIRED Monash",
+        "url": "https://wired.org.au"
+      }
+    }
+    </script>
+
+    <meta name="google-site-verification" content="9w5R6SDbK03AeCmWlgDA1_cFrM2XsOXDU6PfWcHFLp8" />
 </head>
 <body>
   <app-root></app-root>

@@ -1,170 +1,191 @@
 <!-- Toast -->
 <p-toast></p-toast>
 
-<!-- Unit Review Header Container -->
-<div class="unit-review-header">
-  <!-- Top Section: Unit Info & Overall Rating -->
-  <div class="header-content prevent-select">
-    <!-- Unit Info -->
-    <div class="unit-info">
-      <!-- Unit code -->
-      <div class="unit-code-wrapper" pTooltip="Open unit handbook" tooltipPosition="top">
-        <h1 class="unit-code"
-          (click)="openHandbookNewTab()"
-        >
-          {{ unit.unitCode | uppercase }}
-          <!-- External link icon -->
-          <i class="pi pi-external-link"></i>
-        </h1>
-        
+@if (unit) {
+  <!-- Unit Review Header Container -->
+  <div class="unit-review-header">
+    <!-- Top Section: Unit Info and Overall Rating -->
+    <div class="header-content prevent-select">
+      <!-- Unit Info -->
+      <div class="unit-info">
+        <!-- Unit code -->
+        <div class="unit-code-wrapper" pTooltip="Open unit handbook" tooltipPosition="top">
+          <h1 class="unit-code"
+            (click)="openHandbookNewTab()"
+          >
+            {{ unit.unitCode | uppercase }}
+            <!-- External link icon -->
+            <i class="pi pi-external-link"></i>
+          </h1>
+          
+        </div>
+        <!-- Unit name -->
+        <p class="unit-name">{{ unit.name }}</p>
       </div>
-      <!-- Unit name -->
-      <p class="unit-name">{{ unit.name }}</p>
-    </div>
 
-    <!-- Overall Rating -->
-    <div class="overall-rating prevent-select">
-      <h2>
-        {{ unit.avgOverallRating | decimal }} <span>out of 5</span>
-      </h2>
-      <div class="stars">
-        <ng-container *ngFor="let star of [1,2,3,4,5]">
-          <i
-            class="bi"
-            [ngClass]="{
-              'bi-star-fill': Math.floor(unit.avgOverallRating) >= star,
-              'bi-star-half': Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star,
-              'bi-star': Math.ceil(unit.avgOverallRating) < star
-            }"
-          ></i>
-        </ng-container>
-      </div>
-      <p class="review-count">
-        <ng-container *ngIf="unit.reviews.length > 1; else oneOrNone">
-          {{ unit.reviews.length }} reviews
-        </ng-container>
-        <ng-template #oneOrNone>
-          <ng-container *ngIf="unit.reviews.length === 1; else noReviews">
-            1 review
+      <!-- Overall Rating -->
+      <div class="overall-rating prevent-select">
+        <h2>
+          {{ unit.avgOverallRating | decimal }} <span>out of 5</span>
+        </h2>
+        <div class="stars">
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <i
+              class="bi"
+              [ngClass]="{
+                'bi-star-fill': Math.floor(unit.avgOverallRating) >= star,
+                'bi-star-half': Math.floor(unit.avgOverallRating) < star && Math.ceil(unit.avgOverallRating) >= star,
+                'bi-star': Math.ceil(unit.avgOverallRating) < star
+              }"
+            ></i>
           </ng-container>
-          <ng-template #noReviews>No reviews</ng-template>
-        </ng-template>
-      </p>
+        </div>
+        <p class="review-count">
+          <ng-container *ngIf="unit.reviews.length > 1; else oneOrNone">
+            {{ unit.reviews.length }} reviews
+          </ng-container>
+          <ng-template #oneOrNone>
+            <ng-container *ngIf="unit.reviews.length === 1; else noReviews">
+              1 review
+            </ng-container>
+            <ng-template #noReviews>No reviews</ng-template>
+          </ng-template>
+        </p>
+      </div>
     </div>
-  </div>
 
-  <!-- Middle Section: Detailed Ratings -->
-  <div class="detailed-ratings">
-    <!-- Content Rating -->
-    <div class="rating-section prevent-select">
-      <p
-        pTooltip="How much enjoyment you get out of this unit"
+    <!-- Middle Section: Detailed Ratings -->
+    <div class="detailed-ratings">
+      <!-- Content Rating -->
+      <div class="rating-section prevent-select">
+        <p
+          pTooltip="How much enjoyment you get out of this unit"
+          tooltipPosition="top"
+        >Enjoyment <i class="pi pi-info-circle"></i></p>
+        
+        <p-knob 
+          [(ngModel)]="unit.avgContentRating"
+          [readonly]="true"
+          [size]="80"
+          [strokeWidth]="16"
+          [valueColor]="'#e288e2'"
+          [rangeColor]="'rgba(255,255,255,0.2)'"
+          [valueTemplate]="unit.avgContentRating.toFixed(1).toString()"
+          [max]="5"
+          [step]="0.1"
+        ></p-knob>
+        <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
+      </div>
+
+      <!-- Faculty Rating -->
+      <div class="rating-section prevent-select">
+        <p 
+          pTooltip="How easy it is to manage the workload of this unit"
+          tooltipPosition="top"
+        >Simplicity <i class="pi pi-info-circle"></i></p>
+        
+        <p-knob 
+          [(ngModel)]="unit.avgFacultyRating"
+          [readonly]="true"
+          [size]="80"
+          [strokeWidth]="16"
+          [valueColor]="'#e288e2'"
+          [rangeColor]="'rgba(255,255,255,0.2)'"
+          [valueTemplate]="unit.avgFacultyRating.toFixed(1).toString()"
+          [max]="5"
+          [step]="0.1"
+        ></p-knob>
+        <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
+      </div>
+
+      <!-- Relevancy Rating -->
+      <div class="rating-section prevent-select">
+        <p
+          pTooltip="How useful is the content for your future career or studies"
+          tooltipPosition="top"
+        >Usefulness <i class="pi pi-info-circle"></i></p>
+
+        <p-knob 
+          [(ngModel)]="unit.avgRelevancyRating"
+          [readonly]="true"
+          [size]="80"
+          [strokeWidth]="16"
+          [valueColor]="'#e288e2'"
+          [rangeColor]="'rgba(255,255,255,0.2)'"
+          [valueTemplate]="unit.avgRelevancyRating.toFixed(1).toString()"
+          [max]="5"
+          [step]="0.1"
+        ></p-knob>
+        <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
+      </div>
+    </div>
+
+    <!-- Bottom Section: Actions (Write Review, Sort, Filter) -->
+    <div class="actions">
+      <!-- Write a Review Button -->
+      <div
+        [pTooltip]="user == null ? 'You must be logged in to write a review.' : hasReviewed ? 'You have already reviewed this unit.' : 'Write a review for this unit.'"
         tooltipPosition="top"
-      >Enjoyment <i class="pi pi-info-circle"></i></p>
-      
-      <p-knob 
-        [(ngModel)]="unit.avgContentRating"
-        [readonly]="true"
-        [size]="80"
-        [strokeWidth]="16"
-        [valueColor]="'#e288e2'"
-        [rangeColor]="'rgba(255,255,255,0.2)'"
-        [valueTemplate]="unit.avgContentRating.toFixed(1).toString()"
-        [max]="5"
-        [step]="0.1"
-      ></p-knob>
-      <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
-    </div>
+      >
+        <p-button 
+          pRipple
+          label="Review"
+          icon="pi pi-pencil" 
+          (click)="showDialog()"
+          rounded="true"
+          [style]="{ 'background-color': 'var(--primary-color)', 'border': 'none' }"
+          [disabled]="user == null ? true : hasReviewed"
+        ></p-button>
+      </div>
 
-    <!-- Faculty Rating -->
-    <div class="rating-section prevent-select">
-      <p 
-        pTooltip="How easy it is to manage the workload of this unit"
-        tooltipPosition="top"
-      >Simplicity <i class="pi pi-info-circle"></i></p>
-      
-      <p-knob 
-        [(ngModel)]="unit.avgFacultyRating"
-        [readonly]="true"
-        [size]="80"
-        [strokeWidth]="16"
-        [valueColor]="'#e288e2'"
-        [rangeColor]="'rgba(255,255,255,0.2)'"
-        [valueTemplate]="unit.avgFacultyRating.toFixed(1).toString()"
-        [max]="5"
-        [step]="0.1"
-      ></p-knob>
-      <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
-    </div>
-
-    <!-- Relevancy Rating -->
-    <div class="rating-section prevent-select">
-      <p
-        pTooltip="How useful is the content for your future career or studies"
-        tooltipPosition="top"
-      >Usefulness <i class="pi pi-info-circle"></i></p>
-
-      <p-knob 
-        [(ngModel)]="unit.avgRelevancyRating"
-        [readonly]="true"
-        [size]="80"
-        [strokeWidth]="16"
-        [valueColor]="'#e288e2'"
-        [rangeColor]="'rgba(255,255,255,0.2)'"
-        [valueTemplate]="unit.avgRelevancyRating.toFixed(1).toString()"
-        [max]="5"
-        [step]="0.1"
-      ></p-knob>
-      <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
-    </div>
-  </div>
-
-  <!-- Bottom Section: Actions (Write Review, Sort, Filter) -->
-  <div class="actions">
-    <!-- Write a Review Button -->
-    <div
-      [pTooltip]="user == null ? 'You must be logged in to write a review.' : 'Write a review for this unit.'"
-      tooltipPosition="top"
-    >
-      <p-button 
-        pRipple
-        label="Review"
-        icon="pi pi-pencil" 
-        (click)="showDialog()"
-        rounded="true"
-        [style]="{ 'background-color': 'var(--primary-color)', 'border': 'none' }"
-        [disabled]="user == null ? true : false"
-      ></p-button>
-    </div>
-
-    <!-- Filter Button -->
-    <p-button
-      label="Filter"
-      icon="pi pi-sliders-h"
-      rounded="true"
-      pTooltip="Filtering options"
-      tooltipPosition="bottom"
-    ></p-button>
-
-    <!-- Unit Map Button -->
-    <div
-      [pTooltip]="
-        unitMapButtonDisabled
-          ? 'This unit has no connections to other units at Monash' 
-          : 'See prerequisites and other unit connections in a graph.'
-      "
-      tooltipPosition="bottom"
-    >
+      <!-- Filter Button -->
       <p-button
-        label="Map"
-        icon="pi pi-map-marker"
+        label="Sort"
+        icon="pi pi-sliders-h"
         rounded="true"
-        [disabled]="unitMapButtonDisabled"
-        (click)="navigateToUnitMap()"
+        pTooltip="Sorting options"
+        tooltipPosition="bottom"
+        (click)="toggleDropdown($event)"
       ></p-button>
+
+      <!-- Dropdown Menu -->
+      <p-overlayPanel #sortMenu appendTo="body">
+        <p-listbox
+          [options]="sortOptions"
+          [(ngModel)]="selectedSort" 
+          optionLabel="name"
+          (onChange)="onSort($event.value)">
+        </p-listbox>
+      </p-overlayPanel>
+
+      <!-- Unit Map Button -->
+      <div
+        [pTooltip]="
+          !isUnitMapButtonEnabled
+            ? 'This unit has no connections to other units at Monash' 
+            : 'See prerequisites and other unit connections in a graph.'
+        "
+        tooltipPosition="bottom"
+      >
+        <p-button
+          label="Map"
+          icon="pi pi-map-marker"
+          rounded="true"
+          [disabled]="!isUnitMapButtonEnabled || viewportType === 'mobile'"
+          (click)="navigateToUnitMap()"
+        ></p-button>
+      </div>
     </div>
   </div>
-</div>
+} @else {
+  <p-skeleton 
+    [style]="{
+      'margin-top': '2rem',
+    }"
+    [height]="skeletonHeight"
+    borderRadius="16px"
+  />
+}
 
 <!-- Child Component: Write Review -->
 <app-write-review-unit

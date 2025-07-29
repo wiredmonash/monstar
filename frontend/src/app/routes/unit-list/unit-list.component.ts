@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UnitCardComponent } from "../../shared/components/unit-card/unit-card.component";
 import { ApiService } from '../../shared/services/api.service';
@@ -15,8 +15,15 @@ import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { Unit } from '../../shared/models/unit.model';
+import { Unit, UnitData } from '../../shared/models/unit.model';
 import { ScrollTopModule } from 'primeng/scrolltop';
+import { Meta, Title } from '@angular/platform-browser';
+import { ViewportService } from '../../shared/services/viewport.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BASE_URL, META_BASIC_DESCRIPTION, META_BASIC_KEYWORDS, META_BASIC_OPEN_GRAPH_DESCRIPTION, META_BASIC_TITLE, META_BASIC_TWITTER_TITLE, META_UNIT_LIST_TITLE } from '../../shared/constants';
+import { scrollToTop } from '../../shared/helpers';
 
 @Component({
   selector: 'app-unit-list',
@@ -42,7 +49,7 @@ import { ScrollTopModule } from 'primeng/scrolltop';
   templateUrl: './unit-list.component.html',
   styleUrl: './unit-list.component.scss',
 })
-export class UnitListComponent implements OnInit {
+export class UnitListComponent implements OnInit, OnDestroy {
   // Array to hold the filtered list of units
   filteredUnits: Unit[] = []; 
 
@@ -51,7 +58,7 @@ export class UnitListComponent implements OnInit {
 
   // Current page
   first: number = 0; 
-  // Number of unit cards shown on the page
+  // Total no. of rows of unit cards shown on the page
   rows: number = 20; 
   // Total number of unit cards
   totalRecords: number = 0; 
@@ -101,12 +108,30 @@ export class UnitListComponent implements OnInit {
   // Prerequisites
   hasPrerequisites: boolean = false;
 
+  // Viewport type
+  viewportType: string = 'desktop';
+
+  // Debouncing search
+  private searchSubject = new Subject<string>();
+
   /**
-   * * Constructor
-   * 
-   * @param apiService Injects the ApiService to communicate with the backend APIs
+   * ! Constructor
    */
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private apiService: ApiService,
+    private meta: Meta,
+    private titleService: Title,
+    private viewportService: ViewportService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) { }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | LIFECYCLE HOOKS                                                            
+   *  ! |======================================================================|
+   */
 
   /**
    * * Angular lifecycle hook called after the component has been initalised.
@@ -114,6 +139,30 @@ export class UnitListComponent implements OnInit {
    * This method is used to trigger data fetching when the component loads.
    */
   ngOnInit(): void {
+    // Update meta tags for this page
+    this.updateMetaTags();
+
+    // Setup the debounced search
+    this.searchSubject.pipe(
+      debounceTime(400), // Wait 400ms after the user stops typing
+      distinctUntilChanged() // Only emit if the search string changed
+    ).subscribe(searchTerm => {
+      this.updateSearchQueryParams(searchTerm);
+      this.filterUnits();
+    });
+
+    // Subscribe to route paramter changes
+    this.route.queryParams.subscribe(params => {
+      if (params['search']) {
+        if (this.search !== params['search']) {
+          this.search = params['search'];
+          this.fetchPaginatedUnits();
+        } 
+      } else if (this.search) {
+        this.search = '';
+      }
+    });
+
     // Retrieve the sortBy state from local storage
     const savedSortBy = localStorage.getItem('sortBy');
     if (savedSortBy) 
@@ -141,7 +190,41 @@ export class UnitListComponent implements OnInit {
 
     // Fetches the paginated units from the backend
     this.fetchPaginatedUnits(); 
+
+    // Subscribe to the viewport service and get the viewport type
+    this.viewportService.viewport$.subscribe(type => {
+      this.viewportType = type;
+    });
   }
+
+  /**
+   * * Angular lifecycle hook called on deletion
+   */
+  ngOnDestroy(): void {
+    // Reset title
+    this.titleService.setTitle('MonSTAR | Browse and Review Monash University Units');
+    
+    // Remove all custom meta tags
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    this.meta.removeTag("property='og:title'");
+    this.meta.removeTag("property='og:description'");
+    this.meta.removeTag("property='og:url'");
+    this.meta.removeTag("property='og:type'");
+    this.meta.removeTag("name='twitter:card'");
+    this.meta.removeTag("name='twitter:title'");
+    this.meta.removeTag("name='twitter:description'");
+
+    // Unsubscribe from the subject
+    this.searchSubject.complete();
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | PAGINATION & UNITS RETRIEVAL                                                     
+   *  ! |======================================================================|
+   */
 
   /**
    * * Fetch paginated units from the backend and update the filteredUnits array.
@@ -159,7 +242,7 @@ export class UnitListComponent implements OnInit {
     this.apiService.getUnitsFilteredGET(this.first, this.rows, searchLower, this.sortBy, this.showReviewed, this.showUnreviewed, this.hideNoOfferings, this.selectedFaculty, this.selectedSemesters, this.selectedCampuses).subscribe({
       next: (response: any) => {
         // Map the response data to Unit objects
-        this.filteredUnits = response.units.map((unitData: any) => new Unit(unitData._id, unitData.unitCode, unitData.name, unitData.description, unitData.reviews, unitData.avgOverallRating, unitData.avgRelevancyRating, unitData.avgFacultyRating, unitData.avgContentRating, unitData.level, unitData.creditPoints, unitData.school, unitData.academicOrg, unitData.scaBand, unitData.requisites, unitData.offerings, unitData.tags));
+        this.filteredUnits = response.units.map((unitData: UnitData) => new Unit(unitData));
 
         // Update the total records
         this.totalRecords = response.total;
@@ -183,8 +266,33 @@ export class UnitListComponent implements OnInit {
     });
   }
 
+  onSearchInput() {
+    this.searchSubject.next(this.search);
+  }
+
+  updateSearchQueryParams(searchTerm: string) {
+    if (searchTerm) {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: searchTerm },
+        queryParamsHandling: 'merge'
+      });
+    } else {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { search: null },
+        queryParamsHandling: 'merge'
+      });
+    }
+  }
+
   /**
    * * Updates the filteredUnits array based on the current search query
+   * 
+   * - Updates the URL with the current search
+   * - Removes old local storage items
+   * - Saves current filters to local storage
+   * - Fetches the units
    */
   filterUnits() {
     // Remove old local storage items
@@ -210,6 +318,7 @@ export class UnitListComponent implements OnInit {
     this.rows = event.rows;
     localStorage.setItem('rowsPerPage', JSON.stringify(this.rows)); // Save the rows per page to localStorage
     this.fetchPaginatedUnits();
+    scrollToTop(); // Scroll to top of page
   }
 
   /**
@@ -222,6 +331,13 @@ export class UnitListComponent implements OnInit {
     localStorage.setItem('sortBy', this.sortBy);
     this.fetchPaginatedUnits();
   }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | KEYBOARD SHORTCUTS                                                            
+   *  ! |======================================================================|
+   */
 
   /**
    * * Handles focusing via keybinds
@@ -282,5 +398,52 @@ export class UnitListComponent implements OnInit {
         this.filterUnits();
       }
     }
+  }
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                            
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Update meta tags for SEO
+   */
+  private updateMetaTags(): void {
+    const pageUrl = `${BASE_URL}/list`;
+    
+    // Basic meta tags
+    this.titleService.setTitle(META_UNIT_LIST_TITLE);
+    this.meta.updateTag({ name: 'description', content: META_BASIC_DESCRIPTION });
+    this.meta.updateTag({ name: 'keywords',  content: META_BASIC_KEYWORDS });
+
+    // Open Graph tags for social sharing
+    this.meta.updateTag({ property: 'og:title', content: META_UNIT_LIST_TITLE });
+    this.meta.updateTag({ property: 'og:description', content: META_BASIC_OPEN_GRAPH_DESCRIPTION });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: META_BASIC_TWITTER_TITLE });
+    this.meta.updateTag({ name: 'twitter:description', content: META_BASIC_DESCRIPTION });
+
+    console.log('[Unit List] Meta tags updated');
+
+    // Canonical URLs
+    const canonicalUrl = this.search 
+    ? `https://monstar.wired.org.au/list?search=${encodeURIComponent(this.search)}`
+    : 'https://monstar.wired.org.au/list';
+    
+    // Remove previous canonical if it exists
+    const existingCanonical = document.querySelector('link[rel="canonical"]');
+    if (existingCanonical) { existingCanonical.remove(); }
+
+    // Add new canonical
+    const canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    canonicalLink.setAttribute('href', canonicalUrl);
+    document.head.appendChild(canonicalLink);
   }
 }

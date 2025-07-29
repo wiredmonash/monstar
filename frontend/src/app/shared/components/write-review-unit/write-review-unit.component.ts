@@ -63,7 +63,9 @@ export class WriteReviewUnitComponent implements OnInit {
   @ViewChild('submitReviewButton') submitReviewButton?: ElementRef;
 
   // Input property to receive the unit data from the parent component
-  @Input() unit: any;
+  @Input() unit?: any;
+
+  @Input() editMode: boolean = false;
 
   // Input property to receive the visible boolean data from the parent component
   @Input() visible: boolean = false;
@@ -72,10 +74,12 @@ export class WriteReviewUnitComponent implements OnInit {
   @Input() user: User | null = null;
 
   // Event to notify that the review was posted
-  @Output() reviewPosted = new EventEmitter<void>(); 
+  @Output() reviewPosted = new EventEmitter<void>();
+
+  @Output() reviewEdited = new EventEmitter<void>(); 
 
   // Review object and it's properties
-  review: Review = new Review();
+  @Input() review: Review = new Review();
 
   // List of years to choose from (see initialiseYearOptions)
   yearOptions: Array<{ label: string; value: number }> = [];
@@ -92,7 +96,7 @@ export class WriteReviewUnitComponent implements OnInit {
   isAnimating: boolean = false;
 
   // State of the dialog
-  stateList = ['title', 'description', 'semester', 'year', 'grade', 'contentRating', 'facultyRating', 'relevancyRating', 'submit'];
+  stateList = ['title', 'description', 'semester', 'year', 'contentRating', 'facultyRating', 'relevancyRating', 'submit'];
   stateIndex = 0;
 
   // Stores the last key pressed, used for resetting the rating
@@ -259,7 +263,7 @@ export class WriteReviewUnitComponent implements OnInit {
             this.yearInput?.show();
           }
           break;
-        case 'grade':
+        case 'grade': // ! REMOVED
           if (!this.isAnimating) {
             this.gradeInput?.focus();
             this.gradeInput?.show();
@@ -317,6 +321,10 @@ export class WriteReviewUnitComponent implements OnInit {
 
       // If the current state is 'submit', post the review
       if (currentState === 'submit') {
+        console.log(this.editMode);
+        if (this.editMode) {
+          return this.editReview();
+        }
         return this.postReview();
       }
 
@@ -357,6 +365,60 @@ export class WriteReviewUnitComponent implements OnInit {
         this.lastKeyPressed = event.key;
       }
     }
+
+  }
+
+  editReview() {
+    //Checking if user is logged in
+    if (!this.user) {
+      console.error('User data not available.');
+      return;
+    }
+
+    //Checking if unit is assigned to us
+    if (!this.unit) {
+      console.error('Unit data not available.');
+      return;
+    }
+
+    // Ensure all defaults are set in the review object
+    this.review.ensureDefaults();
+
+    // Push the new review to the currentUser's reviews array
+    this.user.reviews.push(this.review._id);
+
+    // ? Debug log
+    console.log('Updating review:', this.review);
+
+    // Calculate the overall rating
+    this.review.calcOverallRating();
+
+    // Send the review using the API service
+    this.apiService.editReviewPUT(this.review).subscribe({
+      next: (response) => {
+        // Update the current user in AuthService
+        this.authService.setCurrentUser(this.user!);
+
+        // ? Debug log
+        console.log('WriteReviewUnit | Update current user:', this.user);
+
+        // Close the pop up write review
+        this.closeDialog();
+
+        // Emit that we posted the review
+        this.reviewEdited.emit();
+
+        // Show success toast 
+        this.messageService.add({ key: 'success-toast', severity: 'success', summary: 'Review Modified!', detail: 'Review has been published publicly' });
+
+        // Reset form after successful submission
+        this.review = new Review();
+      },
+      error: (error) => { 
+        // Show error toast 
+        this.messageService.add({ key: 'error-toast', severity: 'error', summary: 'Failed to submit review :(', detail: 'Make sure you give it a title and description dummy!' });
+      }
+    });
 
   }
 
@@ -413,9 +475,9 @@ export class WriteReviewUnitComponent implements OnInit {
 
     // Send the review using the API service
     this.apiService.createReviewForUnitPOST(this.unit.unitCode, this.review).subscribe({
-      next: (response) => {
+      next: (data) => {
         // Create the review object from the response
-        const review = new Review(response._id, response.title, response.semester, response.grade, response.year, response.overallRating, response.relevancyRating, response.facultyRating, response.contentRating, response.description, response.author);
+        const review = new Review(data);
 
         // Update the user's reviews array
         this.user!.reviews.push(review._id);

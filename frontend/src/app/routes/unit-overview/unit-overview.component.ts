@@ -1,13 +1,29 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Meta, Title } from '@angular/platform-browser';
+import { filter, take } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+
+// Constants
+import { BASE_URL, getMetaUnitOverviewDescription, getMetaUnitOverviewKeywords, getMetaUnitOverviewOpenGraphDescription, getMetaUnitOverviewOpenGraphTitle, getMetaUnitOverviewTitle, getMetaUnitOverviewTwitterDescription, getMetaUnitOverviewTwitterTitle, NAVBAR_HEIGHT } from '../../shared/constants';
+
+// Services
 import { ApiService } from '../../shared/services/api.service';
+import { MessageService } from 'primeng/api';
+import { FooterService } from '../../shared/services/footer.service';
+
+// Components
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
-import { ActivatedRoute } from '@angular/router';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
+import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
+// Modules
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
-import { CommonModule } from '@angular/common';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { ToastModule } from 'primeng/toast';
+import { Review } from '../../shared/models/review.model';
 
 @Component({
   selector: 'app-unit-overview',
@@ -15,10 +31,13 @@ import { CommonModule } from '@angular/common';
   imports: [
     ReviewCardComponent, 
     UnitReviewHeaderComponent,
+    SetuCardComponent,
     ToastModule,
     ProgressSpinnerModule,
     SkeletonModule,
+    ScrollPanelModule,
     CommonModule,
+    FormsModule,
   ],
   providers: [
     MessageService,
@@ -28,20 +47,21 @@ import { CommonModule } from '@angular/common';
 })
 export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('headerSkeleton') headerSkeleton!: ElementRef;
+  @ViewChild('unitOverviewContainer') unitOverviewContainer!: ElementRef;
 
   unit: any = null;
-  reviews: any[] = [];
+  reviews: Review[] = [];
   reviewsLoading: boolean = true;
 
-  // Header skeleton heights for different screen sizes
-  private readonly SKELETON_HEIGHTS = {
-    mobile: '606px',
-    tablet: '431.6px',
-    laptop: '273.2px',
-    desktop: '255.2px'
-  }
-  skeletonHeight: string = this.SKELETON_HEIGHTS.desktop;
+  // Split view boolean
+  isSplitView: boolean = false;
+  splitViewMinWidth: number = 1414;
 
+  // Resize handler 
+  private resizeHandler = () => {
+    this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
+    this.updateContainerHeight();
+  }
 
   /**
    * === Constructor ===
@@ -53,7 +73,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor (
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private meta: Meta,
+    private router: Router,
+    private titleService: Title,
+    private footerService: FooterService
   ) { }
 
 
@@ -63,11 +87,16 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * Gets the unitcode from the URL param and uses it to get the unit and reviews.
    */ 
   ngOnInit(): void {
+    // Hide the footer
+    this.footerService.hideFooter();
+
+    this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
+
     // Get unit code from the route parameters
     const unitCode = this.route.snapshot.paramMap.get('unitcode');
 
     if (unitCode) {
-      this.getUnitByUnitcode(unitCode); // Get the unit
+      this.getUnitByUnitcode(unitCode) // Get the unit
       this.getAllReviews(unitCode); // Get the reviews
     }
   }
@@ -76,8 +105,35 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * * Runs after the view has been initialised
    */
   ngAfterViewInit(): void {
-    this.updateSkeletonHeight();
-    window.addEventListener('resize', () => this.updateSkeletonHeight());
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  /**
+   * * On Component Destruction
+   */
+  ngOnDestroy(): void {
+    // Remove the event listener
+    window.removeEventListener('resize', this.resizeHandler);
+
+    // Reset height of the unit overview container
+    this.unitOverviewContainer.nativeElement.style.height = ''
+
+    // Show the footer again
+    this.footerService.showFooter();
+
+    // Reset title
+    this.titleService.setTitle('MonSTAR | Browse and Review Monash University Units');
+    
+    // Remove all custom meta tags
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    this.meta.removeTag("property='og:title'");
+    this.meta.removeTag("property='og:description'");
+    this.meta.removeTag("property='og:url'");
+    this.meta.removeTag("property='og:type'");
+    this.meta.removeTag("name='twitter:card'");
+    this.meta.removeTag("name='twitter:title'");
+    this.meta.removeTag("name='twitter:description'");
   }
 
 
@@ -89,16 +145,19 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   getAllReviews(unitCode?: any) {
     this.apiService.getAllReviewsGET(unitCode).subscribe(
-      (reviews: any) => {
-        // Store the fetched reviews 
+      (reviews: Review[]) => {
+        // Store the fetched reviews
         this.reviews = reviews;
 
+        this.sortReviews('most-likes'); // Sort by most-likes by default
+
         // Update the reviews property in the unit object
-        if (this.unit)
-          this.unit.reviews = this.reviews;
+        if (this.unit) this.unit.reviews = this.reviews;
 
         // Not loading anymore
         this.reviewsLoading = false;
+
+        this.resetScrollPosition();
 
         // ? Debug log: Success
         console.log('GET Get All Reviews', reviews);
@@ -106,7 +165,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       (error: any) => {
         // ? Debug log: Error
         console.log('ERROR DURING: GET Get All Reviews', error)
-      }
+      },
+      (() => {
+        // Update the height of the whole container
+        this.updateContainerHeight();
+      })
     );
   }
 
@@ -123,6 +186,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       (unit: any) => {
         // Store the unit
         this.unit = unit;
+
+        // Update meta tags AFTER unit data is available
+        this.updateMetaTags();
+
+        this.resetScrollPosition()
 
         // ? Debug log: Success
         console.log('GET Get Unit by Unitcode', unit);
@@ -144,20 +212,23 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * - 'recent': Sorts the reviews by most recent first based on `createdAt` property.
    * - 'lowest-rating': Sorts the reviews by the lowest rating (`overallRating`) first.
    * - 'highest-rating': Sorts the reviews by the highest rating (`overallRating`) first.
+   * - 'most-likes': Sorts the reviews by the most likes first.
    */
   sortReviews(criteria: string) {
     // ? Debug log: Sorting reviews message
-    console.log('Sorting reviews', criteria);
-
+    console.log('Sorting reviews', criteria); 
+    
     // Criterion
     switch (criteria) {
+
+      // Sorting by oldest
+      case 'oldest':
+        this.reviews.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        break;
+
       // Sorting by most recent
       case 'recent':
-        this.reviews.sort((a,b) => {
-          const dateA = new Date(a.createdAt);
-          const dateB = new Date(b.createdAt);
-          return dateB.getTime() - dateA.getTime(); // Most recent first
-        });
+        this.reviews.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
 
       // Sorting by lowest rating
@@ -168,6 +239,16 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       // Sorting by highest rating
       case 'highest-rating':
         this.reviews.sort((a, b) => b.overallRating - a.overallRating);
+        break;
+      
+      // Sorting by most likes
+      case 'most-likes':
+        this.reviews.sort((a, b) => (b.likes - b.dislikes) - (a.likes - a.dislikes));
+        break;
+      
+      // Sorting by most dislikes
+      case 'most-dislikes':
+        this.reviews.sort((a, b) => (a.likes - a.dislikes) - (b.likes - b.dislikes));
         break;
     }
   }
@@ -189,30 +270,98 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  /**
-   * * Updates the height of the header skeleton based on the screen size
+  /** 
+   *  ! |======================================================================|
+   *  ! | UI Manipulators
+   *  ! |======================================================================|
    */
-  private updateSkeletonHeight() {
-    const width = window.innerWidth;
-    let height = this.SKELETON_HEIGHTS.desktop;
 
-    if (width < 768) {
-      height = this.SKELETON_HEIGHTS.mobile;
-    } else if (width < 976) {
-      height = this.SKELETON_HEIGHTS.tablet;
-    } else if (width < 1110) {
-      height = this.SKELETON_HEIGHTS.laptop;
+  /**
+   * * Updates unit overview container height
+   * 
+   * Runs on window resize and component initialisation
+   * 
+   * - If we're in split view we use 100vh
+   * - If we have 1 review then we use 100vh minus the height of the navbar and 
+   * prevent scrolling.
+   * - If we have more than 2 reviews, then we use 100% to grow to full height.
+   */
+  updateContainerHeight() {
+    // Start of with 100vh to work with split view
+    this.unitOverviewContainer.nativeElement.style.height = '100vh';
+
+    // No change if we're in split view
+    if (this.isSplitView) {
+      this.unitOverviewContainer.nativeElement.style.height = '';
+    } else {
+      this.unitOverviewContainer.nativeElement.style.height = '100%';
+      this.unitOverviewContainer.nativeElement.style.overflow = '';
     }
-
-    this.skeletonHeight = height;
   }
 
   /**
-   * * On Component Destruction
-   * 
-   * - Removes the event listener for window resize
+   * * Reset scroll position on all possible containers
    */
-  ngOnDestroy(): void {
-    window.removeEventListener('resize', () => this.updateSkeletonHeight());
+  private resetScrollPosition(): void {
+    console.log('Resetting scroll position');
+
+    // Reset main window scroll
+    window.scrollTo(0,0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+
+    // Reset any scroll panels
+    const scrollContainers = document.querySelectorAll('.p-scrollpanel-content, .p-scrollpanel-wrapper');
+    scrollContainers.forEach(container => {
+      if (container instanceof HTMLElement) {
+        container.scrollTop = 0;
+      }
+    });
+
+    // Try to get the app's main content container
+    const appContent = document.querySelector('app-root');
+    if (appContent) {
+      appContent.scrollTop = 0;
+    }
+  }
+
+
+
+  /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                            
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Updates Meta Tags
+   */
+  updateMetaTags(): void {
+    if (!this.unit || !this.unit.unitCode) {
+      console.warn('Cannot update meta tags: Unit data is not available');
+      return;
+    }
+
+    const unitReviewsCount = this.unit.reviews.length;
+    const unitAverageRating = this.unit.avgOverallRating.toFixed(1);
+    const unitCode = this.unit.unitCode.toUpperCase();
+    const unitName = this.unit.name;
+    const pageUrl = `${BASE_URL}/unit/${this.unit.unitCode}`;
+    
+    // Basic meta tags
+    this.titleService.setTitle(getMetaUnitOverviewTitle(unitCode, unitName));
+    this.meta.updateTag({ name: 'description', content: getMetaUnitOverviewDescription(unitReviewsCount, unitCode, unitName) });
+    this.meta.updateTag({ name: 'keywords', content: getMetaUnitOverviewKeywords(unitCode, unitName) });
+
+    // Open Graph tags for social sharing
+    this.meta.updateTag({ property: 'og:title', content: getMetaUnitOverviewOpenGraphTitle(unitCode, unitName) });
+    this.meta.updateTag({ property: 'og:description', content: getMetaUnitOverviewOpenGraphDescription(unitCode, unitAverageRating, unitReviewsCount) });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: getMetaUnitOverviewTwitterTitle(unitCode) });
+    this.meta.updateTag({ name: 'twitter:description', content: getMetaUnitOverviewTwitterDescription(unitCode, unitName, unitAverageRating) });
   }
 }

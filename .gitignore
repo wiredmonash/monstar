@@ -131,3 +131,9 @@ dist
 
 # Jetbrains Webstorm specific
 .idea/
+
+# Exclude generated sitempas
+frontend/public/sitemap*.xml
+
+# Exclude DS Store from Mac Users
+.DS_Store

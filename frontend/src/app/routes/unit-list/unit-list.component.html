@@ -1,6 +1,9 @@
 <!-- === Toolbar === -->
 <div class="toolbar-container">
-  <p-toolbar class="toolbar" styleClass="shadow-2" [style]="{ 'border-radius': '3rem' }">
+  <p-toolbar 
+    class="toolbar" 
+    styleClass="shadow-2" 
+  >
     <!-- ! Start group (Simple sorting order dropdown) -->
     <div class="p-toolbar-group-start">
         <!-- * Sortby dropdown  -->
@@ -22,7 +25,9 @@
             tooltipStyleClass="mt-2"
           />
           <!-- Badge to show keyboard shortcut -->
-          @if (!isSortByFocused) { <span class="sortby-badge prevent-select">CTRL+F</span> }
+          @if (!isSortByFocused && viewportType !== 'mobile' && viewportType !== 'tablet') { 
+            <span class="sortby-badge prevent-select">CTRL+F</span> 
+          }
         </div>
     </div>
 
@@ -38,32 +43,45 @@
               variant='filled'
               [style]="{ 'border-radius': '3rem', 'width': '18rem', 'height': '2.5rem', 'font-size': '1rem' }"
               [(ngModel)]="search" 
-              (input)="filterUnits()"
+              (input)="onSearchInput();"
               (focus)="isSearchFocused = true;"
               (blur)="isSearchFocused = false;"
               pTooltip="Search for unitcode"
               tooltipPosition="bottom"
             />
             <!-- Badge to show keyboard shortcut -->
-            @if (!isSearchFocused) { <span class="search-badge prevent-select">CTRL+K</span> }
+            @if (!isSearchFocused && viewportType !== 'mobile' && viewportType !== 'tablet') { 
+              <span class="search-badge prevent-select">CTRL+K</span> 
+            }
         </span>
     </div>
 
     <!-- ! End group (Advanced filtering options) -->
     <div class="p-toolbar-group-end">
       <!-- Badge for keyboard shortcut -->
-      @if (!op.overlayVisible) { <span class="filter-badge prevent-select">CTRL+O</span> }
+      @if (!op.overlayVisible && viewportType !== 'mobile' && viewportType !== 'tablet') { 
+        <span class="filter-badge prevent-select">CTRL+O</span> 
+      }
       <!-- * Advanced filtering button with overlay panel -->
       <p-button 
         #filterButton 
         [icon]="loading ? 'pi pi-spinner pi-spin' : 'pi pi-filter'" 
         (onClick)="op.toggle($event)" 
         pTooltip="Advanced Filtering" 
+        [label]="viewportType === 'mobile' || viewportType === 'tablet' ? 'Filters' : ''"
         [rounded]="true" 
         tooltipPosition="bottom" 
         tooltipStyleClass="mt-2"
       />
-        <p-overlayPanel #op id="advancedFiltering" [dismissable]="true" [style]="{ 'width': '500px', 'margin-top': '1rem' }">
+        <p-overlayPanel 
+          #op 
+          id="advancedFiltering" 
+          [dismissable]="true" 
+          [style]="{ 
+            'width': (viewportType === 'mobile') ? '250px' : (viewportType === 'tablet') ? '400px' : '500px',
+            'margin-top': '1rem',
+          }"
+        >
           <div class="filter-options">
             <!-- Show only reviewed units -->
             <div class="filter-option">
@@ -89,7 +107,7 @@
                 <p-multiSelect id="faculty" 
                   [options]="faculties" 
                   [style]="{ 'width': '100%' }" 
-                  scrollHeight="500px"
+                  scrollHeight="25vh"
                   [showClear]="true"
                   [(ngModel)]="selectedFaculty" 
                   (onChange)="filterUnits();"
@@ -105,7 +123,7 @@
                 <p-multiSelect id="semester" 
                   [options]="semesters" 
                   [style]="{ 'width': '100%' }" 
-                  scrollHeight="400px"
+                  scrollHeight="25vh"
                   [showClear]="true"
                   [(ngModel)]="selectedSemesters" 
                   (onChange)="filterUnits();"
@@ -121,7 +139,7 @@
                 <p-multiSelect id="campus" 
                   [options]="campuses" 
                   [style]="{ 'width': '100%' }" 
-                  scrollHeight="300px"
+                  scrollHeight="25vh"
                   [showClear]="true"
                   [(ngModel)]="selectedCampuses" 
                   (onChange)="filterUnits();"
