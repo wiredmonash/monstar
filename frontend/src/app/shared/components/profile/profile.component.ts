@@ -573,7 +573,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.createToast.emit({
               severity: 'error',
               summary: 'Error Updating Details',
-              detail: 'Some error occurred whilst updating details'
+              detail: error.error.error || 'There was an error whilst updating your details'
             });
 
             // ? Debug log show error message
