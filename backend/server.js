@@ -16,6 +16,7 @@ const ReviewRouter = require("./routes/reviews");
 const AuthRouter = require("./routes/auth");
 const NotificationRouter = require("./routes/notifications");
 const SetuRouter = require("./routes/setus");
+const UserRouter = require("./routes/users");
 
 // === Middleware ===
 app.use(
@@ -58,6 +59,7 @@ app.use("/api/v1/reviews", ReviewRouter);
 app.use("/api/v1/auth", AuthRouter);
 app.use("/api/v1/notifications", NotificationRouter);
 app.use("/api/v1/setus", SetuRouter);
+app.use("/api/v1/user", UserRouter);
 
 // === Services ===
 // Update the most reviews tag every hour

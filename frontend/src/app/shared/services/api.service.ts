@@ -78,6 +78,29 @@ export class ApiService {
   }
 
   /**
+   * * GET Get User by Username
+   * 
+   * Retrieves a user by their username.
+   * 
+   * @param {string} username The username of the user
+   * @returns {Observable<any>} An observable containing the user data
+   */
+  getUserByUsernameGET(username: string): Observable<any> {
+    return this.http.get(
+      `${this.url}/user/${username}`
+    ).pipe(
+      tap({
+        next: (response) => {
+          console.log('ApiService | Successfully fetched user by username:', response);
+        },
+        error: (error) => {
+          console.log('ApiService | Error whilst fetching user by username:', error.error);
+        }
+      })
+    );
+  }
+
+  /**
    * * GET Gets the notifications of a user
    */
   getUserNotificationsGET(userID: string): Observable<any> {
