@@ -1,23 +1,25 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Setu } from '../../shared/models/setu.model';
+import { ViewportService, ViewportType } from '../../shared/services/viewport.service';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SetuService } from '../../shared/services/setu.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { CarouselModule } from 'primeng/carousel';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
 import { CardModule } from 'primeng/card';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
 import { DividerModule } from 'primeng/divider';
 import { KnobModule } from 'primeng/knob';
-import { CarouselModule } from 'primeng/carousel';
-import { SetuService } from '../../services/setu.service';
-import { Setu } from '../../models/setu.model';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { BASE_URL, getMetaSetuOverviewDescription, getMetaSetuOverviewKeywords, getMetaSetuOverviewOpenGraphDescription, getMetaSetuOverviewOpenGraphTitle, getMetaSetuOverviewTitle, getMetaSetuOverviewTwitterDescription, getMetaSetuOverviewTwitterTitle } from '../../shared/constants';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-setu-main',
+  selector: 'app-setu-overview',
   standalone: true,
   imports: [
     CommonModule,
@@ -32,10 +34,10 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
     KnobModule,
     CarouselModule,
   ],
-  templateUrl: './setu-main.component.html',
-  styleUrl: './setu-main.component.scss',
+  templateUrl: './setu-overview.component.html',
+  styleUrl: './setu-overview.component.scss',
 })
-export class SetuMainComponent implements OnInit, OnDestroy {
+export class SetuOverviewComponent implements OnInit, OnDestroy {
   unitCode: string = '';
   setuData: Setu[] = [];
   selectedSetu: Setu | null = null; // Track which SETU data is currently selected for detailed view
@@ -68,7 +70,9 @@ export class SetuMainComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private setuService: SetuService,
-    private viewportService: ViewportService
+    private viewportService: ViewportService,
+    private meta: Meta,
+    private titleService: Title
   ) {}
 
   ngOnInit(): void {
@@ -89,10 +93,21 @@ export class SetuMainComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+
+    // Clean up meta tags
+    this.meta.removeTag("name='description'");
+    this.meta.removeTag("name='keywords'");
+    this.meta.removeTag("property='og:title'");
+    this.meta.removeTag("property='og:description'");
+    this.meta.removeTag("property='og:url'");
+    this.meta.removeTag("property='og:type'");
+    this.meta.removeTag("name='twitter:card'");
+    this.meta.removeTag("name='twitter:title'");
+    this.meta.removeTag("name='twitter:description'");
   }
 
   /**
-   * Load SETU data for the unit
+   * * Load SETU data for the unit
    */
   loadSetuData(): void {
     this.loading = true;
@@ -107,6 +122,9 @@ export class SetuMainComponent implements OnInit, OnDestroy {
           // Set the most recent SETU as the initially selected one
           this.selectedSetu = this.getMostRecentSetu();
           this.loading = false;
+
+          // Update meta tags
+          this.updateMetaTags();
         },
         error: (error) => {
           this.error = 'Failed to load SETU data. Please try again later.';
@@ -231,5 +249,46 @@ export class SetuMainComponent implements OnInit, OnDestroy {
       I13: "How effectively the unit improved students' critical thinking abilities",
     };
     return tooltips[criteriaKey] || 'SETU evaluation criteria';
+  }
+
+
+  
+  /** 
+   *  ! |======================================================================|
+   *  ! | META TAGS                                                            
+   *  ! |======================================================================|
+   */
+
+  /**
+   * * Update meta tags for SEO and social sharing
+   */
+  private updateMetaTags(): void {
+    if (!this.unitCode) {
+      console.warn('Cannot update meta tags: Unit code is not available');
+      return;
+    }
+
+    const selectedSetu = this.getSelectedSetu();
+    const aggregateScore = selectedSetu?.getAggregateScore();
+    const season = selectedSetu ? this.getSeasonDisplay(selectedSetu.Season) : undefined;
+    const pageUrl = `${BASE_URL}/setu/${this.unitCode}`;
+
+    // Basic meta tags
+    this.titleService.setTitle(getMetaSetuOverviewTitle(this.unitCode.toUpperCase()));
+    this.meta.updateTag({ name: 'description', content: getMetaSetuOverviewDescription(this.unitCode.toUpperCase(), season) });
+    this.meta.updateTag({ name: 'keywords', content: getMetaSetuOverviewKeywords(this.unitCode.toUpperCase()) });
+
+    // Open Graph tags for social sharing
+    this.meta.updateTag({ property: 'og:title', content: getMetaSetuOverviewOpenGraphTitle(this.unitCode.toUpperCase()) });
+    this.meta.updateTag({ property: 'og:description', content: getMetaSetuOverviewOpenGraphDescription(this.unitCode.toUpperCase(), aggregateScore) });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+    this.meta.updateTag({ name: 'twitter:title', content: getMetaSetuOverviewTwitterTitle(this.unitCode.toUpperCase()) });
+    this.meta.updateTag({ name: 'twitter:description', content: getMetaSetuOverviewTwitterDescription(this.unitCode.toUpperCase(), aggregateScore) });
+
+    console.log('[SETU Overview] Meta tags updated');
   }
 }

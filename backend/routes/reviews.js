@@ -260,11 +260,8 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
  */
 router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
     try {
-        // Get the review ID from the parameter
-        const reviewId = req.params.reviewId;
-
         // Find the Review
-        const review = await Review.findById(reviewId);
+        const review = await Review.findById(req.params.reviewId);
 
         // Throw error if Review doesn't exist
         if (!review)
@@ -278,7 +275,6 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
         // Check if the user is authorised (review author or admin)
         const isAuthor = review.author.toString() === requestingUser._id.toString();
         const isAdmin = requestingUser.admin;
-
         if (!isAuthor && !isAdmin) {
             return res.status(403).json({ error: 'You are not authorised to delete this review' });
         }

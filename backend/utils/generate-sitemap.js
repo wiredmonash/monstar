@@ -24,6 +24,7 @@ async function generateSitemaps() {
 
         // Import Unit Model
         const Unit = require('../models/unit');
+        const SETU = require('../models/setu');
 
         const staticUrls = [
             { url: 'https://monstar.wired.org.au/', changefreq: 'weekly', priority: 1.0 },
@@ -50,6 +51,26 @@ async function generateSitemaps() {
         console.log(`Units G-M: ${unitsGM.length}`);
         console.log(`Units N-Z: ${unitsNZ.length}`);
 
+        // Get units with SETU data
+        console.log('Fetching units with SETU data...');
+        const setuData = await SETU.aggregate([
+            { $group: { _id: '$unit_code' } },
+            { $project: { unitCode: '$_id', _id: 0 } }
+        ]);
+        console.log(`Found ${setuData.length} units with SETU data`);
+
+        // Sort SETU data alphabetically
+        const sortedSetuData = setuData.sort((a,b) => a.unitCode.localeCompare(b.unitCode));
+
+        // Split SETU data into groups by first letter
+        const setuAF = sortedSetuData.filter(u => /^[a-f]/i.test(u.unitCode));
+        const setuGM = sortedSetuData.filter(u => /^[g-m]/i.test(u.unitCode));
+        const setuNZ = sortedSetuData.filter(u => /^[n-z]/i.test(u.unitCode));
+
+        console.log(`SETU Units A-F: ${setuAF.length}`);
+        console.log(`SETU Units G-M: ${setuGM.length}`);
+        console.log(`SETU Units N-Z: ${setuNZ.length}`);
+
         // Generate static sitemap
         const staticSitemap = generateStandardSitemapXML(staticUrls);
 
@@ -57,6 +78,11 @@ async function generateSitemaps() {
         const unitsAFSitemap = generateUnitSitemapXML(unitsAF);
         const unitsGMSitemap = generateUnitSitemapXML(unitsGM);
         const unitsNZSitemap = generateUnitSitemapXML(unitsNZ);
+
+        // Generate SETU sitemaps
+        const setuAFSitemap = generateSetuSitemapXML(setuAF);
+        const setuGMSitemap = generateSetuSitemapXML(setuGM);
+        const setuNZSitemap = generateSetuSitemapXML(setuNZ);
 
         // Generate sitemap index
         const sitemapIndex = generateSitemapIndexXML();
@@ -70,10 +96,13 @@ async function generateSitemaps() {
         fs.writeFileSync(path.join(outputDir, 'sitemap-units-a-f.xml'), unitsAFSitemap);
         fs.writeFileSync(path.join(outputDir, 'sitemap-units-g-m.xml'), unitsGMSitemap);
         fs.writeFileSync(path.join(outputDir, 'sitemap-units-n-z.xml'), unitsNZSitemap);
+        fs.writeFileSync(path.join(outputDir, 'sitemap-setu-a-f.xml'), setuAFSitemap);
+        fs.writeFileSync(path.join(outputDir, 'sitemap-setu-g-m.xml'), setuGMSitemap);
+        fs.writeFileSync(path.join(outputDir, 'sitemap-setu-n-z.xml'), setuNZSitemap);
 
         // Write the full sitemap for backward compatibility
         const allUnits = [...sortedUnits];
-        const fullSitemap = generateStandardSitemapXML([...staticUrls], allUnits);
+        const fullSitemap = generateFullSitemapXML([...staticUrls], allUnits, sortedSetuData);
         fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), fullSitemap);
 
         console.log('All sitemaps generated successfully');
@@ -95,7 +124,7 @@ async function generateSitemaps() {
  * @param urls The list of pages to generate XML for
  * @param units The list of units to generate XML for (optional)
  */
-function generateStandardSitemapXML(urls, units = []) {
+function generateStandardSitemapXML(urls) {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     
@@ -108,20 +137,6 @@ function generateStandardSitemapXML(urls, units = []) {
         xml += `    <lastmod>${TODAY}</lastmod>\n`;
         xml += '  </url>\n';
     });
-    
-    // Add unit URLs
-    if (units && units.length) {
-        units.forEach(unit => {
-            const unitCode = unit.unitCode.toLowerCase();
-
-            xml += '  <url>\n';
-            xml += `    <loc>https://monstar.wired.org.au/unit/${unitCode}</loc>\n`;
-            xml += '    <changefreq>daily</changefreq>\n';
-            xml += '    <priority>0.7</priority>\n';
-            xml += `    <lastmod>${TODAY}</lastmod>\n`;
-            xml += '  </url>\n';
-        });
-    }
     
     xml += '</urlset>';
     return xml;
@@ -141,8 +156,80 @@ function generateUnitSitemapXML(units) {
 
         xml += '  <url>\n';
         xml += `    <loc>https://monstar.wired.org.au/unit/${unitCode}</loc>\n`;
-        xml += '    <changefreq>daily</changefreq>\n';
+        xml += '    <changefreq>weekly</changefreq>\n';
         xml += '    <priority>0.7</priority>\n';
+        xml += `    <lastmod>${TODAY}</lastmod>\n`;
+        xml += '  </url>\n';
+    });
+    
+    xml += '</urlset>';
+    return xml;
+}
+/**
+ * * Generate XML for a SETU-specifc sitemap
+ * 
+ * @param setuUnits The list of units with SETU data to generate URLS for
+ */
+function generateSetuSitemapXML(setuUnits) {
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    
+    setuUnits.forEach(unit => {
+        const unitCode = unit.unitCode.toLowerCase();
+
+        xml += '  <url>\n';
+        xml += `    <loc>https://monstar.wired.org.au/setu/${unitCode}</loc>\n`;
+        xml += '    <changefreq>monthly</changefreq>\n';
+        xml += '    <priority>0.6</priority>\n';
+        xml += `    <lastmod>${TODAY}</lastmod>\n`;
+        xml += '  </url>\n';
+    });
+    
+    xml += '</urlset>';
+    return xml;
+}
+
+/**
+ * * Generate XML For the full sitemap (all pages)
+ * 
+ * @param urls The list of static pages
+ * @param units The list of unit pages
+ * @param setuUnits the list of units with SETU data
+ */
+function generateFullSitemapXML(urls, units = [], setuUnits = []) {
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    
+    // Add static URLs
+    urls.forEach(page => {
+        xml += '  <url>\n';
+        xml += `    <loc>${page.url}</loc>\n`;
+        xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
+        xml += `    <priority>${page.priority}</priority>\n`;
+        xml += `    <lastmod>${TODAY}</lastmod>\n`;
+        xml += '  </url>\n';
+    });
+    
+    // Add unit URLs
+    units.forEach(unit => {
+        const unitCode = unit.unitCode.toLowerCase();
+
+        xml += '  <url>\n';
+        xml += `    <loc>https://monstar.wired.org.au/unit/${unitCode}</loc>\n`;
+        xml += '    <changefreq>weekly</changefreq>\n';
+        xml += '    <priority>0.7</priority>\n';
+        xml += `    <lastmod>${TODAY}</lastmod>\n`;
+        xml += '  </url>\n';
+    });
+
+    // Add SETU URLs
+    setuUnits.forEach(unit => {
+        const unitCode = unit.unitCode.toLowerCase();
+
+        xml += '  <url>\n';
+        xml += `    <loc>https://monstar.wired.org.au/setu/${unitCode}</loc>\n`;
+        xml += '    <changefreq>monthly</changefreq>\n';
+        xml += '    <priority>0.6</priority>\n';
         xml += `    <lastmod>${TODAY}</lastmod>\n`;
         xml += '  </url>\n';
     });
@@ -160,11 +247,13 @@ function generateSitemapIndexXML() {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     
+    // Static pages sitemaps
     xml += '  <sitemap>\n';
     xml += '    <loc>https://monstar.wired.org.au/sitemap-static.xml</loc>\n';
     xml += `    <lastmod>${TODAY}</lastmod>\n`;
     xml += '  </sitemap>\n';
     
+    // Unit sitemaps
     xml += '  <sitemap>\n';
     xml += '    <loc>https://monstar.wired.org.au/sitemap-units-a-f.xml</loc>\n';
     xml += `    <lastmod>${TODAY}</lastmod>\n`;
@@ -177,6 +266,22 @@ function generateSitemapIndexXML() {
     
     xml += '  <sitemap>\n';
     xml += '    <loc>https://monstar.wired.org.au/sitemap-units-n-z.xml</loc>\n';
+    xml += `    <lastmod>${TODAY}</lastmod>\n`;
+    xml += '  </sitemap>\n';
+
+    // Setu sitemaps
+    xml += '  <sitemap>\n';
+    xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-a-f.xml</loc>\n';
+    xml += `    <lastmod>${TODAY}</lastmod>\n`;
+    xml += '  </sitemap>\n';
+    
+    xml += '  <sitemap>\n';
+    xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-g-m.xml</loc>\n';
+    xml += `    <lastmod>${TODAY}</lastmod>\n`;
+    xml += '  </sitemap>\n';
+    
+    xml += '  <sitemap>\n';
+    xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-n-z.xml</loc>\n';
     xml += `    <lastmod>${TODAY}</lastmod>\n`;
     xml += '  </sitemap>\n';
     

@@ -1,8 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { filter, take } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
+
+// Constants
+import { BASE_URL, getMetaUnitOverviewDescription, getMetaUnitOverviewKeywords, getMetaUnitOverviewOpenGraphDescription, getMetaUnitOverviewOpenGraphTitle, getMetaUnitOverviewTitle, getMetaUnitOverviewTwitterDescription, getMetaUnitOverviewTwitterTitle, NAVBAR_HEIGHT } from '../../shared/constants';
 
 // Services
 import { ApiService } from '../../shared/services/api.service';
@@ -12,14 +17,13 @@ import { FooterService } from '../../shared/services/footer.service';
 // Components
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
-
+import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
 // Modules
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { ToastModule } from 'primeng/toast';
 import { Review } from '../../shared/models/review.model';
-import { NAVBAR_HEIGHT } from '../../shared/constants';
 
 @Component({
   selector: 'app-unit-overview',
@@ -27,6 +31,7 @@ import { NAVBAR_HEIGHT } from '../../shared/constants';
   imports: [
     ReviewCardComponent, 
     UnitReviewHeaderComponent,
+    SetuCardComponent,
     ToastModule,
     ProgressSpinnerModule,
     SkeletonModule,
@@ -70,6 +75,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private messageService: MessageService,
     private meta: Meta,
+    private router: Router,
     private titleService: Title,
     private footerService: FooterService
   ) { }
@@ -151,6 +157,8 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         // Not loading anymore
         this.reviewsLoading = false;
 
+        this.resetScrollPosition();
+
         // ? Debug log: Success
         console.log('GET Get All Reviews', reviews);
       },
@@ -181,6 +189,8 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
         // Update meta tags AFTER unit data is available
         this.updateMetaTags();
+
+        this.resetScrollPosition()
 
         // ? Debug log: Success
         console.log('GET Get Unit by Unitcode', unit);
@@ -254,8 +264,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.getUnitByUnitcode(this.unit.unitCode); // Get the unit again for updated avg ratings.
 
       if (toast == 'delete') {
-        // Show toast
+        // Show delete toast
         this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review has been deleted.` });
+      } else if (toast == 'edit') {
+        // Show edit toast
+        this.messageService.add({ severity: 'success', summary: 'Review edited!', detail: `Review has been updated.` });
       }
     }
   }
@@ -283,17 +296,35 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     // No change if we're in split view
     if (this.isSplitView) {
       this.unitOverviewContainer.nativeElement.style.height = '';
-      return
-    }
-
-    if (this.reviews.length > 1) {
-      // 2 or more reviews, grow to full height.
+    } else {
       this.unitOverviewContainer.nativeElement.style.height = '100%';
+      this.unitOverviewContainer.nativeElement.style.overflow = '';
     }
-    else if (this.reviews.length <= 1) {
-      // Prevent scrolling and calculate height based on navbar height
-      this.unitOverviewContainer.nativeElement.style.height = `calc(100vh - ${NAVBAR_HEIGHT})`;
-      this.unitOverviewContainer.nativeElement.style.overflow = 'hidden';
+  }
+
+  /**
+   * * Reset scroll position on all possible containers
+   */
+  private resetScrollPosition(): void {
+    console.log('Resetting scroll position');
+
+    // Reset main window scroll
+    window.scrollTo(0,0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+
+    // Reset any scroll panels
+    const scrollContainers = document.querySelectorAll('.p-scrollpanel-content, .p-scrollpanel-wrapper');
+    scrollContainers.forEach(container => {
+      if (container instanceof HTMLElement) {
+        container.scrollTop = 0;
+      }
+    });
+
+    // Try to get the app's main content container
+    const appContent = document.querySelector('app-root');
+    if (appContent) {
+      appContent.scrollTop = 0;
     }
   }
 
@@ -314,39 +345,26 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
+    const unitReviewsCount = this.unit.reviews.length;
+    const unitAverageRating = this.unit.avgOverallRating.toFixed(1);
     const unitCode = this.unit.unitCode.toUpperCase();
     const unitName = this.unit.name;
-    const baseUrl = 'https://monstar.wired.org.au'; // Replace with your actual domain
-    const pageUrl = `${baseUrl}/unit/${this.unit.unitCode}`;
+    const pageUrl = `${BASE_URL}/unit/${this.unit.unitCode}`;
     
     // Basic meta tags
-    this.titleService.setTitle(`${unitCode} (${unitName}) Student Reviews at Monash University`);
-    
-    this.meta.updateTag({ 
-      name: 'description', 
-      content: `Read ${this.unit.reviews.length} student reviews for ${unitCode} (${unitName}) at Monash University. See ratings, difficulty level, and student experiences.` 
-    });
-    
-    this.meta.updateTag({ 
-      name: 'keywords', 
-      content: `${unitCode}, ${unitName}, Monash, Monash Uni, Monash University, unit reviews, student reviews, course reviews, MonSTAR, ${unitCode} reviews, ${unitCode} difficulty, ${unitCode} ratings`
-    });
+    this.titleService.setTitle(getMetaUnitOverviewTitle(unitCode, unitName));
+    this.meta.updateTag({ name: 'description', content: getMetaUnitOverviewDescription(unitReviewsCount, unitCode, unitName) });
+    this.meta.updateTag({ name: 'keywords', content: getMetaUnitOverviewKeywords(unitCode, unitName) });
 
     // Open Graph tags for social sharing
-    this.meta.updateTag({ property: 'og:title', content: `${unitCode} - ${unitName} | Student Reviews` });
-    this.meta.updateTag({ 
-      property: 'og:description', 
-      content: `See what students think about ${unitCode}. Average rating: ${this.unit.avgOverallRating.toFixed(1)}/5 from ${this.unit.reviews.length} reviews.` 
-    });
+    this.meta.updateTag({ property: 'og:title', content: getMetaUnitOverviewOpenGraphTitle(unitCode, unitName) });
+    this.meta.updateTag({ property: 'og:description', content: getMetaUnitOverviewOpenGraphDescription(unitCode, unitAverageRating, unitReviewsCount) });
     this.meta.updateTag({ property: 'og:url', content: pageUrl });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     
     // Twitter Card tags
     this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
-    this.meta.updateTag({ name: 'twitter:title', content: `${unitCode} Student Reviews at Monash University` });
-    this.meta.updateTag({ 
-      name: 'twitter:description', 
-      content: `See what Monash students think about ${unitCode} (${unitName}). Average rating: ${this.unit.avgOverallRating.toFixed(1)}/5.` 
-    });
+    this.meta.updateTag({ name: 'twitter:title', content: getMetaUnitOverviewTwitterTitle(unitCode) });
+    this.meta.updateTag({ name: 'twitter:description', content: getMetaUnitOverviewTwitterDescription(unitCode, unitName, unitAverageRating) });
   }
 }
