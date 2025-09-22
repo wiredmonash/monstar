@@ -394,7 +394,7 @@ router.put('/update/:unitcode', async function (req, res) {
  * - force (boolean): regenerate even if cached copy is fresh (default false)
  * - delayMs (number): throttle between requests (default service value)
  */
-router.post('/ai-overview/regenerate', async function (req, res) {
+router.post('/ai-overview/regenerate', verifyAdmin, async function (req, res) {
     try {
         const { force = false, delayMs } = req.body || {};
         const result = await aiOverviewService.generateOverviewsForAllUnits({
