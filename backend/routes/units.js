@@ -7,6 +7,7 @@ const Review = require('../models/review');
 
 // Function Imports
 const { verifyAdmin } = require('../utils/verify_token.js');
+const aiOverviewService = require('../services/aiOverview.service');
 
 // Router instance
 const router = express.Router();
@@ -381,6 +382,64 @@ router.put('/update/:unitcode', async function (req, res) {
         return res.status(500).json({
             error: `An error occurred while updating the unit: ${error.message}`
         })
+    }
+});
+
+
+/**
+ * ! POST Regenerate AI overview for all units
+ *
+ * Admin-only endpoint to rebuild AI overviews across all units
+ * with human reviews. Optional body parameters:
+ * - force (boolean): regenerate even if cached copy is fresh (default false)
+ * - delayMs (number): throttle between requests (default service value)
+ */
+router.post('/ai-overview/regenerate', async function (req, res) {
+    try {
+        const { force = false, delayMs } = req.body || {};
+        const result = await aiOverviewService.generateOverviewsForAllUnits({
+            force: Boolean(force),
+            delayMs: typeof delayMs === 'number' ? delayMs : undefined
+        });
+
+        return res.status(200).json({
+            message: 'AI overviews regeneration completed',
+            result
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `Failed to regenerate AI overviews: ${error.message}` });
+    }
+});
+
+/**
+ * ! POST Regenerate AI overview for a specific unit
+ *
+ * Admin-only endpoint to rebuild the AI overview for a single unit.
+ */
+router.post('/:unitcode/ai-overview/regenerate', verifyAdmin, async function (req, res) {
+    try {
+        const unitCode = req.params.unitcode.toLowerCase();
+        const { force = true } = req.body || {};
+
+        const unit = await Unit.findOne({ unitCode });
+        if (!unit)
+            return res.status(404).json({ error: 'Unit not found' });
+
+        const result = await aiOverviewService.generateOverviewForUnit(unit, { force: Boolean(force) });
+
+        if (result.status === 'skipped') {
+            return res.status(200).json({ message: 'No regeneration required', result });
+        }
+        if (result.status === 'updated') {
+            await unit.populate('reviews', '_id');
+            return res.status(200).json({ message: 'AI overview updated', overview: unit.aiOverview, result });
+        }
+
+        return res.status(500).json({ error: 'Failed to regenerate AI overview', result });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `Failed to regenerate AI overview: ${error.message}` });
     }
 });
 

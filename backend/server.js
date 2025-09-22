@@ -1,3 +1,6 @@
+// Load environment variables
+require("dotenv").config();
+
 // Module Imports
 const express = require("express");
 const mongoose = require("mongoose");
@@ -6,9 +9,9 @@ const cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
 const tagManager = require("./services/tagManager.service");
+const aiOverviewService = require("./services/aiOverview.service");
 const { exec } = require("child_process");
 const path = require("path");
-require("dotenv").config();
 
 // Router Imports 
 const UnitRouter = require('./routes/units');
@@ -70,7 +73,7 @@ cron.schedule("0 * * * *", async function () {
 
 // Generate sitemaps daily at 3:00 AM
 cron.schedule("0 3 * * *", function () {
-  console.log("Running daily sitemap generation...");
+  console.log("[Cron] Running daily sitemap generation...");
 
   // Path to the sitemap generator script
   const scriptPath = path.join(__dirname, "utils", "generate-sitemap.js");
@@ -78,17 +81,28 @@ cron.schedule("0 3 * * *", function () {
   // Use Node to execute the script
   exec(`node ${scriptPath}`, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Sitemap generation error: ${error.message}`);
+      console.error(`[Cron] Sitemap generation error: ${error.message}`);
       return;
     }
 
     if (stderr) {
-      console.error(`Sitemap stderr: ${stderr}`);
+      console.error(`[Cron] Sitemap stderr: ${stderr}`);
       return;
     }
 
-    console.log(`Sitemap generation complete: ${stdout}`);
+    console.log(`[Cron] Sitemap generation complete: ${stdout}`);
   });
+});
+
+// Regenerate AI unit overviews ahead of each semester (Feb 1 & Jun 1 at 02:00)
+cron.schedule('0 2 1 2 *', async function () {
+  console.log('[Cron] Running Semester 1 AI overview refresh');
+  await aiOverviewService.generateOverviewsForAllUnits({ force: true, delayMs: 750 });
+});
+
+cron.schedule('0 2 1 6 *', async function () {
+  console.log('[Cron] Running Semester 2 AI overview refresh');
+  await aiOverviewService.generateOverviewsForAllUnits({ force: true, delayMs: 750 });
 });
 
 // === Start Server ===

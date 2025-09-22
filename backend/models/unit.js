@@ -142,6 +142,15 @@ const UnitSchema = new Schema({
             enum: Object.values(UnitTags),
         }],
         validate: [arrayLimit, 'Unit can only have up to 2 tags']
+    },
+
+    aiOverview: {
+        summary: { type: String },
+        generatedAt: { type: Date },
+        model: { type: String },
+        totalReviewsConsidered: { type: Number },
+        reviewSampleSize: { type: Number },
+        setuSeasons: { type: [String], default: [] }
     }
 });
 
