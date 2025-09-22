@@ -445,10 +445,44 @@ router.post('/:unitcode/ai-overview/regenerate', verifyAdmin, async function (re
 
 
 /**
+ * ! GET AI Overview for a Unit
+ *
+ * Gets the AI overview for a specific unit
+ *
+ * @async
+ * @param {string} unitcode - The unit code to get AI overview for
+ * @returns {JSON} AI overview with summary and generatedAt fields
+ * @throws {404} If unit not found or no AI overview exists
+ * @throws {500} If database error occurs
+ */
+router.get('/:unitcode/ai-overview', async function (req, res) {
+    try {
+        const unitCode = req.params.unitcode.toLowerCase();
+
+        const unit = await Unit.findOne({ unitCode }).select('aiOverview');
+        if (!unit) {
+            return res.status(404).json({ error: 'Unit not found' });
+        }
+
+        if (!unit.aiOverview || !unit.aiOverview.summary) {
+            return res.status(404).json({ error: 'No AI overview available for this unit' });
+        }
+
+        return res.status(200).json({
+            summary: unit.aiOverview.summary,
+            generatedAt: unit.aiOverview.generatedAt
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ error: `Error fetching AI overview: ${error.message}` });
+    }
+});
+
+/**
  * ! GET Units Required-By
- * 
+ *
  * Gets all units that have the specified unit as a prerequisite
- * 
+ *
  * @async
  * @param {string} unitCode - The unit code to search for in the prerequisites
  * @returns {JSON} Array of units that require the specified unit
