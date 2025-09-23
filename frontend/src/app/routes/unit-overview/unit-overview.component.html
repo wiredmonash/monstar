@@ -13,7 +13,7 @@
         >
             <!-- ! CHILD: UnitHeaderComponent -->
             <!-- Unit review header -->
-            <app-unit-review-header 
+            <app-unit-review-header
                 [unit]="unit"
                 (sortBy)="sortReviews($event)"
                 (reviewAdded)="refreshReviews()"
@@ -22,6 +22,10 @@
             <!-- ! CHILD: SetuCardComponent -->
             <!-- Setu header -->
             <app-setu-card [unitCode]="unit?.unitCode"/>
+
+            <!-- ! CHILD: AiOverviewComponent -->
+            <!-- AI overview -->
+            <app-ai-overview [unit]="unit"/>
         </p-scrollPanel>
     </div>
     <div class="right-column">
