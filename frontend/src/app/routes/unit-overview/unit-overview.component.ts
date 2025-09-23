@@ -162,11 +162,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resetScrollPosition();
 
         // ? Debug log: Success
-        console.log('GET Get All Reviews', reviews);
+        // console.log('GET Get All Reviews', reviews);
       },
       (error: any) => {
         // ? Debug log: Error
-        console.log('ERROR DURING: GET Get All Reviews', error)
+        // console.log('ERROR DURING: GET Get All Reviews', error)
       },
       (() => {
         // Update the height of the whole container
@@ -195,11 +195,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resetScrollPosition()
 
         // ? Debug log: Success
-        console.log('GET Get Unit by Unitcode', unit);
+        // console.log('GET Get Unit by Unitcode', unit);
       },
       (error: any) => {
         // ? Debug log: Error
-        console.log('ERROR DURING: GET Get Unit by Unitcode');
+        // console.log('ERROR DURING: GET Get Unit by Unitcode');
       }
     );
   }
@@ -218,7 +218,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   sortReviews(criteria: string) {
     // ? Debug log: Sorting reviews message
-    console.log('Sorting reviews', criteria); 
+    // console.log('Sorting reviews', criteria); 
     
     // Criterion
     switch (criteria) {

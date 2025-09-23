@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface GitHubContributor {
   username: string;
@@ -23,7 +24,7 @@ interface BackendResponse {
   providedIn: 'root',
 })
 export class GitHubService {
-  private apiUrl = 'http://localhost:8080/api/v1/github';
+  private apiUrl = environment.githubUrl;
 
   constructor(private http: HttpClient) {}
 
