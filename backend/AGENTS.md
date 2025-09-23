@@ -65,6 +65,11 @@ MonSTAR backend serves Monash University students by exposing Express APIs for b
 - Admin-only actions use `verifyAdmin` (unit and SETU bulk operations, destructive maintenance).
 - Notification deletion ensures the cookie user matches the notification owner.
 
+## Automation
+- Hourly: tagManager.updateMostReviewsTag refreshes trending tags.
+- Daily 03:00: utils/generate-sitemap.js pushes sitemap XMLs to the frontend.
+- Semester prep (Feb 1 & Jun 1 at 02:00 AET): aiOverviewService.generateOverviewsForAllUnits reruns Gemini summaries with force true so new semesters start with fresh copy.
+
 ## Ops & Tooling
 - Scripts: `npm run dev` (nodemon), `npm start` (Node), `npm run build` (if run from repo root to build frontend + backend).
 - Environment template: `.env.template` documents all required secrets; copy to `.env` locally.

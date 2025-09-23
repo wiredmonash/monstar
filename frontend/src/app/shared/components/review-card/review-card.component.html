@@ -99,7 +99,7 @@
                 <!-- * Right Side (Review Heading, Categories, Stars, Description) -->
                 <div 
                     class="col-md-8 main-content-container" 
-                    [ngClass]="viewportType === 'mobile' ? '' : 'px-4'"
+                    [ngClass]="viewportType === 'mobile' || viewportType === 'tablet' ? '' : 'px-4'"
                 > 
                     <!-- Review Description -->
                     <p class="review" [innerHTML]="review.description | HighlightUnitPipe : (expanded ? undefined : 350)"></p>

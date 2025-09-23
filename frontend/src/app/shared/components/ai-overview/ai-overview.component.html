@@ -1,0 +1,25 @@
+<!-- AI Overview Card - Only show if unit has AI overview -->
+@if (aiOverview && aiOverview.summary && aiOverview.summary.trim()) {
+  <div class="ai-overview-highlight">
+    <p-card class="ai-overview-card">
+      <ng-template pTemplate="header">
+        <div class="ai-overview-header">
+          <!-- Icon -->
+          <i class="pi pi-sparkles ai-overview-icon"></i>
+
+          <!-- Title -->
+          <div class="ai-overview-title">
+            <h3>AI Overview</h3>
+            <span class="ai-overview-date">
+              Generated {{ getFormattedDate() }}
+            </span>
+          </div>
+        </div>
+      </ng-template>
+
+      <div class="ai-overview-content">
+        <p>{{ aiOverview.summary }}</p>
+      </div>
+    </p-card>
+  </div>
+}

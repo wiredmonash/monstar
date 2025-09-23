@@ -18,6 +18,7 @@ import { FooterService } from '../../shared/services/footer.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
 import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
+import { AiOverviewComponent } from "../../shared/components/ai-overview/ai-overview.component";
 // Modules
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -29,9 +30,10 @@ import { Review } from '../../shared/models/review.model';
   selector: 'app-unit-overview',
   standalone: true,
   imports: [
-    ReviewCardComponent, 
+    ReviewCardComponent,
     UnitReviewHeaderComponent,
     SetuCardComponent,
+    AiOverviewComponent,
     ToastModule,
     ProgressSpinnerModule,
     SkeletonModule,

@@ -1,0 +1,138 @@
+@import '../../../_variables.scss';
+
+:host {
+  display: block;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.ai-overview-highlight {
+  position: relative;
+  display: block;
+  margin: 0 1rem;
+  padding: 2px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba($primary-color, 0.6), rgba($primary-color, 0.18) 40%, rgba($primary-color, 0.65));
+  background-size: 220% 220%;
+  animation: aiOverviewBorderShift 12s linear infinite;
+  transition: box-shadow 250ms ease;
+  box-shadow: 0 0 12px rgba($primary-color, 0.18);
+}
+
+.ai-overview-card {
+  border-radius: 12px;
+
+  ::ng-deep .p-card-header {
+    padding: 1rem 1.5rem 0.5rem 1.5rem;
+    border-bottom: none;
+  }
+
+  ::ng-deep .p-card-body {
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem;
+  }
+
+  ::ng-deep .p-card {
+    background-color: $fg-dark-color;
+    border-radius: inherit;
+  }
+}
+
+.ai-overview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ai-overview-icon {
+  font-size: 2rem;
+  color: $primary-color;
+}
+
+.ai-overview-title {
+  flex: 1;
+
+  h3 {
+    margin: 0;
+    font-family: $poppins;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $primary-color;
+    line-height: 1.2;
+  }
+}
+
+.ai-overview-date {
+  font-family: $poppins;
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+  cursor: help;
+}
+
+.ai-overview-content {
+  p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-color);
+    font-family: $poppins;
+    font-size: 0.95rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-overview-highlight {
+    animation: none;
+    background-position: 50% 50%;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .ai-overview-card {
+
+    ::ng-deep .p-card-header {
+      padding: 0.75rem 1rem 0.25rem 1rem;
+    }
+
+    ::ng-deep .p-card-body {
+      padding: 0.25rem 1rem 1rem 1rem;
+    }
+  }
+
+  .ai-overview-header {
+    gap: 0.5rem;
+  }
+
+  .ai-overview-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1.25rem;
+  }
+
+  .ai-overview-title h3 {
+    font-size: 1.125rem;
+  }
+
+  .ai-overview-date {
+    font-size: 0.8rem;
+  }
+
+  .ai-overview-content {
+    p {
+      font-size: 13px;
+    }
+  }
+}
+
+@keyframes aiOverviewBorderShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
