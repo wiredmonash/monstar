@@ -4,11 +4,11 @@ const mongoose = require("mongoose");
 const cron = require("node-cron");
 const cors = require("cors");
 const app = express();
-const cookieParser = require("cookie-parser");
-const tagManager = require("./services/tagManager.service");
-const { exec } = require("child_process");
-const path = require("path");
-require("dotenv").config();
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const tagManager = require('./services/tagManager.service');
+const { exec } = require('child_process');
+require('dotenv').config();
 
 // Router Imports 
 const UnitRouter = require('./routes/units');
@@ -63,8 +63,8 @@ if (!isDevelopment) {
 
 // === Connect to MongoDB ===
 const url = process.env.MONGODB_CONN_STRING;
-async function connect(url) {
-  await mongoose.connect(url);
+async function connect(url) { 
+    await mongoose.connect(url); 
 }
 connect(url)
   .then(() => {
@@ -101,6 +101,7 @@ cron.schedule("0 3 * * *", function () {
     console.log(`Sitemap generation complete: ${stdout}`);
   });
 });
+
 
 // === Catch all route (Production Mode) ===
 if (!isDevelopment) {

@@ -321,7 +321,7 @@ export class WriteReviewUnitComponent implements OnInit {
 
       // If the current state is 'submit', post the review
       if (currentState === 'submit') {
-        console.log(this.editMode);
+        // console.log(this.editMode);
         if (this.editMode) {
           return this.editReview();
         }
@@ -371,13 +371,13 @@ export class WriteReviewUnitComponent implements OnInit {
   editReview() {
     //Checking if user is logged in
     if (!this.user) {
-      console.error('User data not available.');
+      // console.error('User data not available.');
       return;
     }
 
     //Checking if unit is assigned to us
     if (!this.unit) {
-      console.error('Unit data not available.');
+      // console.error('Unit data not available.');
       return;
     }
 
@@ -388,7 +388,7 @@ export class WriteReviewUnitComponent implements OnInit {
     this.user.reviews.push(this.review._id);
 
     // ? Debug log
-    console.log('Updating review:', this.review);
+    // console.log('Updating review:', this.review);
 
     // Calculate the overall rating
     this.review.calcOverallRating();
@@ -400,7 +400,7 @@ export class WriteReviewUnitComponent implements OnInit {
         this.authService.setCurrentUser(this.user!);
 
         // ? Debug log
-        console.log('WriteReviewUnit | Update current user:', this.user);
+        // console.log('WriteReviewUnit | Update current user:', this.user);
 
         // Close the pop up write review
         this.closeDialog();
@@ -442,13 +442,13 @@ export class WriteReviewUnitComponent implements OnInit {
   postReview() {
     // Checking if user is logged in
     if (!this.user) {
-      console.error('User data not available.');
+      // console.error('User data not available.');
       return;
     }
 
     // Checking if unit is assigned to us
     if (!this.unit) {
-      console.error('Unit data not available.');
+      // console.error('Unit data not available.');
       return;
     }
 
@@ -468,7 +468,7 @@ export class WriteReviewUnitComponent implements OnInit {
     this.user.reviews.push(this.review._id);
 
     // ? Debug log
-    console.log('Posting review:', this.review);
+    // console.log('Posting review:', this.review);
 
     // Calculate the overall rating
     this.review.calcOverallRating();
@@ -486,7 +486,7 @@ export class WriteReviewUnitComponent implements OnInit {
         this.authService.setCurrentUser(this.user!);
 
         // ? Debug log
-        console.log('WriteReviewUnit | Update current user:', this.user);
+        // console.log('WriteReviewUnit | Update current user:', this.user);
 
         // Close the pop up write review
         this.closeDialog();
