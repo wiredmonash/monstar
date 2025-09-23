@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
 import { ObjectId } from 'mongoose';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   // URL for backend endpoints
-  private url = '/api/v1/auth';
+  private url = environment.authUrl;
 
   // Stores the current user as behaviour subject of type User (nullable)
   private currentUser = new BehaviorSubject<User | null>(null);

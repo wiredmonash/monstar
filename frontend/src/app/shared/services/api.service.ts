@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
 import { ObjectId, Types } from 'mongoose';
 import { Unit } from '../models/unit.model';
+import { environment } from '../../../environments/environment';
 
 interface ReportPayload {
   reportReason: string | null;
@@ -19,7 +20,7 @@ interface ReportPayload {
 })
 export class ApiService {
   // The URL of where the API Server is located
-  private url = '/api/v1';
+  private url = environment.apiUrl;
 
 
   // ! Inject HttpClient

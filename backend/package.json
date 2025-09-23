@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "dev:development": "cross-env DEVELOPMENT=true nodemon server.js",
+    "start:production": "cross-env DEVELOPMENT=false node server.js"
   },
   "keywords": [],
   "author": "WIRED Monash",
@@ -30,6 +32,7 @@
     "nodemailer": "^6.9.16"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^3.1.9"
   }
 }

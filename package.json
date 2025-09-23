@@ -3,6 +3,13 @@
         "build:frontend": "cd frontend && npm run build",
         "build:backend": "cd backend && npm run build",
         "build": "npm run build:frontend && npm run build:backend",
-        "generate-sitemaps": "cd backend && node utils/generate-sitemap.js"
+        "generate-sitemaps": "cd backend && node utils/generate-sitemap.js",
+        "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+        "dev:backend": "cd backend && npm run dev:development",
+        "dev:frontend": "cd frontend && npm run start",
+        "start:prod": "cd backend && npm run start:production"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
     }
 }
