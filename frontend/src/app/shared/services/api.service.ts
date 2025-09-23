@@ -6,7 +6,6 @@ import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
 import { ObjectId, Types } from 'mongoose';
 import { Unit } from '../models/unit.model';
-import { AiOverview } from '../models/ai-overview.model';
 
 interface ReportPayload {
   reportReason: string | null;
@@ -370,32 +369,6 @@ export class ApiService {
       });
    }
   
-  /**
-   * ! GET AI overview for a unit
-   * * Fetches the AI-generated summary for a unit; returns null when absent.
-   */
-  getUnitAiOverviewGET(unitCode: string): Observable<AiOverview | null> {
-    return this.http.get<AiOverview>(`${this.url}/units/${unitCode}/ai-overview`, {
-      withCredentials: true
-    }).pipe(
-      tap({
-        next: (response) => {
-          console.log('ApiService | Successfully fetched AI overview:', response);
-        },
-        error: (error) => {
-          console.log('ApiService | Error whilst fetching AI overview:', error.error);
-        }
-      }),
-      catchError((error) => {
-        if (error.status === 404) {
-          console.log('ApiService | AI overview not found for unit:', unitCode);
-          return of(null);
-        }
-
-        return throwError(() => error);
-      })
-    );
-  }
 
 
 
