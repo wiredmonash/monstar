@@ -7,17 +7,26 @@
     class="unit-overview-container" 
 >
     <div class="left-column">
-        <!-- ! CHILD: UnitHeaderComponent -->
-        <!-- Unit review header -->
-        <app-unit-review-header 
-            [unit]="unit"
-            (sortBy)="sortReviews($event)"
-            (reviewAdded)="refreshReviews()"
-        />
+        <p-scrollPanel
+            styleClass="left-column-scroll"
+            [style]="{ 'width': '100%', 'height': '100%' }"
+        >
+            <!-- ! CHILD: UnitHeaderComponent -->
+            <!-- Unit review header -->
+            <app-unit-review-header
+                [unit]="unit"
+                (sortBy)="sortReviews($event)"
+                (reviewAdded)="refreshReviews()"
+            />
 
-        <!-- ! CHILD: SetuCardComponent -->
-        <!-- Setu header -->
-        <app-setu-card [unitCode]="unit?.unitCode"/>
+            <!-- ! CHILD: SetuCardComponent -->
+            <!-- Setu header -->
+            <app-setu-card [unitCode]="unit?.unitCode"/>
+
+            <!-- ! CHILD: AiOverviewComponent -->
+            <!-- AI overview -->
+            <app-ai-overview [unit]="unit"/>
+        </p-scrollPanel>
     </div>
     <div class="right-column">
         <p-scrollPanel 
@@ -32,6 +41,7 @@
                         <app-review-card 
                             [review]="review" 
                             (reviewDeleted)="refreshReviews('delete')"
+                            (reviewEdited)="refreshReviews('edit')"
                         />
                     }
                 </div>

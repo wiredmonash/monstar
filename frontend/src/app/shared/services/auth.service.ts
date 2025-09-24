@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { User } from '../models/user.model';
 import { ObjectId } from 'mongoose';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   // URL for backend endpoints
-  private url = 'http://localhost:8080/api/v1/auth';
+  private url = environment.authUrl;
 
   // Stores the current user as behaviour subject of type User (nullable)
   private currentUser = new BehaviorSubject<User | null>(null);
@@ -62,7 +63,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | Logged in as:', this.currentUser);
+        // console.log('AuthService | Logged in as:', this.currentUser);
       })
     );
   }
@@ -88,7 +89,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | Logged in as:', this.currentUser);
+        // console.log('AuthService | Logged in as:', this.currentUser);
       })
     );
   }
@@ -108,7 +109,7 @@ export class AuthService {
         this.currentUser.next(null);
 
         // ? Console log
-        console.log('AuthService | Logged out.')
+        // console.log('AuthService | Logged out.')
       })
     );
   }
@@ -155,7 +156,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | validated user as:', this.currentUser);
+        // console.log('AuthService | validated user as:', this.currentUser);
       })
     );
   }
@@ -179,7 +180,7 @@ export class AuthService {
         this.currentUser.next(user);
 
         // ? Debug log
-        console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
+        // console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
       })
     );
   }
@@ -205,7 +206,7 @@ export class AuthService {
           this.currentUser.value.username = response.username;
 
           // ? Debug log
-          console.log('AuthService | Updated user details:', this.currentUser);
+          // console.log('AuthService | Updated user details:', this.currentUser);
         }
       })
     );
@@ -235,7 +236,7 @@ export class AuthService {
           this.currentUser.value.profileImg = response.profileImg;
 
           // ? Debug log
-          console.log('AuthService | Uploaded avatar:', this.currentUser);
+          // console.log('AuthService | Uploaded avatar:', this.currentUser);
         }
       })
     );
@@ -257,7 +258,7 @@ export class AuthService {
           this.currentUser.next(null);
 
           // ? Debug log
-          console.log('AuthService | Deleted user account.')
+          // console.log('AuthService | Deleted user account.')
         })
       );
   }

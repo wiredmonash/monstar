@@ -1,0 +1,60 @@
+name: Deploy to Linode
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: root
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+          set -euo pipefail
+
+          trap 'rm -f ~/.git-credentials; git config --unset credential.helper || true' EXIT
+
+          cd /var/www/monstar
+
+          # Configure git credentials for pulling
+          git config credential.helper store
+          echo "https://${{ secrets.USERNAME }}:${{ secrets.PAT }}@github.com" > ~/.git-credentials
+
+          # Pull latest changes
+          git pull origin main
+
+          # Install backend dependencies
+          cd /var/www/monstar/backend
+          npm install
+
+          # Install frontend dependencies
+          cd /var/www/monstar/frontend
+          npm install --legacy-peer-deps
+
+          # Stop the service
+          sudo systemctl stop monstar.service
+
+          # Build frontend
+          cd /var/www/monstar/frontend
+          ng build --configuration production
+
+          # Start the service
+          sudo systemctl start monstar.service
+
+          # Check if service started successfully
+          sleep 5
+          if systemctl is-active --quiet monstar.service; then
+            echo "✅ Deployment successful - monstar.service is running"
+          else
+            echo "❌ Deployment failed - monstar.service failed to start"
+            sudo systemctl status monstar.service
+            sudo journalctl -u monstar.service --no-pager -n 50
+            exit 1
+          fi

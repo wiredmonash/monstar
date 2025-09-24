@@ -1,85 +1,92 @@
-# Development Branch
-This branch is for development.
+# MonSTAR by WIRED Projects
+<img width="1381" height="475" alt="image" src="https://github.com/user-attachments/assets/6281a492-2d9b-4a31-89c5-fd6da285f884" />
 
-MonSTAR is an online platform designed for Monash University students to browse, review, and share feedback on academic units. Our mission is to help students make informed decisions about their studies by fostering a community of honest respectful, and insightful reviews.
+MonSTAR is a digital platform where Monash University students can come together and share their experiences in subjects they've completed.
 
----
+We also have the full history of SETU results up until Semester 1 of 2025.
 
-## Contributors
-- **WIRED Projects Team Members**: Collaborating to bring this web application to life.
-- **Sai Kumar Murali Krishnan**: Contributed the [monash-handbook-scraper](https://github.com/saikumarmk/monash-handbook-scraper), a vital tool for gathering information about all Monash University units for our database. 
+## Project Setup & Development:
 
----
+### Environment-Based Configuration
+This project now uses a unified environment-based configuration system. The `DEVELOPMENT` environment variable controls whether the application runs in development or production mode:
 
-## Project Setup:
+- **Development Mode** (`DEVELOPMENT=true`): Backend enables CORS, frontend uses full URLs to backend
+- **Production Mode** (`DEVELOPMENT=false`): Backend serves static frontend files, frontend uses relative URLs
+
 ### Prerequisites
 Ensure you have the following installed:
 - Angular (v18.2.14)
 - Node.js (v20.15.1 or higher)
 - MongoDB
 
-### Deployment Setup/Installation Steps
+### Installation Steps
 1. Install Angular Globally:
 ```shell
 npm i -g @angular/cli@18
 ```
-2. Navigate to the project directory:
+
+2. Install dependencies for all projects from root:
 ```shell
-cd monstar
+npm install
+cd frontend && npm i --legacy-peer-deps
+cd ../backend && npm i
 ```
-3. Navigate to frontend directory and install packages
+
+3. Create an `.env` file in the `backend/.` directory and add the variables shown in `.env.template`. You may need to create your own Cloudinary account (used for profile pictures) for an API key.
+
+4. Populate your MongoDB with units data:
 ```shell
-cd frontend
-npm i --legacy-peer-deps
+# Copy the JSON from backend/scraper/processed_units.json
+# POST to localhost:8080/api/v1/units/create-bulk
 ```
-4. Navigate to backend directory and install packages
+
+5. (Optional) Populate SETU data:
 ```shell
-cd ..
-cd backend
-npm i
+# Copy the JSON from backend/scraper/setu_data_2019_2024.json
+# POST to localhost:8080/api/v1/setus/create-bulk
 ```
-4. Create a `.env` file in the `backend/.` directory and add the following variables:
+
+### Development Commands
+
+#### Easy Development Setup (Recommended)
 ```shell
-MONGODB_CONN_STRING='mongodb+srv://wired:wired123@unit-review.sdij9.mongodb.net/dev_test?retryWrites=true&w=majority&appName=unit-review'
-PORT=8080
-JWT_SECRET='1e1859169d62ce4dd61400c9036b2c1c96df908b4b670ad8fb6f247ff6557d84'
-
-EMAIL_USERNAME=monstarapp@gmail.com
-EMAIL_PASSWORD=zieycfirwdraaith
-FRONTEND_URL=http://localhost:4200
-
-CLOUDINARY_CLOUD_NAME='dd1a4cx9e'
-CLOUDINARY_API_KEY='937851319752153'
-CLOUDINARY_API_SECRET='qZ6riJThQ3_zi03vjwtaXOSUaJE'
-CLOUDINARY_URL='cloudinary://937851319752153:qZ6riJThQ3_zi03vjwtaXOSUaJE@dd1a4cx9e'
-
-GOOGLE_CLIENT_ID='671526426147-a16p1qi3iq3mtf672f7ka5hlpq8mvl3d.apps.googleusercontent.com'
-```
-5. Start the app
-```
-cd frontend
-ng serve
-cd backend
-node server.js
-```
----
-
-## Project Structure
-```
-monstar/
-├── backend/               # Contains server-side code
-├── frontend/              # Contains client-side code
-└── README.md              
+# Runs both frontend and backend in development mode
+npm run dev
 ```
 
----
+#### Manual Development Setup
+```shell
+# Terminal 1: Backend in development mode (with CORS)
+npm run dev:backend
+
+# Terminal 2: Frontend development server
+npm run dev:frontend
+```
+
+#### Production Setup
+```shell
+# Build frontend for production
+npm run build
+
+# Start backend in production mode (serves static files)
+npm run start:prod
+```
+
+### Branch Strategy
+- **Single Branch**: Use `main` branch for both development and production
+- **Environment Variable**: Set `DEVELOPMENT=true` for development, `DEVELOPMENT=false` for production
+- **No More Branch Conflicts**: No need to maintain separate `develop` and `main` branches
+
+## Contributors
+- **WIRED Projects Team Members**: Collaborating to bring this web application to life.
+- **Sai Kumar Murali Krishnan**: Contributed the [monash-handbook-scraper](https://github.com/saikumarmk/monash-handbook-scraper), a vital tool for gathering information about all Monash University units for our database. 
 
 ## Tech Stack
-- Backend: Node.js, Express
-- Cloud Database: MongoDB
-- Frontend: Angular.js
-- Cloud Storage (profile pictures): Cloudinary
-- Deployment: Linode
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Frontend:** Angular
+- **Storage Bucket for Profile Pictures:** Cloudinary
+- **Deployment:** Akamai
 
 ---
 

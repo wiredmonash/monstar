@@ -31,7 +31,11 @@
             flex: 0 0 40%;
             border-right: 4px solid $fg-dark-color;
             overflow: hidden;
-            padding-right: 1.5rem;
+
+            .left-column-scroll {
+                width: 100%;
+                height: 100%;
+            }
 
             // Update unit review header styles
             ::ng-deep app-unit-review-header .unit-review-header {
@@ -109,11 +113,27 @@
             }
         }
     }
+
+    :host ::ng-deep .left-column-scroll {
+        .p-scrollpanel-wrapper .p-scrollpanel-content {
+            padding-right: 0.75rem !important; 
+        }
+        .p-scrollpanel-bar-y {
+            margin-left: 0.5rem;
+            margin-top: 2rem;
+        }
+    }
+
+    :host ::ng-deep .reviews-scroll {
+        .p-scrollpanel-bar-y {
+            margin-top: 2rem;
+        }
+    }
 }
 
 /*
 * Desktop: Content inside review card becomes smaller
-*/ 
+*/
 @media (min-width: 1414px) and (max-width: 1600px) {
     .unit-overview-container {
         .right-column .reviews-container ::ng-deep app-review-card .review-card-container {

@@ -320,7 +320,7 @@ h6 {
   }
 
   p {
-    font-size: 14px;
+    font-size: 13px !important;
   }
 
   .review-column {
@@ -382,6 +382,10 @@ h6 {
     }
   }
 
+  p {
+    font-size: 13px;
+  }
+
   h5 {
     font-size: 24px;
   }
@@ -411,6 +415,8 @@ h6 {
     .review {
       min-height: 8rem;
       margin-right: 0.5rem;
+      margin-left: 0;
+      margin-right: 0 !important;
     }
 
     // Displaying the categories in a row format

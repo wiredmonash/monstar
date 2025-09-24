@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { filter, take } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 // Constants
 import { BASE_URL, getMetaUnitOverviewDescription, getMetaUnitOverviewKeywords, getMetaUnitOverviewOpenGraphDescription, getMetaUnitOverviewOpenGraphTitle, getMetaUnitOverviewTitle, getMetaUnitOverviewTwitterDescription, getMetaUnitOverviewTwitterTitle, NAVBAR_HEIGHT } from '../../shared/constants';
@@ -16,6 +18,7 @@ import { FooterService } from '../../shared/services/footer.service';
 import { ReviewCardComponent } from "../../shared/components/review-card/review-card.component";
 import { UnitReviewHeaderComponent } from "../../shared/components/unit-review-header/unit-review-header.component";
 import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
+import { AiOverviewComponent } from "../../shared/components/ai-overview/ai-overview.component";
 // Modules
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -27,9 +30,10 @@ import { Review } from '../../shared/models/review.model';
   selector: 'app-unit-overview',
   standalone: true,
   imports: [
-    ReviewCardComponent, 
+    ReviewCardComponent,
     UnitReviewHeaderComponent,
     SetuCardComponent,
+    AiOverviewComponent,
     ToastModule,
     ProgressSpinnerModule,
     SkeletonModule,
@@ -73,6 +77,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private messageService: MessageService,
     private meta: Meta,
+    private router: Router,
     private titleService: Title,
     private footerService: FooterService
   ) { }
@@ -154,12 +159,14 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         // Not loading anymore
         this.reviewsLoading = false;
 
+        this.resetScrollPosition();
+
         // ? Debug log: Success
-        console.log('GET Get All Reviews', reviews);
+        // console.log('GET Get All Reviews', reviews);
       },
       (error: any) => {
         // ? Debug log: Error
-        console.log('ERROR DURING: GET Get All Reviews', error)
+        // console.log('ERROR DURING: GET Get All Reviews', error)
       },
       (() => {
         // Update the height of the whole container
@@ -185,12 +192,14 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         // Update meta tags AFTER unit data is available
         this.updateMetaTags();
 
+        this.resetScrollPosition()
+
         // ? Debug log: Success
-        console.log('GET Get Unit by Unitcode', unit);
+        // console.log('GET Get Unit by Unitcode', unit);
       },
       (error: any) => {
         // ? Debug log: Error
-        console.log('ERROR DURING: GET Get Unit by Unitcode');
+        // console.log('ERROR DURING: GET Get Unit by Unitcode');
       }
     );
   }
@@ -209,7 +218,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   sortReviews(criteria: string) {
     // ? Debug log: Sorting reviews message
-    console.log('Sorting reviews', criteria); 
+    // console.log('Sorting reviews', criteria); 
     
     // Criterion
     switch (criteria) {
@@ -257,8 +266,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
       this.getUnitByUnitcode(this.unit.unitCode); // Get the unit again for updated avg ratings.
 
       if (toast == 'delete') {
-        // Show toast
+        // Show delete toast
         this.messageService.add({ severity: 'warn', summary: 'Review deleted!', detail: `Review has been deleted.` });
+      } else if (toast == 'edit') {
+        // Show edit toast
+        this.messageService.add({ severity: 'success', summary: 'Review edited!', detail: `Review has been updated.` });
       }
     }
   }
@@ -286,17 +298,35 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     // No change if we're in split view
     if (this.isSplitView) {
       this.unitOverviewContainer.nativeElement.style.height = '';
-      return
-    }
-
-    if (this.reviews.length > 1) {
-      // 2 or more reviews, grow to full height.
+    } else {
       this.unitOverviewContainer.nativeElement.style.height = '100%';
+      this.unitOverviewContainer.nativeElement.style.overflow = '';
     }
-    else if (this.reviews.length <= 1) {
-      // Prevent scrolling and calculate height based on navbar height
-      this.unitOverviewContainer.nativeElement.style.height = `calc(100vh - ${NAVBAR_HEIGHT})`;
-      this.unitOverviewContainer.nativeElement.style.overflow = 'hidden';
+  }
+
+  /**
+   * * Reset scroll position on all possible containers
+   */
+  private resetScrollPosition(): void {
+    console.log('Resetting scroll position');
+
+    // Reset main window scroll
+    window.scrollTo(0,0);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+
+    // Reset any scroll panels
+    const scrollContainers = document.querySelectorAll('.p-scrollpanel-content, .p-scrollpanel-wrapper');
+    scrollContainers.forEach(container => {
+      if (container instanceof HTMLElement) {
+        container.scrollTop = 0;
+      }
+    });
+
+    // Try to get the app's main content container
+    const appContent = document.querySelector('app-root');
+    if (appContent) {
+      appContent.scrollTop = 0;
     }
   }
 

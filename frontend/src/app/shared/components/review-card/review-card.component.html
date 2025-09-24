@@ -22,7 +22,8 @@
     </ng-template>
 </p-confirmPopup>
 
-
+<!-- Presents the user with the option to delete or update their review-->
+<p-menu #menu [model]="items" [popup]="true" appendTo="body"></p-menu>
 
 <!-- === Review Card Component === -->
 @if (review) {
@@ -31,8 +32,9 @@
         <div class="review-card position-relative">
             <!-- ! Buttons for deletion and reporting (shown in top right of review card) -->
             @if (currentUser?.email == review.author.email) {
-                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
-                    <i class="pi pi-trash"></i>
+                <!--Review Modification Button -->
+                <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="menu.toggle($event)">
+                    <i class="pi pi-ellipsis-v"></i>
                 </div>
             } @else if (currentUser) {
                 <div class="top-right-button" [@fadeInOut]="deleteButtonState" (click)="confirmDeletion($event)">
@@ -97,10 +99,10 @@
                 <!-- * Right Side (Review Heading, Categories, Stars, Description) -->
                 <div 
                     class="col-md-8 main-content-container" 
-                    [ngClass]="viewportType === 'mobile' ? '' : 'px-4'"
+                    [ngClass]="viewportType === 'mobile' || viewportType === 'tablet' ? '' : 'px-4'"
                 > 
                     <!-- Review Description -->
-                    <p class="review">{{ expanded ? review.description : (review.description | slice:0:350) + (review.description.length > 350 ? '...' : '') }}</p>
+                    <p class="review" [innerHTML]="review.description | HighlightUnitPipe : (expanded ? undefined : 350)"></p>
 
                     <!-- Expand/Collapse Button -->
                     @if (review.description.length > 350) {
@@ -245,6 +247,15 @@
             </div>
         </div>
     </div>
+
+    <!-- === Child component: Edit Review -->
+    <app-write-review-unit
+        [unit]="unit"
+        [user]="currentUser"
+        [review]="reviewEdit"
+        [editMode]="true"
+        (reviewEdited)="handleReviewEdited()"
+    ></app-write-review-unit>
     
 
 
