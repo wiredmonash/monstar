@@ -1,94 +1,72 @@
-# MonSTAR by WIRED Projects
-<img width="1381" height="475" alt="image" src="https://github.com/user-attachments/assets/6281a492-2d9b-4a31-89c5-fd6da285f884" />
+# 🌟 MonSTAR by WIRED Projects
 
-MonSTAR is a digital platform where Monash University students can come together and share their experiences in subjects they've completed.
+<img width="1381" height="475" alt="banner" src="https://github.com/user-attachments/assets/6281a492-2d9b-4a31-89c5-fd6da285f884" />
 
-We also have the full history of SETU results up until Semester 1 of 2025.
+> *Connecting Monash students through shared academic experiences and data-driven insights.*
 
-## Project Setup & Development:
+MonSTAR is a digital platform where Monash University students can come together and share their experiences in subjects they've completed, backed by comprehensive SETU data spanning years of student feedback.
 
-### Environment-Based Configuration
-This project now uses a unified environment-based configuration system. The `DEVELOPMENT` environment variable controls whether the application runs in development or production mode:
 
-- **Development Mode** (`DEVELOPMENT=true`): Backend enables CORS, frontend uses full URLs to backend
-- **Production Mode** (`DEVELOPMENT=false`): Backend serves static frontend files, frontend uses relative URLs
+## 🚀 Highlights
 
-### Prerequisites
-Ensure you have the following installed:
-- Angular (v18.2.14)
-- Node.js (v20.15.1 or higher)
-- MongoDB
+Here's what makes MonSTAR special:
 
-### Installation Steps
-1. Install Angular Globally:
-```shell
-npm i -g @angular/cli@18
-```
+- **Student-Centered Community**: Real experiences from real students about Monash units
+- **Comprehensive SETU Database**: Complete historical data up until Semester 1 of 2025
+- **Modern Tech Stack**: Built with Angular, Node.js, Express, and MongoDB
+- **Smart Environment Configuration**: Unified development/production setup with environment variables
+- **Easy Development Workflow**: Get started with a single `npm run dev` command
+- **Cloudinary Integration**: Seamless profile picture management
 
-2. Install dependencies for all projects from root:
-```shell
-npm install
-cd frontend && npm i --legacy-peer-deps
-cd ../backend && npm i
-```
 
-3. Create an `.env` file in the `backend/.` directory and add the variables shown in `.env.template`. You may need to create your own Cloudinary account (used for profile pictures) for an API key.
+## ℹ️ Overview
 
-4. Populate your MongoDB with units data:
-```shell
-# Copy the JSON from backend/scraper/processed_units.json
-# POST to localhost:8080/api/v1/units/create-bulk
-```
+> *Making academic decisions easier through student experiences and data.*
 
-5. (Optional) Populate SETU data:
-```shell
-# Copy the JSON from backend/scraper/setu_data_2019_2024.json
-# POST to localhost:8080/api/v1/setus/create-bulk
-```
+MonSTAR addresses the challenge many Monash students face: choosing subjects without reliable peer insights. By combining student-generated reviews with historical SETU results, we provide a comprehensive view of what to expect from any unit.
 
-### Development Commands
+The platform serves as both a community hub where students can share their honest experiences and a data repository where evidence-based decisions can be made about course selections.
 
-#### Easy Development Setup (Recommended)
-```shell
-# Runs both frontend and backend in development mode
-npm run dev
-```
 
-#### Manual Development Setup
-```shell
-# Terminal 1: Backend in development mode (with CORS)
-npm run dev:backend
+### 🎓 Who We Are
 
-# Terminal 2: Frontend development server
-npm run dev:frontend
-```
+MonSTAR is developed by the **WIRED Projects Team** at Monash University, a group of passionate students building solutions for fellow students. We believe in the power of shared knowledge and community-driven platforms.
 
-#### Production Setup
-```shell
-# Build frontend for production
-npm run build
+Special thanks to **Sai Kumar Murali Krishnan** for contributing the [monash-handbook-scraper](https://github.com/saikumarmk/monash-handbook-scraper) and [unit-outcome-miner](https://github.com/saikumarmk/unit-outcome-miner), which provides crucial unit and SETU information for our database.
 
-# Start backend in production mode (serves static files)
-npm run start:prod
-```
 
-### Branch Strategy
-- **Single Branch**: Use `main` branch for both development and production
-- **Environment Variable**: Set `DEVELOPMENT=true` for development, `DEVELOPMENT=false` for production
-- **No More Branch Conflicts**: No need to maintain separate `develop` and `main` branches
+### 💻 Built With Modern Technology
 
-## Contributors
-- **WIRED Projects Team Members**: Collaborating to bring this web application to life.
-- **Sai Kumar Murali Krishnan**: Contributed the [monash-handbook-scraper](https://github.com/saikumarmk/monash-handbook-scraper), a vital tool for gathering information about all Monash University units for our database. 
+Our tech stack focuses on reliability, scalability, and developer experience:
 
-## Tech Stack
-- **Backend:** Node.js, Express
+- **Backend:** Node.js with Express
 - **Database:** MongoDB
-- **Frontend:** Angular
-- **Storage Bucket for Profile Pictures:** Cloudinary
+- **Frontend:** Angular (v18.2.14)
+- **Cloud Storage:** Cloudinary
 - **Deployment:** Akamai
+
+
+## 🌐 Live Deployment
+
+Want to see MonSTAR in action? Check out our live deployment at **[monstar.wired.org.au](https://monstar.wired.org.au)**!
+
+Experience the platform firsthand and see how Monash students are sharing their academic experiences.
+
+## 👥 Contributing
+
+We welcome contributions from the Monash community! Whether you're fixing bugs, adding features, or improving documentation, your help makes MonSTAR better for everyone.
+
+Ready to get involved? Check out our **[Contribution Guide](./CONTRIBUTING.md)** for detailed setup instructions, development workflow, and contribution guidelines.
+
+
+## 📞 Get in Touch
+
+Have questions, suggestions, or want to contribute? We'd love to hear from you!
+
+**Contact**: jenul15ferdinand@gmail.com
+
+**Found a bug or have a feature request?** Open an issue and let's discuss it!
 
 ---
 
-## Contact
-For questions or support with development, please contact jenul15ferdinand@gmail.com
+*Built with ❤️ by students, for students at Monash University.*
