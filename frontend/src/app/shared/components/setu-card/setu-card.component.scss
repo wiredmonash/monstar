@@ -163,7 +163,7 @@ p-accordion {
     // Override disabled state to maintain pink color in desktop view when data exists
     :host ::ng-deep .p-accordion .p-accordion-header.p-disabled {
         background-color: #e288e2 !important;
-        border-radius: 16px 16px 0 0 !important;
+        border-radius: 16px !important;
         color: black !important;
         opacity: 1 !important;
     }
