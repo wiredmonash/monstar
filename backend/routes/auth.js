@@ -227,6 +227,17 @@ router.put('/update/:userId', verifyToken, async function (req, res) {
         if (!username && !password)
             return res.status(400).json({ error: 'Either username or password is required to update' });
 
+        // If usename is duplicated, return error
+        if (username) {
+            const existingUser = await User.findOne({
+                username: username,
+                _id: { $ne: targetUser._id } // Exclude the current user
+            });
+            if (existingUser) {
+                return res.status(400).json({ error: 'Username already exists' });
+            }
+        }
+
         // Update fields if provided
         if (username) {
             targetUser.username = username;

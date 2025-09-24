@@ -1,0 +1,143 @@
+<!-- Toast for notifications -->
+<p-toast></p-toast>
+
+<!-- User Overview Container -->
+<div 
+    #userOverviewContainer 
+    class="user-overview-container" 
+>
+    <!-- User Profile Section -->
+    <div class="user-profile-section">
+        <div class="profile-header" *ngIf="user; else userSkeleton">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    {{ getInitials(user.username) }}
+                </div>
+            </div>
+            <div class="profile-info">
+                <h1 class="user-name">{{ user.username }}</h1>
+                <p class="username">&#64;{{ user.username }}</p>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ user.reviews.length || 0 }}</span>
+                        <span class="stat-label">Reviews</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ groupedReviews.length }}</span>
+                        <span class="stat-label">Units</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Member</span>
+                        <span class="stat-label">Status</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Profile Skeleton -->
+        <ng-template #userSkeleton>
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <p-skeleton shape="circle" size="80px"></p-skeleton>
+                </div>
+                <div class="profile-info">
+                    <p-skeleton width="200px" height="2rem" class="mb-2"></p-skeleton>
+                    <p-skeleton width="120px" height="1rem" class="mb-3"></p-skeleton>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <p-skeleton width="30px" height="1.5rem" class="mb-1"></p-skeleton>
+                            <p-skeleton width="50px" height="1rem"></p-skeleton>
+                        </div>
+                        <div class="stat-item">
+                            <p-skeleton width="30px" height="1.5rem" class="mb-1"></p-skeleton>
+                            <p-skeleton width="40px" height="1rem"></p-skeleton>
+                        </div>
+                        <div class="stat-item">
+                            <p-skeleton width="60px" height="1.5rem" class="mb-1"></p-skeleton>
+                            <p-skeleton width="40px" height="1rem"></p-skeleton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <div class="section-header">
+            <h2>Reviews by {{ user?.username || 'User' }}</h2>
+            <span class="review-count" *ngIf="reviews.length > 0">({{ reviews.length }})</span>
+        </div>
+
+        <div *ngIf="!reviewsLoading; else loadingSkeleton">
+            <div *ngIf="groupedReviews.length > 0; else noReviews">
+                <!-- Unit Accordions -->
+                <p-accordion [multiple]="true" class="unit-accordions">
+                    <p-accordionTab 
+                        *ngFor="let group of groupedReviews; trackBy: trackByUnitCode"
+                        [selected]="true"
+                    >
+                        <!-- Custom Header Template -->
+                        <ng-template pTemplate="header">
+                            <div class="accordion-header">
+                                <div class="unit-info">
+                                    <span class="unit-code">{{ group.unitCode | uppercase }} | </span>
+                                    <span class="unit-name">{{ group.unitName | uppercase  }}</span>
+                                </div>
+                                <div class="unit-stats">
+                                    <div class="rating-display">
+                                        <span class="stars">{{ getStarRating(group.averageRating) }}</span>
+                                        <span class="rating-number">{{ group.averageRating.toFixed(1) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+
+                        <!-- Content Template -->
+                        <div class="accordion-content">
+                            <div class="reviews-container">
+                                <app-review-card 
+                                    *ngFor="let review of group.reviews; trackBy: trackByReviewId"
+                                    [review]="review" 
+                                    (reviewDeleted)="refreshReviews('delete')"
+                                ></app-review-card>
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                </p-accordion>
+
+                <!-- End of reviews message -->
+                <div class="end-message">
+                    <h3>That's all the reviews from {{ user?.username }}!</h3>
+                </div>
+            </div>
+
+            <!-- No reviews message -->
+            <ng-template #noReviews>
+                <div class="no-reviews-message">
+                    <div class="no-reviews-icon">
+                        <i class="pi pi-star"></i>
+                    </div>
+                    <h3>{{ user?.username }} hasn't written any reviews yet</h3>
+                    <p>Check back later to see what they think about their units!</p>
+                </div>
+            </ng-template>
+        </div>
+
+        <!-- Show review card skeletons while loading -->
+        <ng-template #loadingSkeleton>
+            <div class="reviews-skeleton-container">
+                <p-skeleton 
+                    *ngFor="let i of [1,2,3]"
+                    width="100%" 
+                    height="200px" 
+                    borderRadius="12px"
+                    class="review-skeleton"
+                ></p-skeleton>
+            </div>
+        </ng-template>
+
+        <!-- Spacer -->
+        <div class="spacer"></div>
+    </div>
+</div>

@@ -1,0 +1,277 @@
+// Import variables - using same pattern as unit-overview
+@import '../../_variables.scss';
+
+:host {
+    background-color: $bg-dark-color;
+    display: block;
+    min-height: 100vh;
+}
+
+.user-overview-container {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 57.2px);
+    padding: 0 1rem;
+    gap: 2rem;
+
+    @media (min-width: 768px) {
+        padding: 0 2rem;
+    }
+
+    @media (min-width: 1200px) {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+}
+
+/* === USER PROFILE SECTION === */
+.user-profile-section {
+    padding: 2rem 0;
+    border-bottom: 2px solid $fg-dark-color;
+
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        
+        @media (max-width: 768px) {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+    }
+
+    .profile-avatar {
+        flex-shrink: 0;
+
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, $primary-color, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            
+            @media (min-width: 768px) {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+        }
+    }
+
+    .profile-info {
+        flex: 1;
+
+        .user-name {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            
+            @media (min-width: 768px) {
+                font-size: 2.2rem;
+            }
+        }
+
+        .username {
+            color: #a0a0a0;
+            font-size: 1rem;
+            margin: 0 0 1rem 0;
+            
+            @media (min-width: 768px) {
+                font-size: 1.1rem;
+            }
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 2rem;
+            
+            @media (max-width: 768px) {
+                justify-content: center;
+            }
+
+            .stat-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.25rem;
+
+                @media (min-width: 768px) {
+                    align-items: flex-start;
+                }
+
+                .stat-number {
+                    color: $primary-color;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                }
+
+                .stat-label {
+                    color: #a0a0a0;
+                    font-size: 0.9rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+            }
+        }
+    }
+}
+
+/* === REVIEWS SECTION === */
+.reviews-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; // Important for flex child to shrink
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+
+        h2 {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+            
+            @media (min-width: 768px) {
+                font-size: 1.8rem;
+            }
+        }
+
+        .review-count {
+            color: #a0a0a0;
+            font-size: 1.2rem;
+        }
+    }
+
+    .reviews-scroll {
+        flex: 1;
+        min-height: 400px;
+
+        ::ng-deep .p-scrollpanel-content {
+            padding-right: 0.5rem;
+        }
+    }
+}
+
+/* === REVIEWS CONTAINER === */
+.reviews-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.reviews-skeleton-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    .review-skeleton {
+        margin-bottom: 0;
+    }
+}
+
+/* === MESSAGES === */
+.no-reviews-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    min-height: 300px;
+
+    .no-reviews-icon {
+        margin-bottom: 1rem;
+
+        i {
+            font-size: 3rem;
+            color: #a0a0a0;
+        }
+    }
+
+    h3 {
+        color: #ffffff;
+        font-size: 1.3rem;
+        margin: 0 0 0.5rem 0;
+        font-weight: 600;
+    }
+
+    p {
+        color: #a0a0a0;
+        font-size: 1rem;
+        margin: 0;
+        max-width: 400px;
+    }
+}
+
+.end-message {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 1rem;
+
+    h3 {
+        color: #a0a0a0;
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 500;
+    }
+}
+
+/* === SPACER === */
+.spacer {
+    height: 3rem;
+}
+
+/* === RESPONSIVE ADJUSTMENTS === */
+@media (max-width: 768px) {
+    .user-overview-container {
+        gap: 1.5rem;
+    }
+
+    .user-profile-section {
+        padding: 1.5rem 0;
+    }
+
+    .reviews-section .section-header {
+        margin-bottom: 1rem;
+    }
+}
+
+/* === SKELETON SPECIFIC STYLES === */
+:host ::ng-deep {
+    .p-skeleton {
+        background: linear-gradient(90deg, $fg-dark-color 25%, lighten($fg-dark-color, 5%) 50%, $fg-dark-color 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+}
+
+/* === REVIEW CARD ADJUSTMENTS === */
+:host ::ng-deep app-review-card {
+    .review-card-container {
+        margin-bottom: 0; // Remove default margins since we use gap in container
+    }
+}

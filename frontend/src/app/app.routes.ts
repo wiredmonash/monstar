@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './routes/home/home.component';
 import { UnitListComponent } from './routes/unit-list/unit-list.component';
 import { UnitOverviewComponent } from './routes/unit-overview/unit-overview.component';
+import { UserOverviewComponent } from './routes/user-overview/user-overview.component';
 import { VerifiedComponent } from './routes/verified/verified.component';
 import { NotFoundComponent } from './routes/not-found/not-found.component';
 import { ResetPasswordComponent } from './routes/reset-password/reset-password.component';
@@ -19,6 +20,8 @@ export const routes: Routes = [
   { path: 'list', component: UnitListComponent },
   // Unit Overview
   { path: 'unit/:unitcode', component: UnitOverviewComponent },
+  // User Overview
+  { path: 'user/:username', component: UserOverviewComponent },
   // Unit Map
   { path: 'map/:unitcode', component: UnitMapComponent },
   // SETU Data
