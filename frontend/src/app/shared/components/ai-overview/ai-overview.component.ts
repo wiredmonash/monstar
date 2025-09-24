@@ -7,6 +7,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 // App specific models
 import { AiOverview } from '../../models/ai-overview.model';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-ai-overview',
@@ -14,7 +15,8 @@ import { AiOverview } from '../../models/ai-overview.model';
   imports: [
     CommonModule,
     CardModule,
-    TooltipModule
+    TooltipModule,
+    SkeletonModule
   ],
   templateUrl: './ai-overview.component.html',
   styleUrl: './ai-overview.component.scss'

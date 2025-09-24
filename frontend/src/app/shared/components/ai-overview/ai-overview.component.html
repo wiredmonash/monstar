@@ -1,5 +1,11 @@
-<!-- AI Overview Card - Only show if unit has AI overview -->
-@if (aiOverview && aiOverview.summary && aiOverview.summary.trim()) {
+@if (!unit) {
+  <!-- Show skeleton while unit is loading -->
+  <p-skeleton
+    height="12rem"
+    borderRadius="16px"
+  />
+} @else if (aiOverview && aiOverview.summary && aiOverview.summary.trim()) {
+  <!-- Show AI overview card when data exists -->
   <div class="ai-overview-highlight">
     <p-card class="ai-overview-card">
       <ng-template pTemplate="header">
@@ -23,3 +29,4 @@
     </p-card>
   </div>
 }
+<!-- If unit exists but no AI overview, show nothing -->
