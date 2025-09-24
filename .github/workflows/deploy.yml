@@ -16,7 +16,6 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: root
         password: ${{ secrets.SERVER_PASSWORD }}
-        fingerprint: ${{ secrets.HOST_FINGERPRINT }}
         script: |
           set -euo pipefail
 
