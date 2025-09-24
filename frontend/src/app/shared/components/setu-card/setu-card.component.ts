@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, OnInit, OnDestroy, HostListener, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenuItem } from 'primeng/api';
 
@@ -9,6 +9,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
+import { SkeletonModule } from 'primeng/skeleton';
 
 // App specific services and models
 import { SetuService } from '../../services/setu.service';
@@ -24,12 +25,13 @@ import { Setu } from '../../models/setu.model';
     ProgressBarModule,
     SplitButtonModule,
     ProgressSpinnerModule,
-    TooltipModule
+    TooltipModule,
+    SkeletonModule
   ],
   templateUrl: './setu-card.component.html',
   styleUrl: './setu-card.component.scss'
 })
-export class SetuCardComponent implements OnChanges {
+export class SetuCardComponent implements OnChanges, OnInit, OnDestroy {
   @Input() unitCode: string | null = null;
 
   loading = true;
@@ -41,13 +43,59 @@ export class SetuCardComponent implements OnChanges {
 
   semesterMenuItems: MenuItem[] = [];
 
+  // Viewport size tracking
+  isDesktopView = false;
+  accordionExpanded = false;
+
+  // Host binding for CSS class when no SETU data
+  @HostBinding('class.no-setu-data')
+  get hasNoSetuData(): boolean {
+    return this.isDesktopView && !this.hasSetuData();
+  }
+
   constructor(private setuService: SetuService) { }
+
+  ngOnInit(): void {
+    this.checkViewportSize();
+  }
+
+  ngOnDestroy(): void {
+    // Cleanup is handled automatically for HostListener
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkViewportSize();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     // Re-fetch data if the unit code changes
     if (changes['unitCode'] && this.unitCode) {
       this.loadSetuData();
     }
+  }
+
+  /**
+   * Checks if we're in desktop view (two-column layout) and updates accordion state
+   */
+  private checkViewportSize(): void {
+    this.isDesktopView = window.innerWidth >= 1414; // Match the CSS breakpoint
+
+    if (this.isDesktopView) {
+      // Force accordion to be expanded in desktop view, but only if we have data
+      this.accordionExpanded = this.hasSetuData();
+
+    } else {
+      // Allow normal collapsible behavior in mobile view
+      this.accordionExpanded = false;
+    }
+  }
+
+  /**
+   * Checks if we have valid SETU data to display
+   */
+  private hasSetuData(): boolean {
+    return !this.loading && !this.error && this.selectedSetu !== null;
   }
 
   /**
@@ -73,12 +121,14 @@ export class SetuCardComponent implements OnChanges {
           this.headerTooltip = 'No SETU data available for this unit.';
         }
         this.loading = false;
+        this.checkViewportSize(); // Update accordion state after data loads
       },
       error: (err) => {
         this.error = 'Could not load SETU data.';
         this.headerTooltip = 'No SETU data available for this unit.';
         console.error('Error loading SETU data for card:', err);
         this.loading = false;
+        this.checkViewportSize(); // Update accordion state after error
       }
     });
   }

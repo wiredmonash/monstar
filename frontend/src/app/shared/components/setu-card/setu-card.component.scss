@@ -1,3 +1,5 @@
+@import '../../../_variables.scss';
+
 // Host styles
 :host {
     display: block;
@@ -157,6 +159,26 @@ p-accordion {
     color: black;
 }
 
+@media (min-width: 1414px) {
+    // Override disabled state to maintain pink color in desktop view when data exists
+    :host ::ng-deep .p-accordion .p-accordion-header.p-disabled {
+        background-color: #e288e2 !important;
+        border-radius: 16px 16px 0 0 !important;
+        color: black !important;
+        opacity: 1 !important;
+    }
+
+    // Reduce opacity when no SETU data is available in desktop view
+    :host.no-setu-data ::ng-deep .p-accordion .p-accordion-header.p-disabled {
+        opacity: 0.6 !important;
+    }
+
+    // Hide accordion toggle arrow in desktop view (two-column layout)
+    :host ::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link .p-accordion-toggle-icon {
+        display: none !important;
+    }
+}
+
 :host ::ng-deep .p-accordion .p-accordion-content {
     background-color: #2c2c2c !important;
     border-color: #2c2c2c !important;
@@ -196,6 +218,19 @@ p-accordion {
     background-color: black; // Maintain hover style
     color: #e288e2;
     transform: scale(0.95); // Slight shrink effect
+}
+
+.button-container {
+    font-family: $poppins;
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    ::ng-deep button {
+        font-size: 0.8rem !important;
+    }
 }
 
 // Responsive styles
