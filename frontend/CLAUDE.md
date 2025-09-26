@@ -18,6 +18,11 @@ This project is a frontend Angular SPA that powers MonSTAR, the student-built pl
 
 ---
 
+## MCP servers available to you
+- `chrome-devtools`: This will allow you to test your changes.
+
+---
+
 ##  Development Setup
 ```bash
 # Clone repository
