@@ -38,6 +38,9 @@
   "devDependencies": {
     "cross-env": "^7.0.3",
     "nodemon": "^3.1.9",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
