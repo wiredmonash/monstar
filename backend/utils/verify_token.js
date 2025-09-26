@@ -8,23 +8,21 @@ const { CreateError } = require('./error.js');
  * @param {Function} next Express next middleware function
  */
 const verifyToken = (req, res, next) => {
-    // Get the token from cookies
-    const token = req.cookies.access_token;
+  // Get the token from cookies
+  const token = req.cookies.access_token;
 
-    // Handle no token error
-    if (!token)
-        return next(CreateError(401, 'You are not authenticated!'));
+  // Handle no token error
+  if (!token) return next(CreateError(401, 'You are not authenticated!'));
 
-    // Verify the token
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        // Handle invalid token error
-        if (err)
-            return next(CreateError(403, 'Token is not valid'));
-        
-        req.user = user;
-        next();
-    });
-}
+  // Verify the token
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    // Handle invalid token error
+    if (err) return next(CreateError(403, 'Token is not valid'));
+
+    req.user = user;
+    next();
+  });
+};
 
 /**
  * * Middleware to verify the user is authorised to access the resource.
@@ -34,13 +32,15 @@ const verifyToken = (req, res, next) => {
  * @param {Function} next Express next middleware function
  */
 const verifyUser = (req, res, next) => {
-    verifyToken(req, res, () => {
-        if (req.user.id === req.params.id || req.user.admin) {
-            next();
-        }
+  verifyToken(req, res, () => {
+    if (req.user.id === req.params.id || req.user.admin) {
+      next();
+    }
 
-        return next(createError(403, 'You are not authorized! You are not a user nor admin.'));
-    });
+    return next(
+      createError(403, 'You are not authorized! You are not a user nor admin.')
+    );
+  });
 };
 
 /**
@@ -50,13 +50,15 @@ const verifyUser = (req, res, next) => {
  * @param {Function} next Express next middleware function
  */
 const verifyAdmin = (req, res, next) => {
-    verifyToken(req, res, () => {
-        if (req.user.admin) {
-            next();
-        }
+  verifyToken(req, res, () => {
+    if (req.user.admin) {
+      next();
+    }
 
-        return next(CreateError(403, 'You are not authorized! You are not an admin.'))
-    });
+    return next(
+      CreateError(403, 'You are not authorized! You are not an admin.')
+    );
+  });
 };
 
 module.exports = { verifyToken, verifyUser, verifyAdmin };

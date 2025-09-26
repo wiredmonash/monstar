@@ -1,21 +1,26 @@
 # AGENTS.md
 
 ## Mission Brief
+
 MonSTAR backend serves Monash University students by exposing Express APIs for browsing units, posting vetted reviews, and surfacing SETU survey insights. Only authenticated Monash members can create content, and MongoDB Atlas stores all domain records.
 
 ## Stack & Entry Points
+
 - Node 20+/Express app declared in `server.js`.
 - Mongoose ODM connects to the Atlas cluster via `MONGODB_CONN_STRING`.
 - Primary routers mounted under `/api/v1/*` for units, reviews, auth, notifications, GitHub, and SETU data.
 - Shared utilities in `utils/`, data models in `models/`, long-running helpers in `services/`.
 
 ## Boot Sequence
+
 1. Load environment from `.env` and configure CORS for `http://localhost:4200`.
 2. Register JSON/urlencoded parsers (50 MB limit), cookie parsing, and CSRF protection.
 3. Connect to MongoDB; on success trigger `tagManager.updateMostReviewsTag(1)`.
 4. Start cron jobs:
    - Hourly: recompute the `most-reviews` unit tag.
-  - 03:00 daily: execute `utils/generate-sitemap.js`, which writes sitemap XMLs into `frontend/public`.
+
+- 03:00 daily: execute `utils/generate-sitemap.js`, which writes sitemap XMLs into `frontend/public`.
+
 5. Begin listening on `PORT` (default 8080).
 
 ## Environment Variables
@@ -30,6 +35,7 @@ Key environment variables for configuration:
 - **PORT**: Server port (defaults to 8080)
 
 ## Domain Models
+
 - **User**: Auth metadata (Google vs password), admin flag, notification refs, liked/disliked review IDs, Cloudinary profile image. Pre-delete hooks cascade: remove reviews, adjust unit averages, purge notifications and avatars.
 - **Unit**: Canonical subject record with requisites, offerings, aggregate ratings, and up to two tags (`most-reviews`, `controversial`, `wam-booster`). Holds review ObjectIDs.
 - **Review**: Student-authored unit feedback with four rating dimensions, grade, semester, year, like/dislike counters; saves collapse multiline whitespace.
@@ -37,6 +43,7 @@ Key environment variables for configuration:
 - **Notification**: Lightweight payload pointing to `review` and target `user` for reaction alerts.
 
 ## API Modules
+
 - **Auth (`routes/auth.js`)**
   - `POST /google/authenticate`: Google OAuth, enforces Monash student/staff email patterns.
   - `GET /`: admin-protected list of all users.
@@ -57,6 +64,7 @@ Key environment variables for configuration:
   - `GET /contributors` fetches repo contributors with token support and curated fallback data for private/unauth cases.
 
 ## Services & Utilities
+
 - `services/tagManager.service.js`: Transactionally clears and assigns the `most-reviews` tag using review aggregates.
 - JWT middleware in `utils/verify_token.js` exposes `verifyToken`, `verifyUser`, `verifyAdmin` for route guards.
 - `utils/cloudinary.js`: Configures Multer storage for avatar uploads with 300x300 transformations, handles credential loading.
@@ -64,6 +72,7 @@ Key environment variables for configuration:
 - `utils/error.js` / `success.js`: Uniform response helpers used by middleware.
 
 ## Data & Integrations
+
 - MongoDB collections: `users`, `units`, `reviews`, `notifications`, `setus` (plus transaction history).
 - Cloudinary: stores user avatar media; deletions invoked when replacing avatars or removing users.
 - Google OAuth2: `GOOGLE_CLIENT_ID` required for login flow.
@@ -71,17 +80,20 @@ Key environment variables for configuration:
 - GitHub API: optional `GITHUB_TOKEN` for contributor listing.
 
 ## Security & Access Rules
+
 - Only Monash emails (`authcate@student.monash.edu` or `firstname.lastname@monash.edu`) can authenticate; others receive HTTP 403.
 - Review creation/edits/deletes require JWT cookie; users cannot review a unit more than once.
 - Admin-only actions use `verifyAdmin` (unit and SETU bulk operations, destructive maintenance).
 - Notification deletion ensures the cookie user matches the notification owner.
 
 ## Automation
+
 - Hourly: tagManager.updateMostReviewsTag refreshes trending tags.
 - Daily 03:00: utils/generate-sitemap.js pushes sitemap XMLs to the frontend.
 - Semester prep (Feb 1 & Jun 1 at 02:00 AET): aiOverviewService.generateOverviewsForAllUnits reruns Gemini summaries with force true so new semesters start with fresh copy.
 
 ## Ops & Tooling
+
 - Scripts: `npm run dev` (nodemon), `npm start` (Node), `npm run build` (if run from repo root to build frontend + backend).
 - Environment template: `.env.template` documents all required secrets; copy to `.env` locally.
 - Sample data dumps under `scraper/` (`processed_units.json`, `setu_data_2019_2024.json`) power bulk imports.
@@ -90,4 +102,5 @@ Key environment variables for configuration:
 Stay aligned with this contract when extending endpoints or introducing new jobs so downstream Angular clients and scheduled tasks keep functioning.
 
 ## MCP servers available to you
+
 - `semgrep`: This MCP server will allow you to scan code for security vulnerabiltiies. You should use it whenever a new critical feature is implemented that could introduce security vulnerabilties.

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const setuSchema = new Schema(
@@ -44,11 +44,11 @@ const setuSchema = new Schema(
     },
     /**
      * Evaluation metrics for SETU (I1 - I13)
-     * 
+     *
      * Array will have two values: [median/5, mean/5]
      */
     // "The learning outcomes for this unit were clear to me"
-    I1: { 
+    I1: {
       type: [Number],
     },
     // "The instructions for Assessment tasks were clear to me"
@@ -101,7 +101,7 @@ const setuSchema = new Schema(
     },
     // Aggregate score of all metrics [mean aggregate, median aggregate]
     agg_score: {
-      type: [Number], 
+      type: [Number],
     },
   },
   { timestamps: true }
@@ -121,13 +121,13 @@ setuSchema.statics.getAverageScores = function (unitCode) {
     { $match: { unit_code: unitCode } },
     {
       $group: {
-        _id: "$unit_code",
-        averageAggScore: { $avg: { $arrayElemAt: ["$agg_score", 0] } },
-        totalResponses: { $sum: "$Responses" },
+        _id: '$unit_code',
+        averageAggScore: { $avg: { $arrayElemAt: ['$agg_score', 0] } },
+        totalResponses: { $sum: '$Responses' },
       },
     },
   ]);
 };
 
-const SETU = mongoose.model("SETU", setuSchema);
+const SETU = mongoose.model('SETU', setuSchema);
 module.exports = SETU;
