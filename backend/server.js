@@ -10,7 +10,8 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const tagManager = require('./services/tagManager.service');
-const aiOverviewService = require('./services/aiOverview.service');
+const aiOverviewService = require("./services/aiOverview.service");
+const { setupSwagger } = require('./docs/swagger');
 const { exec } = require('child_process');
 const path = require('path');
 
@@ -65,6 +66,8 @@ app.use((obj, req, res, next) => {
 
 // === CSRF Token Endpoint ===
 app.get('/api/v1/csrf-token', (req, res) => {
+  // #swagger.tags = ['CSRF']
+  // #swagger.summary = 'Get CSRF token'
   res.json({ csrfToken: req.csrfToken() });
 });
 
@@ -75,6 +78,9 @@ app.use('/api/v1/auth', AuthRouter);
 app.use('/api/v1/notifications', NotificationRouter);
 app.use('/api/v1/github', GitHubRouter);
 app.use('/api/v1/setus', SetuRouter);
+
+// === Swagger UI Setup ===
+setupSwagger(app).catch(console.error);
 
 // === Serving Static Files (Production Mode) ===
 if (!isDevelopment) {

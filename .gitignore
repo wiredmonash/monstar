@@ -137,3 +137,6 @@ frontend/public/sitemap*.xml
 
 # Exclude DS Store from Mac Users
 .DS_Store
+
+# Swagger output
+backend/docs/swagger.json

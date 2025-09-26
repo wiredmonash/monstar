@@ -21,8 +21,6 @@ const client = new OAuth2Client();
 /**
  * ! POST Login and/or register a User using Google
  *
- * Login and/or register  a Google user
- *
  * @async
  * @returns {200} Responds with 200 status code if user is successfully registered/logged in
  * @throws {409} If the user already exists as a non-Google account
@@ -30,6 +28,9 @@ const client = new OAuth2Client();
  * @throws {500} If an error occurs whilst registering a user
  */
 router.post('/google/authenticate', async function (req, res) {
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Login and/or register a user using Google OAuth'
+
   const { idToken } = req.body;
   try {
     const ticket = await client.verifyIdToken({
@@ -112,13 +113,14 @@ router.post('/google/authenticate', async function (req, res) {
 /**
  * ! GET Get All Users
  *
- * Gets all users from the database.
- *
  * @async
  * @returns {JSON} Responds with a list of all users in JSON format.
  * @throws {500} If an error occurs whilst fetching users from the database.
  */
 router.get('/', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Get all users from the database'
+
   try {
     // Find all users
     const users = await User.find({});
@@ -138,9 +140,6 @@ router.get('/', verifyToken, async function (req, res) {
 /**
  * ! DELETE Remove a User from the database
  *
- * Deletes a User from the database. Only admins or the user themselves can
- * delete accounts.
- *
  * @async
  * @returns {JSON} Responds with a success message in JSON
  * @throws {403} If user is not authorised to delete this account
@@ -148,6 +147,9 @@ router.get('/', verifyToken, async function (req, res) {
  * @throws {404} User not found error
  */
 router.delete('/delete/:userId', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Delete a user from the database (Only admins or the user themselves can delete accounts)'
+
   try {
     // Get the requesting user from the token
     const requestingUser = await User.findById(req.user.id);
@@ -184,12 +186,13 @@ router.delete('/delete/:userId', verifyToken, async function (req, res) {
 /**
  * ! POST Logout a User
  *
- * Clears the token cookie to log the user out
- *
  * @async
  * @returns {JSON} Responds with a success message in JSON
  */
 router.post('/logout', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Clear the token cookie to log the user out'
+
   try {
     // Clear the cookie
     res.clearCookie('access_token', { httpOnly: true, sameSite: 'strict' });
@@ -207,9 +210,6 @@ router.post('/logout', verifyToken, async function (req, res) {
 /**
  * ! PUT Update a User's details
  *
- * Updates User's username and/or password. Only admins or the user themselves
- * can update account details.
- *
  * @async
  * @param {String} userId - The ID of the user to update
  * @returns {JSON} Responds with status 200 and success message
@@ -219,6 +219,9 @@ router.post('/logout', verifyToken, async function (req, res) {
  * @throws {500} If some error occurs
  */
 router.put('/update/:userId', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Update user\'s username and/or password (Only admins or the user themselves can update account details)'
+
   try {
     // Get the requesting user from the token
     const requestingUser = await User.findById(req.user.id);
@@ -279,9 +282,6 @@ router.put('/update/:userId', verifyToken, async function (req, res) {
 /**
  * ! GET Validates User
  *
- * Checks if the user has the access_token in their cookies to keep session.
- * The payload also contains the user's data.
- *
  * @async
  * @returns {JSON} Responds with status 200 and json containing message and decoded user data.
  * @throws {401} If the user is not authenticated and has no access token
@@ -289,6 +289,9 @@ router.put('/update/:userId', verifyToken, async function (req, res) {
  * @throws {404} If the user is not found
  */
 router.get('/validate', async function (req, res) {
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Check if the user has the access_token in their cookies to keep session'
+
   // Gets the access token from the user's cookies
   const token = req.cookies.access_token;
 
@@ -318,9 +321,6 @@ router.get('/validate', async function (req, res) {
 /**
  * ! POST Upload Avatar
  *
- * Uploads the given avatar to cloudinary via middlware, and then assigns the
- * avatar as user's profileImg
- *
  * @async
  * @returns {JSON} Responds with status 200 and json containing the success message and profileImg URL
  * @throws {404} If the user is not found
@@ -331,6 +331,9 @@ router.post(
   verifyToken,
   upload.single('avatar'),
   async function (req, res) {
+    // #swagger.tags = ['Auth']
+    // #swagger.summary = 'Upload the given avatar to cloudinary and assign it as user\'s profileImg'
+
     try {
       // Get the user by email
       const { email } = req.body;

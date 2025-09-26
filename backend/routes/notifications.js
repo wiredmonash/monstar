@@ -14,14 +14,15 @@ const router = express.Router();
 /**
  * ! GET Get All Notifications by User
  *
- * Gets all notifications for a user from the datavase
- *
  * @async
  * @returns {JSON} Responds with a list of all user notifications in JSON format.
  * @throws {500} If an error occurs whilst fetching notifications from the database.
  * @throws {404} If the user is not found in the database.
  */
 router.get('/user/:userId', async function (req, res) {
+  // #swagger.tags = ['Notifications']
+  // #swagger.summary = 'Get all notifications for a user from the database'
+
   try {
     const userId = req.params.userId;
     const user = await User.findById(userId);
@@ -48,13 +49,14 @@ router.get('/user/:userId', async function (req, res) {
 /**
  * ! DELETE Delete a notification
  *
- * Deletes a user notification
- *
  * @async
  * @returns {JSON} Responds with the deleted notification in JSON format
  * @throws {500} If an error occurs whilst deleting the notification.
  */
 router.delete('/:notificationId', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Notifications']
+  // #swagger.summary = 'Delete a user notification'
+
   try {
     console.log('deleting notification');
     const notificationId = req.params.notificationId;

@@ -17,13 +17,14 @@ const router = express.Router();
 /**
  * ! GET Get All Reviews
  *
- * Gets all reviews from the database with an optional filter in the req.body
- *
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
  */
 router.get('/', async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Get all reviews from the database with an optional filter'
+
   try {
     // Find all the reviews
     const reviews = await Review.find(req.body).populate('author');
@@ -43,14 +44,15 @@ router.get('/', async function (req, res) {
 /**
  * ! GET Get All Reviews by Unit
  *
- * Gets all reviews for a unit from the database.
- *
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
  * @throws {404} If the unit is not found in the database.
  */
 router.get('/:unit', async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Get all reviews for a unit from the database'
+
   try {
     // Get the unit code from the request parameters and convert it to lowercase
     const unitCode = req.params.unit.toLowerCase();
@@ -83,14 +85,15 @@ router.get('/:unit', async function (req, res) {
 /**
  * ! GET Get All Reviews by User Id
  *
- * Gets all reviews by a specific user from the database.
- *
  * @async
  * @returns {JSON} Responds with a list of all reviews in JSON format.
  * @throws {500} If an error occurs whilst fetching reviews from the database.
  * @throws {404} If the unit is not found in the database.
  */
 router.get('/user/:userId', async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Get all reviews by a specific user from the database'
+
   try {
     // Find all reviews by this user id directly
     const reviews = await Review.find({ author: req.params.userId })
@@ -112,14 +115,15 @@ router.get('/user/:userId', async function (req, res) {
 /**
  * ! POST Create a Review for Unit
  *
- * Creates a Review for a specific Unit
- *
  * @async
  * @returns {JSON} Responds with the created review in JSON format.
  * @throws {404} If the Unit with the given unit code from parameter doesn't exist in DB
  * @throws {500} If an error occurs whilst creating a review.
  */
 router.post('/:unit/create', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Create a review for a specific unit'
+
   try {
     // Verify that the author in the request body matches the authenticated user
     if (req.body.review_author.toString() !== req.user.id.toString()) {
@@ -225,13 +229,14 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
 /**
  * ! PUT Update a Review by MongoDB ID
  *
- * Allows us to update the Review (e.g. Title, Grade Obtained, Ratings, ...)
- *
  * @async
  * @returns {JSON} Responds with the updated review in JSON format
  * @throws {500} If an error occurs whilst updating a review.
  */
 router.put('/update/:reviewId', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Update a review by MongoDB ID (e.g. Title, Grade Obtained, Ratings)'
+
   try {
     // Get the review to update
     const review = await Review.findById(req.params.reviewId);
@@ -294,13 +299,14 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
 /**
  * ! DELETE Delete a Review by MongoDB ID
  *
- * Deletes a Review (also removes the review from the Unit's `reviews` array)
- *
  * @async
  * @returns {JSON} Responds with the deleted review in JSON format
  * @throws {500} If an error occurs whilst deleting the review.
  */
 router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Delete a review by MongoDB ID (also removes the review from the Unit\'s reviews array)'
+
   try {
     // Find the Review
     const review = await Review.findById(req.params.reviewId);
@@ -389,8 +395,6 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
 /**
  * ! PATCH Toggle Like/Dislike a Review
  *
- * Toggles the `likes` or `dislikes` field for a specific review by its ID.
- *
  * @async
  * @returns {JSON} Responds with the updated review in JSON format.
  * @throws {404} If the review or user is not found in the database.
@@ -400,6 +404,9 @@ router.patch(
   '/toggle-reaction/:reviewId',
   verifyToken,
   async function (req, res) {
+    // #swagger.tags = ['Reviews']
+    // #swagger.summary = 'Toggle the likes or dislikes field for a specific review by its ID'
+
     try {
       const { userId, reactionType } = req.body;
 
@@ -561,12 +568,13 @@ router.patch(
 /**
  * ! POST Send Report Email
  *
- * Sends an email corresponding to a user's report on a review
- *
  * @async
  * @throws {500} if error occurs when sending the report email
  */
 router.post('/send-report', async function (req, res) {
+  // #swagger.tags = ['Reviews']
+  // #swagger.summary = 'Send an email corresponding to a user\'s report on a review'
+
   const { reportReason, reportDescription, reporterName, review } = req.body;
 
   try {
