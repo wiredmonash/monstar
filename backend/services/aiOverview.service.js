@@ -72,13 +72,13 @@ function formatRatings(review) {
         parts.push(`<overall>${review.overallRating}</overall>`);
     }
     if (typeof review.contentRating === 'number') {
-        parts.push(`<content>${review.contentRating}</content>`);
+        parts.push(`<enjoyment>${review.contentRating}</enjoyment>`);
     }
     if (typeof review.facultyRating === 'number') {
-        parts.push(`<faculty>${review.facultyRating}</faculty>`);
+        parts.push(`<simplicity>${review.facultyRating}</simplicity>`);
     }
     if (typeof review.relevancyRating === 'number') {
-        parts.push(`<relevancy>${review.relevancyRating}</relevancy>`);
+        parts.push(`<usefulness>${review.relevancyRating}</usefulness>`);
     }
     return parts.join('');
 }
@@ -125,9 +125,9 @@ function buildPrompt({ unit, setuEntries, reviews, totalReviewCount }) {
         `<code>${escapeXml(unit.unitCode)}</code>` +
         `<name>${escapeXml(unit.name || '')}</name>` +
         `<avg-overall>${typeof unit.avgOverallRating === 'number' ? unit.avgOverallRating.toFixed(2) : ''}</avg-overall>` +
-        `<avg-content>${typeof unit.avgContentRating === 'number' ? unit.avgContentRating.toFixed(2) : ''}</avg-content>` +
-        `<avg-faculty>${typeof unit.avgFacultyRating === 'number' ? unit.avgFacultyRating.toFixed(2) : ''}</avg-faculty>` +
-        `<avg-relevancy>${typeof unit.avgRelevancyRating === 'number' ? unit.avgRelevancyRating.toFixed(2) : ''}</avg-relevancy>` +
+        `<avg-enjoyment>${typeof unit.avgContentRating === 'number' ? unit.avgContentRating.toFixed(2) : ''}</avg-enjoyment>` +
+        `<avg-simplicity>${typeof unit.avgFacultyRating === 'number' ? unit.avgFacultyRating.toFixed(2) : ''}</avg-simplicity>` +
+        `<avg-usefulness>${typeof unit.avgRelevancyRating === 'number' ? unit.avgRelevancyRating.toFixed(2) : ''}</avg-usefulness>` +
         `<total-reviews>${totalReviewCount}</total-reviews>` +
         `${buildSetuXml(setuEntries)}` +
         `${buildReviewsXml(reviews)}` +
