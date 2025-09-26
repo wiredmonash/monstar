@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { storage, cloudinary } = require('../utils/cloudinary');
 const multer = require('multer');
 const upload = multer({ storage });
-const { verifyToken } = require('../utils/verify_token.js');
+const { verifyToken, verifyAdmin } = require('../utils/verify_token.js');
 const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
@@ -117,7 +117,7 @@ router.post('/google/authenticate', async function (req, res) {
  * @returns {JSON} Responds with a list of all users in JSON format.
  * @throws {500} If an error occurs whilst fetching users from the database.
  */
-router.get('/', verifyToken, async function (req, res) {
+router.get('/', verifyAdmin, async function (req, res) {
   // #swagger.tags = ['Auth']
   // #swagger.summary = 'Get all users from the database'
 
