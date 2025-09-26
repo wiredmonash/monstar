@@ -39,6 +39,10 @@ const setupSwagger = async (app) => {
         {
           name: 'SETU',
           description: 'Student Evaluation of Teaching and Units data'
+        },
+        {
+          name: 'CSRF',
+          description: 'Cross-Site Request Forgery'
         }
       ],
       securityDefinitions: {
