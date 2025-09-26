@@ -34,7 +34,7 @@
   <div class="floating-emotes-container">
     @if (emoteLoadingComplete) {
       @for (emote of emotes; track $index) {
-        <img [src]="emote" class="floating-emote">
+        <img [src]="emote" class="floating-emote" loading="lazy">
       }
     }
   </div>
