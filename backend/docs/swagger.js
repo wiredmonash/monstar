@@ -197,7 +197,10 @@ const setupSwagger = async (app) => {
       app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
         explorer: true,
         customCss: '.swagger-ui .topbar { display: none }',
-        customSiteTitle: 'MonSTAR API Documentation'
+        customSiteTitle: 'MonSTAR API Documentation',
+        swaggerOptions: {
+          docExpansion: 'none',  // Collapse all tags by default
+        }
       }));
 
       console.log('📚 Swagger UI available at http://localhost:8080/docs');
