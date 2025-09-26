@@ -11,12 +11,23 @@ MonSTAR backend serves Monash University students by exposing Express APIs for b
 
 ## Boot Sequence
 1. Load environment from `.env` and configure CORS for `http://localhost:4200`.
-2. Register JSON/urlencoded parsers (50 MB limit) and cookie parsing for JWT-holding cookies.
+2. Register JSON/urlencoded parsers (50 MB limit), cookie parsing, and CSRF protection.
 3. Connect to MongoDB; on success trigger `tagManager.updateMostReviewsTag(1)`.
 4. Start cron jobs:
    - Hourly: recompute the `most-reviews` unit tag.
   - 03:00 daily: execute `utils/generate-sitemap.js`, which writes sitemap XMLs into `frontend/public`.
 5. Begin listening on `PORT` (default 8080).
+
+## Environment Variables
+Key environment variables for configuration:
+- **DEVELOPMENT**: Set to 'true' for development mode (enables CORS, detailed logging)
+- **PRODUCTION_MACHINE**: Set to 'false' for local testing in production mode (defaults to 'true'). When 'false', disables secure CSRF cookies to allow HTTP testing
+- **MONGODB_CONN_STRING**: MongoDB connection string
+- **JWT_SECRET**: Secret key for JWT token generation
+- **GOOGLE_CLIENT_ID** / **GOOGLE_CLIENT_SECRET**: Google OAuth credentials
+- **SESSION_SECRET**: Secret for session management
+- **GITHUB_TOKEN**: GitHub personal access token for repository operations
+- **PORT**: Server port (defaults to 8080)
 
 ## Domain Models
 - **User**: Auth metadata (Google vs password), admin flag, notification refs, liked/disliked review IDs, Cloudinary profile image. Pre-delete hooks cascade: remove reviews, adjust unit averages, purge notifications and avatars.

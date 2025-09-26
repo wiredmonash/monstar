@@ -24,7 +24,9 @@ const SetuRouter = require("./routes/setus");
 
 // === Environment Configuration ===
 const isDevelopment = process.env.DEVELOPMENT === 'true';
+const isProductionMachine = process.env.PRODUCTION_MACHINE !== 'false';
 console.log(`Running in ${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
+console.log(`Production machine: ${isProductionMachine ? 'YES' : 'NO'} (secure cookies: ${!isDevelopment && isProductionMachine ? 'enabled' : 'disabled'})`);
 
 // === Middleware ===
 if (isDevelopment) {
@@ -44,7 +46,7 @@ app.use(cookieParser());
 app.use(csrf({
   cookie: {
     httpOnly: true,
-    secure: !isDevelopment,
+    secure: !isDevelopment && isProductionMachine,
     sameSite: 'strict'
   }
 }));
