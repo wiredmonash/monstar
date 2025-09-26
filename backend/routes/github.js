@@ -81,14 +81,15 @@ const getFallbackContributors = () => {
 /**
  * ! GET Get Contributors from GitHub Repository
  *
- * Fetches contributors from the MonSTAR GitHub repository. If the repository is private
- * or the GitHub API is unavailable, returns fallback contributor data.
- *
  * @async
  * @returns {JSON} Responds with a list of contributors in JSON format.
  * @throws {500} If an error occurs whilst fetching contributors from GitHub API.
  */
 router.get('/contributors', async (req, res) => {
+  // #swagger.tags = ['GitHub']
+  // #swagger.summary = 'Fetch contributors from the MonSTAR GitHub repository (If repository is private or API unavailable, returns fallback contributor data)'
+
+
   try {
     const headers = getAuthHeaders();
     console.log('Fetching contributors from GitHub API');

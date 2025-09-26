@@ -14,13 +14,14 @@ const router = express.Router();
 /**
  * ! GET Get All SETU Data
  *
- * Gets all SETU data with optional pagination.
- *
  * @async
  * @returns {JSON} Responds with a paginated list of SETU data in JSON format.
  * @throws {500} If an error occurs whilst fetching SETU data from the database.
  */
 router.get('/', async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Get all SETU data with optional pagination'
+
   try {
     const { limit = 50, offset = 0, sort = 'unit_code' } = req.query;
 
@@ -51,14 +52,15 @@ router.get('/', async function (req, res) {
 /**
  * ! GET Get SETU Data by Unit Code
  *
- * Gets all SETU data for a specific unit code.
- *
  * @async
  * @returns {JSON} Responds with SETU data for the unit in JSON format.
  * @throws {404} If no SETU data is found for the unit code.
  * @throws {500} If an error occurs whilst fetching SETU data.
  */
 router.get('/unit/:unitCode', async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Get all SETU data for a specific unit code'
+
   try {
     const unitCode = req.params.unitCode.toLowerCase();
 
@@ -84,14 +86,15 @@ router.get('/unit/:unitCode', async function (req, res) {
 /**
  * ! GET Get Average SETU Scores for Unit
  *
- * Gets the average scores across all SETU evaluations for a unit.
- *
  * @async
  * @returns {JSON} Responds with average SETU scores in JSON format.
  * @throws {404} If no SETU data is found for the unit code.
  * @throws {500} If an error occurs during processing.
  */
 router.get('/average/:unitCode', async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Get the average scores across all SETU evaluations for a unit'
+
   try {
     const unitCode = req.params.unitCode.toLowerCase();
 
@@ -117,14 +120,15 @@ router.get('/average/:unitCode', async function (req, res) {
 /**
  * ! GET Get SETU Data by Season
  *
- * Gets SETU data for a specific academic season (e.g. 2019_S1).
- *
  * @async
  * @returns {JSON} Responds with SETU data for the season in JSON format.
  * @throws {404} If no SETU data is found for the season.
  * @throws {500} If an error occurs whilst fetching SETU data.
  */
 router.get('/season/:season', async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Get SETU data for a specific academic season (e.g. 2019_S1)'
+
   try {
     const season = req.params.season;
 
@@ -150,15 +154,15 @@ router.get('/season/:season', async function (req, res) {
 /**
  * ! POST Create New SETU Entry
  *
- * Creates a new SETU data entry in the database.
- * Admin access required.
- *
  * @async
  * @returns {JSON} Responds with the created SETU entry in JSON format.
  * @throws {400} If the SETU entry already exists or validation fails.
  * @throws {500} If an error occurs whilst creating the SETU entry.
  */
 router.post('/create', verifyAdmin, async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Create a new SETU data entry in the database (Admin access required)'
+
   try {
     const { unit_code, Season, code } = req.body;
 
@@ -197,14 +201,14 @@ router.post('/create', verifyAdmin, async function (req, res) {
 /**
  * ! POST Create SETU Entries in Bulk
  *
- * Creates multiple SETU entries from a JSON array.
- * Admin access required.
- *
  * @async
  * @returns {JSON} Responds with the results of the bulk creation.
  * @throws {500} If an error occurs during the bulk creation.
  */
 router.post('/create-bulk', verifyAdmin, async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Create multiple SETU entries from a JSON array (Admin access required)'
+
   try {
     const setuEntries = req.body;
 
@@ -253,15 +257,15 @@ router.post('/create-bulk', verifyAdmin, async function (req, res) {
 /**
  * ! PUT Update SETU Data
  *
- * Updates a SETU entry by ID.
- * Admin access required.
- *
  * @async
  * @returns {JSON} Responds with status 200 and the updated SETU entry.
  * @throws {404} If the SETU entry is not found.
  * @throws {500} If an error occurs while updating the SETU entry.
  */
 router.put('/update/:id', verifyAdmin, async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Update a SETU entry by ID (Admin access required)'
+
   try {
     // Find and update the SETU entry
     const updatedSetu = await SETU.findByIdAndUpdate(
@@ -287,15 +291,15 @@ router.put('/update/:id', verifyAdmin, async function (req, res) {
 /**
  * ! DELETE Remove SETU Entry
  *
- * Deletes a SETU entry by ID.
- * Admin access required.
- *
  * @async
  * @returns {JSON} Responds with a success message in JSON.
  * @throws {404} If the SETU entry is not found.
  * @throws {500} If an error occurs while deleting the SETU entry.
  */
 router.delete('/delete/:id', verifyAdmin, async function (req, res) {
+  // #swagger.tags = ['SETU']
+  // #swagger.summary = 'Delete a SETU entry by ID (Admin access required)'
+
   try {
     // Find and delete the SETU entry
     const deletedSetu = await SETU.findByIdAndDelete(req.params.id);

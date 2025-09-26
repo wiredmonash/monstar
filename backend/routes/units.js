@@ -12,60 +12,57 @@ const aiOverviewService = require('../services/aiOverview.service');
 // Router instance
 const router = express.Router();
 
-
 /**
  * ! GET Get All Units
- * 
+ *
  * @async
  * @returns {JSON} Responds with a list of all units in JSON format.
  * @throws {500} If an error occurs whilst fetching units from the database.
  */
 router.get('/', async function (req, res) {
-    // #swagger.tags = ['Units']
-    // #swagger.summary = 'get all units from the database'
+  // #swagger.tags = ['Units']
+  // #swagger.summary = 'Get all units from the database'
 
-    try {
-        // Find all the units
-        const units = await Unit.find({}).populate('reviews');
+  try {
+    // Find all the units
+    const units = await Unit.find({}).populate('reviews');
 
     // Respond 200 with JSON list containing all Units.
     return res.status(200).json(units);
   } catch (error) {
     // Handle general errors 500
-    return res
-      .status(500)
-      .json({
-        error: `An error occured while getting all Units: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occured while getting all Units: ${error.message}`,
+    });
   }
 });
 
 /**
  * ! GET Get Popular Units
- * 
+ *
  * @async
  * @throws {JSON} Responds with a list of popular units in JSON format.
  * @throws {500} If an error occurs whilst fetching units from the database.
  */
 router.get('/popular', async function (req, res) {
-    // #swagger.tags = ['Units']
-    // #swagger.summary = 'get 10 most popular units'
+  // #swagger.tags = ['Units']
+  // #swagger.summary = 'Get 10 most popular units'
 
-    try {
-        // Fetch the ten most popular units
-        const popularUnits = await Unit.aggregate([
-            {
-                $addFields: {
-                    reviewCount: { $size: "$reviews" } // Calculate the number of reviews
-                }
-            },
-            {
-                $sort: { reviewCount: -1 } // Sort by the number of reviews in descending order
-            },
-            {
-                $limit: 10 // Limit the results to top 10 units
-            },
-        ]);
+  try {
+    // Fetch the ten most popular units
+    const popularUnits = await Unit.aggregate([
+      {
+        $addFields: {
+          reviewCount: { $size: '$reviews' }, // Calculate the number of reviews
+        },
+      },
+      {
+        $sort: { reviewCount: -1 }, // Sort by the number of reviews in descending order
+      },
+      {
+        $limit: 10, // Limit the results to top 10 units
+      },
+    ]);
 
     // Populate the reviews field for the resulting units
     const populatedUnits = await Unit.populate(popularUnits, {
@@ -86,14 +83,14 @@ router.get('/popular', async function (req, res) {
 
 /**
  * ! GET Get Unit by Unitcode
- * 
+ *
  * @async
  * @returns {JSON} Responds with the unit and its details in JSON format
  * @throws {500} If an error occurs whilst getting the singular unit from the database
  */
 router.get('/unit/:unitcode', async function (req, res) {
   // #swagger.tags = ['Units']
-  // #swagger.summary = 'get a unit by unitcode'
+  // #swagger.summary = 'Get a unit by unit code'
 
   try {
     // Find the unit
@@ -105,39 +102,37 @@ router.get('/unit/:unitcode', async function (req, res) {
     // Respond 200 with JSON of the singular unit
     return res.status(200).json(unit);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occured whilst getting the singular unit: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occured whilst getting the singular unit: ${error.message}`,
+    });
   }
 });
 
 /**
  * ! GET Get Units Filtered
- * 
+ *
  * @async
  * @returns {JSON} Responds with a list of all units based on the filter in JSON format.
  * @throws {500} If an error occurs whilst fetching units from the database.
  */
 router.get('/filter', async function (req, res) {
   // #swagger.tags = ['Units']
-  // #swagger.summary = 'gets all units with filter'
+  // #swagger.summary = 'Get units with advanced filtering'
 
   try {
-      // Get the query parameters
-      const { 
-          offset = 0, 
-          limit = 10, 
-          search = '', 
-          sort = 'Alphabetic', 
-          showReviewed = 'false',
-          showUnreviewed = 'false',
-          hideNoOfferings = 'false',
-          faculty, 
-          semesters,
-          campuses
-      } = req.query;
+    // Get the query parameters
+    const {
+      offset = 0,
+      limit = 10,
+      search = '',
+      sort = 'Alphabetic',
+      showReviewed = 'false',
+      showUnreviewed = 'false',
+      hideNoOfferings = 'false',
+      faculty,
+      semesters,
+      campuses,
+    } = req.query;
 
     // Empty query object
     const query = {};
@@ -242,19 +237,17 @@ router.get('/filter', async function (req, res) {
 /**
  * ! POST Create a Unit
  *
- * Creates a new Unit and adds it to the database.
- *
  * @async
  * @returns {JSON} Responds with the created unit in JSON format
  * @throws {500} If an error occurs whilst creating a unit
  */
 router.post('/create', verifyAdmin, async function (req, res) {
   // #swagger.tags = ['Units']
-  // #swagger.summary = 'creates a new unit and adds it to the database.'
+  // #swagger.summary = 'Create a new unit and add it to the database'
 
   try {
     const existingUnit = await Unit.findOne({
-        unitCode: req.body.unit_code.toLowerCase()
+      unitCode: req.body.unit_code.toLowerCase(),
     });
 
     if (existingUnit) {
@@ -275,31 +268,26 @@ router.post('/create', verifyAdmin, async function (req, res) {
     return res.status(201).json(unit);
   } catch (error) {
     // Handle general errors
-    return res
-      .status(500)
-      .json({
-        error: `An error occured while created the Unit: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occured while created the Unit: ${error.message}`,
+    });
   }
 });
 
 /**
  * ! POST Create Units in Bulk
  *
- * Creates multiple units based on the input JSON data.
- *
- * TOOD: Only admin can do this
- *
  * @async
  * @param {JSON} req.body - Contains the JSON data for multiple units.
  * @returns {JSON} Success or error messages.
  */
 router.post('/create-bulk', verifyAdmin, async function (req, res) {
-    // #swagger.tags = ['Units']
+  // #swagger.tags = ['Units']
+  // #swagger.summary = 'Create multiple units based on input JSON data'
 
   try {
     const unitData = req.body;
-    const results = []
+    const results = [];
 
     for (const [unitCode, unitDetails] of Object.entries(unitData)) {
       const existingUnit = await Unit.findOne({
@@ -337,18 +325,14 @@ router.post('/create-bulk', verifyAdmin, async function (req, res) {
       .status(201)
       .json({ message: 'Bulk creation completed', results });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred whilst creating the units: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred whilst creating the units: ${error.message}`,
+    });
   }
 });
 
 /**
  * ! DELETE Remove a Unit
- *
- * Deletes a Unit from the database
  *
  * @async
  * @returns {JSON} Responds with a success message in JSON
@@ -357,6 +341,7 @@ router.post('/create-bulk', verifyAdmin, async function (req, res) {
  */
 router.delete('/delete/:unitcode', verifyAdmin, async function (req, res) {
   // #swagger.tags = ['Units']
+  // #swagger.summary = 'Delete a unit from the database'
 
   try {
     // Find and delete the unit
@@ -378,8 +363,6 @@ router.delete('/delete/:unitcode', verifyAdmin, async function (req, res) {
 /**
  * ! PUT Update a Unit
  *
- * Updates Unit description and/or name
- *
  * @async
  * @returns {JSON} Responds with status 200 and success message
  * @throws {404} If the Unit is not found
@@ -387,10 +370,11 @@ router.delete('/delete/:unitcode', verifyAdmin, async function (req, res) {
  */
 router.put('/update/:unitcode', async function (req, res) {
   // #swagger.tags = ['Units']
+  // #swagger.summary = 'Update unit description and/or name'
 
   try {
     // Finding the unit
-    const unit = await Unit.findOne({unitCode: req.params.unitcode})
+    const unit = await Unit.findOne({ unitCode: req.params.unitcode });
 
     // If the unit doesn't exist return 404
     if (!unit) {
@@ -432,19 +416,19 @@ router.put('/update/:unitcode', async function (req, res) {
 /**
  * ! POST Regenerate AI overview for all units
  *
- * Admin-only endpoint to rebuild AI overviews across all units
- * with human reviews. Optional body parameters:
- * - force (boolean): regenerate even if cached copy is fresh (default false)
- * - delayMs (number): throttle between requests (default service value)
+ * @async
+ * @param {boolean} force - Regenerate even if cached copy is fresh (default false)
+ * @param {number} delayMs - Throttle between requests (default service value)
  */
 router.post('/ai-overview/regenerate', verifyAdmin, async function (req, res) {
-    // #swagger.tags = ['Units']
+  // #swagger.tags = ['Units']
+  // #swagger.summary = 'Admin-only endpoint to rebuild AI overviews across all units with human reviews'
 
   try {
     const { force = false, delayMs } = req.body || {};
     const result = await aiOverviewService.generateOverviewsForAllUnits({
       force: Boolean(force),
-      delayMs: typeof delayMs === 'number' ? delayMs : undefined
+      delayMs: typeof delayMs === 'number' ? delayMs : undefined,
     });
 
     return res.status(200).json({
@@ -461,41 +445,43 @@ router.post('/ai-overview/regenerate', verifyAdmin, async function (req, res) {
 /**
  * ! POST Regenerate AI overview for a specific unit
  *
- * Admin-only endpoint to rebuild the AI overview for a single unit.
+ * @async
  */
-router.post('/:unitcode/ai-overview/regenerate', verifyAdmin, async function (req, res) {
+router.post(
+  '/:unitcode/ai-overview/regenerate',
+  verifyAdmin,
+  async function (req, res) {
     // #swagger.tags = ['Units']
+    // #swagger.summary = 'Admin-only endpoint to rebuild the AI overview for a single unit'
 
-  try {
-    const unitCode = req.params.unitcode.toLowerCase();
-    const { force = true } = req.body || {};
+    try {
+      const unitCode = req.params.unitcode.toLowerCase();
+      const { force = true } = req.body || {};
 
-    const unit = await Unit.findOne({ unitCode });
-    if (!unit) return res.status(404).json({ error: 'Unit not found' });
+      const unit = await Unit.findOne({ unitCode });
+      if (!unit) return res.status(404).json({ error: 'Unit not found' });
 
-    const result = await aiOverviewService.generateOverviewForUnit(unit, {
-      force: Boolean(force),
-    });
+      const result = await aiOverviewService.generateOverviewForUnit(unit, {
+        force: Boolean(force),
+      });
 
-    if (result.status === 'skipped') {
-      return res
-        .status(200)
-        .json({ message: 'No regeneration required', result });
-    }
-    if (result.status === 'updated') {
-      await unit.populate('reviews', '_id');
-      return res
-        .status(200)
-        .json({
+      if (result.status === 'skipped') {
+        return res
+          .status(200)
+          .json({ message: 'No regeneration required', result });
+      }
+      if (result.status === 'updated') {
+        await unit.populate('reviews', '_id');
+        return res.status(200).json({
           message: 'AI overview updated',
           overview: unit.aiOverview,
           result,
         });
-    }
+      }
 
-    return res
-      .status(500)
-      .json({ error: 'Failed to regenerate AI overview', result });
+      return res
+        .status(500)
+        .json({ error: 'Failed to regenerate AI overview', result });
     } catch (error) {
       return res
         .status(500)
@@ -507,8 +493,6 @@ router.post('/:unitcode/ai-overview/regenerate', verifyAdmin, async function (re
 /**
  * ! GET Units Required-By
  *
- * Gets all units that have the specified unit as a prerequisite
- *
  * @async
  * @param {string} unitCode - The unit code to search for in the prerequisites
  * @returns {JSON} Array of units that require the specified unit
@@ -517,8 +501,9 @@ router.post('/:unitcode/ai-overview/regenerate', verifyAdmin, async function (re
  */
 router.get('/:unitCode/required-by', async function (req, res) {
   // #swagger.tags = ['Units']
+  // #swagger.summary = 'Get all units that have the specified unit as a prerequisite'
 
-  try { 
+  try {
     const unitCode = req.params.unitCode.toLowerCase();
 
     // Verify unit existance
@@ -536,11 +521,9 @@ router.get('/:unitCode/required-by', async function (req, res) {
 
     return res.status(200).json(requiredByUnits);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `Error finding units requiring ${req.params.unitCode}: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `Error finding units requiring ${req.params.unitCode}: ${error.message}`,
+    });
   }
 });
 
