@@ -77,3 +77,6 @@ MonSTAR backend serves Monash University students by exposing Express APIs for b
 - API request collections live in `bruno/` for quick manual testing.
 
 Stay aligned with this contract when extending endpoints or introducing new jobs so downstream Angular clients and scheduled tasks keep functioning.
+
+## MCP servers available to you
+- `semgrep`: This MCP server will allow you to scan code for security vulnerabiltiies. You should use it whenever a new critical feature is implemented that could introduce security vulnerabilties.
