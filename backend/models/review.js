@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 // Review Schema
-const reviewSchema = new Schema({
+const reviewSchema = new Schema(
+  {
     // Review title
     title: { type: String, required: true },
 
@@ -41,18 +42,24 @@ const reviewSchema = new Schema({
     unit: { type: mongoose.Schema.Types.ObjectId, ref: 'Unit', required: true },
 
     // Reference to the user who wrote the review
-    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
-}, {
-    timestamps: true
-});
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 // Add pre-save hook to collapse multiple newlines into a single newline
-reviewSchema.pre('save', function(next) {
-    if (this.description) {
-        // Replace 3 or more newlines with exactly 2 newlines
-        this.description = this.description.replace(/\n{3,}/g, '\n\n');
-    }
-    next();
+reviewSchema.pre('save', function (next) {
+  if (this.description) {
+    // Replace 3 or more newlines with exactly 2 newlines
+    this.description = this.description.replace(/\n{3,}/g, '\n\n');
+  }
+  next();
 });
 
 // Export the Review model

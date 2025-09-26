@@ -1,12 +1,12 @@
 // Module Imports
-const express = require("express");
+const express = require('express');
 
 // Model Imports
-const Unit = require("../models/unit");
-const SETU = require("../models/setu");
+const Unit = require('../models/unit');
+const SETU = require('../models/setu');
 
 // Function Imports
-const { verifyAdmin } = require("../utils/verify_token.js");
+const { verifyAdmin } = require('../utils/verify_token.js');
 
 // Router instance
 const router = express.Router();
@@ -20,9 +20,9 @@ const router = express.Router();
  * @returns {JSON} Responds with a paginated list of SETU data in JSON format.
  * @throws {500} If an error occurs whilst fetching SETU data from the database.
  */
-router.get("/", async function (req, res) {
+router.get('/', async function (req, res) {
   try {
-    const { limit = 50, offset = 0, sort = "unit_code" } = req.query;
+    const { limit = 50, offset = 0, sort = 'unit_code' } = req.query;
 
     // Find and paginate SETU data
     const setuData = await SETU.find({})
@@ -42,11 +42,9 @@ router.get("/", async function (req, res) {
     });
   } catch (error) {
     // Handle general errors 500
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while getting SETU data: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while getting SETU data: ${error.message}`,
+    });
   }
 });
 
@@ -60,7 +58,7 @@ router.get("/", async function (req, res) {
  * @throws {404} If no SETU data is found for the unit code.
  * @throws {500} If an error occurs whilst fetching SETU data.
  */
-router.get("/unit/:unitCode", async function (req, res) {
+router.get('/unit/:unitCode', async function (req, res) {
   try {
     const unitCode = req.params.unitCode.toLowerCase();
 
@@ -77,11 +75,9 @@ router.get("/unit/:unitCode", async function (req, res) {
     // Return the SETU data
     return res.status(200).json(setuData);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while getting SETU data for unit: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while getting SETU data for unit: ${error.message}`,
+    });
   }
 });
 
@@ -95,7 +91,7 @@ router.get("/unit/:unitCode", async function (req, res) {
  * @throws {404} If no SETU data is found for the unit code.
  * @throws {500} If an error occurs during processing.
  */
-router.get("/average/:unitCode", async function (req, res) {
+router.get('/average/:unitCode', async function (req, res) {
   try {
     const unitCode = req.params.unitCode.toLowerCase();
 
@@ -112,11 +108,9 @@ router.get("/average/:unitCode", async function (req, res) {
     // Return the average scores
     return res.status(200).json(averageScores[0]);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while calculating average scores: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while calculating average scores: ${error.message}`,
+    });
   }
 });
 
@@ -130,7 +124,7 @@ router.get("/average/:unitCode", async function (req, res) {
  * @throws {404} If no SETU data is found for the season.
  * @throws {500} If an error occurs whilst fetching SETU data.
  */
-router.get("/season/:season", async function (req, res) {
+router.get('/season/:season', async function (req, res) {
   try {
     const season = req.params.season;
 
@@ -147,11 +141,9 @@ router.get("/season/:season", async function (req, res) {
     // Return the SETU data
     return res.status(200).json(setuData);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while getting SETU data for season: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while getting SETU data for season: ${error.message}`,
+    });
   }
 });
 
@@ -166,7 +158,7 @@ router.get("/season/:season", async function (req, res) {
  * @throws {400} If the SETU entry already exists or validation fails.
  * @throws {500} If an error occurs whilst creating the SETU entry.
  */
-router.post("/create", verifyAdmin, async function (req, res) {
+router.post('/create', verifyAdmin, async function (req, res) {
   try {
     const { unit_code, Season, code } = req.body;
 
@@ -178,11 +170,9 @@ router.post("/create", verifyAdmin, async function (req, res) {
     });
 
     if (existingSetu) {
-      return res
-        .status(400)
-        .json({
-          error: "SETU entry already exists for this unit, season, and code",
-        });
+      return res.status(400).json({
+        error: 'SETU entry already exists for this unit, season, and code',
+      });
     }
 
     // Prepare the SETU data with lowercase unit_code
@@ -198,11 +188,9 @@ router.post("/create", verifyAdmin, async function (req, res) {
     // Return 201 (created), and show the new SETU entry in JSON format
     return res.status(201).json(setu);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while creating the SETU entry: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while creating the SETU entry: ${error.message}`,
+    });
   }
 });
 
@@ -216,25 +204,29 @@ router.post("/create", verifyAdmin, async function (req, res) {
  * @returns {JSON} Responds with the results of the bulk creation.
  * @throws {500} If an error occurs during the bulk creation.
  */
-router.post("/create-bulk", verifyAdmin, async function (req, res) {
+router.post('/create-bulk', verifyAdmin, async function (req, res) {
   try {
     const setuEntries = req.body;
 
     if (!Array.isArray(setuEntries)) {
       return res
         .status(400)
-        .json({ error: "Request body should be an array of SETU entries" });
+        .json({ error: 'Request body should be an array of SETU entries' });
     }
 
     // Build bulk operations: upsert each entry, skip if it already exists
-    const operations = setuEntries.map(entry => {
+    const operations = setuEntries.map((entry) => {
       const unitCode = entry.unit_code.toLowerCase();
       return {
         updateOne: {
-          filter: { unit_code: unitCode, Season: entry.Season, code: entry.code },
+          filter: {
+            unit_code: unitCode,
+            Season: entry.Season,
+            code: entry.code,
+          },
           update: { $setOnInsert: { ...entry, unit_code: unitCode } },
           upsert: true, // Create if it doesn't exist
-        }
+        },
       };
     });
 
@@ -249,10 +241,9 @@ router.post("/create-bulk", verifyAdmin, async function (req, res) {
       message: 'Bulk SETU creation completed',
       totalProcessed: setuEntries.length,
       created,
-      skipped
+      skipped,
     });
-  } 
-  catch (error) {
+  } catch (error) {
     return res.status(500).json({
       error: `An error occurred whilst creating the SETU entries: ${error.message}`,
     });
@@ -270,7 +261,7 @@ router.post("/create-bulk", verifyAdmin, async function (req, res) {
  * @throws {404} If the SETU entry is not found.
  * @throws {500} If an error occurs while updating the SETU entry.
  */
-router.put("/update/:id", verifyAdmin, async function (req, res) {
+router.put('/update/:id', verifyAdmin, async function (req, res) {
   try {
     // Find and update the SETU entry
     const updatedSetu = await SETU.findByIdAndUpdate(
@@ -281,17 +272,15 @@ router.put("/update/:id", verifyAdmin, async function (req, res) {
 
     // If the SETU entry is not found, return 404
     if (!updatedSetu) {
-      return res.status(404).json({ error: "SETU entry not found" });
+      return res.status(404).json({ error: 'SETU entry not found' });
     }
 
     // Return the updated SETU entry
     return res.status(200).json(updatedSetu);
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while updating the SETU entry: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while updating the SETU entry: ${error.message}`,
+    });
   }
 });
 
@@ -306,24 +295,22 @@ router.put("/update/:id", verifyAdmin, async function (req, res) {
  * @throws {404} If the SETU entry is not found.
  * @throws {500} If an error occurs while deleting the SETU entry.
  */
-router.delete("/delete/:id", verifyAdmin, async function (req, res) {
+router.delete('/delete/:id', verifyAdmin, async function (req, res) {
   try {
     // Find and delete the SETU entry
     const deletedSetu = await SETU.findByIdAndDelete(req.params.id);
 
     // If the SETU entry is not found, return 404
     if (!deletedSetu) {
-      return res.status(404).json({ error: "SETU entry not found" });
+      return res.status(404).json({ error: 'SETU entry not found' });
     }
 
     // Return success message
-    return res.status(200).json({ message: "SETU entry successfully deleted" });
+    return res.status(200).json({ message: 'SETU entry successfully deleted' });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `An error occurred while deleting the SETU entry: ${error.message}`,
-      });
+    return res.status(500).json({
+      error: `An error occurred while deleting the SETU entry: ${error.message}`,
+    });
   }
 });
 

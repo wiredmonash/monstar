@@ -1,14 +1,14 @@
 // Module Imports
-const express = require("express");
-const axios = require("axios");
+const express = require('express');
+const axios = require('axios');
 
 // Router instance
 const router = express.Router();
 
 // GitHub API configuration
-const GITHUB_API_BASE = "https://api.github.com";
-const REPO_OWNER = "wiredmonash";
-const REPO_NAME = "monstar";
+const GITHUB_API_BASE = 'https://api.github.com';
+const REPO_OWNER = 'wiredmonash';
+const REPO_NAME = 'monstar';
 
 /**
  * Get GitHub token from environment variables
@@ -25,11 +25,11 @@ const getAuthHeaders = () => {
   if (token) {
     return {
       Authorization: `token ${token}`,
-      Accept: "application/vnd.github.v3+json",
+      Accept: 'application/vnd.github.v3+json',
     };
   }
   return {
-    Accept: "application/vnd.github.v3+json",
+    Accept: 'application/vnd.github.v3+json',
   };
 };
 
@@ -44,36 +44,36 @@ const getAuthHeaders = () => {
 const getFallbackContributors = () => {
   return [
     {
-      username: "jenul-ferdinand",
-      name: "Jenul Ferdinand",
-      avatar_url: "https://avatars.githubusercontent.com/u/jenul-ferdinand",
+      username: 'jenul-ferdinand',
+      name: 'Jenul Ferdinand',
+      avatar_url: 'https://avatars.githubusercontent.com/u/jenul-ferdinand',
       contributions: 150,
-      html_url: "https://github.com/jenul-ferdinand",
-      type: "User",
+      html_url: 'https://github.com/jenul-ferdinand',
+      type: 'User',
     },
     {
-      username: "Rikidink",
-      name: "Ricky Zhang",
-      avatar_url: "https://avatars.githubusercontent.com/u/Rikidink",
+      username: 'Rikidink',
+      name: 'Ricky Zhang',
+      avatar_url: 'https://avatars.githubusercontent.com/u/Rikidink',
       contributions: 45,
-      html_url: "https://github.com/Rikidink",
-      type: "User",
+      html_url: 'https://github.com/Rikidink',
+      type: 'User',
     },
     {
-      username: "dlnphng",
-      name: "Phuong Do",
-      avatar_url: "https://avatars.githubusercontent.com/u/dlnphng",
+      username: 'dlnphng',
+      name: 'Phuong Do',
+      avatar_url: 'https://avatars.githubusercontent.com/u/dlnphng',
       contributions: 32,
-      html_url: "https://github.com/dlnphng",
-      type: "User",
+      html_url: 'https://github.com/dlnphng',
+      type: 'User',
     },
     {
-      username: "neviskawatra",
-      name: "Nevis Kawatra",
-      avatar_url: "https://avatars.githubusercontent.com/u/neviskawatra",
+      username: 'neviskawatra',
+      name: 'Nevis Kawatra',
+      avatar_url: 'https://avatars.githubusercontent.com/u/neviskawatra',
       contributions: 28,
-      html_url: "https://github.com/neviskawatra",
-      type: "User",
+      html_url: 'https://github.com/neviskawatra',
+      type: 'User',
     },
   ];
 };
@@ -88,10 +88,10 @@ const getFallbackContributors = () => {
  * @returns {JSON} Responds with a list of contributors in JSON format.
  * @throws {500} If an error occurs whilst fetching contributors from GitHub API.
  */
-router.get("/contributors", async (req, res) => {
+router.get('/contributors', async (req, res) => {
   try {
     const headers = getAuthHeaders();
-    console.log("Fetching contributors from GitHub API");
+    console.log('Fetching contributors from GitHub API');
 
     // Try to fetch contributors from GitHub API
     const response = await axios.get(
@@ -104,7 +104,7 @@ router.get("/contributors", async (req, res) => {
 
       // Filter and format contributors
       const contributors = response.data
-        .filter((c) => c.type === "User")
+        .filter((c) => c.type === 'User')
         .slice(0, 10) // Limit to top 10 contributors
         .sort((a, b) => b.contributions - a.contributions)
         .map((c) => ({
@@ -120,22 +120,22 @@ router.get("/contributors", async (req, res) => {
       return res.status(200).json({
         success: true,
         status: 200,
-        message: "Contributors fetched successfully",
+        message: 'Contributors fetched successfully',
         data: contributors,
       });
     } else {
       // Return fallback data if no contributors found
-      console.log("No contributors found, using fallback data");
+      console.log('No contributors found, using fallback data');
       const fallbackData = getFallbackContributors();
       return res.status(200).json({
         success: true,
         status: 200,
-        message: "Using fallback contributor data",
+        message: 'Using fallback contributor data',
         data: fallbackData,
       });
     }
   } catch (error) {
-    console.error("Error fetching GitHub contributors:", error);
+    console.error('Error fetching GitHub contributors:', error);
 
     // If it's an authentication error or repository is private, return fallback data
     if (
@@ -143,24 +143,24 @@ router.get("/contributors", async (req, res) => {
       (error.response.status === 401 || error.response.status === 403)
     ) {
       console.log(
-        "Repository is private or token is invalid. Using fallback data."
+        'Repository is private or token is invalid. Using fallback data.'
       );
       const fallbackData = getFallbackContributors();
       return res.status(200).json({
         success: true,
         status: 200,
-        message: "Repository is private. Using fallback contributor data",
+        message: 'Repository is private. Using fallback contributor data',
         data: fallbackData,
       });
     }
 
     // For other errors, return fallback data
-    console.log("GitHub API error, using fallback data");
+    console.log('GitHub API error, using fallback data');
     const fallbackData = getFallbackContributors();
     return res.status(200).json({
       success: true,
       status: 200,
-      message: "Error fetching contributors. Using fallback data",
+      message: 'Error fetching contributors. Using fallback data',
       data: fallbackData,
     });
   }
