@@ -66,6 +66,8 @@ app.use((obj, req, res, next) => {
 
 // === CSRF Token Endpoint ===
 app.get('/api/v1/csrf-token', (req, res) => {
+  // #swagger.tags = ['CSRF']
+  // #swagger.summary = 'Get CSRF token'
   res.json({ csrfToken: req.csrfToken() });
 });
 
