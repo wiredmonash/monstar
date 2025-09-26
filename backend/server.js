@@ -8,6 +8,7 @@ const cron = require("node-cron");
 const cors = require("cors");
 const app = express();
 const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 const tagManager = require('./services/tagManager.service');
 const aiOverviewService = require("./services/aiOverview.service");
 const { exec } = require('child_process');
@@ -23,7 +24,9 @@ const SetuRouter = require("./routes/setus");
 
 // === Environment Configuration ===
 const isDevelopment = process.env.DEVELOPMENT === 'true';
+const isProductionMachine = process.env.PRODUCTION_MACHINE !== 'false';
 console.log(`Running in ${isDevelopment ? 'DEVELOPMENT' : 'PRODUCTION'} mode`);
+console.log(`Production machine: ${isProductionMachine ? 'YES' : 'NO'} (secure cookies: ${!isDevelopment && isProductionMachine ? 'enabled' : 'disabled'})`);
 
 // === Middleware ===
 if (isDevelopment) {
@@ -39,6 +42,15 @@ app.use(express.json({ limit: "50mb" })); // Increased payload limit for JSON re
 app.use(express.urlencoded({ limit: "50mb", extended: true })); // Increased payload limit for URL-encoded requests.
 app.use(cookieParser());
 
+// CSRF Protection
+app.use(csrf({
+  cookie: {
+    httpOnly: true,
+    secure: !isDevelopment && isProductionMachine,
+    sameSite: 'strict'
+  }
+}));
+
 // Response handler middlware
 app.use((obj, req, res, next) => {
   const statusCode = obj.status || 500;
@@ -49,6 +61,11 @@ app.use((obj, req, res, next) => {
     message: message,
     data: obj.data,
   });
+});
+
+// === CSRF Token Endpoint ===
+app.get('/api/v1/csrf-token', (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
 });
 
 // === Routes ===

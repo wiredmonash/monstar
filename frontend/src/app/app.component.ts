@@ -8,13 +8,14 @@ import { FooterService } from './shared/services/footer.service';
 // Components
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
-import { PrimeNGConfig } from 'primeng/api';
+import { PrimeNGConfig, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent], 
-  providers: [ApiService],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, ToastModule],
+  providers: [ApiService, MessageService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'] // Fixed the typo from 'styleUrl' to 'styleUrls'
 })
