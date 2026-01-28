@@ -17,7 +17,7 @@
     "@google/genai": "1.30.0",
     "@upstash/redis": "^1.35.8",
     "axios": "1.13.2",
-    "bcrypt": "5.1.1",
+    "bcrypt": "6.0.0",
     "cloudinary": "1.41.3",
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
