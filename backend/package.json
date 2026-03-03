@@ -32,7 +32,7 @@
     "jsonwebtoken": "~9.0.3",
     "module-alias": "^2.2.3",
     "mongoose": "~8.21.0",
-    "multer": "2.0.2",
+    "multer": "2.1.0",
     "multer-storage-cloudinary": "4.0.0",
     "nodemailer": "~7.0.12"
   },
