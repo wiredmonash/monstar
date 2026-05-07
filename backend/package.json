@@ -31,7 +31,7 @@
     "google-auth-library": "~9.15.1",
     "jsonwebtoken": "~9.0.3",
     "module-alias": "^2.2.3",
-    "mongoose": "~8.21.0",
+    "mongoose": "~8.22.1",
     "multer": "2.0.2",
     "multer-storage-cloudinary": "4.0.0",
     "nodemailer": "~7.0.12"
