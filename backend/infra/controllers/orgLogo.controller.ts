@@ -1,6 +1,6 @@
-const asyncHandler = require('express-async-handler');
+import asyncHandler from '@utilities/asyncHandler';
 
-const OrgLogoService = require('@services/orgLogo.service');
+import OrgLogoService from '@services/orgLogo.service';
 
 class OrgLogoController {
   static getAll = asyncHandler(async (req, res) => {
@@ -37,4 +37,4 @@ class OrgLogoController {
   });
 }
 
-module.exports = OrgLogoController;
+export = OrgLogoController;
