@@ -31,11 +31,11 @@
     "noImplicitAny": false
   },
   "include": [
-    "server.js",
+    "server.ts",
     "infra/**/*",
     "models/**/*",
     "constants/**/*",
-    "docs/swagger.js"
+    "docs/swagger.ts"
   ],
   "exclude": ["node_modules", "dist", "tests", "scrapers"]
 }
