@@ -13,7 +13,7 @@ class CacheProvider {
   static CLIENT = redis;
   static POPULAR_UNITS_TTL = 604800; // 1 week
   /** Return this from fetchFn to skip caching the result. */
-  static SKIP_CACHE = Symbol('SKIP_CACHE');
+  static readonly SKIP_CACHE: unique symbol = Symbol('SKIP_CACHE');
 
   /**
    * Get cached data or fetch from source
@@ -21,8 +21,13 @@ class CacheProvider {
    * @param {Function} fetchFn - Function to fetch data if cache misses
    * @param {number} ttl - Time to live in seconds (default: 1 hour)
    */
-  static async getOrSet(key, fetchFn, ttl = 3600) {
-    if (!this.CLIENT) {
+  static async getOrSet<T>(
+    key: string,
+    fetchFn: () => Promise<T | typeof CacheProvider.SKIP_CACHE>,
+    ttl = 3600
+  ): Promise<T | never[]> {
+    const client = this.CLIENT;
+    if (!client) {
       if (process.env.NODE_ENV !== 'test')
         console.warn('Redis not configured, fetching directly');
       const result = await fetchFn();
@@ -30,7 +35,7 @@ class CacheProvider {
     }
 
     try {
-      const cached = await redis.get(key);
+      const cached = await client.get<T>(key);
       if (cached !== null) {
         return cached;
       }
@@ -39,7 +44,7 @@ class CacheProvider {
 
       if (data === this.SKIP_CACHE) return [];
 
-      await redis.setex(key, ttl, JSON.stringify(data));
+      await client.setex(key, ttl, JSON.stringify(data));
 
       return data;
     } catch (err) {
@@ -52,7 +57,7 @@ class CacheProvider {
   /**
    * Invalidate cache by key or pattern
    */
-  static async invalidate(keyOrPattern) {
+  static async invalidate(keyOrPattern: string) {
     if (!redis) return;
 
     try {

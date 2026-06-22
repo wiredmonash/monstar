@@ -1,35 +1,46 @@
 import axios from 'axios';
 
+import type { Job } from '@models/types';
+
 const NOTION_API_BASE = 'https://www.notion.so/api/v3';
 const NOTION_PAGE_ID = process.env.NOTION_PAGE_ID || null;
 
-function toUUID(rawId) {
+type NotionSchema = Record<string, { type: string; name: string }>;
+
+interface NotionMeta {
+  collectionId: string;
+  collectionViewId: string;
+  spaceId: string;
+  schema: NotionSchema;
+}
+
+function toUUID(rawId: string) {
   if (rawId.includes('-')) return rawId;
   return `${rawId.slice(0, 8)}-${rawId.slice(8, 12)}-${rawId.slice(12, 16)}-${rawId.slice(16, 20)}-${rawId.slice(20)}`;
 }
 
-function _extractText(prop) {
+function _extractText(prop: any) {
   if (!prop) return '';
-  return prop.map((segment) => segment[0]).join('');
+  return prop.map((segment: any) => segment[0]).join('');
 }
 
-function _extractSelect(prop) {
+function _extractSelect(prop: any) {
   if (!prop) return null;
   return prop[0][0] ?? null;
 }
 
-function _extractMultiSelect(prop) {
+function _extractMultiSelect(prop: any) {
   if (!prop) return [];
   const raw = prop[0][0];
-  return raw ? raw.split(',').map((s) => s.trim()) : [];
+  return raw ? raw.split(',').map((s: string) => s.trim()) : [];
 }
 
-function _extractUrl(prop) {
+function _extractUrl(prop: any) {
   if (!prop) return null;
   return prop[0][0] ?? null;
 }
 
-function _extractDate(prop) {
+function _extractDate(prop: any) {
   if (!prop) return null;
   try {
     return prop[0][1][0][1].start_date ?? null;
@@ -41,8 +52,7 @@ function _extractDate(prop) {
 class NotionProvider {
   static PAGE_ID = NOTION_PAGE_ID;
 
-  /** @type {{ collectionId: string, collectionViewId: string, spaceId: string, schema: Object } | null} */
-  static _cachedMeta: any = null;
+  static _cachedMeta: NotionMeta | null = null;
 
   /* ----------------------------- API Endpoints ----------------------------- */
 
@@ -50,7 +60,7 @@ class NotionProvider {
    * @param {string} pageId
    * @returns {Promise<Object>}
    */
-  static async _loadPageChunk(pageId) {
+  static async _loadPageChunk(pageId: string) {
     const response = await axios.post(
       `${NOTION_API_BASE}/loadPageChunk`,
       {
@@ -72,7 +82,12 @@ class NotionProvider {
    * @param {number} [limit=999]
    * @returns {Promise<Object>}
    */
-  static async _queryCollection(collectionId, collectionViewId, spaceId, limit = 999) {
+  static async _queryCollection(
+    collectionId: string,
+    collectionViewId: string,
+    spaceId: string,
+    limit = 999
+  ) {
     const response = await axios.post(
       `${NOTION_API_BASE}/queryCollection`,
       {
@@ -101,7 +116,7 @@ class NotionProvider {
    * @param {string} pageId
    * @returns {Promise<{ collectionId: string, collectionViewId: string, spaceId: string, schema: Object }>}
    */
-  static async _getOrLoadMeta(pageId) {
+  static async _getOrLoadMeta(pageId: string): Promise<NotionMeta> {
     if (this._cachedMeta) return this._cachedMeta;
 
     const pageData = await this._loadPageChunk(pageId);
@@ -131,13 +146,13 @@ class NotionProvider {
    * @param {Object} schema
    * @returns {Object}
    */
-  static _parseRow(block, schema) {
+  static _parseRow(block: any, schema: NotionSchema): Job {
     const props = block.value?.value?.properties ?? block.value?.properties ?? {};
     const notionId = block.value?.value?.id ?? block.value?.id;
 
-    const row: any = { notionId };
+    const row = { notionId } as Job;
 
-    for (const [key, def] of Object.entries(schema) as [string, any][]) {
+    for (const [key, def] of Object.entries(schema)) {
       const raw = props[key];
 
       switch (def.type) {
@@ -173,7 +188,9 @@ class NotionProvider {
    * @param {string} [pageId]
    * @returns {Promise<Array<Object>>}
    */
-  static async fetchDatabase(pageId = this.PAGE_ID) {
+  static async fetchDatabase(
+    pageId: string | null = this.PAGE_ID
+  ): Promise<Job[]> {
     if (!pageId) {
       console.warn('NOTION_PAGE_ID not configured, skipping Notion fetch');
       return [];
@@ -192,7 +209,9 @@ class NotionProvider {
       queryData.result.reducerResults.collection_group_results;
     const blocks = queryData.recordMap.block;
 
-    return blockIds.map((blockId) => this._parseRow(blocks[blockId], schema));
+    return blockIds.map((blockId: string) =>
+      this._parseRow(blocks[blockId], schema)
+    );
   }
 
   /**

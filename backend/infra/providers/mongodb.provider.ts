@@ -1,14 +1,18 @@
-import mongoose from 'mongoose';
+import mongoose, { Mongoose } from 'mongoose';
+
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose:
+    | { conn: Mongoose | null; promise: Promise<Mongoose> | null }
+    | undefined;
+}
 
 const MONGODB_URI = process.env.MONGODB_CONN_STRING;
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_CONN_STRING environment variable');
 }
 
-let cached = (global as any).mongoose;
-if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
-}
+const cached = (global.mongoose ??= { conn: null, promise: null });
 
 async function dbConnect() {
   // 1. Return existing connection if ready
@@ -33,7 +37,7 @@ async function dbConnect() {
 
     mongoose.set('strictQuery', false);
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       return mongoose;
     });
   }

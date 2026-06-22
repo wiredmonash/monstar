@@ -1,6 +1,7 @@
 import Review from '@models/review';
 import SETU from '@models/setu';
 import Unit from '@models/unit';
+import type { IUnit, IReviewLean, ISETULean } from '@models/types';
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 console.log(
@@ -47,7 +48,10 @@ class AiOverviewProvider {
   /**
    * Generate AI overview for a singular unit
    */
-  static async generateOverviewForUnit(unit, options: any = {}) {
+  static async generateOverviewForUnit(
+    unit: IUnit,
+    options: { force?: boolean } = {}
+  ) {
     const { force = false } = options;
 
     if (!Array.isArray(unit.reviews) || unit.reviews.length === 0) {
@@ -131,7 +135,9 @@ class AiOverviewProvider {
   /**
    * Generate AI overviews for all units with at least one review
    */
-  static async generateOverviewsForAllUnits(options: any = {}) {
+  static async generateOverviewsForAllUnits(
+    options: { force?: boolean; delayMs?: number } = {}
+  ) {
     const { force = false, delayMs = 500 } = options;
 
     const units = await Unit.find({
@@ -187,7 +193,7 @@ class AiOverviewProvider {
     return { processed: units.length, updated };
   }
 
-  static shouldGenerateOverview(unit, force = false) {
+  static shouldGenerateOverview(unit: IUnit, force = false) {
     if (force) return true;
     if (!unit.aiOverview || !unit.aiOverview.summary) return true;
 
@@ -202,7 +208,17 @@ class AiOverviewProvider {
   }
 }
 
-const buildPrompt = ({ unit, setuEntries, reviews, totalReviewCount }) => {
+const buildPrompt = ({
+  unit,
+  setuEntries,
+  reviews,
+  totalReviewCount,
+}: {
+  unit: IUnit;
+  setuEntries: ISETULean[];
+  reviews: IReviewLean[];
+  totalReviewCount: number;
+}) => {
   const instructions =
     'You summarise Monash University student feedback. Speak as a summariser (e.g. "Students report..."). Highlight consensus, note disagreements, and avoid speculation.';
 
@@ -223,7 +239,7 @@ const buildPrompt = ({ unit, setuEntries, reviews, totalReviewCount }) => {
   return `${task}\n\n${unitMeta}`;
 };
 
-const buildReviewsXml = (reviews) => {
+const buildReviewsXml = (reviews: IReviewLean[]) => {
   if (!reviews.length) return '<reviews />';
 
   const rows = reviews.map((review) => {
@@ -242,8 +258,8 @@ const buildReviewsXml = (reviews) => {
   return `<reviews>\n${rows.join('\n')}\n  </reviews>`;
 };
 
-const formatRatings = (review) => {
-  const parts = [];
+const formatRatings = (review: IReviewLean) => {
+  const parts: string[] = [];
   if (typeof review.overallRating === 'number') {
     parts.push(`<overall>${review.overallRating}</overall>`);
   }
@@ -259,7 +275,7 @@ const formatRatings = (review) => {
   return parts.length > 0 ? parts.join('\n      ') : '';
 };
 
-const buildSetuXml = (entries) => {
+const buildSetuXml = (entries: ISETULean[]) => {
   if (!entries.length) return '<setu />';
 
   const rows = entries.map((entry) => {
@@ -305,7 +321,8 @@ const sanitiseReviewBody = (body = '') => {
 /**
  * Helper to pause between API calls to respect quotas/rate limits.
  */
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Escape characters that would otherwise break XML formatting.
