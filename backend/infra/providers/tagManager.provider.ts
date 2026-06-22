@@ -1,5 +1,5 @@
-const Review = require('@models/review');
-const Unit = require('@models/unit');
+import Review from '@models/review';
+import Unit from '@models/unit';
 
 class TagManager {
   static async updateMostReviewsTag(threshold = 10) {
@@ -14,7 +14,7 @@ class TagManager {
 
         // Find units exceeding threshold
         console.log('[TagManager] Finding unit with most reviews...');
-        const unitsWithMostReviews = await Review.aggregate([
+        const pipeline: any[] = [
           {
             $group: {
               _id: '$unit',
@@ -50,7 +50,10 @@ class TagManager {
               reviewCount: 1,
             },
           },
-        ]).session(session);
+        ];
+        const unitsWithMostReviews = await Review.aggregate(pipeline).session(
+          session
+        );
 
         console.log(
           `[TagManager] Found ${unitsWithMostReviews.length} units exceeding threshold`
@@ -94,4 +97,4 @@ class TagManager {
   }
 }
 
-module.exports = TagManager;
+export = TagManager;
