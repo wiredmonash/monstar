@@ -1,6 +1,6 @@
-const crypto = require('node:crypto');
+import crypto from 'node:crypto';
 
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 class TokenProvider {
   static REFRESH_TOKEN_BYTE_LENGTH = 40;
@@ -11,7 +11,7 @@ class TokenProvider {
   static generateAccessToken(userId, isAdmin) {
     return jwt.sign({ id: userId, isAdmin }, process.env.JWT_SECRET, {
       expiresIn: this.ACCESS_TOKEN_EXPIRY.toString(),
-    });
+    } as any);
   }
 
   static generateRefreshToken() {
@@ -23,4 +23,4 @@ class TokenProvider {
   }
 }
 
-module.exports = TokenProvider;
+export = TokenProvider;
