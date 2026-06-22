@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 
-const Unit = require('@models/unit');
-const AiOverviewService = require('@providers/aiOverview.provider');
-const CacheService = require('@providers/cache.provider');
+import Unit from '@models/unit';
+import AiOverviewService from '@providers/aiOverview.provider';
+import CacheService from '@providers/cache.provider';
 const router = express.Router();
 
 router.get('/invalidate-cache', async (req, res) => {
@@ -107,4 +107,4 @@ router.post('/:unitcode/ai-overview/regenerate', async function (req, res) {
   }
 });
 
-module.exports = router;
+export = router;
