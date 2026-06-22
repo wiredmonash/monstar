@@ -74,4 +74,12 @@ describe('GET /api/v2/units/:unitCode/required-by', () => {
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
   });
+
+  it('returns 404 for an unknown unit code', async () => {
+    const res = await request(global.app).get(
+      '/api/v2/units/zzz9999/required-by'
+    );
+
+    expect(res.status).toBe(404);
+  });
 });
