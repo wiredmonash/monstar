@@ -1,4 +1,9 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, {
+  Schema,
+  Model,
+  InferSchemaType,
+  HydratedDocument,
+} from 'mongoose';
 
 const setuSchema = new Schema(
   {
@@ -36,14 +41,27 @@ const setuSchema = new Schema(
 // Create compound index for faster queries
 setuSchema.index({ unit_code: 1, Season: 1 });
 
+type ISetu = InferSchemaType<typeof setuSchema>;
+
+interface SetuAverage {
+  _id: string;
+  averageAggScore: number;
+  totalResponses: number;
+}
+
+interface SetuModel extends Model<ISetu> {
+  findByUnitCode(unitCode: string): Promise<HydratedDocument<ISetu>[]>;
+  getAverageScores(unitCode: string): Promise<SetuAverage[]>;
+}
+
 // Static method to get SETU data by unit code
-setuSchema.statics.findByUnitCode = function (unitCode) {
-  return this.find({ unit_code: unitCode }).sort({ Season: -1 });
+setuSchema.statics.findByUnitCode = function (unitCode: string) {
+  return SETU.find({ unit_code: unitCode }).sort({ Season: -1 });
 };
 
 // Static method to get average SETU scores for a unit
-setuSchema.statics.getAverageScores = function (unitCode) {
-  return this.aggregate([
+setuSchema.statics.getAverageScores = function (unitCode: string) {
+  return SETU.aggregate([
     { $match: { unit_code: unitCode } },
     {
       $group: {
@@ -55,5 +73,5 @@ setuSchema.statics.getAverageScores = function (unitCode) {
   ]);
 };
 
-const SETU = mongoose.model('SETU', setuSchema);
+const SETU = mongoose.model<ISetu, SetuModel>('SETU', setuSchema);
 export = SETU;

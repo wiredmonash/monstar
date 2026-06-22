@@ -1,10 +1,21 @@
-// Ambient augmentation: `req.user` is populated by verifyToken / userMiddleware
-// from the decoded JWT. Loosely typed for the structural conversion; tightened
-// to a concrete payload shape in Phase 4.
+import type { JwtPayload } from 'jsonwebtoken';
+
 declare global {
+  /**
+   * Decoded JWT payload. Tokens are signed by TokenProvider with `{ id, isAdmin }`.
+   * `admin` is also declared because verifyUser/verifyAdmin read `req.user.admin`
+   * (a pre-existing mismatch with the signed `isAdmin` field, preserved as-is).
+   */
+  interface TokenPayload extends JwtPayload {
+    id: string;
+    isAdmin?: boolean;
+    admin?: boolean;
+  }
+
   namespace Express {
     interface Request {
-      user?: any;
+      // Populated by verifyToken / userMiddleware from the decoded JWT.
+      user?: TokenPayload;
     }
   }
 }

@@ -1,4 +1,4 @@
-import type { Model, HydratedDocument } from 'mongoose';
+import type { Model, HydratedDocument, Types } from 'mongoose';
 
 import NotificationModel from './notification';
 import OrgLogoModel from './orgLogo';
@@ -18,9 +18,24 @@ import UserModel from './user';
 
 type DocOf<M> = M extends Model<infer T> ? HydratedDocument<T> : never;
 
+// Plain (schema-inferred) shape, as returned by `.lean()` — no document methods.
+type PlainOf<M> = M extends Model<infer T> ? T : never;
+
+export type Id = string | Types.ObjectId;
+
+export interface Job {
+  notionId: string;
+  Status?: string;
+  'Role Type'?: string[];
+  [key: string]: unknown;
+}
+
 export type INotification = DocOf<typeof NotificationModel>;
 export type IOrgLogo = DocOf<typeof OrgLogoModel>;
 export type IReview = DocOf<typeof ReviewModel>;
 export type ISETU = DocOf<typeof SetuModel>;
 export type IUnit = DocOf<typeof UnitModel>;
 export type IUser = DocOf<typeof UserModel>;
+
+export type IReviewLean = PlainOf<typeof ReviewModel>;
+export type ISETULean = PlainOf<typeof SetuModel>;
