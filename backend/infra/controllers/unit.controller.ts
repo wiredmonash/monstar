@@ -18,7 +18,7 @@ class UnitController {
    */
   static getPaginated = asyncHandler(async (req, res) => {
     const { sort = 'Alphabetic' } = req.query;
-    if (!isValidSortOption(sort)) {
+    if (!isValidSortOption(sort as string)) {
       return res.status(400).json({
         error: `Invalid sort options: ${sort}. Must be one of: Alphabetic, Most Reviews, Highest Overall, or Lowest Overall`,
       });

@@ -135,7 +135,7 @@ router.get('/filter', async function (req, res) {
     } = req.query;
 
     // Validate sort parameter
-    if (!isValidSortOption(sort)) {
+    if (!isValidSortOption(sort as string)) {
       return res.status(400).json({
         error: `Invalid sort option: ${sort}. Must be one of: Alphabetic, Most Reviews, Highest Overall, Lowest Overall`,
       });
@@ -153,7 +153,7 @@ router.get('/filter', async function (req, res) {
     });
 
     // Get sort criteria using helper
-    const sortCriteria = getSortCriteria(sort);
+    const sortCriteria = getSortCriteria(sort as string);
 
     // Build aggregation pipeline
     const pipeline: any[] = [

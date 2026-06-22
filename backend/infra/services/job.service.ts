@@ -2,6 +2,7 @@ import { JOB_STATUS } from '@constants/jobOptions';
 import CacheProvider from '@providers/cache.provider';
 import NotionProvider from '@providers/notion.provider';
 import JobRepository from '@repositories/job.repository';
+import type { Job } from '@models/types';
 import { Error404NotFound } from '@utilities/errors';
 
 class JobService {
@@ -9,7 +10,7 @@ class JobService {
   static CACHE_TTL = 900; // 15 minutes in seconds
   static JOBS_TIME_ZONE = 'Australia/Melbourne';
 
-  static buildCacheKey = (...segments) =>
+  static buildCacheKey = (...segments: string[]) =>
     `${this.CACHE_PREFIX}:${segments.join(':')}:${this.getDateKey() ?? 'unknown-day'}`;
 
   static getDateKey = (value: Date | string | number = new Date()) => {
@@ -31,7 +32,10 @@ class JobService {
     return `${year}-${month}-${day}`;
   };
 
-  static hasCloseDatePassed = (closeDate, now = new Date()) => {
+  static hasCloseDatePassed = (
+    closeDate: Date | string | number,
+    now = new Date()
+  ) => {
     const closeDateKey = this.getDateKey(closeDate);
     const currentDateKey = this.getDateKey(now);
 
@@ -39,9 +43,9 @@ class JobService {
     return currentDateKey > closeDateKey;
   };
 
-  static sanitizeJob = (job, now = new Date()) => {
+  static sanitizeJob = (job: Job, now = new Date()): Job => {
     if (job?.Status?.toUpperCase() !== JOB_STATUS.OPEN) return job;
-    if (!this.hasCloseDatePassed(job['Close Date'], now)) return job;
+    if (!this.hasCloseDatePassed(job['Close Date'] as string, now)) return job;
 
     return {
       ...job,
@@ -49,7 +53,7 @@ class JobService {
     };
   };
 
-  static sanitizeJobs = (jobs, now = new Date()) =>
+  static sanitizeJobs = (jobs: Job[], now = new Date()) =>
     jobs.map((job) => this.sanitizeJob(job, now));
 
   static fetchAll = async () => {
@@ -65,7 +69,7 @@ class JobService {
     );
   };
 
-  static fetchByStatus = async (status) => {
+  static fetchByStatus = async (status: string) => {
     const cacheKey = this.buildCacheKey('status', status);
     return await CacheProvider.getOrSet(
       cacheKey,
@@ -81,7 +85,7 @@ class JobService {
 
   static fetchOpen = async () => await this.fetchByStatus(JOB_STATUS.OPEN);
 
-  static fetchByNotionId = async (notionId) => {
+  static fetchByNotionId = async (notionId: string) => {
     const cacheKey = this.buildCacheKey('notionId', notionId);
     const job = await CacheProvider.getOrSet(
       cacheKey,
@@ -97,7 +101,7 @@ class JobService {
     return job;
   };
 
-  static fetchByRoleType = async (roleType) => {
+  static fetchByRoleType = async (roleType: string) => {
     const cacheKey = this.buildCacheKey('roleType', roleType);
     return await CacheProvider.getOrSet(
       cacheKey,

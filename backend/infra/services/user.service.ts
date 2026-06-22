@@ -65,7 +65,7 @@ class UserService {
       Date.now() + TokenProvider.REFRESH_TOKEN_EXPIRY
     );
     await UserRepository.updateRefreshToken(
-      user,
+      user._id,
       hashedRefreshToken,
       refreshTokenExpiry
     );
