@@ -94,7 +94,7 @@ const setupSwagger = async (app) => {
   };
 
   const outputFile = './docs/swagger.json';
-  const endpointsFiles = ['./server.js'];
+  const endpointsFiles = ['./server.ts'];
 
   try {
     await swaggerAutogen(outputFile, endpointsFiles, doc);
@@ -119,7 +119,7 @@ const setupSwagger = async (app) => {
                 credentials: 'include',
               });
               if (response.ok) {
-                const data = await response.json();
+                const data: any = await response.json();
                 req.headers['X-CSRF-Token'] = data.csrfToken;
               }
             } catch (err) {
@@ -142,4 +142,4 @@ const setupSwagger = async (app) => {
   }
 };
 
-module.exports = { setupSwagger };
+export { setupSwagger };
