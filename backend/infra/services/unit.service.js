@@ -112,7 +112,7 @@ class UnitService {
    * @returns {Promise<Array<IUnit>>}
    */
   static fetchUnitsRequiredBy = async (unitCode) => {
-    const unit = await UnitRepository.findOneByUnitCode(unitCode);
+    const unit = await UnitRepository.findOneByUnitcode(unitCode);
     if (!unit) throw new Error404NotFound('Unit not found');
     return await UnitRepository.findRequiredBy(unitCode);
   };
