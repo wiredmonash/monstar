@@ -1,6 +1,6 @@
-const { CreateError } = require('@utilities/error');
+import { CreateError } from '@utilities/error';
 
-const userMiddleware = require('./user.middleware');
+import userMiddleware from './user.middleware';
 
 const adminMiddleware = (req, res, next) => {
   userMiddleware(req, res, (err) => {
@@ -14,4 +14,4 @@ const adminMiddleware = (req, res, next) => {
   });
 };
 
-module.exports = adminMiddleware;
+export = adminMiddleware;
