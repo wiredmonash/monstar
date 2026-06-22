@@ -1,5 +1,5 @@
-const axios = require('axios');
-const express = require('express');
+import axios from 'axios';
+import express from 'express';
 
 const router = express.Router();
 
@@ -166,4 +166,4 @@ router.get('/contributors', async (req, res) => {
 });
 
 // Export the router
-module.exports = router;
+export = router;
