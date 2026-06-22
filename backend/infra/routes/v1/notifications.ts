@@ -1,10 +1,10 @@
 // Module Imports
-const express = require('express');
+import express from 'express';
 
 // Model Imports
-const Notification = require('@models/notification');
-const User = require('@models/user');
-const { verifyToken } = require('@utilities/verifyToken.js');
+import Notification from '@models/notification';
+import User from '@models/user';
+import { verifyToken } from '@utilities/verifyToken';
 
 // Function Imports
 
@@ -85,11 +85,11 @@ router.delete('/:notificationId', verifyToken, async function (req, res) {
         .json({ error: 'No permissions to remove notification' });
 
     // Delete the notification from the User's notifications array
-    user.notifications.pull(notification._id);
+    (user.notifications as any).pull(notification._id);
     // console.log("user updated");
 
     // Delete the notification from the database
-    await Notification.deleteOne(notification);
+    await Notification.deleteOne(notification as any);
     // console.log("notification deleted");
 
     // Save the user
@@ -106,4 +106,4 @@ router.delete('/:notificationId', verifyToken, async function (req, res) {
 });
 
 // Export the router
-module.exports = router;
+export = router;
