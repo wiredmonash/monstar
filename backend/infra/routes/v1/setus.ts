@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 
-const SETU = require('@models/setu');
-const { verifyAdmin } = require('@utilities/verifyToken.js');
+import SETU from '@models/setu';
+import { verifyAdmin } from '@utilities/verifyToken';
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ router.get('/', async function (req, res) {
 
     // Find and paginate SETU data
     const setuData = await SETU.find({})
-      .sort(sort)
+      .sort(sort as any)
       .skip(Number(offset))
       .limit(Number(limit));
 
@@ -32,7 +32,7 @@ router.get('/', async function (req, res) {
     return res.status(200).json({
       data: setuData,
       total,
-      page: Math.floor(offset / limit) + 1,
+      page: Math.floor(Number(offset) / Number(limit)) + 1,
       pageSize: Number(limit),
     });
   } catch (error) {
@@ -59,7 +59,7 @@ router.get('/unit/:unitCode', async function (req, res) {
     const unitCode = req.params.unitCode.toLowerCase();
 
     // Use the static method defined in the SETU model
-    const setuData = await SETU.findByUnitCode(unitCode);
+    const setuData = await (SETU as any).findByUnitCode(unitCode);
 
     // If no data found, return 404
     if (!setuData || setuData.length === 0) {
@@ -93,7 +93,7 @@ router.get('/average/:unitCode', async function (req, res) {
     const unitCode = req.params.unitCode.toLowerCase();
 
     // Use the static method defined in the SETU model to get average scores
-    const averageScores = await SETU.getAverageScores(unitCode);
+    const averageScores = await (SETU as any).getAverageScores(unitCode);
 
     // If no data found, return 404
     if (!averageScores || averageScores.length === 0) {
@@ -313,4 +313,4 @@ router.delete('/delete/:id', verifyAdmin, async function (req, res) {
 });
 
 // Export the router
-module.exports = router;
+export = router;
