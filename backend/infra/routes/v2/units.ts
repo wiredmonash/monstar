@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 
-const UnitController = require('@controllers/unit.controller');
-const adminMiddleware = require('@middleware/admin.middleware');
+import UnitController from '@controllers/unit.controller';
+import adminMiddleware from '@middleware/admin.middleware';
 
 const router = express.Router();
 
@@ -48,4 +48,4 @@ router.get(
   UnitController.getRequiredBy
 );
 
-module.exports = router;
+export = router;
