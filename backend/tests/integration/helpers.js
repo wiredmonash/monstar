@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const request = require('supertest');
 
 /**
@@ -20,4 +21,113 @@ const getCsrf = async (app) => {
   return { token: res.body.csrfToken, cookies };
 };
 
-module.exports = { accessTokenCookie, getCsrf };
+/**
+ * Insert a user and a review authored by them (for the unit `acb2420`) using
+ * raw collection writes, bypassing schema validation the same way the fixture
+ * loader does. Returns the ids needed to drive owner-only endpoints.
+ */
+const seedUserWithReview = async () => {
+  const userId = new mongoose.Types.ObjectId();
+  const reviewId = new mongoose.Types.ObjectId();
+
+  const Unit = require('@models/unit');
+  const unit = await Unit.findOne({ unitCode: 'acb2420' });
+
+  await mongoose.connection.collection('users').insertOne({
+    _id: userId,
+    username: 'tester',
+    email: `tester+${userId}@example.com`,
+    admin: false,
+    reviews: [reviewId],
+    likedReviews: [],
+    dislikedReviews: [],
+    notifications: [],
+  });
+
+  await mongoose.connection.collection('reviews').insertOne({
+    _id: reviewId,
+    title: 'Seed review',
+    semester: 'S1',
+    year: 2024,
+    grade: 'D',
+    overallRating: 4,
+    relevancyRating: 4,
+    facultyRating: 4,
+    contentRating: 4,
+    description: 'seed',
+    likes: 0,
+    dislikes: 0,
+    unit: unit._id,
+    author: userId,
+  });
+
+  return { userId: userId.toString(), reviewId: reviewId.toString() };
+};
+
+/**
+ * Seed the full graph the toggle-reaction handler needs: a review, its author,
+ * and a separate reacting user (all with empty reaction/notification arrays so
+ * the first reaction is deterministic). The unit is `acb2420` from fixtures.
+ */
+const seedReactionGraph = async () => {
+  const authorId = new mongoose.Types.ObjectId();
+  const reactorId = new mongoose.Types.ObjectId();
+  const reviewId = new mongoose.Types.ObjectId();
+
+  const Unit = require('@models/unit');
+  const unit = await Unit.findOne({ unitCode: 'acb2420' });
+
+  await mongoose.connection.collection('users').insertMany([
+    {
+      _id: authorId,
+      username: 'author',
+      email: `author+${authorId}@example.com`,
+      admin: false,
+      reviews: [reviewId],
+      likedReviews: [],
+      dislikedReviews: [],
+      notifications: [],
+    },
+    {
+      _id: reactorId,
+      username: 'reactor',
+      profileImg: '',
+      email: `reactor+${reactorId}@example.com`,
+      admin: false,
+      reviews: [],
+      likedReviews: [],
+      dislikedReviews: [],
+      notifications: [],
+    },
+  ]);
+
+  await mongoose.connection.collection('reviews').insertOne({
+    _id: reviewId,
+    title: 'Reaction target',
+    semester: 'S1',
+    year: 2024,
+    grade: 'D',
+    overallRating: 4,
+    relevancyRating: 4,
+    facultyRating: 4,
+    contentRating: 4,
+    description: 'seed',
+    likes: 0,
+    dislikes: 0,
+    unit: unit._id,
+    author: authorId,
+  });
+
+  return {
+    authorId: authorId.toString(),
+    reactorId: reactorId.toString(),
+    reviewId: reviewId.toString(),
+  };
+};
+
+module.exports = {
+  accessTokenCookie,
+  getCsrf,
+  seedUserWithReview,
+  seedReactionGraph,
+};

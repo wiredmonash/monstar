@@ -20,6 +20,11 @@ jest.setTimeout(30000);
 
 /* ------- Hermetic environment: keep providers inert and offline ------- */
 process.env.NODE_ENV = 'test';
+// SAFETY: never let the real MONGODB_CONN_STRING from .env be used. Blank it
+// now; beforeAll sets it to the in-memory server URI before the db provider
+// loads. If anything tries to connect before that, the provider throws (fails
+// loud) instead of reaching a real database.
+process.env.MONGODB_CONN_STRING = '';
 process.env.DEVELOPMENT = 'true';
 process.env.PRODUCTION_MACHINE = 'false';
 process.env.JWT_SECRET = 'test-secret';
@@ -38,6 +43,11 @@ process.env.GITHUB_TOKEN = '';
 /* ----- Stub Swagger so importing the app doesn't generate/serve docs ----- */
 jest.mock('@docs/swagger', () => ({
   setupSwagger: jest.fn().mockResolvedValue(undefined),
+}));
+
+/* ----- Stub nodemailer so report emails never hit a real SMTP server ----- */
+jest.mock('nodemailer', () => ({
+  createTransport: () => ({ sendMail: jest.fn().mockResolvedValue({}) }),
 }));
 
 /**
@@ -74,7 +84,13 @@ let mongo;
  */
 beforeAll(async () => {
   mongo = await MongoMemoryServer.create();
-  process.env.MONGODB_CONN_STRING = mongo.getUri();
+  const uri = mongo.getUri();
+
+  // SAFETY: refuse to proceed unless the URI is a local in-memory instance.
+  if (!/^mongodb:\/\/(127\.0\.0\.1|localhost)[:/]/.test(uri)) {
+    throw new Error(`Refusing to run: unexpected Mongo URI "${uri}"`);
+  }
+  process.env.MONGODB_CONN_STRING = uri;
 
   // Connect through the app's own provider so the request-time db middleware
   // reuses this connection instead of opening another.
