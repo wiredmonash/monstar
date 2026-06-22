@@ -1,6 +1,7 @@
-const cloudinary = require('cloudinary').v2; // Cloudinary library
-const { CloudinaryStorage } = require('multer-storage-cloudinary'); // Multer storage enging for Cloudinary
-require('dotenv').config({ quiet: true });
+import { v2 as cloudinary } from 'cloudinary'; // Cloudinary library
+import { CloudinaryStorage } from 'multer-storage-cloudinary'; // Multer storage enging for Cloudinary
+import dotenv from 'dotenv';
+dotenv.config({ quiet: true });
 
 // Configure Cloudinary with credentials from environment variables
 cloudinary.config({
@@ -25,7 +26,7 @@ const storage = new CloudinaryStorage({
         quality: 'auto', // Adjusts qualtiy dynamically to balance file size and appearance
       },
     ],
-  },
+  } as any,
 });
 
 // Create a Cloudinary storage instance for organisation logos
@@ -44,8 +45,8 @@ const orgStorage = new CloudinaryStorage({
         quality: 'auto',
       },
     ],
-  },
+  } as any,
 });
 
 // Export the Cloudinary instance and storage engines
-module.exports = { cloudinary, storage, orgStorage };
+export { cloudinary, storage, orgStorage };
