@@ -20,27 +20,39 @@ const makeModuleNameMapper = (aliases) => {
   return mapper;
 };
 
+/**
+ * Shared config so every project transforms .ts/.js through ts-jest (which also
+ * preserves jest.mock hoisting) and resolves .ts before .js.
+ */
+const common = {
+  moduleNameMapper: makeModuleNameMapper(_moduleAliases),
+  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  transform: {
+    '^.+\\.(t|j)sx?$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+  },
+};
+
 module.exports = {
   testEnvironment: 'node',
-  moduleNameMapper: makeModuleNameMapper(_moduleAliases),
+  ...common,
   projects: [
     {
       displayName: 'services',
       testMatch: ['<rootDir>/tests/services/*.test.js'],
       setupFilesAfterEnv: ['<rootDir>/tests/services/jest.setup.js'],
-      moduleNameMapper: makeModuleNameMapper(_moduleAliases),
+      ...common,
     },
     {
       displayName: 'integration',
       testMatch: ['<rootDir>/tests/integration/*.test.js'],
       setupFilesAfterEnv: ['<rootDir>/tests/integration/jest.setup.js'],
-      moduleNameMapper: makeModuleNameMapper(_moduleAliases),
+      ...common,
     },
     {
       displayName: 'performance',
       testMatch: ['<rootDir>/tests/performance/*.test.js'],
       setupFilesAfterEnv: ['<rootDir>/tests/performance/jest.setup.js'],
-      moduleNameMapper: makeModuleNameMapper(_moduleAliases),
+      ...common,
     },
   ],
 };

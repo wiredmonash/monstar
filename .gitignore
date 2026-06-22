@@ -36,6 +36,7 @@ frontned/.mcp.json
 # ---------------------------------- Backend --------------------------------- #
 
 backend/.env
+backend/dist/
 backend/docs/swagger.json
 backend/scraper/
 backend/scrapers/
