@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express';
 
-const {
+import {
   getSortCriteria,
   requiresReviews, // eslint-disable-line
   isValidSortOption,
-} = require('@constants/sortOptions');
-const Unit = require('@models/unit');
-const { buildFilterQuery } = require('@utilities/unitFilterHelpers.js');
-const { verifyAdmin } = require('@utilities/verifyToken.js');
+} from '@constants/sortOptions';
+import Unit from '@models/unit';
+import { buildFilterQuery } from '@utilities/unitFilterHelpers';
+import { verifyAdmin } from '@utilities/verifyToken';
 
 // Router instance
 const router = express.Router();
@@ -156,7 +156,7 @@ router.get('/filter', async function (req, res) {
     const sortCriteria = getSortCriteria(sort);
 
     // Build aggregation pipeline
-    const pipeline = [
+    const pipeline: any[] = [
       // Match the units based on the query
       { $match: query },
       // Populate the reviews field for each unit
@@ -278,7 +278,7 @@ router.post('/create-bulk', verifyAdmin, async function (req, res) {
   // #swagger.summary = 'Create multiple units based on input JSON data'
 
   try {
-    const unitData = req.body;
+    const unitData: Record<string, any> = req.body;
     const results = [];
 
     for (const [unitCode, unitDetails] of Object.entries(unitData)) {
@@ -443,4 +443,4 @@ router.get('/:unitCode/required-by', async function (req, res) {
 });
 
 // Export the router
-module.exports = router;
+export = router;
