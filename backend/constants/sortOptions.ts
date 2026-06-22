@@ -12,8 +12,6 @@ const SORT_OPTIONS = {
 
 /**
  * Returns MongoDB sort criteria for a given sort option
- * @param {string} sortOption - One of SORT_OPTIONS values
- * @returns {Object} MongoDB sort criteria object
  */
 function getSortCriteria(sortOption) {
   switch (sortOption) {
@@ -34,26 +32,19 @@ function getSortCriteria(sortOption) {
 
 /**
  * Checks if the sort option requires filtering by review count
- * @param {string} sortOption - One of SORT_OPTIONS values
- * @returns {boolean} True if units should be filtered to only those with reviews
  */
 function requiresReviews(sortOption) {
-  return sortOption === SORT_OPTIONS.HIGHEST_OVERALL ||
-         sortOption === SORT_OPTIONS.LOWEST_OVERALL;
+  return (
+    sortOption === SORT_OPTIONS.HIGHEST_OVERALL ||
+    sortOption === SORT_OPTIONS.LOWEST_OVERALL
+  );
 }
 
 /**
  * Validates if a sort option is valid
- * @param {string} sortOption - Sort option to validate
- * @returns {boolean} True if valid
  */
 function isValidSortOption(sortOption) {
   return Object.values(SORT_OPTIONS).includes(sortOption);
 }
 
-module.exports = {
-  SORT_OPTIONS,
-  getSortCriteria,
-  requiresReviews,
-  isValidSortOption,
-};
+export { SORT_OPTIONS, getSortCriteria, requiresReviews, isValidSortOption };
