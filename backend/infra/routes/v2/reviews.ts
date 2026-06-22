@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 
-const ReviewController = require('@controllers/review.controller');
-const adminMiddleware = require('@middleware/admin.middleware');
-const userMiddleware = require('@middleware/user.middleware');
+import ReviewController from '@controllers/review.controller';
+import adminMiddleware from '@middleware/admin.middleware';
+import userMiddleware from '@middleware/user.middleware';
 
 const router = express.Router();
 
@@ -75,4 +75,4 @@ router.post(
   ReviewController.sendReport
 );
 
-module.exports = router;
+export = router;
