@@ -1,7 +1,7 @@
-const asyncHandler = require('express-async-handler');
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
-const ReviewService = require('@services/review.service');
+import asyncHandler from '@utilities/asyncHandler';
+import ReviewService from '@services/review.service';
 
 class ReviewController {
   /**
@@ -16,7 +16,7 @@ class ReviewController {
    * Get N most liked reviews
    */
   static getMostLiked = asyncHandler(async (req, res) => {
-    const reviews = await ReviewService.fetchMostLiked(req.query.n);
+    const reviews = await ReviewService.fetchMostLiked(req.query.n as any);
     return res.status(200).json(reviews);
   });
 
@@ -170,4 +170,4 @@ Review Description: ${review.description} <br>
   });
 }
 
-module.exports = ReviewController;
+export = ReviewController;
