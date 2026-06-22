@@ -1,9 +1,9 @@
-const express = require('express');
-const multer = require('multer');
+import express from 'express';
+import multer from 'multer';
 
-const UserController = require('@controllers/user.controller');
-const userMiddleware = require('@middleware/user.middleware');
-const { storage } = require('@providers/cloudinary.provider');
+import UserController from '@controllers/user.controller';
+import userMiddleware from '@middleware/user.middleware';
+import { storage } from '@providers/cloudinary.provider';
 
 const upload = multer({ storage });
 const router = express.Router();
@@ -61,4 +61,4 @@ router.get(
   UserController.getByUsername
 );
 
-module.exports = router;
+export = router;
