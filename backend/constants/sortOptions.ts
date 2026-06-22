@@ -13,7 +13,7 @@ const SORT_OPTIONS = {
 /**
  * Returns MongoDB sort criteria for a given sort option
  */
-function getSortCriteria(sortOption) {
+function getSortCriteria(sortOption: string): Record<string, 1 | -1> {
   switch (sortOption) {
     case SORT_OPTIONS.ALPHABETIC:
       return { unitCode: 1 };
@@ -33,7 +33,7 @@ function getSortCriteria(sortOption) {
 /**
  * Checks if the sort option requires filtering by review count
  */
-function requiresReviews(sortOption) {
+function requiresReviews(sortOption: string) {
   return (
     sortOption === SORT_OPTIONS.HIGHEST_OVERALL ||
     sortOption === SORT_OPTIONS.LOWEST_OVERALL
@@ -43,7 +43,7 @@ function requiresReviews(sortOption) {
 /**
  * Validates if a sort option is valid
  */
-function isValidSortOption(sortOption) {
+function isValidSortOption(sortOption: string) {
   return Object.values(SORT_OPTIONS).includes(sortOption);
 }
 

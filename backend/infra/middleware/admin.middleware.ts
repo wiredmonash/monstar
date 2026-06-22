@@ -1,8 +1,10 @@
+import type { Request, Response, NextFunction } from 'express';
+
 import { CreateError } from '@utilities/error';
 
 import userMiddleware from './user.middleware';
 
-const adminMiddleware = (req, res, next) => {
+const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
   userMiddleware(req, res, (err) => {
     if (err) return next(err);
 

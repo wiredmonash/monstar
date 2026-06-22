@@ -1,34 +1,29 @@
+import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import type { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 
 import { CreateError } from '@utilities/error';
 
-/**
- * Middleware to verify the JWT token from cookies.
- */
-const verifyToken = (req, res, next) => {
-  // Get the token from cookies
+const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.access_token;
 
-  // Handle no token error
   if (!token) return next(CreateError(401, 'You are not authenticated!'));
 
-  // Verify the token
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    // Handle invalid token error
-    if (err) return next(CreateError(403, 'Token is not valid'));
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET as string,
+    (err: VerifyErrors | null, user?: JwtPayload | string) => {
+      if (err) return next(CreateError(403, 'Token is not valid'));
 
-    req.user = user;
-    next();
-  });
+      req.user = user as TokenPayload;
+      next();
+    }
+  );
 };
 
-/**
- * Middleware to verify the user is authorised to access the resource.
- * User must be the owner of the resource or an admin.
- */
-const verifyUser = (req, res, next) => {
+const verifyUser = (req: Request, res: Response, next: NextFunction) => {
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id || req.user.admin) {
+    if (req.user?.id === req.params.id || req.user?.admin) {
       next();
     }
 
@@ -38,12 +33,9 @@ const verifyUser = (req, res, next) => {
   });
 };
 
-/**
- * Middleware to verify if the user is an admin.
- */
-const verifyAdmin = (req, res, next) => {
+const verifyAdmin = (req: Request, res: Response, next: NextFunction) => {
   verifyToken(req, res, () => {
-    if (req.user.admin) {
+    if (req.user?.admin) {
       next();
     }
 

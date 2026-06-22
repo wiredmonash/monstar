@@ -1,5 +1,7 @@
-// eslint-disable-next-line
-const errorMiddleware = (err, req, res, next) => {
+import type { ErrorRequestHandler } from 'express';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || err.status || 500;
 
   console.error(`[Error] ${err.message}`);

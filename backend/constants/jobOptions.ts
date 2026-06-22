@@ -17,26 +17,26 @@ const JOB_ROLE_TYPE = {
   SUBCOMMITTEE: 'Subcommittee',
 };
 
-function isValidJobStatus(status) {
+function isValidJobStatus(status: string) {
   return Object.values(JOB_STATUS).some(
     (s) => s.toUpperCase() === status.toUpperCase()
   );
 }
 
-function isValidJobRoleType(roleType) {
+function isValidJobRoleType(roleType: string) {
   return Object.values(JOB_ROLE_TYPE).some(
     (rt) => rt.toLowerCase() === roleType.toLowerCase()
   );
 }
 
-function normalizeJobStatus(status) {
+function normalizeJobStatus(status: string) {
   const match = Object.values(JOB_STATUS).find(
     (s) => s.toUpperCase() === status.toUpperCase()
   );
   return match ?? null;
 }
 
-function normalizeJobRoleType(roleType) {
+function normalizeJobRoleType(roleType: string) {
   const match = Object.values(JOB_ROLE_TYPE).find(
     (rt) => rt.toLowerCase() === roleType.toLowerCase()
   );
