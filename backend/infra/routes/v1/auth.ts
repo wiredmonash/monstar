@@ -1,16 +1,17 @@
-const bcrypt = require('bcrypt');
-const express = require('express');
-const { OAuth2Client } = require('google-auth-library');
-const jwt = require('jsonwebtoken');
-const multer = require('multer');
+import bcrypt from 'bcrypt';
+import express from 'express';
+import { OAuth2Client } from 'google-auth-library';
+import jwt from 'jsonwebtoken';
+import multer from 'multer';
 
-const User = require('@models/user');
-const { storage, cloudinary } = require('@providers/cloudinary.provider.js');
+import User from '@models/user';
+import { storage, cloudinary } from '@providers/cloudinary.provider';
 const upload = multer({ storage });
-const TokenProvider = require('@providers/token.provider.js');
-const { verifyToken, verifyAdmin } = require('@utilities/verifyToken.js');
+import TokenProvider from '@providers/token.provider';
+import { verifyToken, verifyAdmin } from '@utilities/verifyToken';
 
-require('dotenv').config({ quiet: true });
+import dotenv from 'dotenv';
+dotenv.config({ quiet: true });
 
 const router = express.Router();
 const client = new OAuth2Client();
@@ -355,7 +356,7 @@ router.get('/validate', async function (req, res) {
 
   try {
     // Decode the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
 
     // Find and store the user without storing the password
     const user = await User.findById(
@@ -424,4 +425,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export = router;
