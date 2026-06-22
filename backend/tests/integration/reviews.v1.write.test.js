@@ -1,7 +1,12 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
 
-const { accessTokenCookie, getCsrf } = require('./helpers');
+const {
+  accessTokenCookie,
+  getCsrf,
+  seedUserWithReview,
+  seedReactionGraph,
+} = require('./helpers');
 
 /**
  * Characterization tests for the LIVE v1 review-create endpoint, exercising the
@@ -59,5 +64,151 @@ describe('POST /api/v1/reviews/:unit/create', () => {
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('_id');
     expect(res.body).toHaveProperty('author', author);
+  });
+});
+
+describe('PUT /api/v1/reviews/update/:reviewId', () => {
+  it('updates a review owned by the requester (200)', async () => {
+    const { userId, reviewId } = await seedUserWithReview();
+    const { token, cookies } = await getCsrf(global.app);
+
+    const res = await request(global.app)
+      .put(`/api/v1/reviews/update/${reviewId}`)
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token)
+      .send({ title: 'Updated title' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.review).toHaveProperty('title', 'Updated title');
+  });
+
+  it('returns 404 for an unknown review id', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+    const userId = new mongoose.Types.ObjectId().toString();
+
+    const res = await request(global.app)
+      .put(`/api/v1/reviews/update/${new mongoose.Types.ObjectId()}`)
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token)
+      .send({ title: 'x' });
+
+    expect(res.status).toBe(404);
+  });
+});
+
+describe('DELETE /api/v1/reviews/delete/:reviewId', () => {
+  it('deletes a review owned by the requester (200)', async () => {
+    const { userId, reviewId } = await seedUserWithReview();
+    const { token, cookies } = await getCsrf(global.app);
+
+    const res = await request(global.app)
+      .delete(`/api/v1/reviews/delete/${reviewId}`)
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token);
+
+    expect(res.status).toBe(200);
+  });
+
+  it('returns 404 for an unknown review id', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+    const userId = new mongoose.Types.ObjectId().toString();
+
+    const res = await request(global.app)
+      .delete(`/api/v1/reviews/delete/${new mongoose.Types.ObjectId()}`)
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token);
+
+    expect(res.status).toBe(404);
+  });
+});
+
+describe('PATCH /api/v1/reviews/toggle-reaction/:reviewId', () => {
+  it('rejects an invalid reaction type with 400', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+    const userId = new mongoose.Types.ObjectId().toString();
+
+    const res = await request(global.app)
+      .patch(`/api/v1/reviews/toggle-reaction/${new mongoose.Types.ObjectId()}`)
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token)
+      .send({ userId, reactionType: 'bogus' });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('returns 404 when the review does not exist', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+    const userId = new mongoose.Types.ObjectId().toString();
+
+    const res = await request(global.app)
+      .patch(`/api/v1/reviews/toggle-reaction/${new mongoose.Types.ObjectId()}`)
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token)
+      .send({ userId, reactionType: 'like' });
+
+    expect(res.status).toBe(404);
+  });
+
+  it('adds a like: increments the count and reports liked=true (200)', async () => {
+    const { reactorId, reviewId } = await seedReactionGraph();
+    const { token, cookies } = await getCsrf(global.app);
+
+    const res = await request(global.app)
+      .patch(`/api/v1/reviews/toggle-reaction/${reviewId}`)
+      .set('Cookie', [...cookies, accessTokenCookie(reactorId)].join('; '))
+      .set('x-csrf-token', token)
+      .send({ userId: reactorId, reactionType: 'like' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.review).toHaveProperty('likes', 1);
+    expect(res.body.reactions).toEqual({ liked: true, disliked: false });
+  });
+
+  it('toggles a like off when reacting twice (200, count back to 0)', async () => {
+    const { reactorId, reviewId } = await seedReactionGraph();
+
+    const like = async () => {
+      const { token, cookies } = await getCsrf(global.app);
+      return request(global.app)
+        .patch(`/api/v1/reviews/toggle-reaction/${reviewId}`)
+        .set('Cookie', [...cookies, accessTokenCookie(reactorId)].join('; '))
+        .set('x-csrf-token', token)
+        .send({ userId: reactorId, reactionType: 'like' });
+    };
+
+    await like(); // first like -> likes = 1
+    const res = await like(); // second like -> toggled off
+
+    expect(res.status).toBe(200);
+    expect(res.body.review).toHaveProperty('likes', 0);
+    expect(res.body.reactions).toEqual({ liked: false, disliked: false });
+  });
+});
+
+describe('POST /api/v1/reviews/send-report', () => {
+  it('sends a report email (201) with nodemailer stubbed', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+    const userId = new mongoose.Types.ObjectId().toString();
+
+    const res = await request(global.app)
+      .post('/api/v1/reviews/send-report')
+      .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+      .set('x-csrf-token', token)
+      .send({
+        reportReason: 'Spam',
+        reportDescription: 'Not relevant',
+        reporterName: 'Tester',
+        review: {
+          _id: new mongoose.Types.ObjectId().toString(),
+          title: 'Some review',
+          description: 'desc',
+          author: {
+            _id: new mongoose.Types.ObjectId().toString(),
+            username: 'author',
+          },
+        },
+      });
+
+    expect(res.status).toBe(201);
   });
 });
