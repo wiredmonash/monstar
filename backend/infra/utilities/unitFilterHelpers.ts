@@ -13,7 +13,7 @@ function buildFilterQuery({
   showReviewed = 'false',
   showUnreviewed = 'false',
   hideNoOfferings = 'false',
-}) {
+}: Record<string, any> = {}) {
   const query: Record<string, any> = {};
 
   // Search filter (unit code or name)
