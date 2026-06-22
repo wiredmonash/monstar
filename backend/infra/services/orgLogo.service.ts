@@ -1,5 +1,5 @@
-const { cloudinary } = require('@providers/cloudinary.provider');
-const OrgLogoRepository = require('@repositories/orgLogo.repository');
+import { cloudinary } from '@providers/cloudinary.provider';
+import OrgLogoRepository from '@repositories/orgLogo.repository';
 
 class OrgLogoService {
   static normalise(name) {
@@ -52,4 +52,4 @@ class OrgLogoService {
   }
 }
 
-module.exports = OrgLogoService;
+export = OrgLogoService;
