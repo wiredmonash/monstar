@@ -1,6 +1,6 @@
-const Review = require('@models/review');
-const SETU = require('@models/setu');
-const Unit = require('@models/unit');
+import Review from '@models/review';
+import SETU from '@models/setu';
+import Unit from '@models/unit';
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 console.log(
@@ -12,7 +12,7 @@ const MAX_SETU_SEASONS = 4;
 const MIN_REGENERATION_DAYS = 120; // roughly every semester
 
 class AiOverviewProvider {
-  static geminiClientPromise = null;
+  static geminiClientPromise: any = null;
 
   /**
    * Lazily import the Google GenAI client to avoid loading
@@ -47,7 +47,7 @@ class AiOverviewProvider {
   /**
    * Generate AI overview for a singular unit
    */
-  static async generateOverviewForUnit(unit, options = {}) {
+  static async generateOverviewForUnit(unit, options: any = {}) {
     const { force = false } = options;
 
     if (!Array.isArray(unit.reviews) || unit.reviews.length === 0) {
@@ -131,7 +131,7 @@ class AiOverviewProvider {
   /**
    * Generate AI overviews for all units with at least one review
    */
-  static async generateOverviewsForAllUnits(options = {}) {
+  static async generateOverviewsForAllUnits(options: any = {}) {
     const { force = false, delayMs = 500 } = options;
 
     const units = await Unit.find({
@@ -321,4 +321,4 @@ const escapeXml = (value = '') => {
     .replace(/'/g, '&apos;');
 };
 
-module.exports = AiOverviewProvider;
+export = AiOverviewProvider;
