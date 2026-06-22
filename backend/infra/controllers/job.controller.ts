@@ -1,12 +1,12 @@
-const asyncHandler = require('express-async-handler');
+import asyncHandler from '@utilities/asyncHandler';
 
-const {
+import {
   isValidJobStatus,
   isValidJobRoleType,
   normalizeJobStatus,
   normalizeJobRoleType,
-} = require('@constants/jobOptions');
-const JobService = require('@services/job.service');
+} from '@constants/jobOptions';
+import JobService from '@services/job.service';
 
 class JobController {
   static getAll = asyncHandler(async (req, res) => {
@@ -57,4 +57,4 @@ class JobController {
   });
 }
 
-module.exports = JobController;
+export = JobController;
