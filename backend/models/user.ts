@@ -1,37 +1,9 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose, { Schema } from 'mongoose';
 
-const Notification = require('@models/notification');
-const Review = require('@models/review');
-const Unit = require('@models/unit');
-const { cloudinary } = require('@providers/cloudinary.provider');
-
-/**
- * @typedef {Object} IUser
- * @property {import('mongoose').Types.ObjectId} _id - User ID
- * @property {string} email - User email address
- * @property {string} [username] - Username (optional)
- * @property {string} [password] - Hashed password (optional)
- * @property {boolean} isGoogleUser - Whether user authenticated via Google
- * @property {string} [googleID] - Google OAuth ID
- * @property {import('mongoose').Types.Array<import('mongoose').Types.ObjectId>} reviews - Array of review IDs
- * @property {string} [profileImg] - Cloudinary URL for profile image
- * @property {boolean} admin - Admin status
- * @property {boolean} verified - Email verification status
- * @property {string} [verificationToken] - Email verification token
- * @property {Date} [verificationTokenExpires] - Verification token expiry
- * @property {number} verificationEmailsSent - Count of verification emails sent
- * @property {Date} [lastVerificationEmail] - Timestamp of last verification email
- * @property {string} [resetPasswordToken] - Password reset token
- * @property {Date} [resetPasswordExpires] - Reset token expiry
- * @property {number} resetPasswordEmailsSent - Count of reset emails sent
- * @property {Date} [lastResetPasswordEmail] - Timestamp of last reset email
- * @property {string} [refreshToken] - Hashed refresh token
- * @property {Date} [refreshTokenExpires] - Refresh token expiry
- * @property {import('mongoose').Types.Array<import('mongoose').Types.ObjectId>} likedReviews - Reviews user has liked
- * @property {import('mongoose').Types.Array<import('mongoose').Types.ObjectId>} dislikedReviews - Reviews user has disliked
- * @property {import('mongoose').Types.Array<import('mongoose').Types.ObjectId>} notifications - User notifications
- */
+import Notification from '@models/notification';
+import Review from '@models/review';
+import Unit from '@models/unit';
+import { cloudinary } from '@providers/cloudinary.provider';
 
 const userSchema = new Schema({
   email: { type: String, required: true },
@@ -81,17 +53,17 @@ userSchema.pre('findOneAndDelete', async function (next) {
     await handleUserDeletion(user);
     next();
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 });
 
-// Middleware for remove
-userSchema.pre('remove', async function (next) {
+// Middleware for remove (legacy hook; no-op under Mongoose 8 document API)
+userSchema.pre('remove' as 'deleteOne', async function (next) {
   try {
     await handleUserDeletion(this);
     next();
   } catch (error) {
-    next(error);
+    next(error as Error);
   }
 });
 
@@ -106,7 +78,7 @@ userSchema.pre('remove', async function (next) {
  *
  * @param {Object} user - The user document being deleted
  */
-async function handleUserDeletion(user) {
+async function handleUserDeletion(user: any) {
   if (!user) return;
 
   const session = await mongoose.startSession();
@@ -127,7 +99,7 @@ async function handleUserDeletion(user) {
       await Review.deleteMany({ author: user._id }).session(session);
 
       // Delete all user notifications
-      await Notification.deleteMany({ user }).session();
+      await Notification.deleteMany({ user }).session(session);
 
       // Delete reviews from units and update averages
       if (unitIds.length > 0) {
@@ -207,7 +179,9 @@ async function handleUserDeletion(user) {
       }
     }
   } catch (error) {
-    console.error(`[User] Error in handleUserDeletion: ${error.message}`);
+    console.error(
+      `[User] Error in handleUserDeletion: ${(error as Error).message}`
+    );
   } finally {
     await session.endSession();
     console.log(`[User] Cleanup process completed for user: ${user._id}`);
@@ -215,4 +189,4 @@ async function handleUserDeletion(user) {
 }
 
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+export = User;
