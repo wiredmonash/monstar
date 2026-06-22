@@ -1,8 +1,8 @@
-const asyncHandler = require('express-async-handler');
+import asyncHandler from '@utilities/asyncHandler';
 
-const UnitService = require('@services/unit.service');
+import UnitService from '@services/unit.service';
 
-const { isValidSortOption } = require('../../constants/sortOptions');
+import { isValidSortOption } from '../../constants/sortOptions';
 
 class UnitController {
   /**
@@ -34,8 +34,6 @@ class UnitController {
 
   /**
    * List most reviewed units (cached)
-   *
-   * @see UnitService.fetchMostReviewed
    */
   static getMostReviewed = asyncHandler(async (req, res) => {
     const mostReviewedUnits = await UnitService.fetchMostReviewed(10);
@@ -48,8 +46,8 @@ class UnitController {
   static getByUnitcode = asyncHandler(async (req, res) => {
     const unit = await UnitService.fetchByCode(
       req.params.unitCode,
-      req.query.populateReviews,
-      req.query.populateReviewsAuthor,
+      req.query.populateReviews as any,
+      req.query.populateReviewsAuthor as any
     );
     return res.status(200).json(unit);
   });
@@ -77,4 +75,4 @@ class UnitController {
   });
 }
 
-module.exports = UnitController;
+export = UnitController;
