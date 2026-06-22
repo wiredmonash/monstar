@@ -1,18 +1,14 @@
-const { OAuth2Client } = require('google-auth-library');
-const jwt = require('jsonwebtoken');
+import { OAuth2Client } from 'google-auth-library';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-const { cloudinary } = require('@providers/cloudinary.provider');
-const TokenProvider = require('@providers/token.provider');
-const UserRepository = require('@repositories/user.repository');
-const {
+import { cloudinary } from '@providers/cloudinary.provider';
+import TokenProvider from '@providers/token.provider';
+import UserRepository from '@repositories/user.repository';
+import {
   Error409Conflict,
   Error403Forbidden,
   Error404NotFound,
-} = require('@utilities/errors');
-
-/**
- * @typedef {import('@models/user').IUser} IUser
- */
+} from '@utilities/errors';
 
 const googleClient = new OAuth2Client();
 
@@ -22,9 +18,6 @@ class UserService {
 
   /**
    * Authenticates a new or existing user with Google OAuth
-   *
-   * @param {String} idToken
-   * @returns {Promise<{accessToken: string, refreshToken: string, user: IUser}>}
    */
   static googleAuthenticate = async (idToken) => {
     const ticket = await googleClient.verifyIdToken({
@@ -82,9 +75,6 @@ class UserService {
 
   /**
    * Rotate and create new access token and refresh token for a user
-   *
-   * @param {String} refreshToken
-   * @returns {Promise<{newAccessToken: string, newRefreshToken: string}>}
    */
   static refreshUserToken = async (refreshToken) => {
     const hashedRefreshToken = TokenProvider.hashRefreshToken(refreshToken);
@@ -115,9 +105,6 @@ class UserService {
 
   /**
    * Invalidates the refresh token to logout a user
-   *
-   * @param {String} userId
-   * @returns {Promise<void>}
    */
   static invalidateRefreshToken = async (userId) => {
     await UserRepository.invalidateRefreshToken(userId);
@@ -125,12 +112,12 @@ class UserService {
 
   /**
    * Validates user using access token
-   *
-   * @param {String} accessToken
-   * @returns {Promise<IUser>}
    */
   static validate = async (accessToken) => {
-    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+    const decoded = jwt.verify(
+      accessToken,
+      process.env.JWT_SECRET
+    ) as JwtPayload;
     const user = await UserRepository.findById(decoded.id);
     if (!user) throw new Error404NotFound('User not found');
     return user;
@@ -138,9 +125,6 @@ class UserService {
 
   /**
    * Gets a user by username
-   *
-   * @param {String} username
-   * @returns {Promise<IUser>}
    */
   static getByUsername = async (username) => {
     const user = await UserRepository.findByUsername(username);
@@ -150,10 +134,6 @@ class UserService {
 
   /**
    * Uploads user avatar to cloudinary
-   *
-   * @param {String} userId
-   * @param {String} avatarUrl - Cloudinary URL of the uploaded file
-   * @returns {Promise<IUser>}
    */
   static uploadAvatar = async (userId, avatarUrl) => {
     const user = await UserRepository.findById(userId);
@@ -179,4 +159,4 @@ class UserService {
   };
 }
 
-module.exports = UserService;
+export = UserService;
