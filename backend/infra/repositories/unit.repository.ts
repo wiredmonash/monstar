@@ -1,8 +1,4 @@
-const Unit = require('@models/unit');
-
-/**
- * @typedef {import('@models/unit').IUnit} IUnit
- */
+import Unit from '@models/unit';
 
 class UnitRepository {
   static UNIT_CODE_PATTERN = /^[a-zA-Z]{3}\d{4}$/;
@@ -11,8 +7,6 @@ class UnitRepository {
 
   /**
    * Find all units
-   *
-   * @returns {Promise<Array<IUnit>>}
    */
   static async findAll() {
     return await Unit.find({}).populate('reviews');
@@ -20,25 +14,23 @@ class UnitRepository {
 
   /**
    * Find unit by unitcode
-   *
-   * @param {String} unitcode
-   * @param {Boolean} populateReviews
-   * @param {Boolean} populateReviewsAuthor
-   * @returns {Promise<IUnit|null>}
    */
-  static async findOneByUnitcode(unitcode, populateReviews = false, populateReviewsAuthor = false) {
+  static async findOneByUnitcode(
+    unitcode,
+    populateReviews = false,
+    populateReviewsAuthor = false
+  ) {
     const query = Unit.findOne({ unitCode: unitcode.toLowerCase() });
-    return populateReviews ? await query.populate({
-      path: 'reviews',
-      populate: populateReviewsAuthor ? { path: 'author' } : undefined
-    }) : await query;
+    return populateReviews
+      ? await query.populate({
+          path: 'reviews',
+          populate: populateReviewsAuthor ? { path: 'author' } : undefined,
+        })
+      : await query;
   }
 
   /**
    * Find unit by id
-   *
-   * @param {String} unitId
-   * @returns {Promise<IUnit|null>}
    */
   static async findById(unitId) {
     return await Unit.findById(unitId);
@@ -46,12 +38,6 @@ class UnitRepository {
 
   /**
    * Query for units with pagination, filtering, and sorting
-   *
-   * @param {Object} query
-   * @param {Object} sortCriteria
-   * @param {Number} skip
-   * @param {Number} limit
-   * @returns {Promise<{units: Array<IUnit>, total: number}>}
    */
   static async findWithPagination(query, sortCriteria, skip, limit) {
     const pipeline = [
@@ -85,9 +71,6 @@ class UnitRepository {
 
   /**
    * Query for N most reviewed units
-   *
-   * @param {Number} n
-   * @returns {Promise<Array<IUnit>>}
    */
   static async findMostReviewedUnits(n) {
     return await Unit.aggregate([
@@ -107,9 +90,6 @@ class UnitRepository {
    * Finds units that have the given unit as a prerequisite
    *
    * E.g., (given) FIT1045 -> FIT1008 (find these ones)
-   *
-   * @param {String} unitCode
-   * @returns {Promise<Array<IUnit>>}
    */
   static async findRequiredBy(unitCode) {
     return await Unit.find({
@@ -125,10 +105,6 @@ class UnitRepository {
 
   /**
    * Update a unit by unitcode or unitId
-   *
-   * @param {String|ObjectId} identifier - Either a unitCode (CCCDDDD format) or MongoDB ObjectId
-   * @param {Object} updateData
-   * @returns {Promise<IUnit|null>}
    */
   static async updateOneByUnitcode(identifier, updateData) {
     identifier = identifier.toString();
@@ -141,4 +117,4 @@ class UnitRepository {
   }
 }
 
-module.exports = UnitRepository;
+export = UnitRepository;
