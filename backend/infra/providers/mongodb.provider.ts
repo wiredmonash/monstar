@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_CONN_STRING;
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_CONN_STRING environment variable');
 }
 
-let cached = global.mongoose;
+let cached = (global as any).mongoose;
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+  cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
 async function dbConnect() {
@@ -49,4 +49,4 @@ async function dbConnect() {
   return cached.conn;
 }
 
-module.exports = { dbConnect };
+export { dbConnect };
