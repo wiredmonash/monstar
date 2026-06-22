@@ -1,5 +1,4 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+import mongoose, { Schema } from 'mongoose';
 
 const orgLogoSchema = new Schema(
   {
@@ -18,4 +17,4 @@ orgLogoSchema.pre('save', function (next) {
 });
 
 const OrgLogo = mongoose.model('OrgLogo', orgLogoSchema);
-module.exports = OrgLogo;
+export = OrgLogo;
