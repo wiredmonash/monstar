@@ -1,18 +1,10 @@
-const Notification = require('@models/notification');
-
-/**
- * @typedef {import('@models/notification').INotification} INotification
- */
+import Notification from '@models/notification';
 
 class NotificationRepository {
   /* -------------------------------- Retrieval ------------------------------- */
 
   /**
    * Find a notification by user and review
-   *
-   * @param {String} userId
-   * @param {String} reviewId
-   * @returns {Promise<INotification|null>}
    */
   static async findByUserAndReview(userId, reviewId) {
     return await Notification.findOne({
@@ -23,9 +15,6 @@ class NotificationRepository {
 
   /**
    * Find a notification by ID
-   *
-   * @param {String} notificationId
-   * @returns {Promise<INotification|null>}
    */
   static async findById(notificationId) {
     return await Notification.findById(notificationId);
@@ -33,9 +22,6 @@ class NotificationRepository {
 
   /**
    * Find all notifications for a user
-   *
-   * @param {String} userId
-   * @returns {Promise<Array<INotification>>}
    */
   static async findByUserId(userId) {
     return await Notification.find({ user: userId })
@@ -47,9 +33,6 @@ class NotificationRepository {
 
   /**
    * Create a new notification
-   *
-   * @param {Object} notificationData
-   * @returns {Promise<INotification>}
    */
   static async create(notificationData) {
     const notification = new Notification(notificationData);
@@ -60,13 +43,10 @@ class NotificationRepository {
 
   /**
    * Delete a notification by ID
-   *
-   * @param {String} notificationId
-   * @returns {Promise<INotification|null>}
    */
   static async deleteById(notificationId) {
     return await Notification.findByIdAndDelete(notificationId);
   }
 }
 
-module.exports = NotificationRepository;
+export = NotificationRepository;
