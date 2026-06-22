@@ -1,25 +1,4 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
-
-/**
- * @typedef {Object} IReview
- * @property {import('mongoose').Types.ObjectId} _id - Review ID
- * @property {string} title - Review title
- * @property {string} semester - Semester taken (e.g., "S1", "S2")
- * @property {number} year - Year taken
- * @property {string} grade - Grade received
- * @property {number} overallRating - Overall rating (0-5)
- * @property {number} relevancyRating - Relevancy rating (0-5)
- * @property {number} facultyRating - Faculty rating (0-5)
- * @property {number} contentRating - Content rating (0-5)
- * @property {string} description - Review description
- * @property {number} likes - Number of likes
- * @property {number} dislikes - Number of dislikes
- * @property {import('mongoose').Types.ObjectId} unit - Unit ID reference
- * @property {import('mongoose').Types.ObjectId} author - User ID reference
- * @property {Date} createdAt - Creation timestamp
- * @property {Date} updatedAt - Last update timestamp
- */
+import mongoose, { Schema } from 'mongoose';
 
 const reviewSchema = new Schema(
   {
@@ -59,4 +38,4 @@ reviewSchema.pre('save', function (next) {
 });
 
 const Review = mongoose.model('Review', reviewSchema);
-module.exports = Review;
+export = Review;
