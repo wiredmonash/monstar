@@ -4,15 +4,6 @@
 
 /**
  * Builds a MongoDB query object based on filter parameters
- * @param {Object} params - Filter parameters
- * @param {string} params.search - Search term for unit code or name
- * @param {string|string[]} params.faculty - Faculty filter(s)
- * @param {string|string[]} params.semesters - Semester filter(s)
- * @param {string|string[]} params.campuses - Campus filter(s)
- * @param {string} params.showReviewed - 'true' to show only reviewed units
- * @param {string} params.showUnreviewed - 'true' to show only unreviewed units
- * @param {string} params.hideNoOfferings - 'true' to hide units without offerings
- * @returns {Object} MongoDB query object
  */
 function buildFilterQuery({
   search = '',
@@ -23,7 +14,7 @@ function buildFilterQuery({
   showUnreviewed = 'false',
   hideNoOfferings = 'false',
 }) {
-  const query = {};
+  const query: Record<string, any> = {};
 
   // Search filter (unit code or name)
   if (search) {
@@ -70,6 +61,4 @@ function buildFilterQuery({
   return query;
 }
 
-module.exports = {
-  buildFilterQuery,
-};
+export { buildFilterQuery };
