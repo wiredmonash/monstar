@@ -11,7 +11,9 @@ const makeModuleNameMapper = (aliases) => {
   for (const alias in aliases) {
     const path = aliases[alias];
 
-    const aliasRegex = `^${alias}/(.*)$`;
+    // Strip an optional trailing `.js` so explicit-extension requires (e.g.
+    // require('@utilities/verifyToken.js')) still resolve to a .ts source.
+    const aliasRegex = `^${alias}/(.*?)(?:\\.js)?$`;
 
     const pathPattern = `<rootDir>/${path.replace(/^\.\//, '')}/$1`;
 
