@@ -1,12 +1,9 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-const { CreateError } = require('@utilities/error.js');
+import { CreateError } from '@utilities/error';
 
 /**
- * * Middleware to verify the JWT token from cookies.
- * @param {Object} req Express request object.
- * @param {Object} res Express response object.
- * @param {Function} next Express next middleware function
+ * Middleware to verify the JWT token from cookies.
  */
 const verifyToken = (req, res, next) => {
   // Get the token from cookies
@@ -26,11 +23,8 @@ const verifyToken = (req, res, next) => {
 };
 
 /**
- * * Middleware to verify the user is authorised to access the resource.
+ * Middleware to verify the user is authorised to access the resource.
  * User must be the owner of the resource or an admin.
- * @param {Object} req Express request object.
- * @param {Object} res Express response object.
- * @param {Function} next Express next middleware function
  */
 const verifyUser = (req, res, next) => {
   verifyToken(req, res, () => {
@@ -45,10 +39,7 @@ const verifyUser = (req, res, next) => {
 };
 
 /**
- * * Middleware to verify if the user is an admin.
- * @param {Object} req Express request object.
- * @param {Object} res Express response object.
- * @param {Function} next Express next middleware function
+ * Middleware to verify if the user is an admin.
  */
 const verifyAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
@@ -62,4 +53,4 @@ const verifyAdmin = (req, res, next) => {
   });
 };
 
-module.exports = { verifyToken, verifyUser, verifyAdmin };
+export { verifyToken, verifyUser, verifyAdmin };
