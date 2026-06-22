@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const NOTION_API_BASE = 'https://www.notion.so/api/v3';
 const NOTION_PAGE_ID = process.env.NOTION_PAGE_ID || null;
@@ -42,7 +42,7 @@ class NotionProvider {
   static PAGE_ID = NOTION_PAGE_ID;
 
   /** @type {{ collectionId: string, collectionViewId: string, spaceId: string, schema: Object } | null} */
-  static _cachedMeta = null;
+  static _cachedMeta: any = null;
 
   /* ----------------------------- API Endpoints ----------------------------- */
 
@@ -108,8 +108,8 @@ class NotionProvider {
     const { block, collection } = pageData.recordMap;
 
     const cvBlock = Object.values(block).find(
-      (b) => b.value?.type === 'collection_view'
-    );
+      (b: any) => b.value?.type === 'collection_view'
+    ) as any;
 
     if (!cvBlock) {
       throw new Error('No collection_view block found on this Notion page');
@@ -135,9 +135,9 @@ class NotionProvider {
     const props = block.value?.value?.properties ?? block.value?.properties ?? {};
     const notionId = block.value?.value?.id ?? block.value?.id;
 
-    const row = { notionId };
+    const row: any = { notionId };
 
-    for (const [key, def] of Object.entries(schema)) {
+    for (const [key, def] of Object.entries(schema) as [string, any][]) {
       const raw = props[key];
 
       switch (def.type) {
@@ -203,4 +203,4 @@ class NotionProvider {
   }
 }
 
-module.exports = NotionProvider;
+export = NotionProvider;
