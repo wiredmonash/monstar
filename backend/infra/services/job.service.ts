@@ -1,8 +1,8 @@
-const { JOB_STATUS } = require('@constants/jobOptions');
-const CacheProvider = require('@providers/cache.provider');
-const NotionProvider = require('@providers/notion.provider');
-const JobRepository = require('@repositories/job.repository');
-const { Error404NotFound } = require('@utilities/errors');
+import { JOB_STATUS } from '@constants/jobOptions';
+import CacheProvider from '@providers/cache.provider';
+import NotionProvider from '@providers/notion.provider';
+import JobRepository from '@repositories/job.repository';
+import { Error404NotFound } from '@utilities/errors';
 
 class JobService {
   static CACHE_PREFIX = 'jobs';
@@ -12,7 +12,7 @@ class JobService {
   static buildCacheKey = (...segments) =>
     `${this.CACHE_PREFIX}:${segments.join(':')}:${this.getDateKey() ?? 'unknown-day'}`;
 
-  static getDateKey = (value = new Date()) => {
+  static getDateKey = (value: Date | string | number = new Date()) => {
     const date = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(date.getTime())) return null;
 
@@ -120,4 +120,4 @@ class JobService {
   };
 }
 
-module.exports = JobService;
+export = JobService;
