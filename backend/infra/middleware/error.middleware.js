@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 const errorMiddleware = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || err.status || 500;
 
   console.error(`[Error] ${err.message}`);
   if (process.env.DEVELOPMENT) console.error(err.stack);
