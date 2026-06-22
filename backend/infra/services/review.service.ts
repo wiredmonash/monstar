@@ -1,23 +1,16 @@
-const ReviewRepository = require('@repositories/review.repository');
-const UnitRepository = require('@repositories/unit.repository');
-const UserRepository = require('@repositories/user.repository');
-const NotificationService = require('@services/notification.service');
-const {
+import ReviewRepository from '@repositories/review.repository';
+import UnitRepository from '@repositories/unit.repository';
+import UserRepository from '@repositories/user.repository';
+import NotificationService from '@services/notification.service';
+import {
   Error404NotFound,
   Error409Conflict,
   Error401NotAuthorized,
-} = require('@utilities/errors');
-
-/**
- * @typedef {import('@models/review').IReview} IReview
- */
+} from '@utilities/errors';
 
 class ReviewService {
   /**
    * Fetch all reviews with optional filter
-   *
-   * @param {Object} filter - Optional filter criteria
-   * @returns {Promise<Array<IReview>>}
    */
   static fetchAll = async (filter = {}) => {
     return await ReviewRepository.findAll(filter);
@@ -25,18 +18,13 @@ class ReviewService {
 
   /**
    * Fetch N most liked reviews
-   *
-   * @param {Number} n - Number of results
    */
   static fetchMostLiked = async (n = 10) => {
     return await ReviewRepository.findMostLiked(n);
-  }
+  };
 
   /**
    * Fetch all reviews for a specific unit
-   *
-   * @param {String} unitCode
-   * @returns {Promise<Array<IReview>>}
    */
   static fetchByUnit = async (unitCode) => {
     // Find the unit first
@@ -48,9 +36,6 @@ class ReviewService {
 
   /**
    * Fetch all reviews by a specific user
-   *
-   * @param {String} userId
-   * @returns {Promise<Array<IReview>>}
    */
   static fetchByUser = async (userId) => {
     return await ReviewRepository.findByUserId(userId);
@@ -58,10 +43,6 @@ class ReviewService {
 
   /**
    * Create a new review for a unit
-   *
-   * @param {String} unitCode
-   * @param {Object} reviewData
-   * @returns {Promise<IReview>}
    */
   static createReview = async (unitCode, reviewData) => {
     // Find the unit
@@ -99,11 +80,6 @@ class ReviewService {
 
   /**
    * Update a review by ID
-   *
-   * @param {String} reviewId
-   * @param {String} userId - ID of the user making the request
-   * @param {Object} updateData
-   * @returns {Promise<IReview|null>}
    */
   static updateReview = async (reviewId, userId, updateData) => {
     const review = await ReviewRepository.findById(reviewId);
@@ -134,10 +110,6 @@ class ReviewService {
 
   /**
    * Delete a review by ID
-   *
-   * @param {String} reviewId
-   * @param {String} userId - ID of the user making the request
-   * @returns {Promise<void>}
    */
   static deleteReview = async (reviewId, userId) => {
     const review = await ReviewRepository.findById(reviewId);
@@ -177,11 +149,6 @@ class ReviewService {
    *
    * NOTE: NotificationService calls are not awaited, we let those happen in the
    * background to make this faster.
-   *
-   * @param {String} reviewId
-   * @param {String} userId
-   * @param {String} reactionType - 'like' or 'dislike'
-   * @returns {Promise<{review: IReview, reactions: {liked: boolean, disliked: boolean}}>}
    */
   static toggleReaction = async (reviewId, userId, reactionType) => {
     const [user, review] = await Promise.all([
@@ -282,9 +249,6 @@ class ReviewService {
 
   /**
    * Private helper to recalculate and update unit rating averages
-   *
-   * @param {ObjectId} unitId
-   * @returns {Promise<void>}
    */
   static _recalculateUnitAverages = async (unitId) => {
     const allReviews = await ReviewRepository.findByUnitId(unitId);
@@ -315,4 +279,4 @@ class ReviewService {
   };
 }
 
-module.exports = ReviewService;
+export = ReviewService;
