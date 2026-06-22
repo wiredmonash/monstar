@@ -49,6 +49,7 @@
     "mongoose-to-swagger": "1.5.1",
     "nodemon": "3.1.11",
     "prettier": "3.7.4",
+    "supertest": "^7.2.2",
     "swagger-autogen": "2.23.7",
     "swagger-jsdoc": "6.2.8",
     "swagger-ui-express": "5.0.1"
