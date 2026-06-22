@@ -1,9 +1,10 @@
 /* ----------------------- Load environment variables ----------------------- */
-require('dotenv').config({ quiet: true });
+import dotenv from 'dotenv';
+dotenv.config({ quiet: true });
 // require('module-alias/register');
 
 /* ----------------------------- Module imports ----------------------------- */
-const path = require('path');
+import path from 'path';
 
 require('module-alias').addAliases({
   '@models': path.join(__dirname, 'models'),
@@ -18,10 +19,10 @@ require('module-alias').addAliases({
   '@docs': path.join(__dirname, 'docs'),
 });
 
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const csrf = require('csurf');
-const express = require('express');
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import csrf from 'csurf';
+import express from 'express';
 
 const { setupSwagger } = require('@docs/swagger');
 const errorMiddleware = require('@middleware/error.middleware');
@@ -61,7 +62,7 @@ app.use(
       secure: !isDevelopment && isProductionMachine,
       sameSite: 'strict',
     },
-  })
+  }) as any
 );
 
 /* --------------------------- CSRF Token endpoint -------------------------- */
@@ -114,7 +115,7 @@ app.use(errorMiddleware);
 // TODO: Use vercel-cron for jobs, node-cron doesn't work on vercel.
 
 /* ---------------------------- Export for vercel --------------------------- */
-module.exports = app;
+export = app;
 
 /* ----------------------- Start server for local dev ----------------------- */
 if (require.main === module) {
@@ -130,7 +131,7 @@ if (require.main === module) {
         }
       }
 
-      app.listen(PORT, (err) => {
+      app.listen(PORT as any, (err?: any) => {
         if (err) console.error(err);
         console.log(`Server running on port ${PORT}`);
       });
