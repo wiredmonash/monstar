@@ -31,6 +31,12 @@ module.exports = {
       moduleNameMapper: makeModuleNameMapper(_moduleAliases),
     },
     {
+      displayName: 'integration',
+      testMatch: ['<rootDir>/tests/integration/*.test.js'],
+      setupFilesAfterEnv: ['<rootDir>/tests/integration/jest.setup.js'],
+      moduleNameMapper: makeModuleNameMapper(_moduleAliases),
+    },
+    {
       displayName: 'performance',
       testMatch: ['<rootDir>/tests/performance/*.test.js'],
       setupFilesAfterEnv: ['<rootDir>/tests/performance/jest.setup.js'],
