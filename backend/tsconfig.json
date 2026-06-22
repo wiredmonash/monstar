@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
+    "lib": ["ES2021"],
+    "outDir": "dist",
+    "rootDir": ".",
+    "paths": {
+      "@models/*": ["./models/*"],
+      "@routes/*": ["./infra/routes/*"],
+      "@controllers/*": ["./infra/controllers/*"],
+      "@providers/*": ["./infra/providers/*"],
+      "@middleware/*": ["./infra/middleware/*"],
+      "@services/*": ["./infra/services/*"],
+      "@repositories/*": ["./infra/repositories/*"],
+      "@utilities/*": ["./infra/utilities/*"],
+      "@constants/*": ["./constants/*"],
+      "@docs/*": ["./docs/*"]
+    },
+    "allowJs": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "sourceMap": true,
+    "strict": false,
+    "noImplicitAny": false
+  },
+  "include": [
+    "server.js",
+    "infra/**/*",
+    "models/**/*",
+    "constants/**/*",
+    "docs/swagger.js"
+  ],
+  "exclude": ["node_modules", "dist", "tests", "scrapers"]
+}
