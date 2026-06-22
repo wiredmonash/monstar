@@ -1,5 +1,7 @@
 class AppError extends Error {
-  constructor(message, statusCode) {
+  statusCode: number;
+
+  constructor(message: string, statusCode: number) {
     super(message);
     this.statusCode = statusCode;
     Error.captureStackTrace(this, this.constructor);
@@ -44,7 +46,7 @@ class Error429RateLimited extends AppError {
   }
 }
 
-module.exports = {
+export {
   Error401NotAuthorized,
   Error403Forbidden,
   Error404NotFound,
