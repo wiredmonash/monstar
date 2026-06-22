@@ -1,4 +1,4 @@
-const NotionProvider = require('@providers/notion.provider');
+import NotionProvider from '@providers/notion.provider';
 
 class JobRepository {
   static async findAll() {
@@ -26,4 +26,4 @@ class JobRepository {
   }
 }
 
-module.exports = JobRepository;
+export = JobRepository;
