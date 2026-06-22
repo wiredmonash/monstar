@@ -1,7 +1,7 @@
-const asyncHandler = require('express-async-handler');
+import asyncHandler from '@utilities/asyncHandler';
 
-const TokenProvider = require('@providers/token.provider');
-const UserService = require('@services/user.service');
+import TokenProvider from '@providers/token.provider';
+import UserService from '@services/user.service';
 
 class UserController {
   /**
@@ -9,7 +9,8 @@ class UserController {
    */
   static me = asyncHandler(async (req, res) => {
     const user = req.user;
-    if (!user) return res.status(404).json({ message: 'User context not found' });
+    if (!user)
+      return res.status(404).json({ message: 'User context not found' });
     return res.status(200).json(user);
   });
 
@@ -118,4 +119,4 @@ class UserController {
   });
 }
 
-module.exports = UserController;
+export = UserController;
