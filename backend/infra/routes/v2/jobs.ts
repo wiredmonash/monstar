@@ -1,11 +1,11 @@
-const express = require('express');
-const multer = require('multer');
+import express from 'express';
+import multer from 'multer';
 
-const JobController = require('@controllers/job.controller');
-const OrgLogoController = require('@controllers/orgLogo.controller');
-const adminMiddleware = require('@middleware/admin.middleware');
-const userMiddleware = require('@middleware/user.middleware');
-const { orgStorage } = require('@providers/cloudinary.provider');
+import JobController from '@controllers/job.controller';
+import OrgLogoController from '@controllers/orgLogo.controller';
+import adminMiddleware from '@middleware/admin.middleware';
+import userMiddleware from '@middleware/user.middleware';
+import { orgStorage } from '@providers/cloudinary.provider';
 
 const router = express.Router();
 const uploadLogo = multer({ storage: orgStorage });
@@ -77,4 +77,4 @@ router.post(
   JobController.refreshCache
 );
 
-module.exports = router;
+export = router;
