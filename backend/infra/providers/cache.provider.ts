@@ -1,4 +1,4 @@
-const { Redis } = require('@upstash/redis');
+import { Redis } from '@upstash/redis';
 
 const redis =
   process.env.MONSTAR_SERVERLESS_CACHE_KV_REST_API_URL &&
@@ -70,4 +70,4 @@ class CacheProvider {
   }
 }
 
-module.exports = CacheProvider;
+export = CacheProvider;
