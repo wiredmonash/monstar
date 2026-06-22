@@ -1,19 +1,11 @@
-const NotificationRepository = require('@repositories/notification.repository');
-const UnitRepository = require('@repositories/unit.repository');
-const UserRepository = require('@repositories/user.repository');
-const { Error404NotFound } = require('@utilities/errors');
-
-/**
- * @typedef {import('@models/review').IReview} IReview
- * @typedef {import('@models/user').IUser} IUser
- */
+import NotificationRepository from '@repositories/notification.repository';
+import UnitRepository from '@repositories/unit.repository';
+import UserRepository from '@repositories/user.repository';
+import { Error404NotFound } from '@utilities/errors';
 
 class NotificationService {
   /**
    * Delete a notification
-   *
-   * @param {import('mongoose').ObjectId|String} authorId
-   * @param {import('mongoose').ObjectId|String} reviewId
    */
   static delete = async (authorId, reviewId) => {
     const notification = await NotificationRepository.findByUserAndReview(
@@ -29,9 +21,6 @@ class NotificationService {
 
   /**
    * Create a "someone liked your review" notification
-   *
-   * @param {IUser} liker
-   * @param {IReview} review
    */
   static createLike = async (liker, review) => {
     if (liker._id.toString() === review.author._id.toString()) return;
@@ -56,4 +45,4 @@ class NotificationService {
   };
 }
 
-module.exports = NotificationService;
+export = NotificationService;
