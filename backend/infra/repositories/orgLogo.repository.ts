@@ -1,4 +1,4 @@
-const OrgLogo = require('@models/orgLogo');
+import OrgLogo from '@models/orgLogo';
 
 class OrgLogoRepository {
   static async findAll() {
@@ -27,4 +27,4 @@ class OrgLogoRepository {
   }
 }
 
-module.exports = OrgLogoRepository;
+export = OrgLogoRepository;
