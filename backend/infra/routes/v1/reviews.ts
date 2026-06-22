@@ -1,13 +1,13 @@
 // Module Imports
-const express = require('express');
-const nodemailer = require('nodemailer');
+import express from 'express';
+import nodemailer from 'nodemailer';
 
 // Model Imports
-const Notification = require('@models/notification');
-const Review = require('@models/review');
-const Unit = require('@models/unit');
-const User = require('@models/user');
-const { verifyToken } = require('@utilities/verifyToken');
+import Notification from '@models/notification';
+import Review from '@models/review';
+import Unit from '@models/unit';
+import User from '@models/user';
+import { verifyToken } from '@utilities/verifyToken';
 
 // Function Imports
 
@@ -443,7 +443,7 @@ router.patch(
         if (hasLiked) {
           // Remove like
           review.likes = Math.max(0, review.likes - 1);
-          user.likedReviews.pull(review._id);
+          (user.likedReviews as any).pull(review._id);
           operations.reactionRemoved = true;
 
           // Find and mark notification for removal
@@ -472,7 +472,7 @@ router.patch(
           if (user.dislikedReviews.includes(review._id)) {
             // Remove the dislike
             review.dislikes = Math.max(0, review.dislikes - 1);
-            user.dislikedReviews.pull(review._id);
+            (user.dislikedReviews as any).pull(review._id);
             operations.oppositeReactionRemoved = true;
           }
         }
@@ -484,7 +484,7 @@ router.patch(
         if (hasDisliked) {
           // Remove dislike
           review.dislikes = Math.max(0, review.dislikes - 1);
-          user.dislikedReviews.pull(review._id);
+          (user.dislikedReviews as any).pull(review._id);
           operations.reactionRemoved = true;
         } else {
           // Add dislike
@@ -496,7 +496,7 @@ router.patch(
           if (user.likedReviews.includes(review._id)) {
             // Remove the like
             review.likes = Math.max(0, review.likes - 1);
-            user.likedReviews.pull(review._id);
+            (user.likedReviews as any).pull(review._id);
             operations.oppositeReactionRemoved = true;
 
             // Find and mark notification for removal
@@ -518,7 +518,7 @@ router.patch(
           author.notifications &&
           author.notifications.includes(operations.notificationToRemove._id)
         ) {
-          author.notifications.pull(operations.notificationToRemove._id);
+          (author.notifications as any).pull(operations.notificationToRemove._id);
         }
       }
 
@@ -608,4 +608,4 @@ router.post('/send-report', verifyToken, async function (req, res) {
 });
 
 // Export the router
-module.exports = router;
+export = router;
