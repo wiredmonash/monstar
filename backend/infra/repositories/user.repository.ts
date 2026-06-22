@@ -1,4 +1,7 @@
+import type { Types } from 'mongoose';
+
 import User from '@models/user';
+import type { Id, IUser } from '@models/types';
 
 class UserRepository {
   /* -------------------------------- Retrieval ------------------------------- */
@@ -6,14 +9,14 @@ class UserRepository {
   /**
    * Find a user by ID
    */
-  static async findById(userId) {
+  static async findById(userId: Id) {
     return await User.findById(userId);
   }
 
   /**
    * Find a user by email or google id
    */
-  static async findByEmailOrGoogleId(email, googleId) {
+  static async findByEmailOrGoogleId(email: string, googleId: string) {
     return await User.findOne({
       $or: [{ email: email }, { googleId: googleId }],
     });
@@ -22,7 +25,7 @@ class UserRepository {
   /**
    * Find a user by username (excludes sensitive fields)
    */
-  static async findByUsername(username) {
+  static async findByUsername(username: string) {
     return await User.findOne(
       { username },
       {
@@ -43,7 +46,7 @@ class UserRepository {
   /**
    * Create a user
    */
-  static async create(userData) {
+  static async create(userData: Partial<IUser>) {
     const user = new User(userData);
     return await user.save();
   }
@@ -53,7 +56,7 @@ class UserRepository {
   /**
    * Update user's profile image
    */
-  static async updateProfileImage(userId, profileImgUrl) {
+  static async updateProfileImage(userId: Id, profileImgUrl: string) {
     return await User.findByIdAndUpdate(
       userId,
       { profileImg: profileImgUrl },
@@ -66,7 +69,11 @@ class UserRepository {
   /**
    * Update the refresh token of a user
    */
-  static async updateRefreshToken(userId, hashedToken, expiry) {
+  static async updateRefreshToken(
+    userId: Id,
+    hashedToken: string,
+    expiry: Date | number
+  ) {
     return await User.findByIdAndUpdate(
       userId,
       {
@@ -80,7 +87,7 @@ class UserRepository {
   /**
    * Find a user by their hashed refresh token
    */
-  static async findByHashedRefreshToken(hashedRefreshToken) {
+  static async findByHashedRefreshToken(hashedRefreshToken: string) {
     return await User.findOne({
       refreshToken: hashedRefreshToken,
       refreshTokenExpires: { $gt: Date.now() },
@@ -90,7 +97,7 @@ class UserRepository {
   /**
    * Unsets the refreshToken and expiry fields
    */
-  static async invalidateRefreshToken(userId) {
+  static async invalidateRefreshToken(userId: Id) {
     return await User.findByIdAndUpdate(userId, {
       $unset: { refreshToken: 1, refreshTokenExpires: 1 },
     });
@@ -101,7 +108,7 @@ class UserRepository {
   /**
    * Add a review to user's liked reviews
    */
-  static async addLikedReview(userId, reviewId) {
+  static async addLikedReview(userId: Id, reviewId: Id) {
     return await User.findByIdAndUpdate(
       userId,
       { $addToSet: { likedReviews: reviewId } },
@@ -112,7 +119,7 @@ class UserRepository {
   /**
    * Remove a review from user's liked reviews
    */
-  static async removeLikedReview(userId, reviewId) {
+  static async removeLikedReview(userId: Id, reviewId: Id) {
     return await User.findByIdAndUpdate(
       userId,
       { $pull: { likedReviews: reviewId } },
@@ -123,7 +130,7 @@ class UserRepository {
   /**
    * Add a review to user's disliked reviews
    */
-  static async addDislikedReview(userId, reviewId) {
+  static async addDislikedReview(userId: Id, reviewId: Id) {
     return await User.findByIdAndUpdate(
       userId,
       { $addToSet: { dislikedReviews: reviewId } },
@@ -134,7 +141,7 @@ class UserRepository {
   /**
    * Remove a review from user's disliked reviews
    */
-  static async removeDislikedReview(userId, reviewId) {
+  static async removeDislikedReview(userId: Id, reviewId: Id) {
     return await User.findByIdAndUpdate(
       userId,
       { $pull: { dislikedReviews: reviewId } },
@@ -145,17 +152,19 @@ class UserRepository {
   /**
    * Check if user has liked a review
    */
-  static async hasLikedReview(userId, reviewId) {
+  static async hasLikedReview(userId: Id, reviewId: Id) {
     const user = await User.findById(userId, { likedReviews: 1 });
-    return user ? user.likedReviews.includes(reviewId) : false;
+    return user ? user.likedReviews.includes(reviewId as Types.ObjectId) : false;
   }
 
   /**
    * Check if user has disliked a review
    */
-  static async hasDislikedReview(userId, reviewId) {
+  static async hasDislikedReview(userId: Id, reviewId: Id) {
     const user = await User.findById(userId, { dislikedReviews: 1 });
-    return user ? user.dislikedReviews.includes(reviewId) : false;
+    return user
+      ? user.dislikedReviews.includes(reviewId as Types.ObjectId)
+      : false;
   }
 
   /* ------------------------------ Notifications ----------------------------- */
@@ -163,7 +172,7 @@ class UserRepository {
   /**
    * Add a notification to user's notifications array
    */
-  static async addNotification(userId, notificationId) {
+  static async addNotification(userId: Id, notificationId: Id) {
     return await User.findByIdAndUpdate(
       userId,
       { $addToSet: { notifications: notificationId } },
@@ -174,7 +183,7 @@ class UserRepository {
   /**
    * Remove a notification from user's notifications array
    */
-  static async removeNotification(userId, notificationId) {
+  static async removeNotification(userId: Id, notificationId: Id) {
     return await User.findByIdAndUpdate(
       userId,
       { $pull: { notifications: notificationId } },

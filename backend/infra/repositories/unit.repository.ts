@@ -1,4 +1,7 @@
+import type { FilterQuery, PipelineStage, UpdateQuery } from 'mongoose';
+
 import Unit from '@models/unit';
+import type { Id, IUnit } from '@models/types';
 
 class UnitRepository {
   static UNIT_CODE_PATTERN = /^[a-zA-Z]{3}\d{4}$/;
@@ -16,7 +19,7 @@ class UnitRepository {
    * Find unit by unitcode
    */
   static async findOneByUnitcode(
-    unitcode,
+    unitcode: string,
     populateReviews = false,
     populateReviewsAuthor = false
   ) {
@@ -32,15 +35,20 @@ class UnitRepository {
   /**
    * Find unit by id
    */
-  static async findById(unitId) {
+  static async findById(unitId: Id) {
     return await Unit.findById(unitId);
   }
 
   /**
    * Query for units with pagination, filtering, and sorting
    */
-  static async findWithPagination(query, sortCriteria, skip, limit) {
-    const pipeline = [
+  static async findWithPagination(
+    query: Record<string, unknown>,
+    sortCriteria: Record<string, 1 | -1>,
+    skip: number,
+    limit: number
+  ) {
+    const pipeline: PipelineStage[] = [
       { $match: query },
       {
         $addFields: {
@@ -50,9 +58,9 @@ class UnitRepository {
       },
     ];
 
-    const countPipeline = [...pipeline, { $count: 'total' }];
+    const countPipeline: PipelineStage[] = [...pipeline, { $count: 'total' }];
 
-    const paginatedPipeline = [
+    const paginatedPipeline: PipelineStage[] = [
       ...pipeline,
       { $sort: { ...sortCriteria, _id: 1 } },
       { $skip: Number(skip) },
@@ -72,7 +80,7 @@ class UnitRepository {
   /**
    * Query for N most reviewed units
    */
-  static async findMostReviewedUnits(n) {
+  static async findMostReviewedUnits(n: number) {
     return await Unit.aggregate([
       { $addFields: { reviewCount: { $size: '$reviews' } } },
       { $sort: { reviewCount: -1 } },
@@ -91,7 +99,7 @@ class UnitRepository {
    *
    * E.g., (given) FIT1045 -> FIT1008 (find these ones)
    */
-  static async findRequiredBy(unitCode) {
+  static async findRequiredBy(unitCode: string) {
     return await Unit.find({
       'requisites.prerequisites': {
         $elemMatch: {
@@ -106,7 +114,10 @@ class UnitRepository {
   /**
    * Update a unit by unitcode or unitId
    */
-  static async updateOneByUnitcode(identifier, updateData) {
+  static async updateOneByUnitcode(
+    identifier: Id,
+    updateData: UpdateQuery<IUnit>
+  ) {
     identifier = identifier.toString();
     const isUnitCode = this.UNIT_CODE_PATTERN.test(identifier);
     const query = isUnitCode ? { unitCode: identifier } : { _id: identifier };

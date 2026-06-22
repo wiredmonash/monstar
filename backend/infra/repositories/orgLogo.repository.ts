@@ -5,13 +5,13 @@ class OrgLogoRepository {
     return await OrgLogo.find();
   }
 
-  static async findByOrganisation(org) {
+  static async findByOrganisation(org: string) {
     return await OrgLogo.findOne({
       organisation: org.toLowerCase().trim(),
     });
   }
 
-  static async upsert(org, logoUrl) {
+  static async upsert(org: string, logoUrl: string) {
     const normalised = org.toLowerCase().trim();
     return await OrgLogo.findOneAndUpdate(
       { organisation: normalised },
@@ -20,7 +20,7 @@ class OrgLogoRepository {
     );
   }
 
-  static async deleteByOrganisation(org) {
+  static async deleteByOrganisation(org: string) {
     return await OrgLogo.findOneAndDelete({
       organisation: org.toLowerCase().trim(),
     });
