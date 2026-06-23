@@ -1,9 +1,11 @@
 import type { FilterQuery, UpdateQuery } from 'mongoose';
 
-import Review from '@models/review';
-import Unit from '@models/unit';
-import User from '@models/user';
-import type { Id, IReview } from '@models/types';
+import { Unit } from '@domains/academics/units';
+import { User } from '@domains/identity/users';
+import type { Id } from '@shared/types';
+
+import Review from './review.model';
+import type { IReview } from './review.types';
 
 class ReviewRepository {
   /* -------------------------------- Retrieval ------------------------------- */

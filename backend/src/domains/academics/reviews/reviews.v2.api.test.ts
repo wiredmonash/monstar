@@ -1,7 +1,11 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 
-import { accessTokenCookie, getCsrf, seedUserWithReview } from './helpers';
+import {
+  accessTokenCookie,
+  getCsrf,
+  seedUserWithReview,
+} from '@shared/testing/helpers';
 
 /**
  * Characterization tests for the LIVE v2 review-delete endpoint

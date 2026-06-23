@@ -1,15 +1,17 @@
 import type { FilterQuery, UpdateQuery } from 'mongoose';
 
-import type { Id, IReview } from '@models/types';
-import ReviewRepository from '@repositories/review.repository';
-import UnitRepository from '@repositories/unit.repository';
-import UserRepository from '@repositories/user.repository';
-import NotificationService from '@services/notification.service';
+import { UnitRepository } from '@domains/academics/units';
+import { NotificationService } from '@domains/identity/notifications';
+import { UserRepository } from '@domains/identity/users';
+import type { Id } from '@shared/types';
 import {
   Error404NotFound,
   Error409Conflict,
   Error401NotAuthorized,
-} from '@utilities/errors';
+} from '@shared/errors/errors';
+
+import ReviewRepository from './review.repository';
+import type { IReview } from './review.types';
 
 class ReviewService {
   /**

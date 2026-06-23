@@ -1,12 +1,11 @@
 import { Types } from 'mongoose';
 
-import Review from '@models/review';
-import Unit from '@models/unit';
-import User from '@models/user';
-import NotificationService from '@services/notification.service';
-import ReviewService from '@services/review.service';
+import { Review, ReviewService } from '@domains/academics/reviews';
+import { Unit } from '@domains/academics/units';
+import { User } from '@domains/identity/users';
+import NotificationService from '@domains/identity/notifications/notification.service';
 
-vi.mock('@services/notification.service');
+vi.mock('@domains/identity/notifications/notification.service');
 
 describe(ReviewService.name, () => {
   afterEach(() => vi.clearAllMocks());
@@ -17,7 +16,7 @@ describe(ReviewService.name, () => {
     it('should return correct reviews from the chosen unit', async () => {
       const reviews = await ReviewService.fetchByUnit('fit1049');
 
-      const controlUnit = await Unit.findOne({ unitCode: 'fit1049' });
+      const controlUnit = (await Unit.findOne({ unitCode: 'fit1049' }))!;
       const controlReviews = await Review.find({ unit: controlUnit._id });
 
       expect(reviews.map((r) => r.toObject())).toEqual(
@@ -28,7 +27,7 @@ describe(ReviewService.name, () => {
 
   describe(ReviewService.fetchByUser.name, () => {
     it('should return the exact reviews that a user has written', async () => {
-      const controlUser = await User.findById('678e359d39d199c3f6b3b44f');
+      const controlUser = (await User.findById('678e359d39d199c3f6b3b44f'))!;
       const controlReviews = new Set(controlUser.reviews.map((r) => r._id));
       const reviews = new Set(
         (await ReviewService.fetchByUser(controlUser._id)).map((r) => r._id)
@@ -45,7 +44,7 @@ describe(ReviewService.name, () => {
       // arrange
       const unitCode = 'fit5145';
       const author = '678e359d39d199c3f6b3b44f';
-      const unitBeforeReview = await Unit.findOne({ unitCode: unitCode });
+      const unitBeforeReview = (await Unit.findOne({ unitCode: unitCode }))!;
 
       // act
       const newReview = await ReviewService.createReview(unitCode, {
@@ -64,14 +63,14 @@ describe(ReviewService.name, () => {
       // assert
       // check if review got stored in unit
       const newReviewId = newReview._id;
-      const reviewedUnit = await Unit.findOne({ unitCode: unitCode });
+      const reviewedUnit = (await Unit.findOne({ unitCode: unitCode }))!;
       const foundReviewId = reviewedUnit.reviews.find((r) =>
         r.equals(newReviewId)
       );
       expect(newReviewId).toEqual(foundReviewId);
 
       // check if review is in stored in user
-      const user = await User.findById(author);
+      const user = (await User.findById(author))!;
       const reviewIdInUser = user.reviews.find((r) => r.equals(newReviewId));
       expect(newReviewId).toEqual(reviewIdInUser);
 
@@ -103,7 +102,7 @@ describe(ReviewService.name, () => {
       const userId = TEST_USER;
       const reactionType = 'like';
       // act
-      const reviewBefore = await Review.findOne({ _id: reviewId });
+      const reviewBefore = (await Review.findOne({ _id: reviewId }))!;
       const { review: reviewAfter, reactions } =
         await ReviewService.toggleReaction(reviewId, userId, reactionType);
       // assert
@@ -120,7 +119,7 @@ describe(ReviewService.name, () => {
       const userId = TEST_USER;
       const reactionType = 'dislike';
       // act
-      const reviewBefore = await Review.findOne({ _id: reviewId });
+      const reviewBefore = (await Review.findOne({ _id: reviewId }))!;
       const { review: reviewAfter, reactions } =
         await ReviewService.toggleReaction(reviewId, userId, reactionType);
       // assert
@@ -135,7 +134,7 @@ describe(ReviewService.name, () => {
       const userId = TEST_USER;
       const reactionFlow = ['like', 'dislike'];
       // act
-      let reviewBefore = await Review.findOne({ _id: reviewId });
+      let reviewBefore = (await Review.findOne({ _id: reviewId }))!;
       const { review, reactions } = await ReviewService.toggleReaction(
         reviewId,
         userId,
@@ -146,7 +145,7 @@ describe(ReviewService.name, () => {
       expect(reactions.liked).toBeTruthy();
       expect(reactions.disliked).not.toBeTruthy();
       // act
-      reviewBefore = await Review.findOne({ _id: reviewId });
+      reviewBefore = (await Review.findOne({ _id: reviewId }))!;
       const { review: review2, reactions: reactions2 } =
         await ReviewService.toggleReaction(reviewId, userId, reactionFlow[1]);
       // assert

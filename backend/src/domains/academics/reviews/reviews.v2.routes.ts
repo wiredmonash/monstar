@@ -1,8 +1,7 @@
 import express from 'express';
 
-import ReviewController from '@controllers/review.controller';
-import adminMiddleware from '@middleware/admin.middleware';
-import userMiddleware from '@middleware/user.middleware';
+import ReviewController from './review.controller';
+import { adminMiddleware, userMiddleware } from '@domains/identity/users';
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
-import asyncHandler from '@utilities/asyncHandler';
-import ReviewService from '@services/review.service';
+import asyncHandler from '@shared/utilities/asyncHandler';
+import ReviewService from './review.service';
 
 class ReviewController {
   /**

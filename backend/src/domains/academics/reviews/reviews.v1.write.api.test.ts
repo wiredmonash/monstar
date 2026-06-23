@@ -6,14 +6,14 @@ import {
   getCsrf,
   seedUserWithReview,
   seedReactionGraph,
-} from './helpers';
+} from '@shared/testing/helpers';
 
 /**
  * Characterization tests for the LIVE v1 review-create endpoint, exercising the
  * full middleware stack: global CSRF + verifyToken auth. These pin the gate
  * behaviour (which must survive the TypeScript conversion) and the happy path.
  */
-const validBody = (author) => ({
+const validBody = (author: string) => ({
   review_author: author,
   review_title: 'Great unit',
   review_semester: 'S1',
