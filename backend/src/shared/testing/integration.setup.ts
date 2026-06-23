@@ -56,15 +56,16 @@ vi.mock('nodemailer', () => ({
 /**
  * Converts values of data into mongoose types
  */
-const revive = (val) => {
+const revive = (val: unknown): unknown => {
   if (Array.isArray(val)) return val.map(revive);
 
   if (val && typeof val === 'object') {
-    if (val.$oid) return new mongoose.Types.ObjectId(val.$oid);
-    if (val.$date) return new Date(val.$date);
+    const obj = val as Record<string, unknown>;
+    if (obj.$oid) return new mongoose.Types.ObjectId(obj.$oid as string);
+    if (obj.$date) return new Date(obj.$date as string);
 
-    const out = {};
-    for (const [k, v] of Object.entries(val)) out[k] = revive(v);
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(obj)) out[k] = revive(v);
     return out;
   }
   return val;
@@ -73,13 +74,13 @@ const revive = (val) => {
 /**
  * Loads json data revived into mongoose values
  */
-const loadJson = (relPath) => {
+const loadJson = (relPath: string) => {
   const abs = path.join(__dirname, relPath);
   const raw = fs.readFileSync(abs, 'utf8');
-  return revive(JSON.parse(raw));
+  return revive(JSON.parse(raw)) as Record<string, unknown>[];
 };
 
-let mongo;
+let mongo: MongoMemoryServer;
 
 /**
  * Start the in-memory MongoDB, point the app's provider at it, then load the
@@ -97,7 +98,7 @@ beforeAll(async () => {
 
   // Connect through the app's own provider so the request-time db middleware
   // reuses this connection instead of opening another.
-  const { dbConnect } = await import('@providers/mongodb.provider');
+  const { dbConnect } = await import('@infrastructure/database/mongodb');
   await dbConnect();
 
   global.app = (await import('../../server')).default;
@@ -107,9 +108,9 @@ beforeAll(async () => {
  * Seed sample data before each test.
  */
 beforeEach(async () => {
-  const users = loadJson('../fixtures/users.json');
-  const units = loadJson('../fixtures/units.json');
-  const reviews = loadJson('../fixtures/reviews.json');
+  const users = loadJson('./fixtures/users.json');
+  const units = loadJson('./fixtures/units.json');
+  const reviews = loadJson('./fixtures/reviews.json');
 
   if (users.length)
     await mongoose.connection.collection('users').insertMany(users);
@@ -123,7 +124,7 @@ beforeEach(async () => {
  * Clear all collections after each test.
  */
 afterEach(async () => {
-  const collections = await mongoose.connection.db.collections();
+  const collections = await mongoose.connection.db!.collections();
   for (const c of collections) {
     await c.deleteMany({});
   }

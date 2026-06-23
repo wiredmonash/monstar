@@ -1,17 +1,19 @@
+import type { Express } from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import Unit from '@models/unit';
+import { Unit } from '@domains/academics/units';
+import type { Id } from '@shared/types';
 
 /**
  * Build an `access_token` cookie value for a user, matching the payload shape
  * produced by TokenProvider.generateAccessToken ({ id, isAdmin }).
  */
-const accessTokenCookie = (userId, isAdmin = false) =>
+const accessTokenCookie = (userId: Id, isAdmin = false) =>
   `access_token=${jwt.sign(
     { id: String(userId), isAdmin },
-    process.env.JWT_SECRET,
+    process.env.JWT_SECRET as string,
     {
       expiresIn: '15m',
     }
@@ -21,7 +23,7 @@ const accessTokenCookie = (userId, isAdmin = false) =>
  * Fetch a CSRF token plus the secret cookie(s) the app expects back on
  * mutating requests. Returns the token and the bare `name=value` cookie pairs.
  */
-const getCsrf = async (app) => {
+const getCsrf = async (app: Express) => {
   const res = await request(app).get('/api/v1/csrf-token');
   const cookies = (
     (res.headers['set-cookie'] as unknown as string[]) || []
@@ -64,7 +66,7 @@ const seedUserWithReview = async () => {
     description: 'seed',
     likes: 0,
     dislikes: 0,
-    unit: unit._id,
+    unit: unit!._id,
     author: userId,
   });
 
@@ -120,7 +122,7 @@ const seedReactionGraph = async () => {
     description: 'seed',
     likes: 0,
     dislikes: 0,
-    unit: unit._id,
+    unit: unit!._id,
     author: authorId,
   });
 

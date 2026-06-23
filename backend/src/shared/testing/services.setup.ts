@@ -9,7 +9,7 @@ import mongoose from 'mongoose';
 // service tests that don't load the full app. Glob-importing the models dir
 // keeps this working for future models with no manual edits (Vite resolves
 // import.meta.glob eagerly into static imports, running their side effects).
-import.meta.glob(['../../models/*.ts', '!../../models/types.ts'], {
+import.meta.glob(['../../domains/**/*.model.ts'], {
   eager: true,
 });
 
@@ -18,15 +18,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /**
  * Converts values of data into mongoose types
  */
-const revive = (val) => {
+const revive = (val: unknown): unknown => {
   if (Array.isArray(val)) return val.map(revive);
 
   if (val && typeof val === 'object') {
-    if (val.$oid) return new mongoose.Types.ObjectId(val.$oid);
-    if (val.$date) return new Date(val.$date);
+    const obj = val as Record<string, unknown>;
+    if (obj.$oid) return new mongoose.Types.ObjectId(obj.$oid as string);
+    if (obj.$date) return new Date(obj.$date as string);
 
-    const out = {};
-    for (const [k, v] of Object.entries(val)) out[k] = revive(v);
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(obj)) out[k] = revive(v);
     return out;
   }
   return val;
@@ -35,13 +36,13 @@ const revive = (val) => {
 /**
  * Loads json data revived into mongoose values
  */
-const loadJson = (relPath) => {
+const loadJson = (relPath: string) => {
   const abs = path.join(__dirname, relPath);
   const raw = fs.readFileSync(abs, 'utf8');
-  return revive(JSON.parse(raw));
+  return revive(JSON.parse(raw)) as Record<string, unknown>[];
 };
 
-let mongo;
+let mongo: MongoMemoryServer;
 
 /**
  * Before each test suite, create a mongodb memory server
@@ -55,9 +56,9 @@ beforeAll(async () => {
  * Before each singular test, create collections from sample data
  */
 beforeEach(async () => {
-  const users = loadJson('../fixtures/users.json');
-  const units = loadJson('../fixtures/units.json');
-  const reviews = loadJson('../fixtures/reviews.json');
+  const users = loadJson('./fixtures/users.json');
+  const units = loadJson('./fixtures/units.json');
+  const reviews = loadJson('./fixtures/reviews.json');
 
   if (users.length)
     await mongoose.connection.collection('users').insertMany(users);
@@ -71,7 +72,7 @@ beforeEach(async () => {
  * After each singular test, delete the collections
  */
 afterEach(async () => {
-  const collecs = await mongoose.connection.db.collections();
+  const collecs = await mongoose.connection.db!.collections();
   for (const c of collecs) {
     await c.deleteMany({});
   }
