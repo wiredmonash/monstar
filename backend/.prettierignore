@@ -6,6 +6,6 @@
 package-lock.json
 
 # Generated / data files (not hand-authored)
-/docs/swagger.json
-/docs/sample-data
+/src/docs/swagger.json
+/src/docs/sample-data
 *.report.json

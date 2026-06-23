@@ -8,7 +8,7 @@
     "test": "vitest run --project services --project integration",
     "test:integration": "vitest run --project integration",
     "test:perf": "vitest run --project performance",
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias",
     "typecheck": "tsc --noEmit",
     "typecheck:strict": "tsc --noEmit",
     "start": "node dist/server.js",

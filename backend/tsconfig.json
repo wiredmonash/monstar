@@ -5,18 +5,13 @@
     "moduleResolution": "bundler",
     "lib": ["ES2021"],
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "paths": {
-      "@models/*": ["./models/*"],
-      "@routes/*": ["./infra/routes/*"],
-      "@controllers/*": ["./infra/controllers/*"],
-      "@providers/*": ["./infra/providers/*"],
-      "@middleware/*": ["./infra/middleware/*"],
-      "@services/*": ["./infra/services/*"],
-      "@repositories/*": ["./infra/repositories/*"],
-      "@utilities/*": ["./infra/utilities/*"],
-      "@constants/*": ["./constants/*"],
-      "@docs/*": ["./docs/*"]
+      "@domains/*": ["./src/domains/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@deprecated/*": ["./src/deprecated/*"],
+      "@docs/*": ["./src/docs/*"]
     },
     "allowJs": false,
     "checkJs": false,
@@ -26,17 +21,11 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "types": ["node", "vitest/globals", "vite/client"]
   },
-  "include": [
-    "server.ts",
-    "bootstrap.ts",
-    "infra/**/*",
-    "models/**/*",
-    "constants/**/*",
-    "docs/swagger.ts"
-  ],
-  "exclude": ["node_modules", "dist", "tests", "scrapers"],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "scrapers"],
   "tsc-alias": {
     "resolveFullPaths": true
   }

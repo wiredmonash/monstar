@@ -17,8 +17,8 @@ export default defineConfig({
         test: {
           ...sharedTest,
           name: 'services',
-          include: ['tests/services/*.test.ts'],
-          setupFiles: ['tests/services/setup.ts'],
+          include: ['src/**/*.service.test.ts'],
+          setupFiles: ['src/shared/testing/services.setup.ts'],
         },
       },
       {
@@ -26,8 +26,11 @@ export default defineConfig({
         test: {
           ...sharedTest,
           name: 'integration',
-          include: ['tests/integration/*.test.ts'],
-          setupFiles: ['tests/integration/setup.ts'],
+          include: [
+            'src/domains/**/*.api.test.ts',
+            'src/deprecated/**/*.api.test.ts',
+          ],
+          setupFiles: ['src/shared/testing/integration.setup.ts'],
         },
       },
       {
@@ -35,8 +38,8 @@ export default defineConfig({
         test: {
           ...sharedTest,
           name: 'performance',
-          include: ['tests/performance/*.test.ts'],
-          setupFiles: ['tests/performance/setup.ts'],
+          include: ['src/shared/testing/performance/*.test.ts'],
+          setupFiles: ['src/shared/testing/performance/setup.ts'],
         },
       },
     ],

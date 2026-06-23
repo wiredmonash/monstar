@@ -14,7 +14,8 @@ export default tseslint.config(
       'node_modules/',
       'dist/',
       'build/',
-      'tests/',
+      'src/**/*.test.ts',
+      'src/shared/testing/',
     ],
   },
   // Configuration for CommonJS files (.js, .cjs)
@@ -54,7 +55,7 @@ export default tseslint.config(
         },
       },
       'import/internal-regex':
-        '^@(models|routes|utilities|infra|controllers|providers|repositories|middleware|services|constants|docs)/',
+        '^@(domains|infrastructure|shared|deprecated|docs)/',
     },
   },
   // Configuration for TypeScript files (type-aware)

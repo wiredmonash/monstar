@@ -2,16 +2,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@models/*": ["./models/*"],
-      "@routes/*": ["./infra/routes/*"],
-      "@controllers/*": ["./infra/controllers/*"],
-      "@providers/*": ["./infra/providers/*"],
-      "@middleware/*": ["./infra/middleware/*"],
-      "@services/*": ["./infra/services/*"],
-      "@repositories/*": ["./infra/repositories/*"],
-      "@utilities/*": ["./infra/utilities/*"],
-      "@constants/*": ["./constants/*"],
-      "@docs/*": ["./docs/*"]
+      "@domains/*": ["./src/domains/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@deprecated/*": ["./src/deprecated/*"],
+      "@docs/*": ["./src/docs/*"]
     }
   }
 }
