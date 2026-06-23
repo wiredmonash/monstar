@@ -30,7 +30,7 @@ const common = {
   moduleNameMapper: makeModuleNameMapper(_moduleAliases),
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   transform: {
-    '^.+\\.(t|j)sx?$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+    '^.+\\.(t|j)sx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
   },
 };
 

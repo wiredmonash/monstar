@@ -2,8 +2,9 @@ import js from '@eslint/js';
 import globals from 'globals';
 import importPlugin from 'eslint-plugin-import';
 import prettierConfig from 'eslint-config-prettier';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default tseslint.config(
   js.configs.recommended,
   // Global ignores
   {
@@ -55,5 +56,22 @@ export default [
         '^@(models|routes|utilities|infra|controllers|providers|repositories|middleware|services|constants|docs)/',
     },
   },
-  prettierConfig,
-];
+  // Configuration for TypeScript files (type-aware)
+  {
+    files: ['**/*.ts'],
+    extends: [...tseslint.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/await-thenable': 'error',
+    },
+  },
+  prettierConfig
+);

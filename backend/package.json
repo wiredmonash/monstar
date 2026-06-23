@@ -9,7 +9,7 @@
     "test:perf": "jest --selectProjects performance",
     "build": "tsc && tsc-alias",
     "typecheck": "tsc --noEmit",
-    "typecheck:strict": "tsc --noEmit --strict --noImplicitAny --allowJs false",
+    "typecheck:strict": "tsc --noEmit",
     "start": "node dist/server.js",
     "start:prod": "node dist/server.js",
     "dev": "npm run build && (tsc -w & nodemon --watch dist --delay 2 dist/server.js)",
@@ -72,7 +72,8 @@
     "swagger-ui-express": "5.0.1",
     "ts-jest": "^29.4.11",
     "tsc-alias": "^1.8.17",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.0"
   },
   "overrides": {
     "artillery": {

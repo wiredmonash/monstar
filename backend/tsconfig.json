@@ -19,7 +19,7 @@
       "@constants/*": ["./constants/*"],
       "@docs/*": ["./docs/*"]
     },
-    "allowJs": true,
+    "allowJs": false,
     "checkJs": false,
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -27,8 +27,7 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": false,
     "sourceMap": true,
-    "strict": false,
-    "noImplicitAny": false
+    "strict": true
   },
   "include": [
     "server.ts",
