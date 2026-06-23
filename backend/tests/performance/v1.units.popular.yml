@@ -4,7 +4,7 @@ config:
       arrivalRate: 10
 
 scenarios:
-  - name: "Fetch popular units"
+  - name: 'Fetch popular units'
     flow:
       - get:
-          url: "/api/v1/units/popular"
+          url: '/api/v1/units/popular'
