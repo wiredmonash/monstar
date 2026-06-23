@@ -1,4 +1,4 @@
-import type { FilterQuery, PipelineStage, UpdateQuery } from 'mongoose';
+import type { PipelineStage, UpdateQuery } from 'mongoose';
 
 import Unit from '@models/unit';
 import type { Id, IUnit } from '@models/types';

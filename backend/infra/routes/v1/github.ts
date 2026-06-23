@@ -3,6 +3,14 @@ import express from 'express';
 
 const router = express.Router();
 
+interface GitHubContributor {
+  login: string;
+  type: string;
+  avatar_url: string;
+  contributions: number;
+  html_url: string;
+}
+
 const GITHUB_API_BASE = 'https://api.github.com';
 const REPO_OWNER = 'wiredmonash';
 const REPO_NAME = 'monstar';
@@ -93,7 +101,7 @@ router.get('/contributors', async (req, res) => {
     console.log('Fetching contributors from GitHub API');
 
     // Try to fetch contributors from GitHub API
-    const response = await axios.get(
+    const response = await axios.get<GitHubContributor[]>(
       `${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/contributors`,
       { headers }
     );
@@ -138,8 +146,8 @@ router.get('/contributors', async (req, res) => {
 
     // If it's an authentication error or repository is private, return fallback data
     if (
-      error.response &&
-      (error.response.status === 401 || error.response.status === 403)
+      axios.isAxiosError(error) &&
+      (error.response?.status === 401 || error.response?.status === 403)
     ) {
       console.log(
         'Repository is private or token is invalid. Using fallback data.'

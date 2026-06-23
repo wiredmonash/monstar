@@ -1,4 +1,8 @@
-const setupSwagger = async (app) => {
+import type { Express } from 'express';
+
+import { getErrorMessage } from '@utilities/getErrorMessage';
+
+const setupSwagger = async (app: Express) => {
   if (!process.env.DEVELOPMENT) return;
 
   const fs = require('fs');
@@ -113,13 +117,15 @@ const setupSwagger = async (app) => {
         customSiteTitle: 'MonSTAR API Documentation',
         swaggerOptions: {
           docExpansion: 'none',
-          requestInterceptor: async (req) => {
+          requestInterceptor: async (req: {
+            headers: Record<string, string | undefined>;
+          }) => {
             try {
               const response = await fetch('/api/v1/csrf-token', {
                 credentials: 'include',
               });
               if (response.ok) {
-                const data: any = await response.json();
+                const data = (await response.json()) as { csrfToken?: string };
                 req.headers['X-CSRF-Token'] = data.csrfToken;
               }
             } catch (err) {
@@ -137,7 +143,7 @@ const setupSwagger = async (app) => {
   } catch (error) {
     console.warn(
       '[Swagger UI] ⚠️ Failed to setup Swagger documentation:',
-      error.message
+      getErrorMessage(error)
     );
   }
 };

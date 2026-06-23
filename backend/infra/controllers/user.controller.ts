@@ -78,6 +78,9 @@ class UserController {
    * Logs out a user
    */
   static logout = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
     await UserService.invalidateRefreshToken(req.user.id);
 
     res.clearCookie('access_token', { httpOnly: true, sameSite: 'strict' });
@@ -103,6 +106,9 @@ class UserController {
    * Uploads user avatar to cloudinary
    */
   static uploadAvatar = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
     const userId = req.user.id;
 
     if (!req.file) {

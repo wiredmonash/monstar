@@ -46,8 +46,8 @@ class UnitController {
   static getByUnitcode = asyncHandler(async (req, res) => {
     const unit = await UnitService.fetchByCode(
       req.params.unitCode,
-      req.query.populateReviews as any,
-      req.query.populateReviewsAuthor as any
+      Boolean(req.query.populateReviews),
+      Boolean(req.query.populateReviewsAuthor)
     );
     return res.status(200).json(unit);
   });

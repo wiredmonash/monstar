@@ -3,6 +3,7 @@ import express from 'express';
 import Unit from '@models/unit';
 import AiOverviewService from '@providers/aiOverview.provider';
 import CacheService from '@providers/cache.provider';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 const router = express.Router();
 
 router.get('/invalidate-cache', async (req, res) => {
@@ -59,7 +60,9 @@ router.post('/ai-overview/regenerate', async function (req, res) {
   } catch (error) {
     return res
       .status(500)
-      .json({ error: `Failed to regenerate AI overviews: ${error.message}` });
+      .json({
+        error: `Failed to regenerate AI overviews: ${getErrorMessage(error)}`,
+      });
   }
 });
 
@@ -103,7 +106,9 @@ router.post('/:unitcode/ai-overview/regenerate', async function (req, res) {
   } catch (error) {
     return res
       .status(500)
-      .json({ error: `Failed to regenerate AI overview: ${error.message}` });
+      .json({
+        error: `Failed to regenerate AI overview: ${getErrorMessage(error)}`,
+      });
   }
 });
 

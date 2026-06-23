@@ -1,3 +1,5 @@
+import type { GoogleGenAI } from '@google/genai';
+
 import Review from '@models/review';
 import SETU from '@models/setu';
 import Unit from '@models/unit';
@@ -13,7 +15,7 @@ const MAX_SETU_SEASONS = 4;
 const MIN_REGENERATION_DAYS = 120; // roughly every semester
 
 class AiOverviewProvider {
-  static geminiClientPromise: any = null;
+  static geminiClientPromise: Promise<GoogleGenAI | null> | null = null;
 
   /**
    * Lazily import the Google GenAI client to avoid loading
@@ -103,7 +105,7 @@ class AiOverviewProvider {
           temperature: 0.3,
           maxOutputTokens: 512,
         },
-      });
+      } as Parameters<typeof client.models.generateContent>[0]);
 
       const summary = result?.candidates?.[0]?.content?.parts?.[0]?.text;
 

@@ -1,6 +1,7 @@
 import express from 'express';
 
 import SETU from '@models/setu';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 import { verifyAdmin } from '@utilities/verifyToken';
 
 const router = express.Router();
@@ -21,7 +22,7 @@ router.get('/', async function (req, res) {
 
     // Find and paginate SETU data
     const setuData = await SETU.find({})
-      .sort(sort as any)
+      .sort(sort as string)
       .skip(Number(offset))
       .limit(Number(limit));
 
@@ -38,7 +39,7 @@ router.get('/', async function (req, res) {
   } catch (error) {
     // Handle general errors 500
     return res.status(500).json({
-      error: `An error occurred while getting SETU data: ${error.message}`,
+      error: `An error occurred while getting SETU data: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -59,7 +60,7 @@ router.get('/unit/:unitCode', async function (req, res) {
     const unitCode = req.params.unitCode.toLowerCase();
 
     // Use the static method defined in the SETU model
-    const setuData = await (SETU as any).findByUnitCode(unitCode);
+    const setuData = await SETU.findByUnitCode(unitCode);
 
     // If no data found, return 404
     if (!setuData || setuData.length === 0) {
@@ -72,7 +73,7 @@ router.get('/unit/:unitCode', async function (req, res) {
     return res.status(200).json(setuData);
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred while getting SETU data for unit: ${error.message}`,
+      error: `An error occurred while getting SETU data for unit: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -93,7 +94,7 @@ router.get('/average/:unitCode', async function (req, res) {
     const unitCode = req.params.unitCode.toLowerCase();
 
     // Use the static method defined in the SETU model to get average scores
-    const averageScores = await (SETU as any).getAverageScores(unitCode);
+    const averageScores = await SETU.getAverageScores(unitCode);
 
     // If no data found, return 404
     if (!averageScores || averageScores.length === 0) {
@@ -106,7 +107,7 @@ router.get('/average/:unitCode', async function (req, res) {
     return res.status(200).json(averageScores[0]);
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred while calculating average scores: ${error.message}`,
+      error: `An error occurred while calculating average scores: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -140,7 +141,7 @@ router.get('/season/:season', async function (req, res) {
     return res.status(200).json(setuData);
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred while getting SETU data for season: ${error.message}`,
+      error: `An error occurred while getting SETU data for season: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -187,7 +188,7 @@ router.post('/create', verifyAdmin, async function (req, res) {
     return res.status(201).json(setu);
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred while creating the SETU entry: ${error.message}`,
+      error: `An error occurred while creating the SETU entry: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -243,7 +244,7 @@ router.post('/create-bulk', verifyAdmin, async function (req, res) {
     });
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred whilst creating the SETU entries: ${error.message}`,
+      error: `An error occurred whilst creating the SETU entries: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -277,7 +278,7 @@ router.put('/update/:id', verifyAdmin, async function (req, res) {
     return res.status(200).json(updatedSetu);
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred while updating the SETU entry: ${error.message}`,
+      error: `An error occurred while updating the SETU entry: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -307,7 +308,7 @@ router.delete('/delete/:id', verifyAdmin, async function (req, res) {
     return res.status(200).json({ message: 'SETU entry successfully deleted' });
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred while deleting the SETU entry: ${error.message}`,
+      error: `An error occurred while deleting the SETU entry: ${getErrorMessage(error)}`,
     });
   }
 });

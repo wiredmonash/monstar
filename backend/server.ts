@@ -22,7 +22,7 @@ require('module-alias').addAliases({
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csrf from 'csurf';
-import express from 'express';
+import express, { type RequestHandler } from 'express';
 
 const { setupSwagger } = require('@docs/swagger');
 const errorMiddleware = require('@middleware/error.middleware');
@@ -62,7 +62,7 @@ app.use(
       secure: !isDevelopment && isProductionMachine,
       sameSite: 'strict',
     },
-  }) as any
+  }) as unknown as RequestHandler
 );
 
 /* --------------------------- CSRF Token endpoint -------------------------- */
@@ -119,7 +119,7 @@ export = app;
 
 /* ----------------------- Start server for local dev ----------------------- */
 if (require.main === module) {
-  const PORT = process.env.PORT || 8080;
+  const PORT = Number(process.env.PORT) || 8080;
 
   dbConnect()
     .then(async () => {
@@ -131,12 +131,12 @@ if (require.main === module) {
         }
       }
 
-      app.listen(PORT as any, (err?: any) => {
+      app.listen(PORT, (err?: Error) => {
         if (err) console.error(err);
         console.log(`Server running on port ${PORT}`);
       });
     })
-    .catch((err) => {
+    .catch((err: unknown) => {
       console.error('Failed to connect to DB locally', err);
     });
 }

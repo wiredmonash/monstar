@@ -8,6 +8,7 @@ import User from '@models/user';
 import { storage, cloudinary } from '@providers/cloudinary.provider';
 const upload = multer({ storage });
 import TokenProvider from '@providers/token.provider';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 import { verifyToken, verifyAdmin } from '@utilities/verifyToken';
 
 import dotenv from 'dotenv';
@@ -37,6 +38,12 @@ router.post('/google/authenticate', async function (req, res) {
     });
 
     const payload = ticket.getPayload();
+    if (!payload?.email) {
+      return res.status(403).json({
+        error:
+          'Access denied: Only students with a valid Monash email can log in.',
+      });
+    }
     // sub is the unique Google ID assigned to the user
     const { email, name, picture, sub } = payload; // eslint-disable-line
 
@@ -109,7 +116,7 @@ router.post('/google/authenticate', async function (req, res) {
       .status(200)
       .json({ message: 'Login successful', data: user });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: getErrorMessage(error) });
   }
 });
 
@@ -159,7 +166,7 @@ router.post('/refresh', async function (req, res) {
       .status(200)
       .json({ message: 'Token refreshed successfully' });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: getErrorMessage(error) });
   }
 });
 
@@ -183,7 +190,7 @@ router.get('/', verifyAdmin, async function (req, res) {
   } catch (error) {
     // Handle general errors
     return res.status(500).json({
-      error: `An error occured while getting all Users: ${error.message}`,
+      error: `An error occured while getting all Users: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -202,6 +209,10 @@ router.delete('/delete/:userId', verifyToken, async function (req, res) {
   // #swagger.summary = 'Delete a user from the database (Only admins or the user themselves can delete accounts)'
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Get the requesting user from the token
     const requestingUser = await User.findById(req.user.id);
     if (!requestingUser)
@@ -230,7 +241,7 @@ router.delete('/delete/:userId', verifyToken, async function (req, res) {
     // Handle general errors status 500
     return res
       .status(500)
-      .json({ error: `Error occured while deleting user: ${error.message}` });
+      .json({ error: `Error occured while deleting user: ${getErrorMessage(error)}` });
   }
 });
 
@@ -246,6 +257,10 @@ router.post('/logout', verifyToken, async function (req, res) {
   // #swagger.summary = 'Clear the token cookies and invalidate refresh token in database'
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Invalidate refresh token in database to prevent token reuse
     await User.findByIdAndUpdate(req.user.id, {
       $unset: { refreshToken: 1, refreshTokenExpires: 1 },
@@ -261,7 +276,7 @@ router.post('/logout', verifyToken, async function (req, res) {
     // Handle errors
     return res
       .status(500)
-      .json({ error: `An error occurred during logout: ${error.message}` });
+      .json({ error: `An error occurred during logout: ${getErrorMessage(error)}` });
   }
 });
 
@@ -281,6 +296,10 @@ router.put('/update/:userId', verifyToken, async function (req, res) {
   // #swagger.summary = 'Update user\'s username and/or password (Only admins or the user themselves can update account details)'
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Get the requesting user from the token
     const requestingUser = await User.findById(req.user.id);
     if (!requestingUser)
@@ -331,7 +350,7 @@ router.put('/update/:userId', verifyToken, async function (req, res) {
     // Handle general errors status 500
     return res
       .status(500)
-      .json({ error: `Error updating user details: ${error.message}` });
+      .json({ error: `Error updating user details: ${getErrorMessage(error)}` });
   }
 });
 
@@ -356,7 +375,10 @@ router.get('/validate', async function (req, res) {
 
   try {
     // Decode the token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as TokenPayload;
 
     // Find and store the user without storing the password
     const user = await User.findById(
@@ -397,6 +419,10 @@ router.post(
 
       if (!user) return res.status(404).json({ error: 'User not found' });
 
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
       // If the user already has a profile image, remove it from Cloudinary
       if (user.profileImg) {
         // Extract the public id from the existing cloudinary URL
@@ -420,7 +446,7 @@ router.post(
     } catch (error) {
       return res
         .status(500)
-        .json({ error: `Error uploading avatar: ${error.message}` });
+        .json({ error: `Error uploading avatar: ${getErrorMessage(error)}` });
     }
   }
 );

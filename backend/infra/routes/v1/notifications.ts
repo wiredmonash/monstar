@@ -1,9 +1,11 @@
 // Module Imports
 import express from 'express';
+import { Types } from 'mongoose';
 
 // Model Imports
 import Notification from '@models/notification';
 import User from '@models/user';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 import { verifyToken } from '@utilities/verifyToken';
 
 // Function Imports
@@ -26,6 +28,10 @@ router.get('/user/:userId', verifyToken, async function (req, res) {
   try {
     const userId = req.params.userId;
 
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Check if the authenticated user is requesting their own notifications
     if (req.user.id !== userId) {
       return res
@@ -45,9 +51,9 @@ router.get('/user/:userId', verifyToken, async function (req, res) {
     return res.status(200).json(notifications);
   } catch (error) {
     // Handle any errors that occur during the process
-    console.error(`An error occurred: ${error.message}`);
+    console.error(`An error occurred: ${getErrorMessage(error)}`);
     return res.status(500).json({
-      error: `An error occurred while fetching notificatons: ${error.message}`,
+      error: `An error occurred while fetching notificatons: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -78,6 +84,10 @@ router.delete('/:notificationId', verifyToken, async function (req, res) {
 
     if (!user) return res.status(404).json({ error: 'User not found' });
 
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     console.log('checking if current user is owner');
     if (req.user.id != user._id.toString())
       return res
@@ -85,11 +95,11 @@ router.delete('/:notificationId', verifyToken, async function (req, res) {
         .json({ error: 'No permissions to remove notification' });
 
     // Delete the notification from the User's notifications array
-    (user.notifications as any).pull(notification._id);
+    (user.notifications as Types.Array<Types.ObjectId>).pull(notification._id);
     // console.log("user updated");
 
     // Delete the notification from the database
-    await Notification.deleteOne(notification as any);
+    await Notification.deleteOne({ _id: notification._id });
     // console.log("notification deleted");
 
     // Save the user
@@ -99,9 +109,9 @@ router.delete('/:notificationId', verifyToken, async function (req, res) {
     res.status(200).json({ message: 'Notification successfully deleted' });
   } catch (error) {
     // Respond 500 and error message
-    res
-      .status(500)
-      .json({ error: `Error while deleting notification: ${error.message}` });
+    res.status(500).json({
+      error: `Error while deleting notification: ${getErrorMessage(error)}`,
+    });
   }
 });
 

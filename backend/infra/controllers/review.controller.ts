@@ -16,7 +16,8 @@ class ReviewController {
    * Get N most liked reviews
    */
   static getMostLiked = asyncHandler(async (req, res) => {
-    const reviews = await ReviewService.fetchMostLiked(req.query.n as any);
+    const n = req.query.n === undefined ? undefined : Number(req.query.n);
+    const reviews = await ReviewService.fetchMostLiked(n);
     return res.status(200).json(reviews);
   });
 
@@ -89,6 +90,9 @@ class ReviewController {
    * Update a review by ID
    */
   static updateReview = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
     const updatedReview = await ReviewService.updateReview(
       req.params.reviewId,
       req.user.id,
@@ -105,6 +109,9 @@ class ReviewController {
    * Delete a review by ID
    */
   static deleteReview = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
     await ReviewService.deleteReview(req.params.reviewId, req.user.id);
 
     return res.status(200).json({

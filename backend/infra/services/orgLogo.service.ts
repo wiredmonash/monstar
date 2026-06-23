@@ -1,8 +1,9 @@
 import { cloudinary } from '@providers/cloudinary.provider';
 import OrgLogoRepository from '@repositories/orgLogo.repository';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 
 class OrgLogoService {
-  static normalise(name) {
+  static normalise(name: string) {
     return name.toLowerCase().trim();
   }
 
@@ -10,7 +11,7 @@ class OrgLogoService {
     return await OrgLogoRepository.findAll();
   }
 
-  static async uploadLogo(orgName, logoUrl) {
+  static async uploadLogo(orgName: string, logoUrl: string) {
     const normalised = this.normalise(orgName);
 
     // Delete old Cloudinary image if one already exists
@@ -23,7 +24,7 @@ class OrgLogoService {
         await cloudinary.uploader.destroy(publicId);
       } catch (err) {
         console.error(
-          `[OrgLogo] Error deleting old image from Cloudinary: ${err.message}`
+          `[OrgLogo] Error deleting old image from Cloudinary: ${getErrorMessage(err)}`
         );
       }
     }
@@ -31,7 +32,7 @@ class OrgLogoService {
     return await OrgLogoRepository.upsert(normalised, logoUrl);
   }
 
-  static async deleteLogo(orgName) {
+  static async deleteLogo(orgName: string) {
     const normalised = this.normalise(orgName);
     const logo = await OrgLogoRepository.findByOrganisation(normalised);
     if (!logo) return null;
@@ -44,7 +45,7 @@ class OrgLogoService {
       await cloudinary.uploader.destroy(publicId);
     } catch (err) {
       console.error(
-        `[OrgLogo] Error deleting image from Cloudinary: ${err.message}`
+        `[OrgLogo] Error deleting image from Cloudinary: ${getErrorMessage(err)}`
       );
     }
 

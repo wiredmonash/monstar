@@ -1,3 +1,5 @@
+import type { PipelineStage } from 'mongoose';
+
 import Review from '@models/review';
 import Unit from '@models/unit';
 
@@ -14,7 +16,7 @@ class TagManager {
 
         // Find units exceeding threshold
         console.log('[TagManager] Finding unit with most reviews...');
-        const pipeline: any[] = [
+        const pipeline: PipelineStage[] = [
           {
             $group: {
               _id: '$unit',

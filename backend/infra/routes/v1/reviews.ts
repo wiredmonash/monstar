@@ -1,12 +1,15 @@
 // Module Imports
 import express from 'express';
+import { Types } from 'mongoose';
 import nodemailer from 'nodemailer';
 
 // Model Imports
 import Notification from '@models/notification';
 import Review from '@models/review';
+import type { INotification } from '@models/types';
 import Unit from '@models/unit';
 import User from '@models/user';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 import { verifyToken } from '@utilities/verifyToken';
 
 // Function Imports
@@ -34,7 +37,7 @@ router.get('/', async function (req, res) {
   } catch (error) {
     // Handle general errors
     return res.status(200).json({
-      error: `An error occurred while getting all reviews: ${error.message}`,
+      error: `An error occurred while getting all reviews: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -71,9 +74,9 @@ router.get('/:unit', async function (req, res) {
     return res.status(200).json(reviews);
   } catch (error) {
     // Handle any errors that occur during the process
-    console.error(`An error occurred: ${error.message}`);
+    console.error(`An error occurred: ${getErrorMessage(error)}`);
     return res.status(500).json({
-      error: `An error occurred while fetching reviews: ${error.message}`,
+      error: `An error occurred while fetching reviews: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -101,7 +104,7 @@ router.get('/user/:userId', async function (req, res) {
   } catch (error) {
     // Handle any errors that occur during the process
     return res.status(500).json({
-      error: `An error occurred while fetching reviews: ${error.message}`,
+      error: `An error occurred while fetching reviews: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -119,6 +122,10 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
   // #swagger.summary = 'Create a review for a specific unit'
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Verify that the author in the request body matches the authenticated user
     if (req.body.review_author.toString() !== req.user.id.toString()) {
       return res.status(403).json({
@@ -211,7 +218,7 @@ router.post('/:unit/create', verifyToken, async function (req, res) {
   } catch (error) {
     // Handle general errors 500
     return res.status(500).json({
-      error: `An error occured while creating the Review: ${error.message}`,
+      error: `An error occured while creating the Review: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -228,6 +235,10 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
   // #swagger.summary = 'Update a review by MongoDB ID (e.g. Title, Grade Obtained, Ratings)'
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Get the review to update
     const review = await Review.findById(req.params.reviewId);
     if (!review) return res.status(404).json({ error: 'Review not found' });
@@ -282,7 +293,7 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
   } catch (error) {
     return res
       .status(500)
-      .json({ error: `Error while updating review: ${error.message}` });
+      .json({ error: `Error while updating review: ${getErrorMessage(error)}` });
   }
 });
 
@@ -298,6 +309,10 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
   // #swagger.summary = 'Delete a review by MongoDB ID (also removes the review from the Unit\'s reviews array)'
 
   try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+
     // Find the Review
     const review = await Review.findById(req.params.reviewId);
 
@@ -378,7 +393,7 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
     // Respond 500 and error message
     res
       .status(500)
-      .json({ error: `Error while deleting review: ${error.message}` });
+      .json({ error: `Error while deleting review: ${getErrorMessage(error)}` });
   }
 });
 
@@ -427,7 +442,13 @@ router.patch(
       if (!author) return res.status(404).json({ error: 'Author not found' });
 
       // Initialize operations object to track changes
-      const operations = {
+      const operations: {
+        notificationToRemove: INotification | null;
+        notificationToAdd: Partial<INotification> | null;
+        reactionAdded: boolean;
+        reactionRemoved: boolean;
+        oppositeReactionRemoved: boolean;
+      } = {
         notificationToRemove: null,
         notificationToAdd: null,
         reactionAdded: false,
@@ -443,7 +464,7 @@ router.patch(
         if (hasLiked) {
           // Remove like
           review.likes = Math.max(0, review.likes - 1);
-          (user.likedReviews as any).pull(review._id);
+          (user.likedReviews as Types.Array<Types.ObjectId>).pull(review._id);
           operations.reactionRemoved = true;
 
           // Find and mark notification for removal
@@ -472,7 +493,9 @@ router.patch(
           if (user.dislikedReviews.includes(review._id)) {
             // Remove the dislike
             review.dislikes = Math.max(0, review.dislikes - 1);
-            (user.dislikedReviews as any).pull(review._id);
+            (user.dislikedReviews as Types.Array<Types.ObjectId>).pull(
+            review._id
+          );
             operations.oppositeReactionRemoved = true;
           }
         }
@@ -484,7 +507,9 @@ router.patch(
         if (hasDisliked) {
           // Remove dislike
           review.dislikes = Math.max(0, review.dislikes - 1);
-          (user.dislikedReviews as any).pull(review._id);
+          (user.dislikedReviews as Types.Array<Types.ObjectId>).pull(
+            review._id
+          );
           operations.reactionRemoved = true;
         } else {
           // Add dislike
@@ -496,7 +521,7 @@ router.patch(
           if (user.likedReviews.includes(review._id)) {
             // Remove the like
             review.likes = Math.max(0, review.likes - 1);
-            (user.likedReviews as any).pull(review._id);
+            (user.likedReviews as Types.Array<Types.ObjectId>).pull(review._id);
             operations.oppositeReactionRemoved = true;
 
             // Find and mark notification for removal
@@ -518,7 +543,9 @@ router.patch(
           author.notifications &&
           author.notifications.includes(operations.notificationToRemove._id)
         ) {
-          (author.notifications as any).pull(operations.notificationToRemove._id);
+          (author.notifications as Types.Array<Types.ObjectId>).pull(
+            operations.notificationToRemove._id
+          );
         }
       }
 
@@ -547,7 +574,7 @@ router.patch(
     } catch (error) {
       console.error('Error in toggle-reaction:', error);
       return res.status(500).json({
-        error: `An error occurred while toggling reaction: ${error.message}`,
+        error: `An error occurred while toggling reaction: ${getErrorMessage(error)}`,
       });
     }
   }
@@ -602,7 +629,7 @@ router.post('/send-report', verifyToken, async function (req, res) {
     return res.status(201).json({ message: 'Report email sent' });
   } catch (error) {
     return res.status(500).json({
-      error: `An error occured while sending report email: ${error.message}`,
+      error: `An error occured while sending report email: ${getErrorMessage(error)}`,
     });
   }
 });

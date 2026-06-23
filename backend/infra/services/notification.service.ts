@@ -1,3 +1,4 @@
+import type { Id, IReview, IUser } from '@models/types';
 import NotificationRepository from '@repositories/notification.repository';
 import UnitRepository from '@repositories/unit.repository';
 import UserRepository from '@repositories/user.repository';
@@ -7,7 +8,7 @@ class NotificationService {
   /**
    * Delete a notification
    */
-  static delete = async (authorId, reviewId) => {
+  static delete = async (authorId: Id, reviewId: Id) => {
     const notification = await NotificationRepository.findByUserAndReview(
       authorId,
       reviewId
@@ -22,7 +23,7 @@ class NotificationService {
   /**
    * Create a "someone liked your review" notification
    */
-  static createLike = async (liker, review) => {
+  static createLike = async (liker: IUser, review: IReview) => {
     if (liker._id.toString() === review.author._id.toString()) return;
 
     const unit = await UnitRepository.findById(review.unit);

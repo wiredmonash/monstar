@@ -1,4 +1,7 @@
+import type { UpdateQuery } from 'mongoose';
+
 import { getSortCriteria } from '@constants/sortOptions';
+import type { IUnit } from '@models/types';
 import CacheProvider from '@providers/cache.provider';
 import UnitRepository from '@repositories/unit.repository';
 import { Error404NotFound, Error422Unprocessable } from '@utilities/errors';
@@ -15,7 +18,7 @@ class UnitService {
   /**
    * Get units filtered
    */
-  static fetchPaginated = async (filterOptions) => {
+  static fetchPaginated = async (filterOptions: Record<string, any>) => {
     const { offset = 0, limit = 10, sort = 'Alphabetic' } = filterOptions;
 
     const query = buildFilterQuery(filterOptions);
@@ -46,7 +49,7 @@ class UnitService {
    * Get a unit by unitcode
    */
   static fetchByCode = async (
-    unitCode,
+    unitCode: string,
     populateReviews = false,
     populateReviewsAuthor = false
   ) => {
@@ -62,7 +65,10 @@ class UnitService {
   /**
    * Modify a unit
    */
-  static modifyByUnitcode = async (unitCode, updateData) => {
+  static modifyByUnitcode = async (
+    unitCode: string,
+    updateData: UpdateQuery<IUnit>
+  ) => {
     const allowedFields = [
       'name',
       'description',
@@ -86,7 +92,7 @@ class UnitService {
   /**
    * Fetch all units that have the given unit as a prerequisite
    */
-  static fetchUnitsRequiredBy = async (unitCode) => {
+  static fetchUnitsRequiredBy = async (unitCode: string) => {
     const unit = await UnitRepository.findOneByUnitcode(unitCode);
     if (!unit) throw new Error404NotFound('Unit not found');
     return await UnitRepository.findRequiredBy(unitCode);

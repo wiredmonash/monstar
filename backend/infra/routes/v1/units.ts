@@ -1,4 +1,5 @@
 import express from 'express';
+import type { PipelineStage } from 'mongoose';
 
 import {
   getSortCriteria,
@@ -6,6 +7,7 @@ import {
   isValidSortOption,
 } from '@constants/sortOptions';
 import Unit from '@models/unit';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 import { buildFilterQuery } from '@utilities/unitFilterHelpers';
 import { verifyAdmin } from '@utilities/verifyToken';
 
@@ -32,7 +34,7 @@ router.get('/', async function (req, res) {
   } catch (error) {
     // Handle general errors 500
     return res.status(500).json({
-      error: `An error occured while getting all Units: ${error.message}`,
+      error: `An error occured while getting all Units: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -103,7 +105,7 @@ router.get('/unit/:unitcode', async function (req, res) {
     return res.status(200).json(unit);
   } catch (error) {
     return res.status(500).json({
-      error: `An error occured whilst getting the singular unit: ${error.message}`,
+      error: `An error occured whilst getting the singular unit: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -156,7 +158,7 @@ router.get('/filter', async function (req, res) {
     const sortCriteria = getSortCriteria(sort as string);
 
     // Build aggregation pipeline
-    const pipeline: any[] = [
+    const pipeline: PipelineStage[] = [
       // Match the units based on the query
       { $match: query },
       // Populate the reviews field for each unit
@@ -222,7 +224,7 @@ router.get('/filter', async function (req, res) {
   } catch (error) {
     return res
       .status(500)
-      .json({ error: `Error fetching units: ${error.message}` });
+      .json({ error: `Error fetching units: ${getErrorMessage(error)}` });
   }
 });
 
@@ -261,7 +263,7 @@ router.post('/create', verifyAdmin, async function (req, res) {
   } catch (error) {
     // Handle general errors
     return res.status(500).json({
-      error: `An error occured while created the Unit: ${error.message}`,
+      error: `An error occured while created the Unit: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -318,7 +320,7 @@ router.post('/create-bulk', verifyAdmin, async function (req, res) {
       .json({ message: 'Bulk creation completed', results });
   } catch (error) {
     return res.status(500).json({
-      error: `An error occurred whilst creating the units: ${error.message}`,
+      error: `An error occurred whilst creating the units: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -347,7 +349,7 @@ router.delete('/delete/:unitcode', verifyAdmin, async function (req, res) {
   } catch (error) {
     // Handle general errors.
     return res.status(500).json({
-      error: `Error occured while deleting unit: ${error.message}`,
+      error: `Error occured while deleting unit: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -400,7 +402,7 @@ router.put('/update/:unitcode', verifyAdmin, async function (req, res) {
   } catch (error) {
     // Handle general errors
     return res.status(500).json({
-      error: `An error occurred while updating the unit: ${error.message}`,
+      error: `An error occurred while updating the unit: ${getErrorMessage(error)}`,
     });
   }
 });
@@ -437,7 +439,7 @@ router.get('/:unitCode/required-by', async function (req, res) {
     return res.status(200).json(requiredByUnits);
   } catch (error) {
     return res.status(500).json({
-      error: `Error finding units requiring ${req.params.unitCode}: ${error.message}`,
+      error: `Error finding units requiring ${req.params.unitCode}: ${getErrorMessage(error)}`,
     });
   }
 });

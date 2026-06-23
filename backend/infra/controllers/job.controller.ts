@@ -1,8 +1,6 @@
 import asyncHandler from '@utilities/asyncHandler';
 
 import {
-  isValidJobStatus,
-  isValidJobRoleType,
   normalizeJobStatus,
   normalizeJobRoleType,
 } from '@constants/jobOptions';
@@ -21,12 +19,13 @@ class JobController {
 
   static getByStatus = asyncHandler(async (req, res) => {
     const { status } = req.params;
-    if (!isValidJobStatus(status)) {
+    const normalizedStatus = normalizeJobStatus(status);
+    if (!normalizedStatus) {
       return res.status(400).json({
         error: `Invalid status. Must be one of: OPEN, CLOSED, Opening Soon`,
       });
     }
-    const jobs = await JobService.fetchByStatus(normalizeJobStatus(status));
+    const jobs = await JobService.fetchByStatus(normalizedStatus);
     return res.status(200).json(jobs);
   });
 
@@ -38,14 +37,13 @@ class JobController {
 
   static getByRoleType = asyncHandler(async (req, res) => {
     const { roleType } = req.params;
-    if (!isValidJobRoleType(roleType)) {
+    const normalizedRoleType = normalizeJobRoleType(roleType);
+    if (!normalizedRoleType) {
       return res.status(400).json({
         error: `Invalid role type. Must be one of: Consulting, Education, Events, Finance, HR, IT, Marketing / Media, Other, Partnerships / Sponsorships, Subcommittee`,
       });
     }
-    const jobs = await JobService.fetchByRoleType(
-      normalizeJobRoleType(roleType)
-    );
+    const jobs = await JobService.fetchByRoleType(normalizedRoleType);
     return res.status(200).json(jobs);
   });
 

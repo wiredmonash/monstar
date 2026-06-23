@@ -1,6 +1,7 @@
 import { OAuth2Client } from 'google-auth-library';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
+import type { Id } from '@models/types';
 import { cloudinary } from '@providers/cloudinary.provider';
 import TokenProvider from '@providers/token.provider';
 import UserRepository from '@repositories/user.repository';
@@ -9,6 +10,7 @@ import {
   Error403Forbidden,
   Error404NotFound,
 } from '@utilities/errors';
+import { getErrorMessage } from '@utilities/getErrorMessage';
 
 const googleClient = new OAuth2Client();
 
@@ -19,12 +21,17 @@ class UserService {
   /**
    * Authenticates a new or existing user with Google OAuth
    */
-  static googleAuthenticate = async (idToken) => {
+  static googleAuthenticate = async (idToken: string) => {
     const ticket = await googleClient.verifyIdToken({
       idToken: idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
     const payload = ticket.getPayload();
+    if (!payload?.email) {
+      throw new Error403Forbidden(
+        'Only students with a valid Monash email can log in.'
+      );
+    }
     const { email, name, picture, sub } = payload; // eslint-disable-line
 
     const isStudentEmail = this.STUDENT_EMAIL_REGEX.test(email);
@@ -76,7 +83,7 @@ class UserService {
   /**
    * Rotate and create new access token and refresh token for a user
    */
-  static refreshUserToken = async (refreshToken) => {
+  static refreshUserToken = async (refreshToken: string) => {
     const hashedRefreshToken = TokenProvider.hashRefreshToken(refreshToken);
     const user =
       await UserRepository.findByHashedRefreshToken(hashedRefreshToken);
@@ -106,18 +113,18 @@ class UserService {
   /**
    * Invalidates the refresh token to logout a user
    */
-  static invalidateRefreshToken = async (userId) => {
+  static invalidateRefreshToken = async (userId: Id) => {
     await UserRepository.invalidateRefreshToken(userId);
   };
 
   /**
    * Validates user using access token
    */
-  static validate = async (accessToken) => {
+  static validate = async (accessToken: string) => {
     const decoded = jwt.verify(
       accessToken,
-      process.env.JWT_SECRET
-    ) as JwtPayload;
+      process.env.JWT_SECRET as string
+    ) as TokenPayload;
     const user = await UserRepository.findById(decoded.id);
     if (!user) throw new Error404NotFound('User not found');
     return user;
@@ -126,7 +133,7 @@ class UserService {
   /**
    * Gets a user by username
    */
-  static getByUsername = async (username) => {
+  static getByUsername = async (username: string) => {
     const user = await UserRepository.findByUsername(username);
     if (!user) throw new Error404NotFound('User not found');
     return user;
@@ -135,7 +142,7 @@ class UserService {
   /**
    * Uploads user avatar to cloudinary
    */
-  static uploadAvatar = async (userId, avatarUrl) => {
+  static uploadAvatar = async (userId: Id, avatarUrl: string) => {
     const user = await UserRepository.findById(userId);
     if (!user) throw new Error404NotFound('User not found');
 
@@ -146,7 +153,7 @@ class UserService {
         const publicId = `user_avatars/${fileName}`;
         await cloudinary.uploader.destroy(publicId);
       } catch (error) {
-        console.error('Failed to delete old avatar:', error.message);
+        console.error('Failed to delete old avatar:', getErrorMessage(error));
       }
     }
 
@@ -154,6 +161,7 @@ class UserService {
       userId,
       avatarUrl
     );
+    if (!updatedUser) throw new Error404NotFound('User not found');
 
     return updatedUser;
   };

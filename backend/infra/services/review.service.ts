@@ -1,3 +1,6 @@
+import type { FilterQuery, UpdateQuery } from 'mongoose';
+
+import type { Id, IReview } from '@models/types';
 import ReviewRepository from '@repositories/review.repository';
 import UnitRepository from '@repositories/unit.repository';
 import UserRepository from '@repositories/user.repository';
@@ -12,7 +15,7 @@ class ReviewService {
   /**
    * Fetch all reviews with optional filter
    */
-  static fetchAll = async (filter = {}) => {
+  static fetchAll = async (filter: FilterQuery<IReview> = {}) => {
     return await ReviewRepository.findAll(filter);
   };
 
@@ -26,7 +29,7 @@ class ReviewService {
   /**
    * Fetch all reviews for a specific unit
    */
-  static fetchByUnit = async (unitCode) => {
+  static fetchByUnit = async (unitCode: string) => {
     // Find the unit first
     const unit = await UnitRepository.findOneByUnitcode(unitCode);
     if (!unit) throw new Error404NotFound(`Unit not found`);
@@ -37,42 +40,36 @@ class ReviewService {
   /**
    * Fetch all reviews by a specific user
    */
-  static fetchByUser = async (userId) => {
+  static fetchByUser = async (userId: Id) => {
     return await ReviewRepository.findByUserId(userId);
   };
 
   /**
    * Create a new review for a unit
    */
-  static createReview = async (unitCode, reviewData) => {
-    // Find the unit
+  static createReview = async (
+    unitCode: string,
+    reviewData: Partial<IReview> & Pick<IReview, 'author'>
+  ) => {
     const unit = await UnitRepository.findOneByUnitcode(unitCode);
     if (!unit)
       throw new Error404NotFound(`Unit with code ${unitCode} not found in DB`);
 
-    // Check if the user has already reviewed this unit
     const existingReview = await ReviewRepository.findByAuthorAndUnit(
       reviewData.author,
       unit._id
     );
-
     if (existingReview) {
       throw new Error409Conflict('You have already reviewed this unit');
     }
 
-    // Create and save the review
     const review = await ReviewRepository.create({
       ...reviewData,
       unit: unit._id,
     });
 
-    // Add review to unit's reviews array
     await ReviewRepository.addReviewToUnit(unit._id, review._id);
-
-    // Add review to user's reviews array
     await ReviewRepository.addReviewToUser(reviewData.author, review._id);
-
-    // Recalculate and update unit averages
     await this._recalculateUnitAverages(unit._id);
 
     return review;
@@ -81,7 +78,11 @@ class ReviewService {
   /**
    * Update a review by ID
    */
-  static updateReview = async (reviewId, userId, updateData) => {
+  static updateReview = async (
+    reviewId: Id,
+    userId: Id,
+    updateData: UpdateQuery<IReview>
+  ) => {
     const review = await ReviewRepository.findById(reviewId);
     if (!review) throw new Error404NotFound('Review not found');
 
@@ -111,11 +112,10 @@ class ReviewService {
   /**
    * Delete a review by ID
    */
-  static deleteReview = async (reviewId, userId) => {
+  static deleteReview = async (reviewId: Id, userId: Id) => {
     const review = await ReviewRepository.findById(reviewId);
     if (!review) throw new Error404NotFound('Review not found');
 
-    // Get the requesting user
     const requestingUser = await UserRepository.findById(userId);
     if (!requestingUser)
       throw new Error404NotFound('Requesting user not found');
@@ -131,16 +131,9 @@ class ReviewService {
 
     const unitId = review.unit;
 
-    // Delete the review
     await ReviewRepository.deleteById(reviewId);
-
-    // Remove review from user's reviews array
     await ReviewRepository.removeReviewFromUser(review.author, reviewId);
-
-    // Remove review from unit's reviews array
     await ReviewRepository.removeReviewFromUnit(unitId, reviewId);
-
-    // Recalculate unit averages
     await this._recalculateUnitAverages(unitId);
   };
 
@@ -150,7 +143,11 @@ class ReviewService {
    * NOTE: NotificationService calls are not awaited, we let those happen in the
    * background to make this faster.
    */
-  static toggleReaction = async (reviewId, userId, reactionType) => {
+  static toggleReaction = async (
+    reviewId: Id,
+    userId: Id,
+    reactionType: string
+  ) => {
     const [user, review] = await Promise.all([
       UserRepository.findById(userId),
       ReviewRepository.findById(reviewId),
@@ -179,7 +176,7 @@ class ReviewService {
         operations.push(ReviewRepository.decrementLikes(reviewId));
         operations.push(UserRepository.removeLikedReview(userId, reviewId));
 
-        NotificationService.delete(review.author, reviewId);
+        void NotificationService.delete(review.author, reviewId);
 
         likesDelta = -1;
         finalHasLiked = false;
@@ -188,7 +185,7 @@ class ReviewService {
         operations.push(ReviewRepository.incrementLikes(reviewId));
         operations.push(UserRepository.addLikedReview(userId, reviewId));
 
-        NotificationService.createLike(user, review);
+        void NotificationService.createLike(user, review);
 
         likesDelta = 1;
         finalHasLiked = true;
@@ -224,7 +221,7 @@ class ReviewService {
           operations.push(ReviewRepository.decrementLikes(reviewId));
           operations.push(UserRepository.removeLikedReview(userId, reviewId));
 
-          NotificationService.delete(review.author, reviewId);
+          void NotificationService.delete(review.author, reviewId);
 
           likesDelta = -1;
           finalHasLiked = false;
@@ -250,7 +247,7 @@ class ReviewService {
   /**
    * Private helper to recalculate and update unit rating averages
    */
-  static _recalculateUnitAverages = async (unitId) => {
+  static _recalculateUnitAverages = async (unitId: Id) => {
     const allReviews = await ReviewRepository.findByUnitId(unitId);
 
     const avgOverallRating = allReviews.length
