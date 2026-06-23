@@ -4,16 +4,17 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import { accessTokenCookie, getCsrf } from './helpers';
+import { accessTokenCookie, getCsrf } from '@shared/testing/helpers';
 
 vi.mock('multer', () => {
   const multer = () => ({
-    single: () => (req, res, next) => {
-      req.file = {
-        path: 'https://res.cloudinary.com/demo/image/upload/user_avatars/fake.png',
-      };
-      next();
-    },
+    single:
+      () => (req: { file?: unknown }, _res: unknown, next: () => void) => {
+        req.file = {
+          path: 'https://res.cloudinary.com/demo/image/upload/user_avatars/fake.png',
+        };
+        next();
+      },
   });
   multer.memoryStorage = () => ({});
   multer.diskStorage = () => ({});

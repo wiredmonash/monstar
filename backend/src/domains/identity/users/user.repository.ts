@@ -1,7 +1,9 @@
 import type { Types } from 'mongoose';
 
-import User from '@models/user';
-import type { Id, IUser } from '@models/types';
+import type { Id } from '@shared/types';
+
+import User from './user.model';
+import type { IUser } from './user.types';
 
 class UserRepository {
   /* -------------------------------- Retrieval ------------------------------- */

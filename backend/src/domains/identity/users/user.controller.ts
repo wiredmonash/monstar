@@ -1,7 +1,7 @@
-import asyncHandler from '@utilities/asyncHandler';
+import asyncHandler from '@shared/utilities/asyncHandler';
 
-import TokenProvider from '@providers/token.provider';
-import UserService from '@services/user.service';
+import TokenProvider from './token.service';
+import UserService from './user.service';
 
 class UserController {
   /**

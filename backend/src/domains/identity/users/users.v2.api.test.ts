@@ -1,9 +1,9 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 
-import TokenProvider from '@providers/token.provider';
+import { TokenProvider } from '@domains/identity/users';
 
-import { getCsrf, accessTokenCookie } from './helpers';
+import { getCsrf, accessTokenCookie } from '@shared/testing/helpers';
 
 /**
  * Characterization tests for the LIVE v2 users endpoints the frontend calls

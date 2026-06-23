@@ -1,16 +1,17 @@
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
-import type { Id } from '@models/types';
-import { cloudinary } from '@providers/cloudinary.provider';
-import TokenProvider from '@providers/token.provider';
-import UserRepository from '@repositories/user.repository';
+import { cloudinary } from '@infrastructure/storage/cloudinary';
+import type { Id } from '@shared/types';
 import {
   Error409Conflict,
   Error403Forbidden,
   Error404NotFound,
-} from '@utilities/errors';
-import { getErrorMessage } from '@utilities/getErrorMessage';
+} from '@shared/errors/errors';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
+
+import TokenProvider from './token.service';
+import UserRepository from './user.repository';
 
 const googleClient = new OAuth2Client();
 

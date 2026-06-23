@@ -1,9 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
 
-import Notification from '@models/notification';
-import Review from '@models/review';
-import Unit from '@models/unit';
-import { cloudinary } from '@providers/cloudinary.provider';
+import Review from '@domains/academics/reviews/review.model';
+import Unit from '@domains/academics/units/unit.model';
+import Notification from '@domains/identity/notifications/notification.model';
+import { cloudinary } from '@infrastructure/storage/cloudinary';
 
 const userSchema = new Schema({
   email: { type: String, required: true },

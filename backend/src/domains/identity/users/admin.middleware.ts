@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 
-import { CreateError } from '@utilities/error';
+import { CreateError } from '@shared/errors/error';
 
 import userMiddleware from './user.middleware';
 

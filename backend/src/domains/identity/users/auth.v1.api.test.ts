@@ -3,9 +3,9 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import TokenProvider from '@providers/token.provider';
+import { TokenProvider } from '@domains/identity/users';
 
-import { getCsrf, accessTokenCookie } from './helpers';
+import { getCsrf, accessTokenCookie } from '@shared/testing/helpers';
 
 const { mockVerifyIdToken } = vi.hoisted(() => ({
   mockVerifyIdToken: vi.fn(),
@@ -175,9 +175,9 @@ describe('POST /api/v1/auth/logout', () => {
     expect(res.body).toHaveProperty('message', 'Logged out successfully');
 
     // The refresh token is really invalidated in the database.
-    const after = await mongoose.connection
+    const after = (await mongoose.connection
       .collection('users')
-      .findOne({ _id: userId });
+      .findOne({ _id: userId }))!;
     expect(after.refreshToken).toBeUndefined();
   });
 

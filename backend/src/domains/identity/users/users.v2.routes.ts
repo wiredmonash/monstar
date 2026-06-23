@@ -1,9 +1,9 @@
 import express from 'express';
 import multer from 'multer';
 
-import UserController from '@controllers/user.controller';
-import userMiddleware from '@middleware/user.middleware';
-import { storage } from '@providers/cloudinary.provider';
+import UserController from './user.controller';
+import userMiddleware from './user.middleware';
+import { storage } from '@infrastructure/storage/cloudinary';
 
 const upload = multer({ storage });
 const router = express.Router();

@@ -1,6 +1,5 @@
-import User from '@models/user';
-import UserService from '@services/user.service';
-import { Error403Forbidden, Error409Conflict } from '@utilities/errors';
+import { User, UserService } from '@domains/identity/users';
+import { Error403Forbidden, Error409Conflict } from '@shared/errors/errors';
 
 const { mockVerifyIdToken } = vi.hoisted(() => ({
   mockVerifyIdToken: vi.fn(),
@@ -31,7 +30,11 @@ describe(UserService.name, () => {
     /**
      * Helper: mocks google response for a specific email
      */
-    const setupGoogleMock = (email, name = 'Test User', sub = '123456789') => {
+    const setupGoogleMock = (
+      email: string,
+      name = 'Test User',
+      sub = '123456789'
+    ) => {
       mockVerifyIdToken.mockResolvedValue({
         getPayload: () => ({
           email,
@@ -56,7 +59,7 @@ describe(UserService.name, () => {
       expect(result.user.email).toBe(email);
       expect(result.user.username).toBe('jdoe1234');
 
-      const dbUser = await User.findOne({ email });
+      const dbUser = (await User.findOne({ email }))!;
       expect(dbUser).toBeTruthy();
       expect(dbUser.isGoogleUser).toBe(true);
     });
@@ -75,7 +78,7 @@ describe(UserService.name, () => {
       expect(result.user.email).toBe(email);
       expect(result.user.username).toBe('john');
 
-      const dbUser = await User.findOne({ email });
+      const dbUser = (await User.findOne({ email }))!;
       expect(dbUser).toBeTruthy();
       expect(dbUser.isGoogleUser).toBe(true);
     });
@@ -106,7 +109,7 @@ describe(UserService.name, () => {
 
       // act
       const result = await UserService.googleAuthenticate(fakeIdTokenString);
-      const updatedUser = await User.findById(existingUser._id);
+      const updatedUser = (await User.findById(existingUser._id))!;
 
       // assert
       expect(result.user._id.toString()).toEqual(existingUser._id.toString());
