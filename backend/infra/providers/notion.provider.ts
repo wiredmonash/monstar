@@ -147,7 +147,8 @@ class NotionProvider {
    * @returns {Object}
    */
   static _parseRow(block: any, schema: NotionSchema): Job {
-    const props = block.value?.value?.properties ?? block.value?.properties ?? {};
+    const props =
+      block.value?.value?.properties ?? block.value?.properties ?? {};
     const notionId = block.value?.value?.id ?? block.value?.id;
 
     const row = { notionId } as Job;

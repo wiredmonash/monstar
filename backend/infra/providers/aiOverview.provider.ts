@@ -323,8 +323,7 @@ const sanitiseReviewBody = (body = '') => {
 /**
  * Helper to pause between API calls to respect quotas/rate limits.
  */
-const sleep = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Escape characters that would otherwise break XML formatting.

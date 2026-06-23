@@ -239,9 +239,9 @@ router.delete('/delete/:userId', verifyToken, async function (req, res) {
     return res.status(200).json({ message: 'User successfully deleted' });
   } catch (error) {
     // Handle general errors status 500
-    return res
-      .status(500)
-      .json({ error: `Error occured while deleting user: ${getErrorMessage(error)}` });
+    return res.status(500).json({
+      error: `Error occured while deleting user: ${getErrorMessage(error)}`,
+    });
   }
 });
 
@@ -274,9 +274,9 @@ router.post('/logout', verifyToken, async function (req, res) {
     return res.status(200).json({ message: 'Logged out successfully' });
   } catch (error) {
     // Handle errors
-    return res
-      .status(500)
-      .json({ error: `An error occurred during logout: ${getErrorMessage(error)}` });
+    return res.status(500).json({
+      error: `An error occurred during logout: ${getErrorMessage(error)}`,
+    });
   }
 });
 
@@ -348,9 +348,9 @@ router.put('/update/:userId', verifyToken, async function (req, res) {
     });
   } catch (error) {
     // Handle general errors status 500
-    return res
-      .status(500)
-      .json({ error: `Error updating user details: ${getErrorMessage(error)}` });
+    return res.status(500).json({
+      error: `Error updating user details: ${getErrorMessage(error)}`,
+    });
   }
 });
 

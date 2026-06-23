@@ -58,11 +58,9 @@ router.post('/ai-overview/regenerate', async function (req, res) {
       result,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `Failed to regenerate AI overviews: ${getErrorMessage(error)}`,
-      });
+    return res.status(500).json({
+      error: `Failed to regenerate AI overviews: ${getErrorMessage(error)}`,
+    });
   }
 });
 
@@ -104,11 +102,9 @@ router.post('/:unitcode/ai-overview/regenerate', async function (req, res) {
       .status(500)
       .json({ error: 'Failed to regenerate AI overview', result });
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        error: `Failed to regenerate AI overview: ${getErrorMessage(error)}`,
-      });
+    return res.status(500).json({
+      error: `Failed to regenerate AI overview: ${getErrorMessage(error)}`,
+    });
   }
 });
 

@@ -154,7 +154,9 @@ class UserRepository {
    */
   static async hasLikedReview(userId: Id, reviewId: Id) {
     const user = await User.findById(userId, { likedReviews: 1 });
-    return user ? user.likedReviews.includes(reviewId as Types.ObjectId) : false;
+    return user
+      ? user.likedReviews.includes(reviewId as Types.ObjectId)
+      : false;
   }
 
   /**

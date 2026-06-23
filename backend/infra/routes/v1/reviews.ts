@@ -291,9 +291,9 @@ router.put('/update/:reviewId', verifyToken, async function (req, res) {
       .status(200)
       .json({ message: 'Review successfully updated', review: updatedReview });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: `Error while updating review: ${getErrorMessage(error)}` });
+    return res.status(500).json({
+      error: `Error while updating review: ${getErrorMessage(error)}`,
+    });
   }
 });
 
@@ -391,9 +391,9 @@ router.delete('/delete/:reviewId', verifyToken, async function (req, res) {
     res.status(200).json({ message: 'Review successfully deleted' });
   } catch (error) {
     // Respond 500 and error message
-    res
-      .status(500)
-      .json({ error: `Error while deleting review: ${getErrorMessage(error)}` });
+    res.status(500).json({
+      error: `Error while deleting review: ${getErrorMessage(error)}`,
+    });
   }
 });
 
@@ -494,8 +494,8 @@ router.patch(
             // Remove the dislike
             review.dislikes = Math.max(0, review.dislikes - 1);
             (user.dislikedReviews as Types.Array<Types.ObjectId>).pull(
-            review._id
-          );
+              review._id
+            );
             operations.oppositeReactionRemoved = true;
           }
         }

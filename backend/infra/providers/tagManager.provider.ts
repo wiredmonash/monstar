@@ -53,9 +53,8 @@ class TagManager {
             },
           },
         ];
-        const unitsWithMostReviews = await Review.aggregate(pipeline).session(
-          session
-        );
+        const unitsWithMostReviews =
+          await Review.aggregate(pipeline).session(session);
 
         console.log(
           `[TagManager] Found ${unitsWithMostReviews.length} units exceeding threshold`

@@ -9,9 +9,13 @@ class TokenProvider {
   static ACCESS_TOKEN_EXPIRY = 15 * 60 * 1000; // 15 minutes
   static REFRESH_TOKEN_EXPIRY = 180 * 24 * 60 * 60 * 1000; // 180 days
 
-  static generateAccessToken(userId: string | Types.ObjectId, isAdmin: boolean) {
+  static generateAccessToken(
+    userId: string | Types.ObjectId,
+    isAdmin: boolean
+  ) {
     const options: SignOptions = {
-      expiresIn: this.ACCESS_TOKEN_EXPIRY.toString() as SignOptions['expiresIn'],
+      expiresIn:
+        this.ACCESS_TOKEN_EXPIRY.toString() as SignOptions['expiresIn'],
     };
     return jwt.sign(
       { id: userId, isAdmin },
