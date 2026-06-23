@@ -1,24 +1,36 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+
+import dotenv from 'dotenv';
+import moduleAlias from 'module-alias';
+import mongoose from 'mongoose';
 
 const backendRoot = path.join(__dirname, '..', '..');
 
-require('dotenv').config({
+dotenv.config({
   path: path.join(backendRoot, '.env'),
   quiet: true,
 });
 
-require('module-alias').addAliases({
+moduleAlias.addAliases({
   '@models': path.join(backendRoot, 'models'),
 });
-
-const mongoose = require('mongoose');
 
 const MONGODB_URI = process.env.MONGODB_CONN_STRING;
 const TODAY = new Date().toISOString().split('T')[0];
 
+interface SitemapUrl {
+  url: string;
+  changefreq: string;
+  priority: number;
+}
+
+interface UnitRef {
+  unitCode: string;
+}
+
 // Generate the sitemaps
-generateSitemaps();
+void generateSitemaps();
 
 /**
  * * Generate Sitemaps
@@ -26,18 +38,18 @@ generateSitemaps();
  * Generates a sitemap.xml file for SEO purposes.
  */
 async function generateSitemaps() {
-  let connection = null;
+  const connection = null;
 
   try {
     // Connect to MongoDB
-    mongoose.connect(MONGODB_URI);
+    void mongoose.connect(MONGODB_URI as string);
     console.log('Connected to MongoDB');
 
     // Import Unit Model
     const Unit = require('@models/unit');
     const SETU = require('@models/setu');
 
-    const staticUrls = [
+    const staticUrls: SitemapUrl[] = [
       {
         url: 'https://monstar.wired.org.au/',
         changefreq: 'weekly',
@@ -72,7 +84,7 @@ async function generateSitemaps() {
 
     console.log('Fetching units from database...');
     // Get all units
-    const units = await Unit.find({}, 'unitCode');
+    const units: UnitRef[] = await Unit.find({}, 'unitCode');
     console.log(`Found ${units.length} units`);
 
     // Sort units alphabetically
@@ -91,7 +103,7 @@ async function generateSitemaps() {
 
     // Get units with SETU data
     console.log('Fetching units with SETU data...');
-    const setuData = await SETU.aggregate([
+    const setuData: UnitRef[] = await SETU.aggregate([
       { $group: { _id: '$unit_code' } },
       { $project: { unitCode: '$_id', _id: 0 } },
     ]);
@@ -184,7 +196,7 @@ async function generateSitemaps() {
  * @param urls The list of pages to generate XML for
  * @param units The list of units to generate XML for (optional)
  */
-function generateStandardSitemapXML(urls) {
+function generateStandardSitemapXML(urls: SitemapUrl[]) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -207,7 +219,7 @@ function generateStandardSitemapXML(urls) {
  *
  * @param units The list of units to generate URLs for
  */
-function generateUnitSitemapXML(units) {
+function generateUnitSitemapXML(units: UnitRef[]) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -230,7 +242,7 @@ function generateUnitSitemapXML(units) {
  *
  * @param setuUnits The list of units with SETU data to generate URLS for
  */
-function generateSetuSitemapXML(setuUnits) {
+function generateSetuSitemapXML(setuUnits: UnitRef[]) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -256,7 +268,11 @@ function generateSetuSitemapXML(setuUnits) {
  * @param units The list of unit pages
  * @param setuUnits the list of units with SETU data
  */
-function generateFullSitemapXML(urls, units = [], setuUnits = []) {
+function generateFullSitemapXML(
+  urls: SitemapUrl[],
+  units: UnitRef[] = [],
+  setuUnits: UnitRef[] = []
+) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
