@@ -1,4 +1,8 @@
-jest.mock('axios', () => ({ get: jest.fn(), post: jest.fn() }));
+jest.mock('axios', () => ({
+  get: jest.fn(),
+  post: jest.fn(),
+  isAxiosError: jest.fn(() => false),
+}));
 
 const axios = require('axios');
 const request = require('supertest');
