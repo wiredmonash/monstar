@@ -46,8 +46,8 @@ async function generateSitemaps() {
     console.log('Connected to MongoDB');
 
     // Import Unit Model
-    const { default: Unit } = await import('@models/unit');
-    const { default: SETU } = await import('@models/setu');
+    const { Unit } = await import('@domains/academics/units');
+    const { SETU } = await import('@domains/academics/setu');
 
     const staticUrls: SitemapUrl[] = [
       {
