@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals", "vite/client"],
+    "strict": false
+  },
+  "include": ["**/*", "../infra/types/**/*.d.ts"],
+  "exclude": []
+}

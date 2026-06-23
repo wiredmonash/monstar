@@ -10,6 +10,7 @@ export default tseslint.config(
   {
     ignores: [
       'eslint.config.mjs',
+      'vitest.config.ts',
       'node_modules/',
       'dist/',
       'build/',
