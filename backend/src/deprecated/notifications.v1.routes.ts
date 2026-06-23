@@ -3,10 +3,9 @@ import express from 'express';
 import { Types } from 'mongoose';
 
 // Model Imports
-import Notification from '@models/notification';
-import User from '@models/user';
-import { getErrorMessage } from '@utilities/getErrorMessage';
-import { verifyToken } from '@utilities/verifyToken';
+import { Notification } from '@domains/identity/notifications';
+import { User, verifyToken } from '@domains/identity/users';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 
 // Function Imports
 

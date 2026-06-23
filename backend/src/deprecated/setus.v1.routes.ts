@@ -1,8 +1,8 @@
 import express from 'express';
 
-import SETU from '@models/setu';
-import { getErrorMessage } from '@utilities/getErrorMessage';
-import { verifyAdmin } from '@utilities/verifyToken';
+import { SETU } from '@domains/academics/setu';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
+import { verifyAdmin } from '@domains/identity/users';
 
 const router = express.Router();
 

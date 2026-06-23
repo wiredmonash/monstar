@@ -4,13 +4,12 @@ import { Types } from 'mongoose';
 import nodemailer from 'nodemailer';
 
 // Model Imports
-import Notification from '@models/notification';
-import Review from '@models/review';
-import type { INotification } from '@models/types';
-import Unit from '@models/unit';
-import User from '@models/user';
-import { getErrorMessage } from '@utilities/getErrorMessage';
-import { verifyToken } from '@utilities/verifyToken';
+import { Review } from '@domains/academics/reviews';
+import { Unit } from '@domains/academics/units';
+import { Notification } from '@domains/identity/notifications';
+import type { INotification } from '@domains/identity/notifications';
+import { User, verifyToken } from '@domains/identity/users';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 
 // Function Imports
 

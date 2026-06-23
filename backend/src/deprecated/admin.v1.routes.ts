@@ -1,9 +1,8 @@
 import express from 'express';
 
-import Unit from '@models/unit';
-import AiOverviewService from '@providers/aiOverview.provider';
-import CacheService from '@providers/cache.provider';
-import { getErrorMessage } from '@utilities/getErrorMessage';
+import { Unit, AiOverviewService } from '@domains/academics/units';
+import CacheService from '@infrastructure/cache/cache';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 const router = express.Router();
 
 router.get('/invalidate-cache', async (req, res) => {

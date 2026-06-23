@@ -2,14 +2,14 @@ import express from 'express';
 import type { PipelineStage } from 'mongoose';
 
 import {
+  Unit,
   getSortCriteria,
   requiresReviews, // eslint-disable-line
   isValidSortOption,
-} from '@constants/sortOptions';
-import Unit from '@models/unit';
-import { getErrorMessage } from '@utilities/getErrorMessage';
-import { buildFilterQuery } from '@utilities/unitFilterHelpers';
-import { verifyAdmin } from '@utilities/verifyToken';
+  buildFilterQuery,
+} from '@domains/academics/units';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
+import { verifyAdmin } from '@domains/identity/users';
 
 // Router instance
 const router = express.Router();

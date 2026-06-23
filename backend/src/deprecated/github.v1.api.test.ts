@@ -47,7 +47,9 @@ describe('GET /api/v1/github/contributors', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    const usernames = res.body.data.map((c) => c.username);
+    const usernames = res.body.data.map(
+      (c: { username: string }) => c.username
+    );
     expect(usernames).not.toContain('bot'); // non-User types filtered out
     expect(usernames).toEqual(['bob', 'alice']); // sorted by contributions desc
   });

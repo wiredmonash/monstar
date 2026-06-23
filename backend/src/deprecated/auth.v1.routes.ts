@@ -4,12 +4,15 @@ import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
 
-import User from '@models/user';
-import { storage, cloudinary } from '@providers/cloudinary.provider';
+import { storage, cloudinary } from '@infrastructure/storage/cloudinary';
 const upload = multer({ storage });
-import TokenProvider from '@providers/token.provider';
-import { getErrorMessage } from '@utilities/getErrorMessage';
-import { verifyToken, verifyAdmin } from '@utilities/verifyToken';
+import {
+  User,
+  TokenProvider,
+  verifyToken,
+  verifyAdmin,
+} from '@domains/identity/users';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 
 import dotenv from 'dotenv';
 dotenv.config({ quiet: true });
