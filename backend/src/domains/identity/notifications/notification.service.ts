@@ -1,8 +1,11 @@
-import type { Id, IReview, IUser } from '@models/types';
-import NotificationRepository from '@repositories/notification.repository';
-import UnitRepository from '@repositories/unit.repository';
-import UserRepository from '@repositories/user.repository';
-import { Error404NotFound } from '@utilities/errors';
+import { UnitRepository } from '@domains/academics/units';
+import type { IReview } from '@domains/academics/reviews';
+import { UserRepository } from '@domains/identity/users';
+import type { IUser } from '@domains/identity/users';
+import type { Id } from '@shared/types';
+import { Error404NotFound } from '@shared/errors/errors';
+
+import NotificationRepository from './notification.repository';
 
 class NotificationService {
   /**

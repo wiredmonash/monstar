@@ -1,7 +1,7 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 
-import { accessTokenCookie, getCsrf } from './helpers';
+import { accessTokenCookie, getCsrf } from '@shared/testing/helpers';
 
 /**
  * Characterization tests for the LIVE v1 notifications endpoints (used by the

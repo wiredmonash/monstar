@@ -1,5 +1,7 @@
-import Notification from '@models/notification';
-import type { Id, INotification } from '@models/types';
+import type { Id } from '@shared/types';
+
+import Notification from './notification.model';
+import type { INotification } from './notification.types';
 
 class NotificationRepository {
   /* -------------------------------- Retrieval ------------------------------- */
