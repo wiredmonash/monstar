@@ -39,7 +39,7 @@ const userSchema = new Schema({
 
 // Middleware to set default username as authcate from email
 userSchema.pre('save', function (next) {
-  if (!this.username && this.email) {
+  if (!this.username && this.email && this.isNew) {
     this.username = this.email.slice(0, 8);
   }
 
