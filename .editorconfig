@@ -1,19 +1,20 @@
 root = true
 
-# Unix-style newlines with a newline ending every file
 [*]
 charset = utf-8
 end_of_line = lf
+indent_style = space
+indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# JavaScript, JSON files
-[*.{js,mjs,cjs,json}]
-indent_style = space
-indent_size = 2
+# TypeScript
+[*.ts]
+quote_type = single
 
 # Markdown files
 [*.md]
+max_line_length = off
 trim_trailing_whitespace = false
 
 # YAML files
@@ -21,7 +22,7 @@ trim_trailing_whitespace = false
 indent_style = space
 indent_size = 2
 
-# Package.json (stricter)
+# package.json
 [package.json]
 indent_style = space
 indent_size = 2
