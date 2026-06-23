@@ -1,11 +1,11 @@
 import express from 'express';
 import multer from 'multer';
 
-import JobController from '@controllers/job.controller';
-import OrgLogoController from '@controllers/orgLogo.controller';
-import adminMiddleware from '@middleware/admin.middleware';
-import userMiddleware from '@middleware/user.middleware';
-import { orgStorage } from '@providers/cloudinary.provider';
+import { adminMiddleware, userMiddleware } from '@domains/identity/users';
+import { OrgLogoController } from '@domains/recruitment/orgLogo';
+import { orgStorage } from '@infrastructure/storage/cloudinary';
+
+import JobController from './job.controller';
 
 const router = express.Router();
 const uploadLogo = multer({ storage: orgStorage });

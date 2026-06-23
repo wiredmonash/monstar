@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import type { Job } from '@models/types';
+import type { Job } from './job.types';
 
 const NOTION_API_BASE = 'https://www.notion.so/api/v3';
 const NOTION_PAGE_ID = process.env.NOTION_PAGE_ID || null;

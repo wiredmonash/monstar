@@ -1,4 +1,4 @@
-import NotionProvider from '@providers/notion.provider';
+import NotionProvider from './notion.gateway';
 
 class JobRepository {
   static async findAll() {

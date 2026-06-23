@@ -1,6 +1,6 @@
-import asyncHandler from '@utilities/asyncHandler';
+import asyncHandler from '@shared/utilities/asyncHandler';
 
-import OrgLogoService from '@services/orgLogo.service';
+import OrgLogoService from './orgLogo.service';
 
 class OrgLogoController {
   static getAll = asyncHandler(async (req, res) => {

@@ -1,5 +1,6 @@
 import request from 'supertest';
-import OrgLogo from '@models/orgLogo';
+
+import { OrgLogo } from '@domains/recruitment/orgLogo';
 
 /**
  * Characterization test for the LIVE v2 jobs endpoint the frontend uses

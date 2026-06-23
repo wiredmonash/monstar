@@ -1,4 +1,4 @@
-import OrgLogo from '@models/orgLogo';
+import OrgLogo from './orgLogo.model';
 
 class OrgLogoRepository {
   static async findAll() {

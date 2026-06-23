@@ -1,10 +1,7 @@
-import asyncHandler from '@utilities/asyncHandler';
+import asyncHandler from '@shared/utilities/asyncHandler';
 
-import {
-  normalizeJobStatus,
-  normalizeJobRoleType,
-} from '@constants/jobOptions';
-import JobService from '@services/job.service';
+import { normalizeJobStatus, normalizeJobRoleType } from './job.options';
+import JobService from './job.service';
 
 class JobController {
   static getAll = asyncHandler(async (req, res) => {

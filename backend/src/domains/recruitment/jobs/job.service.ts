@@ -1,9 +1,10 @@
-import { JOB_STATUS } from '@constants/jobOptions';
-import CacheProvider from '@providers/cache.provider';
-import NotionProvider from '@providers/notion.provider';
-import JobRepository from '@repositories/job.repository';
-import type { Job } from '@models/types';
-import { Error404NotFound } from '@utilities/errors';
+import CacheProvider from '@infrastructure/cache/cache';
+import { Error404NotFound } from '@shared/errors/errors';
+
+import { JOB_STATUS } from './job.options';
+import JobRepository from './job.repository';
+import NotionProvider from './notion.gateway';
+import type { Job } from './job.types';
 
 class JobService {
   static CACHE_PREFIX = 'jobs';

@@ -1,6 +1,7 @@
-import { cloudinary } from '@providers/cloudinary.provider';
-import OrgLogoRepository from '@repositories/orgLogo.repository';
-import { getErrorMessage } from '@utilities/getErrorMessage';
+import { cloudinary } from '@infrastructure/storage/cloudinary';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
+
+import OrgLogoRepository from './orgLogo.repository';
 
 class OrgLogoService {
   static normalise(name: string) {
