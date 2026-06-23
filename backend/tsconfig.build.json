@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "scrapers",
+    "src/**/*.test.ts",
+    "src/shared/testing"
+  ]
+}
