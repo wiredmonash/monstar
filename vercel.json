@@ -3,7 +3,7 @@
   "ignoreCommand": "bash .scripts/should_deploy.sh",
   "builds": [
     {
-      "src": "backend/server.ts",
+      "src": "backend/src/server.ts",
       "use": "@vercel/node"
     },
     {
@@ -18,7 +18,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/server.ts"
+      "dest": "/backend/src/server.ts"
     },
     {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|json|woff|woff2|ttf|eot|xml|txt|webp|avif|map|webmanifest))",
