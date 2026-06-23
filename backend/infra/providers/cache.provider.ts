@@ -75,4 +75,4 @@ class CacheProvider {
   }
 }
 
-export = CacheProvider;
+export default CacheProvider;

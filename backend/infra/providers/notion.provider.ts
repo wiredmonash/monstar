@@ -222,4 +222,4 @@ class NotionProvider {
   }
 }
 
-export = NotionProvider;
+export default NotionProvider;

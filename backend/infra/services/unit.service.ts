@@ -99,4 +99,4 @@ class UnitService {
   };
 }
 
-export = UnitService;
+export default UnitService;

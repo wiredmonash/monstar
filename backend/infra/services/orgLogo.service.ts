@@ -53,4 +53,4 @@ class OrgLogoService {
   }
 }
 
-export = OrgLogoService;
+export default OrgLogoService;

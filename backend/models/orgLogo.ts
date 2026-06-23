@@ -17,4 +17,4 @@ orgLogoSchema.pre('save', function (next) {
 });
 
 const OrgLogo = mongoose.model('OrgLogo', orgLogoSchema);
-export = OrgLogo;
+export default OrgLogo;

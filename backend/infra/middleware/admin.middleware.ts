@@ -16,4 +16,4 @@ const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export = adminMiddleware;
+export default adminMiddleware;

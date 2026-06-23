@@ -1,35 +1,35 @@
-/* ----------------------- Load environment variables ----------------------- */
-import dotenv from 'dotenv';
-dotenv.config({ quiet: true });
-// require('module-alias/register');
+/* --------- Load env + register @ aliases (must run before any import) ------ */
+import './bootstrap';
 
 /* ----------------------------- Module imports ----------------------------- */
 import path from 'path';
-
-require('module-alias').addAliases({
-  '@models': path.join(__dirname, 'models'),
-  '@routes': path.join(__dirname, 'infra/routes'),
-  '@controllers': path.join(__dirname, 'infra/controllers'),
-  '@providers': path.join(__dirname, 'infra/providers'),
-  '@middleware': path.join(__dirname, 'infra/middleware'),
-  '@services': path.join(__dirname, 'infra/services'),
-  '@repositories': path.join(__dirname, 'infra/repositories'),
-  '@utilities': path.join(__dirname, 'infra/utilities'),
-  '@constants': path.join(__dirname, 'constants'),
-  '@docs': path.join(__dirname, 'docs'),
-});
+import { fileURLToPath } from 'url';
 
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import csrf from 'csurf';
 import express, { type RequestHandler } from 'express';
 
-const { setupSwagger } = require('@docs/swagger');
-const errorMiddleware = require('@middleware/error.middleware');
-const { dbConnect } = require('@providers/mongodb.provider');
-const tagManager = require('@providers/tagManager.provider');
+import { setupSwagger } from '@docs/swagger';
+import errorMiddleware from '@middleware/error.middleware';
+import { dbConnect } from '@providers/mongodb.provider';
+import tagManager from '@providers/tagManager.provider';
+import adminRouter from '@routes/v1/admin';
+import authRouter from '@routes/v1/auth';
+import githubRouter from '@routes/v1/github';
+import notificationsRouter from '@routes/v1/notifications';
+import reviewsV1Router from '@routes/v1/reviews';
+import setusRouter from '@routes/v1/setus';
+import unitsV1Router from '@routes/v1/units';
+import jobsV2Router from '@routes/v2/jobs';
+import reviewsV2Router from '@routes/v2/reviews';
+import unitsV2Router from '@routes/v2/units';
+import usersV2Router from '@routes/v2/users';
 
 /* --------------------------- Initialize Express --------------------------- */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 /* ------------------------ Environment configuration ----------------------- */
@@ -84,18 +84,18 @@ app.use(async (req, res, next) => {
 });
 
 /* --------------------------------- Routes --------------------------------- */
-app.use('/api/v1/units', require('./infra/routes/v1/units'));
-app.use('/api/v2/units', require('./infra/routes/v2/units'));
-app.use('/api/v1/reviews', require('./infra/routes/v1/reviews'));
-app.use('/api/v2/reviews', require('./infra/routes/v2/reviews'));
-app.use('/api/v1/auth', require('./infra/routes/v1/auth'));
-app.use('/api/v2/users', require('./infra/routes/v2/users'));
-app.use('/api/v1/notifications', require('./infra/routes/v1/notifications'));
-app.use('/api/v1/github', require('./infra/routes/v1/github'));
-app.use('/api/v1/setus', require('./infra/routes/v1/setus'));
-app.use('/api/v2/jobs', require('./infra/routes/v2/jobs'));
+app.use('/api/v1/units', unitsV1Router);
+app.use('/api/v2/units', unitsV2Router);
+app.use('/api/v1/reviews', reviewsV1Router);
+app.use('/api/v2/reviews', reviewsV2Router);
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v2/users', usersV2Router);
+app.use('/api/v1/notifications', notificationsRouter);
+app.use('/api/v1/github', githubRouter);
+app.use('/api/v1/setus', setusRouter);
+app.use('/api/v2/jobs', jobsV2Router);
 if (isDevelopment && !isProductionMachine) {
-  app.use('/api/admin', require('./infra/routes/v1/admin'));
+  app.use('/api/admin', adminRouter);
 }
 
 /* ---------------------------- Swagger ui setup ---------------------------- */
@@ -115,10 +115,10 @@ app.use(errorMiddleware);
 // TODO: Use vercel-cron for jobs, node-cron doesn't work on vercel.
 
 /* ---------------------------- Export for vercel --------------------------- */
-export = app;
+export default app;
 
 /* ----------------------- Start server for local dev ----------------------- */
-if (require.main === module) {
+if (process.argv[1] === __filename) {
   const PORT = Number(process.env.PORT) || 8080;
 
   dbConnect()

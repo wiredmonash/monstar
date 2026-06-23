@@ -37,4 +37,4 @@ class OrgLogoController {
   });
 }
 
-export = OrgLogoController;
+export default OrgLogoController;

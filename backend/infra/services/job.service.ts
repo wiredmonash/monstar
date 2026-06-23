@@ -124,4 +124,4 @@ class JobService {
   };
 }
 
-export = JobService;
+export default JobService;

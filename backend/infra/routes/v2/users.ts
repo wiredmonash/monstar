@@ -61,4 +61,4 @@ router.get(
   UserController.getByUsername
 );
 
-export = router;
+export default router;

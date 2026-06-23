@@ -38,4 +38,4 @@ reviewSchema.pre('save', function (next) {
 });
 
 const Review = mongoose.model('Review', reviewSchema);
-export = Review;
+export default Review;

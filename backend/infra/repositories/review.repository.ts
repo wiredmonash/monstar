@@ -172,4 +172,4 @@ class ReviewRepository {
   }
 }
 
-export = ReviewRepository;
+export default ReviewRepository;

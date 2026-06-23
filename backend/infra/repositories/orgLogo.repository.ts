@@ -27,4 +27,4 @@ class OrgLogoRepository {
   }
 }
 
-export = OrgLogoRepository;
+export default OrgLogoRepository;

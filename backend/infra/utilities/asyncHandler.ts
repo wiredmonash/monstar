@@ -11,4 +11,4 @@ const asyncHandler = (
   handler: (req: Request, res: Response, next: NextFunction) => any
 ): RequestHandler => expressAsyncHandler(handler);
 
-export = asyncHandler;
+export default asyncHandler;

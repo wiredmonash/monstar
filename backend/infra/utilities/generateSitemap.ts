@@ -1,19 +1,19 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import dotenv from 'dotenv';
-import moduleAlias from 'module-alias';
 import mongoose from 'mongoose';
 
-const backendRoot = path.join(__dirname, '..', '..');
+const backendRoot = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..'
+);
 
 dotenv.config({
   path: path.join(backendRoot, '.env'),
   quiet: true,
-});
-
-moduleAlias.addAliases({
-  '@models': path.join(backendRoot, 'models'),
 });
 
 const MONGODB_URI = process.env.MONGODB_CONN_STRING;
@@ -46,8 +46,8 @@ async function generateSitemaps() {
     console.log('Connected to MongoDB');
 
     // Import Unit Model
-    const Unit = require('@models/unit');
-    const SETU = require('@models/setu');
+    const { default: Unit } = await import('@models/unit');
+    const { default: SETU } = await import('@models/setu');
 
     const staticUrls: SitemapUrl[] = [
       {

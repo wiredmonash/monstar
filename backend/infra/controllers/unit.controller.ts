@@ -75,4 +75,4 @@ class UnitController {
   });
 }
 
-export = UnitController;
+export default UnitController;

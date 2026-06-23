@@ -48,4 +48,4 @@ router.get(
   UnitController.getRequiredBy
 );
 
-export = router;
+export default router;

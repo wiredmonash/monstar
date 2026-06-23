@@ -70,4 +70,4 @@ const UnitSchema = new Schema({
 });
 
 const Unit = mongoose.model('Unit', UnitSchema);
-export = Unit;
+export default Unit;

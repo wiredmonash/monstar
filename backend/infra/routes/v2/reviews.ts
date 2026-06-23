@@ -75,4 +75,4 @@ router.post(
   ReviewController.sendReport
 );
 
-export = router;
+export default router;

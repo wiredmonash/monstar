@@ -445,4 +445,4 @@ router.get('/:unitCode/required-by', async function (req, res) {
 });
 
 // Export the router
-export = router;
+export default router;

@@ -112,4 +112,4 @@ router.post('/:unitcode/ai-overview/regenerate', async function (req, res) {
   }
 });
 
-export = router;
+export default router;

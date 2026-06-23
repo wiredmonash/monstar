@@ -5,16 +5,16 @@ import { getErrorMessage } from '@utilities/getErrorMessage';
 const setupSwagger = async (app: Express) => {
   if (!process.env.DEVELOPMENT) return;
 
-  const fs = require('fs');
-  const m2s = require('mongoose-to-swagger');
-  const swaggerAutogen = require('swagger-autogen')();
-  const swaggerUi = require('swagger-ui-express');
+  const fs = await import('fs');
+  const { default: m2s } = await import('mongoose-to-swagger');
+  const swaggerAutogen = (await import('swagger-autogen')).default();
+  const swaggerUi = await import('swagger-ui-express');
 
-  const Notification = require('../models/notification');
-  const Review = require('../models/review');
-  const SETU = require('../models/setu');
-  const Unit = require('../models/unit');
-  const User = require('../models/user');
+  const { default: Notification } = await import('../models/notification');
+  const { default: Review } = await import('../models/review');
+  const { default: SETU } = await import('../models/setu');
+  const { default: Unit } = await import('../models/unit');
+  const { default: User } = await import('../models/user');
 
   const doc = {
     info: {

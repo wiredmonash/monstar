@@ -74,4 +74,4 @@ setuSchema.statics.getAverageScores = function (unitCode: string) {
 };
 
 const SETU = mongoose.model<ISetu, SetuModel>('SETU', setuSchema);
-export = SETU;
+export default SETU;

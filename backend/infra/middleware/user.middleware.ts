@@ -20,4 +20,4 @@ const userMiddleware = (req: Request, res: Response, next: NextFunction) => {
   );
 };
 
-export = userMiddleware;
+export default userMiddleware;

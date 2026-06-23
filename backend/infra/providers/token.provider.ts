@@ -29,4 +29,4 @@ class TokenProvider {
   }
 }
 
-export = TokenProvider;
+export default TokenProvider;

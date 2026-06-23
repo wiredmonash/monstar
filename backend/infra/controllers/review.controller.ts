@@ -177,4 +177,4 @@ Review Description: ${review.description} <br>
   });
 }
 
-export = ReviewController;
+export default ReviewController;

@@ -99,4 +99,4 @@ class TagManager {
   }
 }
 
-export = TagManager;
+export default TagManager;

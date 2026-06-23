@@ -451,4 +451,4 @@ router.post(
   }
 );
 
-export = router;
+export default router;

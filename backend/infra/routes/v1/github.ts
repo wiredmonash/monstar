@@ -174,4 +174,4 @@ router.get('/contributors', async (req, res) => {
 });
 
 // Export the router
-export = router;
+export default router;

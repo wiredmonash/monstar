@@ -26,4 +26,4 @@ class JobRepository {
   }
 }
 
-export = JobRepository;
+export default JobRepository;

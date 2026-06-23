@@ -77,4 +77,4 @@ router.post(
   JobController.refreshCache
 );
 
-export = router;
+export default router;

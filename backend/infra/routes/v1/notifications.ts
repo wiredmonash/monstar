@@ -116,4 +116,4 @@ router.delete('/:notificationId', verifyToken, async function (req, res) {
 });
 
 // Export the router
-export = router;
+export default router;

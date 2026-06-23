@@ -50,4 +50,4 @@ class NotificationRepository {
   }
 }
 
-export = NotificationRepository;
+export default NotificationRepository;

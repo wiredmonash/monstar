@@ -128,4 +128,4 @@ class UnitRepository {
   }
 }
 
-export = UnitRepository;
+export default UnitRepository;

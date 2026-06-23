@@ -340,4 +340,4 @@ const escapeXml = (value = '') => {
     .replace(/'/g, '&apos;');
 };
 
-export = AiOverviewProvider;
+export default AiOverviewProvider;

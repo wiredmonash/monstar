@@ -55,4 +55,4 @@ class JobController {
   });
 }
 
-export = JobController;
+export default JobController;

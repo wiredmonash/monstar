@@ -276,4 +276,4 @@ class ReviewService {
   };
 }
 
-export = ReviewService;
+export default ReviewService;
