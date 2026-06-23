@@ -1,10 +1,13 @@
-const { readFile: readFileAsync } = require('node:fs/promises');
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
-const { TEST_PORT } = require('./jest.setup');
+import { exec } from 'child_process';
+import fs from 'fs';
+import { readFile as readFileAsync } from 'node:fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import util from 'util';
 
+import { TEST_PORT } from './setup';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const execAsync = util.promisify(exec);
 
 /**
@@ -20,7 +23,9 @@ const runArtillery = async (scriptName) => {
   console.log(`Running ${scriptName}`);
 
   try {
-    await execAsync(`npx artillery run -t "${testServerUrl}" -o "${reportPath}" "${scriptPath}"`);
+    await execAsync(
+      `npx artillery run -t "${testServerUrl}" -o "${reportPath}" "${scriptPath}"`
+    );
   } catch (err) {
     console.error(`❌ Artillery CRASHED for ${scriptName}`);
     console.error(err.stdout);
@@ -32,4 +37,4 @@ const runArtillery = async (scriptName) => {
   return JSON.parse(report);
 };
 
-module.exports = { runArtillery };
+export { runArtillery };

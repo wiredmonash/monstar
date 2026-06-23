@@ -1,4 +1,4 @@
-const request = require('supertest');
+import request from 'supertest';
 
 /**
  * Characterization tests for the LIVE v1 reviews READ endpoints

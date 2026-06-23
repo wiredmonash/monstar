@@ -1,7 +1,7 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
+import request from 'supertest';
+import mongoose from 'mongoose';
 
-const { accessTokenCookie, getCsrf } = require('./helpers');
+import { accessTokenCookie, getCsrf } from './helpers';
 
 /**
  * Characterization tests for the LIVE v1 notifications endpoints (used by the

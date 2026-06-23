@@ -1,11 +1,13 @@
-jest.mock('axios', () => ({
-  get: jest.fn(),
-  post: jest.fn(),
-  isAxiosError: jest.fn(() => false),
-}));
+import axios from 'axios';
+import request from 'supertest';
 
-const axios = require('axios');
-const request = require('supertest');
+vi.mock('axios', () => ({
+  default: {
+    get: vi.fn(),
+    post: vi.fn(),
+    isAxiosError: vi.fn(() => false),
+  },
+}));
 
 /**
  * Characterization tests for the LIVE v1 github endpoint
@@ -15,7 +17,7 @@ const request = require('supertest');
  */
 describe('GET /api/v1/github/contributors', () => {
   it('returns formatted, sorted, human contributors (200)', async () => {
-    axios.get.mockResolvedValue({
+    vi.mocked(axios.get).mockResolvedValue({
       data: [
         { login: 'alice', type: 'User', contributions: 50, avatar_url: 'a', html_url: 'ua' },
         { login: 'bot', type: 'Bot', contributions: 999, avatar_url: 'b', html_url: 'ub' },
@@ -33,7 +35,7 @@ describe('GET /api/v1/github/contributors', () => {
   });
 
   it('falls back gracefully (200) when the GitHub API errors', async () => {
-    axios.get.mockRejectedValue(new Error('network down'));
+    vi.mocked(axios.get).mockRejectedValue(new Error('network down'));
 
     const res = await request(global.app).get('/api/v1/github/contributors');
 

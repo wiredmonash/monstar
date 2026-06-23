@@ -1,7 +1,7 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
+import request from 'supertest';
+import mongoose from 'mongoose';
 
-const { accessTokenCookie, getCsrf, seedUserWithReview } = require('./helpers');
+import { accessTokenCookie, getCsrf, seedUserWithReview } from './helpers';
 
 /**
  * Characterization tests for the LIVE v2 review-delete endpoint

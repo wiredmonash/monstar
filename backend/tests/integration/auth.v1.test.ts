@@ -1,18 +1,18 @@
 // Mock the Google OAuth client so no real token verification happens. The
 // shared mock fn lets each test control the returned payload.
-const mockVerifyIdToken = jest.fn();
-jest.mock('google-auth-library', () => ({
-  OAuth2Client: jest.fn().mockImplementation(() => ({
-    verifyIdToken: mockVerifyIdToken,
-  })),
+import mongoose from 'mongoose';
+import request from 'supertest';
+
+import TokenProvider from '@providers/token.provider';
+
+import { getCsrf, accessTokenCookie } from './helpers';
+
+const { mockVerifyIdToken } = vi.hoisted(() => ({ mockVerifyIdToken: vi.fn() }));
+vi.mock('google-auth-library', () => ({
+  OAuth2Client: vi.fn().mockImplementation(function () {
+    return { verifyIdToken: mockVerifyIdToken };
+  }),
 }));
-
-const request = require('supertest');
-const mongoose = require('mongoose');
-
-const TokenProvider = require('@providers/token.provider');
-
-const { getCsrf, accessTokenCookie } = require('./helpers');
 
 const googlePayload = (overrides = {}) => ({
   email: 'abcd1234@student.monash.edu',
@@ -45,7 +45,7 @@ describe('POST /api/v1/auth/google/authenticate', () => {
     );
     expect(res.body.data).toHaveProperty('username', 'abcd1234');
 
-    const setCookie = (res.headers['set-cookie'] || []).join(';');
+    const setCookie = ((res.headers['set-cookie'] as unknown as string[]) || []).join(';');
     expect(setCookie).toMatch(/access_token=/);
     expect(setCookie).toMatch(/refresh_token=/);
   });

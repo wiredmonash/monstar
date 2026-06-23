@@ -1,7 +1,19 @@
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const mongoose = require('mongoose');
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+
+// Register every model on the connection so cross-model populate() works in
+// service tests that don't load the full app. Glob-importing the models dir
+// keeps this working for future models with no manual edits (Vite resolves
+// import.meta.glob eagerly into static imports, running their side effects).
+import.meta.glob(['../../models/*.ts', '!../../models/types.ts'], {
+  eager: true,
+});
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Converts values of data into mongoose types

@@ -1,9 +1,9 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
+import request from 'supertest';
+import mongoose from 'mongoose';
 
-const TokenProvider = require('@providers/token.provider');
+import TokenProvider from '@providers/token.provider';
 
-const { getCsrf, accessTokenCookie } = require('./helpers');
+import { getCsrf, accessTokenCookie } from './helpers';
 
 /**
  * Characterization tests for the LIVE v2 users endpoints the frontend calls
@@ -52,7 +52,7 @@ describe('POST /api/v2/users/refresh', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('message', 'Token refreshed successfully');
-    const setCookie = (res.headers['set-cookie'] || []).join(';');
+    const setCookie = ((res.headers['set-cookie'] as unknown as string[]) || []).join(';');
     expect(setCookie).toMatch(/access_token=/);
     expect(setCookie).toMatch(/refresh_token=/);
   });

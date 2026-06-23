@@ -1,13 +1,15 @@
-const Unit = require('@models/unit');
-const User = require('@models/user');
-const Review = require('@models/review');
-const ReviewService = require('@services/review.service');
+import { Types } from 'mongoose';
 
-jest.mock('@services/notification.service');
-const NotificationService = require('@services/notification.service');
+import Review from '@models/review';
+import Unit from '@models/unit';
+import User from '@models/user';
+import NotificationService from '@services/notification.service';
+import ReviewService from '@services/review.service';
+
+vi.mock('@services/notification.service');
 
 describe(ReviewService.name, () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   /* -------------------------------- Retrieval ------------------------------- */
 
@@ -56,7 +58,7 @@ describe(ReviewService.name, () => {
         contentRating: 5,
         facultyRating: 5,
         description: 'The quick brown fox jumps over the lazy dog',
-        author: author,
+        author: author as unknown as Types.ObjectId,
       });
 
       // assert

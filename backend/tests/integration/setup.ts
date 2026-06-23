@@ -1,22 +1,23 @@
 /**
  * Integration test setup.
  *
- * Boots the real Express app (server.js) against an in-memory MongoDB so tests
- * exercise the full route -> controller -> service -> repository -> model stack.
- * External providers are kept inert via dummy env vars (and a stubbed Swagger
- * setup), so no network calls happen.
+ * Boots the real Express app against an in-memory MongoDB so tests exercise the
+ * full route -> controller -> service -> repository -> model stack. External
+ * providers are kept inert via dummy env vars (and a stubbed Swagger setup), so
+ * no network calls happen.
  *
- * The app is required lazily inside beforeAll, AFTER MONGODB_CONN_STRING points
+ * The app is imported lazily inside beforeAll, AFTER MONGODB_CONN_STRING points
  * at the in-memory server, because mongodb.provider captures that variable at
  * module-load time.
  */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const mongoose = require('mongoose');
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 
-jest.setTimeout(30000);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /* ------- Hermetic environment: keep providers inert and offline ------- */
 process.env.NODE_ENV = 'test';
@@ -41,13 +42,13 @@ process.env.NOTION_PAGE_ID = '';
 process.env.GITHUB_TOKEN = '';
 
 /* ----- Stub Swagger so importing the app doesn't generate/serve docs ----- */
-jest.mock('@docs/swagger', () => ({
-  setupSwagger: jest.fn().mockResolvedValue(undefined),
+vi.mock('@docs/swagger', () => ({
+  setupSwagger: vi.fn().mockResolvedValue(undefined),
 }));
 
 /* ----- Stub nodemailer so report emails never hit a real SMTP server ----- */
-jest.mock('nodemailer', () => ({
-  createTransport: () => ({ sendMail: jest.fn().mockResolvedValue({}) }),
+vi.mock('nodemailer', () => ({
+  default: { createTransport: () => ({ sendMail: vi.fn().mockResolvedValue({}) }) },
 }));
 
 /**
@@ -94,10 +95,10 @@ beforeAll(async () => {
 
   // Connect through the app's own provider so the request-time db middleware
   // reuses this connection instead of opening another.
-  const { dbConnect } = require('@providers/mongodb.provider');
+  const { dbConnect } = await import('@providers/mongodb.provider');
   await dbConnect();
 
-  global.app = require('../../server');
+  global.app = (await import('../../server')).default;
 });
 
 /**

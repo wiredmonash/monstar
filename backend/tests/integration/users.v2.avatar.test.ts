@@ -1,7 +1,12 @@
 // Stub multer so the upload middleware injects a fake "uploaded" file instead
 // of streaming to Cloudinary. This keeps the test offline while still
 // exercising the real handler + service (find user, persist profileImg).
-jest.mock('multer', () => {
+import mongoose from 'mongoose';
+import request from 'supertest';
+
+import { accessTokenCookie, getCsrf } from './helpers';
+
+vi.mock('multer', () => {
   const multer = () => ({
     single: () => (req, res, next) => {
       req.file = {
@@ -12,13 +17,8 @@ jest.mock('multer', () => {
   });
   multer.memoryStorage = () => ({});
   multer.diskStorage = () => ({});
-  return multer;
+  return { default: multer };
 });
-
-const request = require('supertest');
-const mongoose = require('mongoose');
-
-const { accessTokenCookie, getCsrf } = require('./helpers');
 
 const FAKE_URL =
   'https://res.cloudinary.com/demo/image/upload/user_avatars/fake.png';

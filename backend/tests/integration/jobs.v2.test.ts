@@ -1,4 +1,5 @@
-const request = require('supertest');
+import request from 'supertest';
+import OrgLogo from '@models/orgLogo';
 
 /**
  * Characterization test for the LIVE v2 jobs endpoint the frontend uses
@@ -7,7 +8,6 @@ const request = require('supertest');
  */
 describe('GET /api/v2/jobs/logos', () => {
   it('returns the stored organisation logos (200)', async () => {
-    const OrgLogo = require('@models/orgLogo');
     await OrgLogo.create({
       organisation: 'WIRED',
       logoUrl: 'https://example.com/wired.png',

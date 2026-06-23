@@ -1,4 +1,4 @@
-const { runArtillery } = require('./runArtillery');
+import { runArtillery } from './runArtillery';
 
 describe('Comparing v1 and v2 /units APIs', () => {
   test('/popular', async () => {

@@ -1,9 +1,9 @@
-const UnitService = require('@services/unit.service');
-const Unit = require('@models/unit');
-const Review = require('@models/review');
+import Review from '@models/review';
+import Unit from '@models/unit';
+import UnitService from '@services/unit.service';
 
 describe(UnitService.name, () => {
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe(UnitService.fetchPaginated.name, () => {
     it('should return the correct number of units based on the limit', async () => {

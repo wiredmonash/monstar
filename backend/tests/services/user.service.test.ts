@@ -1,8 +1,12 @@
-const mockVerifyIdToken = jest.fn();
+import User from '@models/user';
+import UserService from '@services/user.service';
+import { Error403Forbidden, Error409Conflict } from '@utilities/errors';
 
-jest.mock('google-auth-library', () => {
+const { mockVerifyIdToken } = vi.hoisted(() => ({ mockVerifyIdToken: vi.fn() }));
+
+vi.mock('google-auth-library', () => {
   return {
-    OAuth2Client: jest.fn().mockImplementation(() => {
+    OAuth2Client: vi.fn().mockImplementation(function () {
       return {
         verifyIdToken: mockVerifyIdToken,
       };
@@ -10,16 +14,12 @@ jest.mock('google-auth-library', () => {
   };
 });
 
-const UserService = require('@services/user.service');
-const User = require('@models/user');
-const { Error403Forbidden, Error409Conflict } = require('@utilities/errors');
-
 describe(UserService.name, () => {
   beforeEach(() => {
     mockVerifyIdToken.mockClear();
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   // Authentication
 

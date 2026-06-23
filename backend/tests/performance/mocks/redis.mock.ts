@@ -1,8 +1,9 @@
-const IORedis = require('ioredis-mock');
+import IORedis from 'ioredis-mock';
+
 const mockRedisClient = new IORedis();
 
 class MockUpstashRedis {
-  constructor(config) {}
+  constructor() {}
 
   async get(key) {
     const data = await mockRedisClient.get(key);
@@ -30,8 +31,8 @@ class MockUpstashRedis {
   }
 
   static async flushall() {
-    return await mockRedisClient.flushall()
+    return await mockRedisClient.flushall();
   }
 }
 
-module.exports = MockUpstashRedis;
+export default MockUpstashRedis;

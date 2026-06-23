@@ -1,12 +1,12 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import request from 'supertest';
 
-const {
+import {
   accessTokenCookie,
   getCsrf,
   seedUserWithReview,
   seedReactionGraph,
-} = require('./helpers');
+} from './helpers';
 
 /**
  * Characterization tests for the LIVE v1 review-create endpoint, exercising the

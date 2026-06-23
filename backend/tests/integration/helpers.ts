@@ -1,6 +1,8 @@
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-const request = require('supertest');
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import request from 'supertest';
+
+import Unit from '@models/unit';
 
 /**
  * Build an `access_token` cookie value for a user, matching the payload shape
@@ -17,7 +19,9 @@ const accessTokenCookie = (userId, isAdmin = false) =>
  */
 const getCsrf = async (app) => {
   const res = await request(app).get('/api/v1/csrf-token');
-  const cookies = (res.headers['set-cookie'] || []).map((c) => c.split(';')[0]);
+  const cookies = ((res.headers['set-cookie'] as unknown as string[]) || []).map(
+    (c) => c.split(';')[0]
+  );
   return { token: res.body.csrfToken, cookies };
 };
 
@@ -30,7 +34,6 @@ const seedUserWithReview = async () => {
   const userId = new mongoose.Types.ObjectId();
   const reviewId = new mongoose.Types.ObjectId();
 
-  const Unit = require('@models/unit');
   const unit = await Unit.findOne({ unitCode: 'acb2420' });
 
   await mongoose.connection.collection('users').insertOne({
@@ -74,7 +77,6 @@ const seedReactionGraph = async () => {
   const reactorId = new mongoose.Types.ObjectId();
   const reviewId = new mongoose.Types.ObjectId();
 
-  const Unit = require('@models/unit');
   const unit = await Unit.findOne({ unitCode: 'acb2420' });
 
   await mongoose.connection.collection('users').insertMany([
@@ -125,9 +127,4 @@ const seedReactionGraph = async () => {
   };
 };
 
-module.exports = {
-  accessTokenCookie,
-  getCsrf,
-  seedUserWithReview,
-  seedReactionGraph,
-};
+export { accessTokenCookie, getCsrf, seedUserWithReview, seedReactionGraph };
