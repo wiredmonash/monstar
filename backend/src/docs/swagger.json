@@ -1,0 +1,2900 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "MonSTAR API",
+    "description": "MonSTAR backend API for Monash University unit reviews and SETU data",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Units",
+      "description": "Unit information and management"
+    },
+    {
+      "name": "Units V2",
+      "description": "Unit information and management V2"
+    },
+    {
+      "name": "Reviews",
+      "description": "Reviews for units"
+    },
+    {
+      "name": "Reviews V2",
+      "description": "Reviews for units V2"
+    },
+    {
+      "name": "Auth",
+      "description": "Authentication and user management"
+    },
+    {
+      "name": "User V2",
+      "description": "Authentication and user management V2"
+    },
+    {
+      "name": "Notifications",
+      "description": "User notifications"
+    },
+    {
+      "name": "GitHub",
+      "description": "GitHub integration for repository operations"
+    },
+    {
+      "name": "SETU",
+      "description": "Student Evaluation of Teaching and Units data"
+    },
+    {
+      "name": "CSRF",
+      "description": "Cross-Site Request Forgery"
+    },
+    {
+      "name": "Developer",
+      "description": "Helper endpoints for developers"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    },
+    "cookieAuth": {
+      "type": "apiKey",
+      "in": "cookie",
+      "name": "token"
+    }
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/csrf-token": {
+      "get": {
+        "tags": [
+          "CSRF"
+        ],
+        "summary": "Get CSRF token",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/units/": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Get all units from the database",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/popular": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Get 10 most popular units",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/unit/{unitcode}": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Get a unit by unit code",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitcode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/filter": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Get units with advanced filtering",
+        "description": "",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "showReviewed",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "showUnreviewed",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "hideNoOfferings",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "faculty",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "semesters",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "campuses",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/create": {
+      "post": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Create a new unit and add it to the database",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "unit_code": {
+                  "example": "any"
+                },
+                "unit_name": {
+                  "example": "any"
+                },
+                "unit_description": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/create-bulk": {
+      "post": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Create multiple units based on input JSON data",
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/delete/{unitcode}": {
+      "delete": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Delete a unit from the database",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitcode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/update/{unitcode}": {
+      "put": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Update unit description and/or name",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitcode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "unit_name": {
+                  "example": "any"
+                },
+                "unit_description": {
+                  "example": "any"
+                },
+                "avgOverallRating": {
+                  "example": "any"
+                },
+                "avgContentRating": {
+                  "example": "any"
+                },
+                "avgFacultyRating": {
+                  "example": "any"
+                },
+                "avgRelevancyRating": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/units/{unitCode}/required-by": {
+      "get": {
+        "tags": [
+          "Units"
+        ],
+        "summary": "Get all units that have the specified unit as a prerequisite",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Get all reviews from the database with an optional filter",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/{unit}": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Get all reviews for a unit from the database",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/user/{userId}": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Get all reviews by a specific user from the database",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/{unit}/create": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Create a review for a specific unit",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "review_author": {
+                  "example": "any"
+                },
+                "review_title": {
+                  "example": "any"
+                },
+                "review_semester": {
+                  "example": "any"
+                },
+                "review_grade": {
+                  "example": "any"
+                },
+                "review_year": {
+                  "example": "any"
+                },
+                "review_overall_rating": {
+                  "example": "any"
+                },
+                "review_relevancy_rating": {
+                  "example": "any"
+                },
+                "review_faculty_rating": {
+                  "example": "any"
+                },
+                "review_content_rating": {
+                  "example": "any"
+                },
+                "review_description": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/update/{reviewId}": {
+      "put": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Update a review by MongoDB ID (e.g. Title, Grade Obtained, Ratings)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/delete/{reviewId}": {
+      "delete": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Delete a review by MongoDB ID (also removes the review from the Unit\\'s reviews array)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/toggle-reaction/{reviewId}": {
+      "patch": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Toggle the likes or dislikes field for a specific review by its ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "reactionType": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/reviews/send-report": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Send an email corresponding to a user\\'s report on a review",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "reportReason": {
+                  "example": "any"
+                },
+                "reportDescription": {
+                  "example": "any"
+                },
+                "reporterName": {
+                  "example": "any"
+                },
+                "review": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/google/authenticate": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login and/or register a user using Google OAuth",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "idToken": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh access token using refresh token",
+        "description": "",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get all users from the database",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/delete/{userId}": {
+      "delete": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Delete a user from the database (Only admins or the user themselves can delete accounts)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Clear the token cookies and invalidate refresh token in database",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/update/{userId}": {
+      "put": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Update user\\'s username and/or password (Only admins or the user themselves can update account details)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/validate": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Check if the user has the access_token in their cookies to keep session",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/upload-avatar": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Upload the given avatar to cloudinary and assign it as user\\'s profileImg",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/user/{userId}": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Get all notifications for a user from the database",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/notifications/{notificationId}": {
+      "delete": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Delete a user notification",
+        "description": "",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/github/contributors": {
+      "get": {
+        "tags": [
+          "GitHub"
+        ],
+        "summary": "Fetch contributors from the MonSTAR GitHub repository (If repository is private or API unavailable, returns fallback contributor data)",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/": {
+      "get": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Get all SETU data with optional pagination",
+        "description": "",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/unit/{unitCode}": {
+      "get": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Get all SETU data for a specific unit code",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/average/{unitCode}": {
+      "get": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Get the average scores across all SETU evaluations for a unit",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/season/{season}": {
+      "get": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Get SETU data for a specific academic season (e.g. 2019_S1)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "season",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/create": {
+      "post": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Create a new SETU data entry in the database (Admin access required)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "unit_code": {
+                  "example": "any"
+                },
+                "Season": {
+                  "example": "any"
+                },
+                "code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/create-bulk": {
+      "post": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Create multiple SETU entries from a JSON array (Admin access required)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "map((entry": {
+                  "example": "any"
+                },
+                "length": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/update/{id}": {
+      "put": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Update a SETU entry by ID (Admin access required)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v1/setus/delete/{id}": {
+      "delete": {
+        "tags": [
+          "SETU"
+        ],
+        "summary": "Delete a SETU entry by ID (Admin access required)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/invalidate-cache": {
+      "get": {
+        "tags": [
+          "Developer"
+        ],
+        "summary": "Invalidate the cache",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/ai-overview/regenerate": {
+      "post": {
+        "tags": [
+          "Developer"
+        ],
+        "summary": "Admin-only endpoint to rebuild AI overviews across all units with human reviews",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "force": {
+                  "example": "any"
+                },
+                "delayMs": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/admin/{unitcode}/ai-overview/regenerate": {
+      "post": {
+        "tags": [
+          "Developer"
+        ],
+        "summary": "Admin-only endpoint to rebuild the AI overview for a single unit",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitcode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "force": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "User"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "email"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "username": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
+            "password": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
+            "isGoogleUser": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            },
+            "googleID": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "reviews": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "schemaobjectid"
+                    }
+                  }
+                }
+              }
+            },
+            "profileImg": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
+            "admin": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            },
+            "verified": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            },
+            "verificationToken": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
+            "verificationTokenExpires": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "verificationEmailsSent": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "lastVerificationEmail": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "resetPasswordToken": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
+            "resetPasswordExpires": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "resetPasswordEmailsSent": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "lastResetPasswordEmail": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "refreshToken": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                }
+              }
+            },
+            "refreshTokenExpires": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "required": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "likedReviews": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "schemaobjectid"
+                    }
+                  }
+                }
+              }
+            },
+            "dislikedReviews": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "schemaobjectid"
+                    }
+                  }
+                }
+              }
+            },
+            "notifications": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "schemaobjectid"
+                    }
+                  }
+                }
+              }
+            },
+            "_id": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Unit": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Unit"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "unitCode",
+            "name",
+            "level",
+            "creditPoints",
+            "school",
+            "academicOrg",
+            "scaBand"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "unitCode": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "reviews": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "schemaobjectid"
+                    }
+                  }
+                }
+              }
+            },
+            "avgOverallRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "avgRelevancyRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "avgFacultyRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "avgContentRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "level": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "creditPoints": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "school": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "academicOrg": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "scaBand": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "requisites": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "permission": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "boolean"
+                        }
+                      }
+                    },
+                    "prohibitions": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "array"
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "corequisites": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "array"
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "object"
+                            },
+                            "properties": {
+                              "type": "object",
+                              "properties": {
+                                "NumReq": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "example": "number"
+                                    },
+                                    "required": {
+                                      "type": "boolean",
+                                      "example": false
+                                    }
+                                  }
+                                },
+                                "units": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "example": "array"
+                                    },
+                                    "required": {
+                                      "type": "boolean",
+                                      "example": false
+                                    },
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "type": {
+                                          "type": "string",
+                                          "example": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "_id": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "example": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "required": {
+                              "type": "array",
+                              "example": [],
+                              "items": {}
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "prerequisites": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "array"
+                        },
+                        "required": {
+                          "type": "boolean",
+                          "example": false
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "object"
+                            },
+                            "properties": {
+                              "type": "object",
+                              "properties": {
+                                "NumReq": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "example": "number"
+                                    },
+                                    "required": {
+                                      "type": "boolean",
+                                      "example": false
+                                    }
+                                  }
+                                },
+                                "units": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "example": "array"
+                                    },
+                                    "required": {
+                                      "type": "boolean",
+                                      "example": false
+                                    },
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "type": {
+                                          "type": "string",
+                                          "example": "string"
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "_id": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "example": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "required": {
+                              "type": "array",
+                              "example": [],
+                              "items": {}
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "cpRequired": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "offerings": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    },
+                    "properties": {
+                      "type": "object",
+                      "properties": {
+                        "location": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "mode": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        },
+                        "period": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": {
+                      "type": "array",
+                      "example": [
+                        "location",
+                        "mode",
+                        "name",
+                        "period"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "tags": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "enum": {
+                      "type": "array",
+                      "example": [
+                        "most-reviews",
+                        "controversial",
+                        "wam-booster"
+                      ],
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "aiOverview": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "generatedAt": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        },
+                        "format": {
+                          "type": "string",
+                          "example": "date-time"
+                        }
+                      }
+                    },
+                    "model": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "string"
+                        }
+                      }
+                    },
+                    "totalReviewsConsidered": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "number"
+                        }
+                      }
+                    },
+                    "reviewSampleSize": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "number"
+                        }
+                      }
+                    },
+                    "setuSeasons": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "array"
+                        },
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "example": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "_id": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Review": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Review"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "title",
+            "semester",
+            "year",
+            "grade",
+            "overallRating",
+            "relevancyRating",
+            "facultyRating",
+            "contentRating",
+            "description",
+            "unit",
+            "author"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "semester": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "year": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "grade": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "overallRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "relevancyRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "facultyRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "contentRating": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "description": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "likes": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "dislikes": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "unit": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "schemaobjectid"
+                }
+              }
+            },
+            "author": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "schemaobjectid"
+                }
+              }
+            },
+            "_id": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "createdAt": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "updatedAt": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "SETU": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "SETU"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "unit_code",
+            "unit_name",
+            "code",
+            "Season",
+            "Responses",
+            "Invited"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "unit_code": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "unit_name": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "code": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "Season": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "Responses": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "Invited": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "Response_Rate": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "Level": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                }
+              }
+            },
+            "I1": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I2": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I3": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I4": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I5": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I6": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I7": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I8": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I9": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I10": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I11": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I12": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "I13": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "agg_score": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "array"
+                },
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "number"
+                    }
+                  }
+                }
+              }
+            },
+            "_id": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "createdAt": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "updatedAt": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Notification": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Notification"
+        },
+        "required": {
+          "type": "array",
+          "example": [
+            "data",
+            "navigateTo"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "data": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "object"
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "navigateTo": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            },
+            "timestamp": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                },
+                "format": {
+                  "type": "string",
+                  "example": "date-time"
+                }
+              }
+            },
+            "isRead": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "boolean"
+                }
+              }
+            },
+            "review": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "schemaobjectid"
+                }
+              }
+            },
+            "user": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "schemaobjectid"
+                }
+              }
+            },
+            "_id": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
