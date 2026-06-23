@@ -1,7 +1,7 @@
 import express from 'express';
 
-import UnitController from '@controllers/unit.controller';
-import adminMiddleware from '@middleware/admin.middleware';
+import UnitController from './unit.controller';
+import { adminMiddleware } from '@domains/identity/users';
 
 const router = express.Router();
 

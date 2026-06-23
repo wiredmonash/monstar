@@ -1,6 +1,5 @@
-import Review from '@models/review';
-import Unit from '@models/unit';
-import UnitService from '@services/unit.service';
+import { Review } from '@domains/academics/reviews';
+import { Unit, UnitService } from '@domains/academics/units';
 
 describe(UnitService.name, () => {
   afterEach(() => vi.clearAllMocks());
@@ -43,7 +42,7 @@ describe(UnitService.name, () => {
   describe(UnitService.modifyByUnitcode.name, () => {
     it('should return a updated unit', async () => {
       // arrange: grab some unit
-      const unit = await Unit.findOne({ unitCode: 'fit1049' });
+      const unit = (await Unit.findOne({ unitCode: 'fit1049' }))!;
       // act: call the service to modify a separate one
       const updatedUnit = await UnitService.modifyByUnitcode('fit1049', {
         name: 'A new name for this unit',

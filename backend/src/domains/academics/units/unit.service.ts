@@ -1,11 +1,12 @@
 import type { UpdateQuery } from 'mongoose';
 
-import { getSortCriteria } from '@constants/sortOptions';
-import type { IUnit } from '@models/types';
-import CacheProvider from '@providers/cache.provider';
-import UnitRepository from '@repositories/unit.repository';
-import { Error404NotFound, Error422Unprocessable } from '@utilities/errors';
-import { buildFilterQuery } from '@utilities/unitFilterHelpers';
+import CacheProvider from '@infrastructure/cache/cache';
+import { Error404NotFound, Error422Unprocessable } from '@shared/errors/errors';
+
+import { getSortCriteria } from './unit.sortOptions';
+import { buildFilterQuery } from './unit.filterHelpers';
+import UnitRepository from './unit.repository';
+import type { IUnit } from './unit.types';
 
 class UnitService {
   /**

@@ -1,9 +1,11 @@
-import type { GoogleGenAI } from '@google/genai';
+import { getGeminiClient } from '@infrastructure/ai/gemini';
+import { Review } from '@domains/academics/reviews';
+import type { IReviewLean } from '@domains/academics/reviews';
+import { SETU } from '@domains/academics/setu';
+import type { ISETULean } from '@domains/academics/setu';
 
-import Review from '@models/review';
-import SETU from '@models/setu';
-import Unit from '@models/unit';
-import type { IUnit, IReviewLean, ISETULean } from '@models/types';
+import Unit from './unit.model';
+import type { IUnit } from './unit.types';
 
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
 console.log(
@@ -15,38 +17,6 @@ const MAX_SETU_SEASONS = 4;
 const MIN_REGENERATION_DAYS = 120; // roughly every semester
 
 class AiOverviewProvider {
-  static geminiClientPromise: Promise<GoogleGenAI | null> | null = null;
-
-  /**
-   * Lazily import the Google GenAI client to avoid loading
-   * the dependency when the API key is not configured.
-   */
-  static async getGeminiClient() {
-    if (!process.env.GEMINI_API_KEY) {
-      console.warn(
-        '[AIOverview] GEMINI_API_KEY missing. Skipping overview generation.'
-      );
-      return null;
-    }
-
-    if (!this.geminiClientPromise) {
-      this.geminiClientPromise = import('@google/genai')
-        .then(
-          ({ GoogleGenAI }) =>
-            new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
-        )
-        .catch((error) => {
-          console.error(
-            '[AIOverview] Failed to initialise Gemini client:',
-            error
-          );
-          return null;
-        });
-    }
-
-    return this.geminiClientPromise;
-  }
-
   /**
    * Generate AI overview for a singular unit
    */
@@ -64,7 +34,7 @@ class AiOverviewProvider {
       return { status: 'skipped', reason: 'fresh' };
     }
 
-    const client = await this.getGeminiClient();
+    const client = await getGeminiClient();
     if (!client) {
       return { status: 'skipped', reason: 'no-client' };
     }

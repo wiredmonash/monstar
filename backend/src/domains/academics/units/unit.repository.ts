@@ -1,7 +1,9 @@
 import type { PipelineStage, UpdateQuery } from 'mongoose';
 
-import Unit from '@models/unit';
-import type { Id, IUnit } from '@models/types';
+import type { Id } from '@shared/types';
+
+import Unit from './unit.model';
+import type { IUnit } from './unit.types';
 
 class UnitRepository {
   static UNIT_CODE_PATTERN = /^[a-zA-Z]{3}\d{4}$/;

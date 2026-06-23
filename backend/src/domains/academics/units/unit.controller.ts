@@ -1,8 +1,8 @@
-import asyncHandler from '@utilities/asyncHandler';
+import asyncHandler from '@shared/utilities/asyncHandler';
 
-import UnitService from '@services/unit.service';
+import UnitService from './unit.service';
 
-import { isValidSortOption } from '../../constants/sortOptions';
+import { isValidSortOption } from './unit.sortOptions';
 
 class UnitController {
   /**

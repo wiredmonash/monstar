@@ -1,7 +1,8 @@
 import type { PipelineStage } from 'mongoose';
 
-import Review from '@models/review';
-import Unit from '@models/unit';
+import { Review } from '@domains/academics/reviews';
+
+import Unit from './unit.model';
 
 class TagManager {
   static async updateMostReviewsTag(threshold = 10) {
