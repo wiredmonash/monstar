@@ -13,7 +13,7 @@ const execAsync = util.promisify(exec);
 /**
  * Creates a shell and runs artillery
  */
-const runArtillery = async (scriptName) => {
+const runArtillery = async (scriptName: string) => {
   const scriptPath = path.join(__dirname, scriptName + '.yml');
   const reportPath = path.join(__dirname, scriptName + '.report.json');
   const testServerUrl = `http://localhost:${TEST_PORT}`;
@@ -27,9 +27,10 @@ const runArtillery = async (scriptName) => {
       `npx artillery run -t "${testServerUrl}" -o "${reportPath}" "${scriptPath}"`
     );
   } catch (err) {
+    const e = err as { stdout?: string; stderr?: string };
     console.error(`❌ Artillery CRASHED for ${scriptName}`);
-    console.error(err.stdout);
-    console.error(err.stderr);
+    console.error(e.stdout);
+    console.error(e.stderr);
     throw err;
   }
 

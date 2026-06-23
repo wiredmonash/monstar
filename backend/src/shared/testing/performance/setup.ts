@@ -1,3 +1,5 @@
+import type { Server } from 'node:http';
+
 import MockUpstashRedis from './mocks/redis.mock';
 
 vi.mock('@upstash/redis', async () => {
@@ -7,9 +9,9 @@ vi.mock('@upstash/redis', async () => {
 
 export const TEST_PORT = 5555;
 
-let server;
+let server: Server;
 beforeAll(async () => {
-  const app = (await import('../../server')).default;
+  const app = (await import('../../../server')).default;
   await new Promise<void>((resolve) => {
     server = app.listen(TEST_PORT, () => resolve());
   });

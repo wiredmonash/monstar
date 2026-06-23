@@ -5,7 +5,7 @@ const mockRedisClient = new IORedis();
 class MockUpstashRedis {
   constructor() {}
 
-  async get(key) {
+  async get(key: string) {
     const data = await mockRedisClient.get(key);
     try {
       return data ? JSON.parse(data) : null;
@@ -14,7 +14,7 @@ class MockUpstashRedis {
     }
   }
 
-  async setex(key, value, ttl) {
+  async setex(key: string, value: unknown, ttl?: number) {
     const stringValue = JSON.stringify(value);
     if (ttl) {
       return mockRedisClient.set(key, stringValue, 'EX', ttl);
@@ -23,10 +23,10 @@ class MockUpstashRedis {
     return mockRedisClient.set(key, stringValue);
   }
 
-  async del(...keys) {
+  async del(...keys: string[]) {
     return mockRedisClient.del(...keys);
   }
-  async keys(pattern) {
+  async keys(pattern: string) {
     return mockRedisClient.keys(pattern);
   }
 
