@@ -52,7 +52,9 @@ describe('POST /api/v2/users/refresh', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('message', 'Token refreshed successfully');
-    const setCookie = ((res.headers['set-cookie'] as unknown as string[]) || []).join(';');
+    const setCookie = (
+      (res.headers['set-cookie'] as unknown as string[]) || []
+    ).join(';');
     expect(setCookie).toMatch(/access_token=/);
     expect(setCookie).toMatch(/refresh_token=/);
   });

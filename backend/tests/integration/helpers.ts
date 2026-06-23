@@ -9,9 +9,13 @@ import Unit from '@models/unit';
  * produced by TokenProvider.generateAccessToken ({ id, isAdmin }).
  */
 const accessTokenCookie = (userId, isAdmin = false) =>
-  `access_token=${jwt.sign({ id: String(userId), isAdmin }, process.env.JWT_SECRET, {
-    expiresIn: '15m',
-  })}`;
+  `access_token=${jwt.sign(
+    { id: String(userId), isAdmin },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '15m',
+    }
+  )}`;
 
 /**
  * Fetch a CSRF token plus the secret cookie(s) the app expects back on
@@ -19,9 +23,9 @@ const accessTokenCookie = (userId, isAdmin = false) =>
  */
 const getCsrf = async (app) => {
   const res = await request(app).get('/api/v1/csrf-token');
-  const cookies = ((res.headers['set-cookie'] as unknown as string[]) || []).map(
-    (c) => c.split(';')[0]
-  );
+  const cookies = (
+    (res.headers['set-cookie'] as unknown as string[]) || []
+  ).map((c) => c.split(';')[0]);
   return { token: res.body.csrfToken, cookies };
 };
 

@@ -2,7 +2,9 @@ import User from '@models/user';
 import UserService from '@services/user.service';
 import { Error403Forbidden, Error409Conflict } from '@utilities/errors';
 
-const { mockVerifyIdToken } = vi.hoisted(() => ({ mockVerifyIdToken: vi.fn() }));
+const { mockVerifyIdToken } = vi.hoisted(() => ({
+  mockVerifyIdToken: vi.fn(),
+}));
 
 vi.mock('google-auth-library', () => {
   return {

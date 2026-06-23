@@ -36,7 +36,10 @@ describe('POST /api/v2/users/upload-avatar', () => {
     const { token, cookies } = await getCsrf(global.app);
     const res = await request(global.app)
       .post('/api/v2/users/upload-avatar')
-      .set('Cookie', [...cookies, accessTokenCookie(userId.toString())].join('; '))
+      .set(
+        'Cookie',
+        [...cookies, accessTokenCookie(userId.toString())].join('; ')
+      )
       .set('x-csrf-token', token);
 
     expect(res.status).toBe(200);

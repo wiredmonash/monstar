@@ -48,7 +48,9 @@ vi.mock('@docs/swagger', () => ({
 
 /* ----- Stub nodemailer so report emails never hit a real SMTP server ----- */
 vi.mock('nodemailer', () => ({
-  default: { createTransport: () => ({ sendMail: vi.fn().mockResolvedValue({}) }) },
+  default: {
+    createTransport: () => ({ sendMail: vi.fn().mockResolvedValue({}) }),
+  },
 }));
 
 /**

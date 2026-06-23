@@ -43,7 +43,9 @@ describe('GET /api/v1/units/filter', () => {
   });
 
   it('rejects an invalid sort option with 400', async () => {
-    const res = await request(global.app).get('/api/v1/units/filter?sort=Bogus');
+    const res = await request(global.app).get(
+      '/api/v1/units/filter?sort=Bogus'
+    );
 
     expect(res.status).toBe(400);
   });

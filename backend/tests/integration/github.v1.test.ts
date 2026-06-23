@@ -19,9 +19,27 @@ describe('GET /api/v1/github/contributors', () => {
   it('returns formatted, sorted, human contributors (200)', async () => {
     vi.mocked(axios.get).mockResolvedValue({
       data: [
-        { login: 'alice', type: 'User', contributions: 50, avatar_url: 'a', html_url: 'ua' },
-        { login: 'bot', type: 'Bot', contributions: 999, avatar_url: 'b', html_url: 'ub' },
-        { login: 'bob', type: 'User', contributions: 80, avatar_url: 'c', html_url: 'uc' },
+        {
+          login: 'alice',
+          type: 'User',
+          contributions: 50,
+          avatar_url: 'a',
+          html_url: 'ua',
+        },
+        {
+          login: 'bot',
+          type: 'Bot',
+          contributions: 999,
+          avatar_url: 'b',
+          html_url: 'ub',
+        },
+        {
+          login: 'bob',
+          type: 'User',
+          contributions: 80,
+          avatar_url: 'c',
+          html_url: 'uc',
+        },
       ],
     });
 

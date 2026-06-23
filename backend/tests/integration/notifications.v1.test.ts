@@ -22,7 +22,10 @@ describe('GET /api/v1/notifications/user/:userId', () => {
   it("returns 403 when requesting another user's notifications", async () => {
     const res = await request(global.app)
       .get(`/api/v1/notifications/user/${new mongoose.Types.ObjectId()}`)
-      .set('Cookie', accessTokenCookie(new mongoose.Types.ObjectId().toString()));
+      .set(
+        'Cookie',
+        accessTokenCookie(new mongoose.Types.ObjectId().toString())
+      );
 
     expect(res.status).toBe(403);
   });

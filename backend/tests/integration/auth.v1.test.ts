@@ -7,7 +7,9 @@ import TokenProvider from '@providers/token.provider';
 
 import { getCsrf, accessTokenCookie } from './helpers';
 
-const { mockVerifyIdToken } = vi.hoisted(() => ({ mockVerifyIdToken: vi.fn() }));
+const { mockVerifyIdToken } = vi.hoisted(() => ({
+  mockVerifyIdToken: vi.fn(),
+}));
 vi.mock('google-auth-library', () => ({
   OAuth2Client: vi.fn().mockImplementation(function () {
     return { verifyIdToken: mockVerifyIdToken };
@@ -45,7 +47,9 @@ describe('POST /api/v1/auth/google/authenticate', () => {
     );
     expect(res.body.data).toHaveProperty('username', 'abcd1234');
 
-    const setCookie = ((res.headers['set-cookie'] as unknown as string[]) || []).join(';');
+    const setCookie = (
+      (res.headers['set-cookie'] as unknown as string[]) || []
+    ).join(';');
     expect(setCookie).toMatch(/access_token=/);
     expect(setCookie).toMatch(/refresh_token=/);
   });
@@ -161,7 +165,10 @@ describe('POST /api/v1/auth/logout', () => {
     const { token, cookies } = await getCsrf(global.app);
     const res = await request(global.app)
       .post('/api/v1/auth/logout')
-      .set('Cookie', [...cookies, accessTokenCookie(userId.toString())].join('; '))
+      .set(
+        'Cookie',
+        [...cookies, accessTokenCookie(userId.toString())].join('; ')
+      )
       .set('x-csrf-token', token);
 
     expect(res.status).toBe(200);
