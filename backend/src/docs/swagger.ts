@@ -1,6 +1,6 @@
 import type { Express } from 'express';
 
-import { getErrorMessage } from '@utilities/getErrorMessage';
+import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 
 const setupSwagger = async (app: Express) => {
   if (!process.env.DEVELOPMENT) return;
@@ -10,11 +10,11 @@ const setupSwagger = async (app: Express) => {
   const swaggerAutogen = (await import('swagger-autogen')).default();
   const swaggerUi = await import('swagger-ui-express');
 
-  const { default: Notification } = await import('../models/notification');
-  const { default: Review } = await import('../models/review');
-  const { default: SETU } = await import('../models/setu');
-  const { default: Unit } = await import('../models/unit');
-  const { default: User } = await import('../models/user');
+  const { Notification } = await import('@domains/identity/notifications');
+  const { Review } = await import('@domains/academics/reviews');
+  const { SETU } = await import('@domains/academics/setu');
+  const { Unit } = await import('@domains/academics/units');
+  const { User } = await import('@domains/identity/users');
 
   const doc = {
     info: {
@@ -97,15 +97,15 @@ const setupSwagger = async (app: Express) => {
     },
   };
 
-  const outputFile = './docs/swagger.json';
-  const endpointsFiles = ['./server.ts'];
+  const outputFile = './src/docs/swagger.json';
+  const endpointsFiles = ['./src/server.ts'];
 
   try {
     await swaggerAutogen(outputFile, endpointsFiles, doc);
 
     // Load the generated documentation
     const swaggerDocument = JSON.parse(
-      fs.readFileSync('./docs/swagger.json', 'utf8')
+      fs.readFileSync('./src/docs/swagger.json', 'utf8')
     );
 
     app.use(
