@@ -11,20 +11,19 @@ import csrf from 'csurf';
 import express, { type RequestHandler } from 'express';
 
 import { setupSwagger } from '@docs/swagger';
-import errorMiddleware from '@middleware/error.middleware';
-import { dbConnect } from '@providers/mongodb.provider';
-import tagManager from '@providers/tagManager.provider';
-import adminRouter from '@routes/v1/admin';
-import authRouter from '@routes/v1/auth';
-import githubRouter from '@routes/v1/github';
-import notificationsRouter from '@routes/v1/notifications';
-import reviewsV1Router from '@routes/v1/reviews';
-import setusRouter from '@routes/v1/setus';
-import unitsV1Router from '@routes/v1/units';
-import jobsV2Router from '@routes/v2/jobs';
-import reviewsV2Router from '@routes/v2/reviews';
-import unitsV2Router from '@routes/v2/units';
-import usersV2Router from '@routes/v2/users';
+import errorMiddleware from '@shared/middleware/error.middleware';
+import { dbConnect } from '@infrastructure/database/mongodb';
+import { TagManager, unitsV2Router } from '@domains/academics/units';
+import { reviewsV2Router } from '@domains/academics/reviews';
+import adminRouter from '@deprecated/admin.v1.routes';
+import authRouter from '@deprecated/auth.v1.routes';
+import githubRouter from '@deprecated/github.v1.routes';
+import notificationsRouter from '@deprecated/notifications.v1.routes';
+import reviewsV1Router from '@deprecated/reviews.v1.routes';
+import setusRouter from '@deprecated/setus.v1.routes';
+import unitsV1Router from '@deprecated/units.v1.routes';
+import { usersV2Router } from '@domains/identity/users';
+import { jobsV2Router } from '@domains/recruitment/jobs';
 
 /* --------------------------- Initialize Express --------------------------- */
 const __filename = fileURLToPath(import.meta.url);
@@ -125,7 +124,7 @@ if (process.argv[1] === __filename) {
     .then(async () => {
       if (!isDevelopment && isProductionMachine) {
         try {
-          await tagManager.updateMostReviewsTag(1);
+          await TagManager.updateMostReviewsTag(1);
         } catch (e) {
           console.error('Initial tag update failed', e);
         }
