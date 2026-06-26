@@ -124,7 +124,7 @@ make rebuild    # docker compose down -v && docker compose up --build -d
 
 1. Create a branch: `git switch -c your-branch-name`
 2. Make your changes and test them.
-3. Commit using [conventional commit messages](https://gist.github.com/Zekfad/f51cb06ac76e2457f11c80ed705c95a3).
+3. Commit using [conventional commit messages](https://gist.github.com/Zekfad/f51cb06ac76e2457f11c80ed705c95a3). A `commit-msg` hook enforces this locally — enable it with `make hooks` (or `make install`, which runs it for you).
 4. Open a pull request that describes the change, references related issues, and includes screenshots for UI changes.
 
 Bug fixes, documentation, and performance work are always welcome. For new features, message [@jenul-ferdinand](https://github.com/jenul-ferdinand) first so we can talk it through.
