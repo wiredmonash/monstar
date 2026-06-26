@@ -78,6 +78,7 @@ cd backend && node server.js
 
 ### Commit messages
 - Use [conventional commit messages](https://gist.github.com/Zekfad/f51cb06ac76e2457f11c80ed705c95a3)
+- A `commit-msg` git hook enforces this locally — enable it with `make hooks` (or `make install`, which runs it for you).
 
 ### Pull Request Process
 

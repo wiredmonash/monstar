@@ -1,0 +1,28 @@
+#!/bin/sh
+# Enforce Conventional Commits on the commit subject line.
+# https://www.conventionalcommits.org
+#
+# Enabled per-clone via `git config core.hooksPath .githooks` (run `make hooks`,
+# which `make install` does for you).
+
+subject="$(head -n1 "$1")"
+
+# Let git-generated commits (merge/revert) and fixup/squash commits through.
+case "$subject" in
+  "Merge "*|"Revert "*|fixup!*|squash!*) exit 0 ;;
+esac
+
+pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9 ._/-]+\))?!?: .+'
+
+if printf '%s' "$subject" | grep -Eq "$pattern"; then
+  exit 0
+fi
+
+echo "✗ Commit message is not a Conventional Commit." >&2
+echo >&2
+echo "  format: <type>[(scope)][!]: <subject>" >&2
+echo "  types:  feat fix docs style refactor perf test build ci chore revert" >&2
+echo "  e.g.    fix(backend): serve compiled JS for Vercel function" >&2
+echo >&2
+echo "  got:    $subject" >&2
+exit 1
