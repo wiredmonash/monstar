@@ -18,15 +18,15 @@ export default tseslint.config(
       'src/shared/testing/',
     ],
   },
-  // Configuration for CommonJS files (.js, .cjs)
+  // Configuration for JavaScript files (.js is ESM via package "type": "module")
   {
-    files: ['**/*.js', '**/*.cjs'],
+    files: ['**/*.js', '**/*.mjs'],
     plugins: {
       import: importPlugin,
     },
     languageOptions: {
       globals: globals.node,
-      sourceType: 'commonjs',
+      sourceType: 'module',
     },
     rules: {
       'import/order': [
