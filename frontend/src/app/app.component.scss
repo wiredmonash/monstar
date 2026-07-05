@@ -13,6 +13,12 @@ body {
   flex-direction: column;
   min-height: 100%;
   background-color: $bg-dark-color;
+  padding-left: $sidebar-rail-width;
+
+  // The rail is hidden on mobile (the navbar hamburger opens it instead)
+  @media (max-width: 768px) {
+    padding-left: 0;
+  }
 }
 
 // Allow the content area to grow and fill space
