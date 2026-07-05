@@ -4,6 +4,24 @@
       "year": 2026,
       "entries": [
         {
+          "month": 7,
+          "content": {
+            "New Sidebar Navigation": [
+              "We swapped the pop-out sidebar for an icon rail that stays pinned to the side while you browse.",
+              "Cleaned up the login and profile menus so they only show sign-in options we support."
+            ]
+          }
+        },
+        {
+          "month": 6,
+          "content": {
+            "A Faster, More Reliable MonSTAR": [
+              "We rebuilt MonSTAR's backend for better stability and fewer errors.",
+              "Cleared out old code behind the scenes so new features land sooner."
+            ]
+          }
+        },
+        {
           "month": 2,
           "content": {
             "Student Roles Board!": [
@@ -25,192 +43,139 @@
         {
           "month": 11,
           "content": {
-            "Optimised Database": [
-              "The MongoDB Atlas database had to be tweaked to support serverless."
-            ],
-            "Migration from Akamai to Vercel": [
-              "We migrated our deployment from a monolith instance hosted on Akamai, to serverless on Vercel."
+            "Faster, More Reliable Hosting": [
+              "We moved MonSTAR to hosting that scales with demand, so it stays fast when lots of students are online at once.",
+              "Tuned the database to match."
             ]
           }
         },
         {
           "month": 10,
           "content": {
-            "Unit List Fixes": [
-              "The filtering method for lowest overall used to show units with no reviews first, now unit with reviews are shown.",
-              "The number of unit cards is now flush for each row, each row has an equal amount of unit cards. Fixed this by using commonly divisible numbers instead for page size.",
-              "Made unit card's unit names shorter to prevent overflow for some units with long names."
+            "Better Unit Browsing": [
+              "Sorting by lowest rating now shows units that have reviews first.",
+              "Unit cards now line up in even rows, and long unit names no longer spill over their cards."
             ],
-            "Changelog Page": [
-              "Implemented changelog page with vertical timeline UI and clickable commit hash chips (`5329cd1`, `8168e2a`, `0db3c30`, `4b95235`)."
+            "This Changelog!": [
+              "Added the page you're reading now, a timeline of everything new on MonSTAR."
             ],
-            "SETU Authentication Guard": [
-              "Added multi-layer authentication overlay and content protection for SETU overview cards (`dfe786d`, `5f60133`).",
-              "Integrated `ProfileDialogService` for navbar profile state management (`85c70e4`).",
-              "New shiny gradient text & 'Ryzes' font on homepage (`897940a`)."
-            ],
-            "Developer Tools": [
-              "Expanded Claude code-assistant integration with Chrome DevTools permissions (`e429689`, `76ea39e`)."
-            ],
-            "Build & Deployment": [
-              "CI improvements (`4a83ce5`).",
-              "SETU cards enabled in production and development environments (`1cbd9fc`)."
+            "SETU Insights for Students": [
+              "SETU survey overviews now sit behind a quick sign-in, keeping the data within the Monash student community.",
+              "Gave the homepage a new look with gradient text and a new font."
             ]
           }
         },
         {
           "month": 9,
           "content": {
-            "AI Overview Feature": [
-              "Added AI overview cards powered by Gemini 2.5 Pro (`f918804`, `7195a98`, `4f8b818`).",
-              "Added model badge display and responsive date formatting (`d0cee8d`)."
+            "AI Unit Overviews": [
+              "Added AI overviews: short summaries of each unit written by Gemini 2.5 Pro.",
+              "Each summary shows which model wrote it and when."
             ],
-            "Environment Config Refactor": [
-              "Unified backend/frontend environment configuration (`3e21a54` → `a4fc666`).",
-              "Added `.env.template` and migration guide."
-            ],
-            "Security & Tooling": [
-              "Added CSRF protection (`3dea8af`).",
-              "Swagger UI docs setup (`e7b4deb`).",
-              "Prettier formatting for backend files (`0c0a237`)."
-            ],
-            "UI Enhancements": [
-              "Loading skeletons for SETU and AI overview cards.",
-              "Spacing and tooltip fixes for multiple components."
-            ],
-            "Docs & Licensing": [
-              "Added AGPL-3.0 license (`f6ee0c2`).",
-              "Improved README and contribution guide (`a39fde4`)."
+            "Smoother UI": [
+              "Added loading skeletons while data loads, plus spacing and tooltip fixes across the app."
             ]
           }
         },
         {
           "month": 8,
-          "content": [
-            "User page system introduced (`c502961`).",
-            "Enforced unique username updates (`98420ac`)."
-          ]
+          "content": {
+            "User Profiles": [
+              "Added user profile pages where your contributions live.",
+              "Usernames are now unique."
+            ]
+          }
         },
         {
           "month": 7,
           "content": {
-            "SETU Overview Integration": [
-              "Added main SETU overview page with accordions, charts, and carousel (`a760cb4`, `b9c9ccc`, `d5f246e`).",
-              "Introduced `constants.ts` and compile time constants (`ec80601`)."
+            "SETU Survey Overviews": [
+              "Launched SETU survey overview pages with charts and a carousel for exploring how units score."
             ],
-            "User Reviews": [
-              "Editing/deleting user reviews directly in profile (`c9e8083`, `818f6ca`)."
+            "Manage Your Reviews": [
+              "You can now edit and delete your reviews right from your profile."
             ],
-            "Contributors Section": [
-              "GitHub contributor stats and percentages on About page (`abb91c1`, `5d95c6c`)."
-            ],
-            "SEO & Accessibility": [
-              "Added meta tags and sitemaps for SETU pages (`b25ef93`)."
+            "Meet the Contributors": [
+              "Added a contributors section to the About page listing everyone who's helped build MonSTAR."
             ]
           }
         },
         {
           "month": 6,
-          "content": [
-            "Full-page layout and scroll fixes for unit overview.",
-            "Added circular knob UI for SETU metrics (`e282a67`).",
-            "Optimised SETU bulk endpoint and backend performance."
-          ]
+          "content": {
+            "Unit Overview Refresh": [
+              "Gave unit overview pages a full-page layout and fixed some annoying scrolling issues.",
+              "Added circular knob dials for SETU metrics.",
+              "Sped up how SETU data loads."
+            ]
+          }
         },
         {
           "monthStart": 4,
           "monthEnd": 5,
-          "content": [
-            "Implemented `HighlightUnitPipe` to hyperlink unit codes (`e571b61`).",
-            "Added review sorting by likes/dislikes (`5f05c37`)."
-          ]
+          "content": {
+            "Handy Touches": [
+              "Unit codes in reviews are now clickable links to that unit.",
+              "You can now sort reviews by likes and dislikes to find the most helpful ones first."
+            ]
+          }
         },
         {
           "month": 3,
           "content": {
-            "SEO & Performance": [
-              "Implemented Google SEO verification, sitemap, and performance improvements (`dadb2ea` → `5de9f23`)."
+            "Notifications": [
+              "Added notifications with badges for replies and updates."
             ],
-            "Notifications System": [
-              "Added backend and frontend notification routes, models, and UI badges (`c4f4e0c` → `a3fee7e`)."
+            "Smarter Reviews": [
+              "Editing reviews now happens in a dedicated dialog, and you can post one review per unit.",
+              "Tightened up review security."
             ],
-            "Review System": [
-              "Enabled review editing dialogs and one-review-per-unit restriction.",
-              "Fixed major security vulnerabilities in review endpoints (`7b63888`)."
-            ],
-            "About Page & Auth Updates": [
-              "Added About page with contributor information and staff/masters Monash email login support (`934f279`).",
-              "Removed legacy authentication functions and improved navigation service."
+            "About Page & Wider Sign-In": [
+              "Added an About page introducing the team behind MonSTAR.",
+              "Opened sign-in to Monash staff and masters email addresses."
             ]
           }
         },
         {
           "month": 2,
           "content": {
-            "Unit Map & Graph Visualization": [
-              "Created `unit-map` component using `@swimlane/ngx-graph@10.0.0-alpha.0` and `d3`.",
-              "Implemented graph rendering with prerequisites and dependent units via `fetchAndBuildUnitGraph()`.",
-              "Added graph toolbar for reset, zoom, and center operations.",
-              "Created backend endpoint `api/v1/units/:unitCode/required-by` to fetch units that depend on the selected unit.",
-              "Added API service method for the new endpoint.",
-              "Fixed panning bug on smaller graphs by customising `<ngx-graph>` options."
+            "Unit Map": [
+              "Introduced the Unit Map, an interactive graph of how units connect through prerequisites and what they unlock.",
+              "Zoom, reset, re-center, and switch layouts from the toolbar, with tooltips on each control."
             ],
-            "UI Improvements": [
-              "Added tooltips for unit map toolbar buttons (Feb 5).",
-              "Introduced back button to unit map page and loading skeletons for review cards and headers (Feb 8).",
-              "Added circular progress bars for detailed ratings and tooltips to explain rating categories.",
-              "Enhanced `unit-card` component with credit points, prerequisites, tags, offering chips, and performance optimisations (`O(n + mlog(m) + klog(k) + p)` complexity).",
-              "Optimised period/location sorting and caching for better chip overflow handling."
+            "Prettier Unit Cards": [
+              "Unit cards now show credit points, prerequisites, tags, and offering details, and load faster.",
+              "Popular units now get tagged so they're easier to find."
             ],
-            "Backend Enhancements": [
-              "Added `tags` field to Unit schema with enum validation.",
-              "Implemented `tagManager.service` with `node-cron` to update popular unit tags hourly.",
-              "Improved filtering API to hide units with no offerings."
+            "Richer Reviews": [
+              "Reviews got clearer like and dislike colours, compact rating circles, and a Report Review button.",
+              "Renamed the rating categories to Enjoyment, Simplicity, and Usefulness."
             ],
-            "Security & API Upgrades": [
-              "Moved Monash email validation to backend with proper 403 error handling.",
-              "Restricted user deletion and update endpoints to admin/self verification.",
-              "Improved transactional safety for user deletion using MongoDB sessions (ACID compliance).",
-              "Verified review update permissions by user ID.",
-              "Ensured register endpoint enforces Monash email validation."
-            ],
-            "Profile & Account Features": [
-              "Added graph layout toggler in unit map toolbar.",
-              "Fixed Google user profile picture bug.",
-              "Added Delete Account button in Profile Settings with backend integration."
+            "Your Account, Your Control": [
+              "Added a Delete Account option in Profile Settings, and fixed a bug with Google profile pictures."
             ],
             "Terms & Conditions": [
-              "Added Terms and Conditions page modeled after DevSoc’s Unilectives format referencing Monash Student Code of Conduct."
+              "Added a Terms and Conditions page based on Monash's Student Code of Conduct."
             ],
-            "UI & UX Enhancements": [
-              "Improved review cards with filled like/dislike colours, compact circles for ratings, and reworked layout.",
-              "Added ‘Report Review’ button next to delete option.",
-              "Fixed review typing bugs, improved newline handling, added close sidebar button for mobile users, and made sign-in forms responsive.",
-              "Added global CSS variables for colour palette consistency."
+            "Better on Every Screen": [
+              "Reworked the app for tablets and phones, with responsive sign-in forms and a mobile-friendly sidebar."
             ],
-            "Responsive Design": [
-              "Added `viewport.service` to manage viewport detection across the app.",
-              "Upgraded profile component layout for better responsiveness.",
-              "Improved `rating.component`, `write-review-unit` dialog, and `unit-review-header` for tablet and mobile viewports."
-            ],
-            "Content & Display": [
-              "Changed rating criteria text to ‘Enjoyment’, ‘Simplicity’, and ‘Usefulness’.",
-              "Removed legacy default auth; now exclusively uses Google Auth.",
-              "Enhanced home hero section with animated floating emotes, improved header visibility, and subheader randomisation."
+            "A Friendlier Home Page": [
+              "Jazzed up the home page with animated floating emotes and a rotating set of subheaders."
             ]
           }
         },
         {
           "month": 1,
           "content": {
-            "Review System Overhaul": [
-              "Advanced filtering with local storage persistence (`45aa097`, `f71622c`).",
-              "Added ‘Friends’ prototype setup (`3b1fcf3`)."
+            "Review Filtering": [
+              "Added advanced review filters that remember your preferences between visits."
             ],
-            "Auth Updates": ["Integrated Google One-Tap and JWT login system."],
-            "UI": [
-              "Implemented ‘Forgot Password’ reset flow (`32d5fd4`).",
-              "Added profile review section (`be37ff0`)."
+            "Easier Sign-In": [
+              "Added Google One-Tap sign-in for faster login."
+            ],
+            "Password Recovery & Profiles": [
+              "Added a 'Forgot Password' flow and a reviews section on your profile."
             ]
           }
         }
@@ -222,16 +187,11 @@
         {
           "month": 12,
           "content": {
-            "Initial Release": [
-              "Launched MonSTAR v1.0 with core authentication, review CRUD, like/dislike logic, and toast system.",
-              "Integrated Angular + Primeng UI and Express + MongoDB backend APIs.",
-              "Added ProfileDialog, 404 route, and user verification with cloud storage."
+            "MonSTAR v1.0 is Live!": [
+              "Launched MonSTAR with the essentials: sign in, write and manage unit reviews, and like or dislike others' reviews."
             ],
-            "Deployment": [
-              "Configured deployment with Linode VPS (`ae73c53`, `e538118`)."
-            ],
-            "Enhancements": [
-              "Improved profile dialogs, user deletion handling, and frontend skeleton loaders."
+            "Early Polish": [
+              "Improved profile dialogs and account management, and added loading skeletons."
             ]
           }
         },
@@ -240,9 +200,7 @@
           "monthEnd": 11,
           "content": {
             "Project Genesis": [
-              "Initialized MonSTAR project with Angular frontend and Express backend.",
-              "Added review cards, write review popup, and Primeng integration.",
-              "Implemented authentication and MongoDB schemas for Monash user system."
+              "Where MonSTAR began. We set up the platform, built the first review cards and the write-a-review popup, and laid the foundations for Monash student sign-in."
             ]
           }
         }
