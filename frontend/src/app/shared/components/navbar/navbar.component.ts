@@ -1,11 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import {
-  Component,
-  HostListener,
-  inject,
-  OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { UserService } from '@services/api/user.service';
 import { IUser } from 'app/shared/models/v2/user.schema';
@@ -15,7 +9,6 @@ import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { RippleModule } from 'primeng/ripple';
-import { Sidebar, SidebarModule } from 'primeng/sidebar';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
@@ -26,8 +19,14 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { NotificationsPopupComponent } from '../notifications/notifications-popup/notifications-popup.component';
 
 export interface State {
-  isAuthenticated: boolean,
-  user: IUser | null,
+  isAuthenticated: boolean;
+  user: IUser | null;
+}
+
+interface RailLink {
+  label: string;
+  icon: string;
+  route: string;
 }
 
 @Component({
@@ -35,7 +34,6 @@ export interface State {
   standalone: true,
   imports: [
     RouterLink,
-    SidebarModule,
     ButtonModule,
     RippleModule,
     StyleClassModule,
@@ -52,8 +50,16 @@ export interface State {
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit {
-  @ViewChild('sidebarRef') sidebarRef!: Sidebar;
-  sidebarVisible: boolean = false;
+  sidebarExpanded = signal(false);
+
+  readonly railLinks: RailLink[] = [
+    { label: 'Home', icon: 'pi pi-home', route: '/' },
+    { label: 'Units', icon: 'pi pi-graduation-cap', route: '/list' },
+    { label: 'Student Roles', icon: 'pi pi-briefcase', route: '/jobs' },
+    { label: 'Changelog', icon: 'pi pi-sitemap', route: '/changelog' },
+    { label: 'Contributions', icon: 'pi pi-info-circle', route: '/about' },
+    { label: 'Ts & Cs', icon: 'pi pi-shield', route: '/terms-and-conditions' },
+  ];
 
   username: string | undefined = '';
 
@@ -75,14 +81,14 @@ export class NavbarComponent implements OnInit {
       const state: State = {
         isAuthenticated: false,
         user: null,
-      }
+      };
       if (!user) return state;
-      
+
       state.isAuthenticated = user ? true : false;
       state.user = user;
       return state;
     })
-  )
+  );
 
   constructor() {
     this.router.events
@@ -114,30 +120,22 @@ export class NavbarComponent implements OnInit {
 
   clickedProfileIcon() {
     const user = this.userService.currentUserValue;
-    if (!user) { 
-      this.router.navigate(['/auth']); 
+    if (!user) {
+      this.router.navigate(['/auth']);
       return;
     }
     return this.router.navigate(['/user/' + user.username]);
   }
 
-  @HostListener('document:keydown', ['$event'])
+  // Toggles the sidebar rail on CTRL+S
+  @HostListener('document:keydown.control.s', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    // If the user presses 's' then we open the sidebar
-    if (event.ctrlKey && event.key === 's') {
-      event.preventDefault();
-
-      if (!this.sidebarVisible) {
-        this.sidebarVisible = true;
-      } else {
-        this.sidebarVisible = false;
-      }
-    }
+    event.preventDefault();
+    this.toggleSidebar();
   }
 
-  // Closes the sidebar
-  closeSidebar(e: any): void {
-    this.sidebarRef.close(e);
+  toggleSidebar(): void {
+    this.sidebarExpanded.update((expanded) => !expanded);
   }
 
   /**
@@ -161,9 +159,10 @@ export class NavbarComponent implements OnInit {
   }
 
   /**
-   * Navigates to a page (but scrolls to top)
+   * Navigates to a page from the rail (collapses it, scrolls to top)
    */
   navigateTo(route: string) {
+    this.sidebarExpanded.set(false);
     this.navigationService.navigateTo([route]);
   }
 }
