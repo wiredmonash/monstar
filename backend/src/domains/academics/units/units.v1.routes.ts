@@ -7,32 +7,15 @@ import UnitV1Controller from './unit.v1.controller';
 // Router instance
 const router = express.Router();
 
-router.get(
-  '/',
-  // #swagger.tags = ['Units']
-  // #swagger.summary = 'Get all units from the database'
-  UnitV1Controller.getAll
-);
-
-router.get(
-  '/popular',
-  // #swagger.tags = ['Units']
-  // #swagger.summary = 'Get 10 most popular units'
-  UnitV1Controller.getPopular
-);
-
+// GET /, /popular and /filter were removed once the frontend moved to their
+// /api/v2/units equivalents. The remaining endpoints are either still called
+// by the frontend (unit-by-code, required-by) or admin data-management ops
+// with no v2 replacement yet.
 router.get(
   '/unit/:unitcode',
   // #swagger.tags = ['Units']
   // #swagger.summary = 'Get a unit by unit code'
   UnitV1Controller.getByUnitcode
-);
-
-router.get(
-  '/filter',
-  // #swagger.tags = ['Units']
-  // #swagger.summary = 'Get units with advanced filtering'
-  UnitV1Controller.getFiltered
 );
 
 router.post(
