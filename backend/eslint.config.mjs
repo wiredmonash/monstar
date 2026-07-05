@@ -2,28 +2,31 @@ import js from '@eslint/js';
 import globals from 'globals';
 import importPlugin from 'eslint-plugin-import';
 import prettierConfig from 'eslint-config-prettier';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default tseslint.config(
   js.configs.recommended,
   // Global ignores
   {
     ignores: [
       'eslint.config.mjs',
+      'vitest.config.ts',
       'node_modules/',
       'dist/',
       'build/',
-      'tests/',
+      'src/**/*.test.ts',
+      'src/shared/testing/',
     ],
   },
-  // Configuration for CommonJS files (.js, .cjs)
+  // Configuration for JavaScript files (.js is ESM via package "type": "module")
   {
-    files: ['**/*.js', '**/*.cjs'],
+    files: ['**/*.js', '**/*.mjs'],
     plugins: {
       import: importPlugin,
     },
     languageOptions: {
       globals: globals.node,
-      sourceType: 'commonjs',
+      sourceType: 'module',
     },
     rules: {
       'import/order': [
@@ -52,8 +55,25 @@ export default [
         },
       },
       'import/internal-regex':
-        '^@(models|routes|utilities|infra|controllers|providers|repositories|middleware|services|constants|docs)/',
+        '^@(domains|infrastructure|shared|deprecated|docs)/',
     },
   },
-  prettierConfig,
-];
+  // Configuration for TypeScript files (type-aware)
+  {
+    files: ['**/*.ts'],
+    extends: [...tseslint.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/await-thenable': 'error',
+    },
+  },
+  prettierConfig
+);

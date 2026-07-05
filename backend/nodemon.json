@@ -1,6 +1,3 @@
 {
-  "ignore": [
-    "swagger.json",
-    "node_modules/"
-  ]
+  "ignore": ["swagger.json", "node_modules/"]
 }

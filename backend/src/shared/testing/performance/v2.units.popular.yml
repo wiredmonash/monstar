@@ -1,0 +1,10 @@
+config:
+  phases:
+    - duration: 10
+      arrivalRate: 10
+
+scenarios:
+  - name: 'Fetch popular units'
+    flow:
+      - get:
+          url: '/api/v2/units/popular'

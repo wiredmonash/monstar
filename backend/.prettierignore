@@ -4,3 +4,8 @@
 /scraper
 /scrapers
 package-lock.json
+
+# Generated / data files (not hand-authored)
+/src/docs/swagger.json
+/src/docs/sample-data
+*.report.json
