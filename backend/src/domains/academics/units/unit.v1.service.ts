@@ -7,13 +7,6 @@ import UnitRepository from './unit.repository';
  */
 class UnitV1Service {
   /**
-   * Get a unit by its exact (non-lowercased) unitcode
-   */
-  static fetchByExactCode = async (unitcode: string) => {
-    return await UnitRepository.findOneByExactUnitcode(unitcode);
-  };
-
-  /**
    * Create a single unit from snake_case body fields
    *
    * Returns `null` when a unit with the same code already exists.
@@ -104,22 +97,6 @@ class UnitV1Service {
     });
 
     return unit;
-  };
-
-  /**
-   * Get all units that have the given unit as a prerequisite
-   *
-   * Returns `null` when the given unit does not exist.
-   *
-   * NOTE: preserves v1 behavior — lowercases the param before matching.
-   */
-  static fetchRequiredBy = async (rawUnitCode: string) => {
-    const unitCode = rawUnitCode.toLowerCase();
-
-    const unitExists = await UnitRepository.findOneByExactUnitcode(unitCode);
-    if (!unitExists) return null;
-
-    return await UnitRepository.findRequiredBySelectCodeName(unitCode);
   };
 }
 

@@ -11,24 +11,6 @@ import UnitV1Service from './unit.v1.service';
  */
 class UnitV1Controller {
   /**
-   * GET /unit/:unitcode — a unit by exact code
-   */
-  static getByUnitcode = async (req: Request, res: Response) => {
-    try {
-      // NOTE: preserves v1 behavior — exact match, does NOT lowercase the param.
-      const unit = await UnitV1Service.fetchByExactCode(req.params.unitcode);
-
-      if (!unit) return res.status(404).json({ error: 'Unit not found' });
-
-      return res.status(200).json(unit);
-    } catch (error) {
-      return res.status(500).json({
-        error: `An error occured whilst getting the singular unit: ${getErrorMessage(error)}`,
-      });
-    }
-  };
-
-  /**
    * POST /create — create a single unit
    */
   static create = async (req: Request, res: Response) => {
@@ -99,27 +81,6 @@ class UnitV1Controller {
     } catch (error) {
       return res.status(500).json({
         error: `An error occurred while updating the unit: ${getErrorMessage(error)}`,
-      });
-    }
-  };
-
-  /**
-   * GET /:unitCode/required-by — units requiring the given unit
-   */
-  static getRequiredBy = async (req: Request, res: Response) => {
-    try {
-      const requiredByUnits = await UnitV1Service.fetchRequiredBy(
-        req.params.unitCode
-      );
-
-      if (requiredByUnits === null) {
-        return res.status(404).json({ error: 'Unit not found' });
-      }
-
-      return res.status(200).json(requiredByUnits);
-    } catch (error) {
-      return res.status(500).json({
-        error: `Error finding units requiring ${req.params.unitCode}: ${getErrorMessage(error)}`,
       });
     }
   };
