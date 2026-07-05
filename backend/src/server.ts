@@ -18,7 +18,7 @@ import {
   unitsV1Router,
   unitsV2Router,
 } from '@domains/academics/units';
-import { reviewsV1Router, reviewsV2Router } from '@domains/academics/reviews';
+import { reviewsV2Router } from '@domains/academics/reviews';
 import { setusV1Router } from '@domains/academics/setu';
 import { authV1Router, usersV2Router } from '@domains/identity/users';
 import { notificationsV1Router } from '@domains/identity/notifications';
@@ -86,7 +86,6 @@ app.use(async (req, res, next) => {
 /* --------------------------------- Routes --------------------------------- */
 app.use('/api/v1/units', unitsV1Router);
 app.use('/api/v2/units', unitsV2Router);
-app.use('/api/v1/reviews', reviewsV1Router);
 app.use('/api/v2/reviews', reviewsV2Router);
 app.use('/api/v1/auth', authV1Router);
 app.use('/api/v2/users', usersV2Router);

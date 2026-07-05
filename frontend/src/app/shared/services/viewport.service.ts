@@ -68,11 +68,4 @@ export class ViewportService {
       return 'desktop';
     }
   }
-
-  /**
-   * * Returns teh current viewport type
-   */
-  getViewportType(): ViewportType {
-    return this.viewportSubject.value;
-  }
 }

@@ -3,15 +3,7 @@ import { Injectable } from '@angular/core';
 import { Types } from 'mongoose';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Review } from '../models/review.model';
 import { Unit } from '../models/unit.model';
-
-interface ReportPayload {
-  reportReason: string | null;
-  reportDescription: string | null;
-  reporterName: string | undefined;
-  review: Review | null;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -104,28 +96,6 @@ export class ApiService {
         },
       })
     );
-  }
-
-  /**
-   * * POST send a report for a review
-   *
-   * Sends a report for a given review
-   *
-   * @param {ReportPayload} reportPayload payload containing information for the report
-   */
-  sendReviewReportPOST(reportPayload: ReportPayload): void {
-    this.http
-      .post(`${this.url}/reviews/send-report`, reportPayload, {
-        withCredentials: true,
-      })
-      .subscribe({
-        next: (response) => {
-          // console.log('ApiService | Successfully sent review report:', response)
-        },
-        error: (error) => {
-          // console.log('ApiService | Error whilst sending review report:', error)
-        },
-      });
   }
 
   /**
