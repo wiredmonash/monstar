@@ -63,3 +63,11 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+## Frontend Is Angular 18
+
+Rules for `frontend/` (don't apply newer-Angular idioms):
+
+- Always set `standalone: true` explicitly on components, directives, and pipes — implicit standalone starts in v19 and omitting it here breaks the build.
+- `linkedSignal()`, `resource()`, `httpResource()`, and Signal Forms (`@angular/forms/signals`) do not exist in v18. Use `computed()`, `toSignal()`, and classic `HttpClient`/Reactive Forms instead.
+- Writing to a signal inside `effect()` requires `{ allowSignalWrites: true }` in v18.

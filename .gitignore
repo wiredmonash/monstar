@@ -14,7 +14,7 @@ jspm_packages/
 .DS_Store
 Thumbs.db
 .vercel/
-.claude/
+.claude/settings.local.json
 .mcp.json
 CLAUDE.md
 
