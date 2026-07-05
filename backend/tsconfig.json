@@ -10,7 +10,6 @@
       "@domains/*": ["./src/domains/*"],
       "@infrastructure/*": ["./src/infrastructure/*"],
       "@shared/*": ["./src/shared/*"],
-      "@deprecated/*": ["./src/deprecated/*"],
       "@docs/*": ["./src/docs/*"]
     },
     "allowJs": false,
