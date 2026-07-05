@@ -2,7 +2,6 @@ import type { FilterQuery, UpdateQuery } from 'mongoose';
 
 import { Unit } from '@domains/academics/units';
 import { User } from '@domains/identity/users';
-import type { IUser } from '@domains/identity/users';
 import type { Id } from '@shared/types';
 
 import Review from './review.model';
@@ -41,18 +40,6 @@ class ReviewRepository {
    */
   static async findByUserId(userId: Id) {
     return await Review.find({ author: userId }).populate('unit');
-  }
-
-  /**
-   * Find all reviews by a specific user, populating BOTH unit and author.
-   *
-   * Distinct from {@link findByUserId} (which populates only `unit`): v1's
-   * GET /reviews/user/:userId populates the author too.
-   */
-  static async findByUserIdPopulated(userId: Id) {
-    return await Review.find({ author: userId })
-      .populate('unit')
-      .populate('author');
   }
 
   /**
@@ -111,26 +98,6 @@ class ReviewRepository {
    */
   static async updateById(reviewId: Id, updateData: UpdateQuery<IReview>) {
     return await Review.findByIdAndUpdate(reviewId, updateData, { new: true });
-  }
-
-  /**
-   * Overwrite a unit's rating averages, matching the unit by a raw `_id`.
-   *
-   * Takes whatever id the caller supplies as the `_id` filter and uses a plain
-   * `updateOne` (no validators) — v1's create/update handlers recalculate
-   * averages this way. The PUT /update handler deliberately passes a REVIEW id
-   * here, so this must NOT assume the id refers to a real unit.
-   */
-  static async updateUnitAveragesById(
-    id: Id,
-    averages: {
-      avgOverallRating: number;
-      avgContentRating: number;
-      avgFacultyRating: number;
-      avgRelevancyRating: number;
-    }
-  ) {
-    return await Unit.updateOne({ _id: id }, averages);
   }
 
   /* --------------------------------- Removal -------------------------------- */
@@ -204,29 +171,6 @@ class ReviewRepository {
       { $inc: { dislikes: -1 } },
       { new: true }
     );
-  }
-
-  /* ------------------------------- Persistence ------------------------------ */
-
-  /**
-   * Persist an in-memory review document.
-   *
-   * v1's toggle-reaction handler mutates a loaded document (with `Math.max`
-   * floors) and calls `.save()`, which also runs the description pre-save hook.
-   */
-  static async save(review: IReview) {
-    return await review.save();
-  }
-
-  /**
-   * Persist an in-memory user document.
-   *
-   * Sibling of the existing cross-domain User writers on this repository
-   * (`addReviewToUser` etc.); used by v1's toggle-reaction unit-of-work to save
-   * the reacting user and the review author after their arrays are mutated.
-   */
-  static async saveUser(user: IUser) {
-    return await user.save();
   }
 }
 
