@@ -18,6 +18,15 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     font-family: $poppins;
   }
+
+  @media (max-width: 768px) {
+    padding: 0rem;
+
+    .content-wrapper {
+      padding: 1rem;
+      border-radius: 0;
+    }
+  }
 }
 
 .section-heading {
@@ -25,6 +34,15 @@
   font-size: 2.5rem;
   margin-bottom: 3rem;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 1.5rem;
+  }
 }
 
 .text-white {
@@ -102,7 +120,6 @@
   }
 }
 
-// Timeline Styles
 .timeline-container {
   position: relative;
   padding: 1rem 0 1rem 3rem;
@@ -122,159 +139,8 @@
     );
     border-radius: 2px;
   }
-}
 
-.timeline-item {
-  position: relative;
-  margin-bottom: 3rem;
-  padding-left: 2rem;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.timeline-marker {
-  position: absolute;
-  left: -2.5rem;
-  top: 0.5rem;
-  width: 1rem;
-  height: 1rem;
-  background-color: var(--primary-color);
-  border: 3px solid $fg-dark-color;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
-  z-index: 1;
-}
-
-.timeline-content {
-  background-color: $bg-dark-color;
-  border-radius: 12px;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-
-  &:hover {
-    border-color: rgba(0, 123, 255, 0.3);
-    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
-    transform: translateX(5px);
-  }
-}
-
-.month-heading {
-  color: white;
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0 0 1.5rem 0;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.category-section {
-  margin-bottom: 1.5rem;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.category-heading {
-  color: var(--primary-color);
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin: 0 0 0.75rem 0;
-}
-
-.changelog-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.changelog-item {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 0.75rem;
-  padding-left: 1.5rem;
-  position: relative;
-
-  &::before {
-    content: '*';
-    position: absolute;
-    left: 0;
-    color: var(--primary-color);
-    font-weight: bold;
-    font-size: 1.2rem;
-  }
-
-  // Style for links and inline code (using ::ng-deep for innerHTML content)
-  ::ng-deep a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: all 0.2s ease;
-
-    &:hover {
-      text-decoration: underline;
-      color: #0056b3;
-    }
-
-    // Commit hash chip style - minimalist single color
-    &.commit-chip {
-      display: inline-block;
-      background-color: rgba(0, 123, 255, 0.15);
-      color: var(--primary-color);
-      padding: 0.05rem 0.35rem;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
-      font-size: 0.85em;
-      font-weight: 500;
-      text-decoration: none;
-      border: 1px solid rgba(0, 123, 255, 0.3);
-      transition: all 0.2s ease;
-      line-height: 1.4;
-
-      &:hover {
-        background-color: rgba(0, 123, 255, 0.25);
-        border-color: var(--primary-color);
-        text-decoration: none;
-        color: var(--primary-color);
-      }
-
-      &:active {
-        background-color: rgba(0, 123, 255, 0.3);
-      }
-    }
-  }
-
-  // Style for inline code (backticks)
-  ::ng-deep code {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--primary-color);
-    padding: 0.2rem 0.4rem;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-  }
-}
-
-// Tablet Responsiveness
-@media (max-width: 768px) {
-  .changelog-container {
-    padding: 0rem;
-
-    .content-wrapper {
-      padding: 1rem;
-      border-radius: 0;
-    }
-  }
-
-  .section-heading {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .timeline-container {
+  @media (max-width: 768px) {
     padding: 1rem 0 1rem 2rem;
 
     &::before {
@@ -282,62 +148,134 @@
     }
   }
 
-  .timeline-marker {
-    left: -2rem;
-    width: 0.75rem;
-    height: 0.75rem;
-  }
-
-  .timeline-item {
-    padding-left: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .month-heading {
-    font-size: 1.5rem;
-  }
-
-  .category-heading {
-    font-size: 1.1rem;
-  }
-
-  .changelog-item {
-    font-size: 0.95rem;
-  }
-}
-
-// Mobile Responsiveness
-@media (max-width: 400px) {
-  .section-heading {
-    font-size: 1.5rem;
-  }
-
-  .month-heading {
-    font-size: 1.25rem;
-  }
-
-  .category-heading {
-    font-size: 1rem;
-  }
-
-  .changelog-item {
-    font-size: 0.9rem;
-    padding-left: 1rem;
-  }
-
-  .timeline-container {
+  @media (max-width: 400px) {
     padding: 0.75rem 0 0.75rem 1.5rem;
   }
 
-  .timeline-marker {
-    left: -1.75rem;
+  .timeline-item {
+    position: relative;
+    margin-bottom: 3rem;
+    padding-left: 2rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+      padding-left: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 400px) {
+      padding-left: 1rem;
+    }
   }
 
-  .timeline-item {
-    padding-left: 1rem;
+  .timeline-marker {
+    position: absolute;
+    left: -2.5rem;
+    top: 0.5rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--primary-color);
+    border: 3px solid $fg-dark-color;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+    z-index: 1;
+
+    @media (max-width: 768px) {
+      left: -2rem;
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+
+    @media (max-width: 400px) {
+      left: -1.75rem;
+    }
   }
 
   .timeline-content {
-    padding: 1rem;
+    background-color: $bg-dark-color;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    @media (max-width: 400px) {
+      padding: 1rem;
+    }
+
+    .month-heading {
+      color: white;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 1.5rem 0;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+
+      @media (max-width: 768px) {
+        font-size: 1.5rem;
+      }
+
+      @media (max-width: 400px) {
+        font-size: 1.25rem;
+      }
+    }
+
+    .category-section {
+      margin-bottom: 1.5rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .category-heading {
+        color: var(--primary-color);
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 0.75rem 0;
+
+        @media (max-width: 768px) {
+          font-size: 1.1rem;
+        }
+
+        @media (max-width: 400px) {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    // Shared by both categorized and non-categorized entries
+    .changelog-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .changelog-item {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+        position: relative;
+
+        &::before {
+          content: '*';
+          position: absolute;
+          left: 0;
+          color: var(--primary-color);
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+          font-size: 0.95rem;
+        }
+
+        @media (max-width: 400px) {
+          font-size: 0.9rem;
+          padding-left: 1rem;
+        }
+      }
+    }
   }
 }
