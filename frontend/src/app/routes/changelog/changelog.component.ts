@@ -1,41 +1,45 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import * as changelogJson from '../../../../public/changelog.json';
 import {
   ChangelogData,
   ChangelogEntry,
   ChangelogYear,
 } from '../../shared/models/changelog';
-import { CommitHashPipe } from '../../shared/pipes/commit-hash.pipe';
 
 @Component({
   selector: 'app-changelog',
   standalone: true,
-  imports: [CommonModule, CommitHashPipe],
+  imports: [CommonModule],
   templateUrl: './changelog.component.html',
   styleUrl: './changelog.component.scss',
 })
 export class ChangelogComponent implements OnInit {
-  changelogData: ChangelogData = changelogJson as ChangelogData;
+  changelogData: ChangelogData | null = null;
   loading: boolean = false;
   error: string = '';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Data is already loaded from static import
+    this.loadChangelog();
   }
 
-  /**
-   * ! Placeholder for retry if needed (not used with static import)
-   */
   loadChangelog(): void {
-    // No-op since we're using static import
+    this.loading = true;
+    this.error = '';
+    this.http.get<ChangelogData>('changelog.json').subscribe({
+      next: (data) => {
+        this.changelogData = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Failed to load changelog. Please try again.';
+        this.loading = false;
+      },
+    });
   }
 
-  /**
-   * ! Gets month name from month number
-   */
   getMonthName(monthNum: number): string {
     const months = [
       'January',
@@ -54,9 +58,6 @@ export class ChangelogComponent implements OnInit {
     return months[monthNum - 1];
   }
 
-  /**
-   * ! Formats month header (e.g., "October 2025" or "April – May 2025")
-   */
   getMonthHeader(entry: ChangelogEntry, year: number): string {
     if (entry.monthStart && entry.monthEnd) {
       return `${this.getMonthName(entry.monthStart)} – ${this.getMonthName(entry.monthEnd)} ${year}`;
@@ -66,23 +67,14 @@ export class ChangelogComponent implements OnInit {
     return '';
   }
 
-  /**
-   * ! Checks if content is categorized (object) or simple array
-   */
   isCategorized(content: any): boolean {
     return !Array.isArray(content);
   }
 
-  /**
-   * ! Gets categories from categorized content
-   */
   getCategories(content: any): string[] {
     return Object.keys(content);
   }
 
-  /**
-   * ! Gets items for a category or returns content array
-   */
   getItems(content: any, category?: string): string[] {
     if (category) {
       return content[category];

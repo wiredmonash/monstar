@@ -40,10 +40,7 @@
                           item of getItems(entry.content, category);
                           track trackByIndex($index)
                         ) {
-                          <li
-                            class="changelog-item"
-                            [innerHTML]="item | commitHash"
-                          ></li>
+                          <li class="changelog-item">{{ item }}</li>
                         }
                       </ul>
                     </div>
@@ -54,10 +51,7 @@
                       item of getItems(entry.content);
                       track trackByIndex($index)
                     ) {
-                      <li
-                        class="changelog-item"
-                        [innerHTML]="item | commitHash"
-                      ></li>
+                      <li class="changelog-item">{{ item }}</li>
                     }
                   </ul>
                 }
