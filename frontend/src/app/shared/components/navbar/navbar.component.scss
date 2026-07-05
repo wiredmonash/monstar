@@ -27,9 +27,14 @@
   .hamburger-menu {
     border: none; // Removes the default border of the button
     padding: 0rem; // Minimal padding for the button
-    display: block; // Ensure it remains visible on all screen sizes
+    display: none; // Hidden on desktop; the sidebar rail has its own toggle
     transform: scale(1.5);
     user-select: none;
+
+    // Shown on mobile, where the collapsed rail is hidden
+    @media (max-width: 768px) {
+      display: block;
+    }
 
     i {
       transition: transform 0.3s ease-in-out;
@@ -104,23 +109,107 @@
   }
 }
 
-// * Sidebar text
-.sidebar-title {
-  color: white;
+// * Sidebar rail
+$rail-expanded-width: 260px;
+
+.sidebar-rail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: $sidebar-rail-width;
+  display: flex;
+  flex-direction: column;
+  background-color: $bg-dark-color;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  z-index: 1000;
   font-family: $poppins;
+  transition:
+    width 0.2s ease,
+    transform 0.2s ease;
+
+  &.expanded {
+    width: $rail-expanded-width;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.5);
+
+    .rail-label {
+      opacity: 1;
+    }
+  }
+
+  // On mobile the collapsed rail hides completely; the navbar hamburger
+  // slides it in expanded
+  @media (max-width: 768px) {
+    transform: translateX(-100%);
+
+    &.expanded {
+      transform: translateX(0);
+    }
+  }
+
+  // A row in the rail: fixed-width icon column + label revealed on expand
+  .rail-item {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: 48px;
+    margin: 2px 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .rail-toggle {
+    height: 52px;
+    margin-top: 4px;
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+
+  .rail-icon {
+    flex: 0 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .rail-label {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .rail-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0.25rem 0;
+  }
+
+  .sidebar-title {
+    color: white;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 }
 
-.sidebar-links {
-  font-family: $poppins;
-}
-
-// * Sidebar avatar
-.avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  position: relative;
+// Dims the page while the rail is expanded; click collapses it
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
 }
 
 // * Prevents user selection

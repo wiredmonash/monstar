@@ -4,11 +4,11 @@
 
 <nav class="navbar navbar-expand-lg" [style.backgroundColor]="navbarColor">
   <div class="container-fluid d-flex justify-content-center position-relative">
-    <!-- Sidebar button -->
+    <!-- Sidebar button (mobile only; the rail has its own toggle on desktop) -->
     <div
       class="hamburger-menu position-absolute start-0 ml-2"
       type="button"
-      (click)="sidebarVisible = true"
+      (click)="sidebarExpanded.set(true)"
       [style.color]="hamburgColor"
     >
       <i
@@ -68,147 +68,71 @@
   </div>
 </nav>
 
-<!-- ! Sidebar-->
-<p-sidebar
-  #sidebarRef
-  [(visible)]="sidebarVisible"
-  [style]="{ 'background-color': '#1e1e1e' }"
->
-  <ng-template pTemplate="headless">
-    <div class="flex flex-column h-full">
-      <!-- Title Text-->
-      <div
-        class="flex align-items-center justify-content-between px-4 pt-3 flex-shrink-0"
+<!-- ! Sidebar rail -->
+@if (sidebarExpanded()) {
+  <div class="sidebar-backdrop" (click)="sidebarExpanded.set(false)"></div>
+}
+
+<aside class="sidebar-rail" [class.expanded]="sidebarExpanded()">
+  <!-- Toggle + Title -->
+  <a
+    pRipple
+    (click)="toggleSidebar()"
+    class="rail-item rail-toggle text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple prevent-select"
+    pTooltip="Sidebar (CTRL + S)"
+    tooltipPosition="right"
+    [tooltipDisabled]="sidebarExpanded()"
+  >
+    <span class="rail-icon">
+      <i
+        class="pi"
+        [class.pi-bars]="!sidebarExpanded()"
+        [class.pi-times]="sidebarExpanded()"
+      ></i>
+    </span>
+    <span class="rail-label sidebar-title font-semibold text-2xl">MonSTAR</span>
+  </a>
+
+  <!-- User Profile -->
+  <hr class="mx-2 border-top-1 border-none surface-border" />
+  <a
+    pRipple
+    (click)="sidebarExpanded.set(false); clickedProfileIcon()"
+    class="rail-item text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+    [pTooltip]="state?.user?.username || 'Login (Guest)'"
+    tooltipPosition="right"
+    [tooltipDisabled]="sidebarExpanded()"
+  >
+    <span class="rail-icon">
+      <img
+        [src]="
+          state?.user?.profileImg ||
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'
+        "
+        alt="Profile Picture"
+        class="avatar"
+      />
+    </span>
+    <span class="rail-label font-bold">{{
+      state?.user?.username || 'Login (Guest)'
+    }}</span>
+  </a>
+  <hr class="mx-2 border-top-1 border-none surface-border" />
+
+  <!-- MAIN LINKS -->
+  <nav class="rail-links">
+    @for (link of railLinks; track link.route) {
+      <a
+        pRipple
+        (click)="navigateTo(link.route)"
+        class="rail-item text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+        [pTooltip]="link.label"
+        tooltipPosition="right"
+        [tooltipDisabled]="sidebarExpanded()"
       >
-        <span class="inline-flex align-items-center gap-2">
-          <span class="font-semibold text-2xl sidebar-title prevent-select"
-            >MonSTAR</span
-          >
-        </span>
-
-        <!-- Close button -->
-        <i
-          class="pi pi-times"
-          (click)="sidebarVisible = false"
-          style="cursor: pointer; font-size: 1.5rem; color: white"
-          pTooltip="Close Sidebar"
-          tooltipPosition="bottom"
-        ></i>
-      </div>
-
-      <!-- User Profile -->
-      <div class="user">
-        <hr class="mx-3 border-top-1 border-none surface-border" />
-        <a
-          pRipple
-          (click)="closeSidebar($event); clickedProfileIcon()"
-          class="m-3 flex align-items-center cursor-pointer p-3 gap-2 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-          style="text-decoration: none"
-        >
-          <!-- Avatar -->
-          <img
-            [src]="
-              state?.user?.profileImg ||
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s'
-            "
-            alt="Profile Picture"
-            class="mr-1 avatar"
-          />
-
-          <!-- Username -->
-          <span class="font-bold mb-1 ml-2">{{
-            state?.user?.username || 'Login (Guest)'
-          }}</span>
-        </a>
-        <hr class="mx-3 border-top-1 border-none surface-border" />
-      </div>
-
-      <!-- MAIN LINKS -->
-      <div class="sidebar-links overflow-y-auto">
-        <ul class="list-none p-3 m-0">
-          <li>
-            <!-- <div pStyleClass="@next" class="p-3 flex align-items-center justify-content-between text-600 p-ripple prevent-select">
-                <span class="font-medium">NAVIGATION</span>
-              </div> -->
-            <ul class="list-none p-0 m-0 overflow-hidden">
-              <!-- Home Page -->
-              <li>
-                <a
-                  pRipple
-                  (click)="closeSidebar($event); navigateTo('/')"
-                  class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                  style="text-decoration: none"
-                >
-                  <i class="pi pi-home mr-2"></i>
-                  <span class="font-medium">Home</span>
-                </a>
-              </li>
-              <!-- Unit List Page -->
-              <li>
-                <a
-                  pRipple
-                  (click)="closeSidebar($event); navigateTo('/list')"
-                  class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                  style="text-decoration: none"
-                >
-                  <i class="pi pi-graduation-cap mr-2"></i>
-                  <span class="font-medium">Units</span>
-                </a>
-              </li>
-              <!-- Jobs Board Page -->
-              <li>
-                <a
-                  pRipple
-                  (click)="closeSidebar($event); navigateTo('/jobs')"
-                  class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                  style="text-decoration: none"
-                >
-                  <i class="pi pi-briefcase mr-2"></i>
-                  <span class="font-medium">Student Roles</span>
-                </a>
-              </li>
-              <!-- Changelog Page -->
-              <li>
-                <a
-                  pRipple
-                  (click)="closeSidebar($event); navigateTo('/changelog')"
-                  class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                  style="text-decoration: none"
-                >
-                  <i class="pi pi-sitemap mr-2"></i>
-                  <span class="font-medium">Changelog</span>
-                </a>
-              </li>
-              <!-- About Page -->
-              <li>
-                <a
-                  pRipple
-                  (click)="closeSidebar($event); navigateTo('/about')"
-                  class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                  style="text-decoration: none"
-                >
-                  <i class="pi pi-info-circle mr-2"></i>
-                  <span class="font-medium">Contributions</span>
-                </a>
-              </li>
-              <!-- Terms and Conditions Page -->
-              <li>
-                <a
-                  pRipple
-                  (click)="
-                    closeSidebar($event); navigateTo('/terms-and-conditions')
-                  "
-                  class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
-                  style="text-decoration: none"
-                >
-                  <i class="pi pi-shield mr-2"></i>
-                  <span class="font-medium">Ts & Cs</span>
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </ng-template>
-</p-sidebar>
+        <span class="rail-icon"><i [class]="link.icon"></i></span>
+        <span class="rail-label font-medium">{{ link.label }}</span>
+      </a>
+    }
+  </nav>
+</aside>
