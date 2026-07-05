@@ -23,46 +23,4 @@ export class SetuService {
       .get<SetuData[]>(`${this.apiUrl}/unit/${unitCode}`)
       .pipe(map((data) => data.map((item) => new Setu(item))));
   }
-
-  /**
-   * Get average SETU scores for a specific unit
-   * @param unitCode The unit code to get average scores for
-   * @returns Observable of average SETU scores
-   */
-  getAverageSetuScores(unitCode: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/average/${unitCode}`);
-  }
-
-  /**
-   * Get SETU data for a specific season
-   * @param season The season to get SETU data for (e.g., "2019_S1")
-   * @returns Observable of SETU data array
-   */
-  getSetuBySeason(season: string): Observable<Setu[]> {
-    return this.http
-      .get<SetuData[]>(`${this.apiUrl}/season/${season}`)
-      .pipe(map((data) => data.map((item) => new Setu(item))));
-  }
-
-  /**
-   * Get all SETU data with pagination
-   * @param limit Number of items per page
-   * @param offset Starting offset
-   * @param sort Sort criteria
-   * @returns Observable of paginated SETU data
-   */
-  getAllSetu(
-    limit: number = 50,
-    offset: number = 0,
-    sort: string = 'unit_code'
-  ): Observable<any> {
-    return this.http
-      .get<any>(`${this.apiUrl}?limit=${limit}&offset=${offset}&sort=${sort}`)
-      .pipe(
-        map((response) => ({
-          ...response,
-          data: response.data.map((item: SetuData) => new Setu(item)),
-        }))
-      );
-  }
 }
