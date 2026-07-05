@@ -1,22 +1,22 @@
 import { runArtillery } from './runArtillery';
 
-describe('Comparing v1 and v2 /units APIs', () => {
+// The old v1-vs-v2 comparison retired with the v1 /units/popular endpoint;
+// this now load-tests the live v2 endpoint on its own.
+describe('v2 /units API under load', () => {
   test('/popular', async () => {
-    const baseline = await runArtillery('v1.units.popular');
-    const candidate = await runArtillery('v2.units.popular');
+    const report = await runArtillery('v2.units.popular');
 
-    const p95Baseline = baseline.aggregate.summaries['http.response_time'].p95;
-    const p95Candidate =
-      candidate.aggregate.summaries['http.response_time'].p95;
+    const counters = report.aggregate.counters;
+    const p95 = report.aggregate.summaries['http.response_time'].p95;
 
     console.log(`
       📊 Results:
-      Baseline p95:  ${p95Baseline}ms
-      Candidate p95: ${p95Candidate}ms
-      ----------------------------
-      Difference:    ${p95Candidate - p95Baseline}ms
+      Requests:  ${counters['http.requests']}
+      200s:      ${counters['http.codes.200']}
+      p95:       ${p95}ms
     `);
 
-    expect(p95Candidate).toBeLessThan(p95Baseline);
+    // Every request must succeed under load.
+    expect(counters['http.codes.200']).toBe(counters['http.requests']);
   }, 120_000);
 });
