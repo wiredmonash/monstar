@@ -30,9 +30,6 @@ export const routes: Routes = [
   { path: 'about', component: AboutComponent },
   { path: 'changelog', component: ChangelogComponent },
 
-  // { path: 'verify-email/:token', component: VerifiedComponent },
-  // { path: 'reset-password/:token', component: ResetPasswordComponent },
-
   // 404 Not Found for all other routes
   { path: '**', component: NotFoundComponent },
 ];

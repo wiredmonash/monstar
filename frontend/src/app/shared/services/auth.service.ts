@@ -28,19 +28,6 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   /**
-   * * Register a user
-   *
-   * Registers a user with the provided email and password.
-   *
-   * @param {string} email The email of the user.
-   * @param {string} password The password of the user.
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  register(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.url}/register`, { email, password });
-  }
-
-  /**
    * * Refresh the access token using the refresh token
    *
    * Called automatically by the auth interceptor when the access token expires (after 15 minutes).
@@ -64,31 +51,6 @@ export class AuthService {
    */
   refreshToken(): Observable<any> {
     return this.http.post(`${this.url}/refresh`, {}, { withCredentials: true });
-  }
-
-  /**
-   * * Login a user and set current user
-   *
-   * Logs in a user with the provided email and password.
-   * Also sets the current user for the frontend.
-   *
-   * @param {string} email The email of the user.
-   * @param {string} password The password of the user.
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  login(email: string, password: string): Observable<any> {
-    return this.http
-      .post(`${this.url}/login`, { email, password }, { withCredentials: true })
-      .pipe(
-        tap((response: any) => {
-          // Update the current user with the response data
-          const user = new User(response.data);
-          this.currentUser.next(user);
-
-          // ? Debug log
-          // console.log('AuthService | Logged in as:', this.currentUser);
-        })
-      );
   }
 
   /**
@@ -120,55 +82,6 @@ export class AuthService {
       .pipe(
         tap(() => {
           this.currentUser.next(null);
-        })
-      );
-  }
-
-  /**
-   * * Forgot password
-   *
-   * Sends a password reset email to the user with the provided email.
-   *
-   * @param {string} email The email of the user.
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.url}/forgot-password`, { email });
-  }
-
-  /**
-   * * Reset password
-   *
-   * Resets the user's password using the provided token.
-   *
-   * @param {string} token The token to reset the password.
-   * @param {string} password The new password for the user.
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  resetPassword(token: string, password: string): Observable<any> {
-    return this.http.post(`${this.url}/reset-password/${token}`, { password });
-  }
-
-  /**
-   * * Verify and login the user
-   *
-   * Verifies the user's email using the provided token and logs them in.
-   * Also sets the current user for the frontend.
-   *
-   * @param token The token to verify the user's email
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  verifyAndLogin(token: string): Observable<any> {
-    return this.http
-      .get(`${this.url}/verify-email/${token}`, { withCredentials: true })
-      .pipe(
-        tap((response: any) => {
-          // Update the current user with the response data
-          const user = new User(response.data);
-          this.currentUser.next(user);
-
-          // ? Debug log
-          // console.log('AuthService | Signed up, Verified, & Logged In as:', this.currentUser);
         })
       );
   }
