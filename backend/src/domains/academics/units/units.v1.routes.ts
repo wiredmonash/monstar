@@ -7,17 +7,10 @@ import UnitV1Controller from './unit.v1.controller';
 // Router instance
 const router = express.Router();
 
-// GET /, /popular and /filter were removed once the frontend moved to their
-// /api/v2/units equivalents. The remaining endpoints are either still called
-// by the frontend (unit-by-code, required-by) or admin data-management ops
-// with no v2 replacement yet.
-router.get(
-  '/unit/:unitcode',
-  // #swagger.tags = ['Units']
-  // #swagger.summary = 'Get a unit by unit code'
-  UnitV1Controller.getByUnitcode
-);
-
+// The read endpoints (GET /, /popular, /filter, /unit/:unitcode and
+// /:unitCode/required-by) were removed once the frontend moved to their
+// /api/v2/units equivalents. Only the admin data-management ops remain, and
+// they have no v2 replacement yet.
 router.post(
   '/create',
   verifyAdmin,
@@ -48,13 +41,6 @@ router.put(
   // #swagger.tags = ['Units']
   // #swagger.summary = 'Update unit description and/or name'
   UnitV1Controller.update
-);
-
-router.get(
-  '/:unitCode/required-by',
-  // #swagger.tags = ['Units']
-  // #swagger.summary = 'Get all units that have the specified unit as a prerequisite'
-  UnitV1Controller.getRequiredBy
 );
 
 // Export the router

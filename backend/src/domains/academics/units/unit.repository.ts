@@ -121,23 +121,6 @@ class UnitRepository {
     });
   }
 
-  /**
-   * Finds units that have the given unit as a prerequisite, projecting only the
-   * unitCode and name fields.
-   *
-   * NOTE: preserves v1 behavior — v1 GET /:unitCode/required-by selects only
-   * `unitCode name` (findRequiredBy returns full documents).
-   */
-  static async findRequiredBySelectCodeName(unitCode: string) {
-    return await Unit.find({
-      'requisites.prerequisites': {
-        $elemMatch: {
-          units: { $in: [unitCode.toUpperCase(), unitCode.toLowerCase()] },
-        },
-      },
-    }).select('unitCode name');
-  }
-
   /* -------------------------------- Creation -------------------------------- */
 
   /**

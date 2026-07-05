@@ -62,7 +62,7 @@ export class ApiService {
    * @returns {Observable<Unit>} An observable containing the unit data
    */
   getUnitByUnitcodeGET(unitcode: string): Observable<Unit> {
-    return this.http.get<Unit>(`${this.url}/units/unit/${unitcode}`).pipe(
+    return this.http.get<Unit>(`${this.urlV2}/units/${unitcode}`).pipe(
       tap({
         next: (response) => {
           // ? Debug log
@@ -108,7 +108,7 @@ export class ApiService {
    */
   getUnitsRequiringUnitGET(unitCode: string): Observable<Unit[]> {
     return this.http
-      .get<Unit[]>(`${this.url}/units/${unitCode}/required-by`)
+      .get<Unit[]>(`${this.urlV2}/units/${unitCode}/required-by`)
       .pipe(
         tap({
           next: (units) => {
