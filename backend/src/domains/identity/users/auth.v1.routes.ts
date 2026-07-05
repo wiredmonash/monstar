@@ -1,21 +1,14 @@
 import express from 'express';
-import multer from 'multer';
-
-import { storage } from '@infrastructure/storage/cloudinary';
 
 import AuthV1Controller from './auth.v1.controller';
 import { verifyToken, verifyAdmin } from './auth.middleware';
 
-const upload = multer({ storage });
 const router = express.Router();
 
-router.post(
-  '/google/authenticate',
-  // #swagger.tags = ['Auth']
-  // #swagger.summary = 'Login and/or register a user using Google OAuth'
-  AuthV1Controller.authenticateWithGoogle
-);
-
+// google/authenticate, /validate and /upload-avatar were removed once the
+// frontend moved to their /api/v2/users equivalents. /refresh and /logout are
+// still called by the frontend auth interceptor; the remaining user-management
+// endpoints have no v2 replacement yet.
 router.post(
   '/refresh',
   // #swagger.tags = ['Auth']
@@ -53,22 +46,6 @@ router.put(
   // #swagger.tags = ['Auth']
   // #swagger.summary = 'Update user\'s username and/or password (Only admins or the user themselves can update account details)'
   AuthV1Controller.updateUser
-);
-
-router.get(
-  '/validate',
-  // #swagger.tags = ['Auth']
-  // #swagger.summary = 'Check if the user has the access_token in their cookies to keep session'
-  AuthV1Controller.validate
-);
-
-router.post(
-  '/upload-avatar',
-  verifyToken,
-  upload.single('avatar'),
-  // #swagger.tags = ['Auth']
-  // #swagger.summary = 'Upload the given avatar to cloudinary and assign it as user\'s profileImg'
-  AuthV1Controller.uploadAvatar
 );
 
 export default router;
