@@ -3,4 +3,7 @@ export { default as ReviewRepository } from './review.repository';
 export { default as ReviewService } from './review.service';
 export { default as ReviewController } from './review.controller';
 export { default as reviewsV2Router } from './reviews.v2.routes';
+export { default as ReviewV1Service } from './review.v1.service';
+export { default as ReviewV1Controller } from './review.v1.controller';
+export { default as reviewsV1Router } from './reviews.v1.routes';
 export type { IReview, IReviewLean } from './review.types';

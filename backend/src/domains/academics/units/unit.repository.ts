@@ -35,6 +35,16 @@ class UnitRepository {
   }
 
   /**
+   * Find unit by exact unitcode (no lowercasing)
+   *
+   * NOTE: preserves v1 behavior — v1 GET /unit/:unitcode matches the code
+   * exactly and does not lowercase it (unlike findOneByUnitcode).
+   */
+  static async findOneByExactUnitcode(unitcode: string) {
+    return await Unit.findOne({ unitCode: unitcode });
+  }
+
+  /**
    * Find unit by id
    */
   static async findById(unitId: Id) {
@@ -80,6 +90,73 @@ class UnitRepository {
   }
 
   /**
+   * Query filtered units WITH their reviews populated via $lookup, plus a
+   * parallel count for pagination.
+   *
+   * NOTE: preserves v1 behavior — the $lookup replaces the reviews array with
+   * the full review documents in the output (v2 findWithPagination omits this);
+   * reviewCount/hasReviews drive sorting.
+   */
+  static async findFilteredWithReviews(
+    query: Record<string, unknown>,
+    sortCriteria: Record<string, 1 | -1>,
+    offset: number,
+    limit: number
+  ) {
+    const pipeline: PipelineStage[] = [
+      { $match: query },
+      {
+        $lookup: {
+          from: 'reviews',
+          localField: 'reviews',
+          foreignField: '_id',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          reviewCount: { $size: '$reviews' },
+          hasReviews: { $cond: [{ $gt: [{ $size: '$reviews' }, 0] }, 1, 0] },
+        },
+      },
+    ];
+
+    pipeline.push(
+      { $sort: { ...sortCriteria, _id: 1 } },
+      { $skip: Number(offset) },
+      { $limit: Number(limit) }
+    );
+
+    const countPipeline: PipelineStage[] = [
+      { $match: query },
+      {
+        $lookup: {
+          from: 'reviews',
+          localField: 'reviews',
+          foreignField: '_id',
+          as: 'reviews',
+        },
+      },
+      {
+        $addFields: {
+          reviewCount: { $size: '$reviews' },
+          hasReviews: { $cond: [{ $gt: [{ $size: '$reviews' }, 0] }, 1, 0] },
+        },
+      },
+      { $count: 'total' },
+    ];
+
+    const [units, countResult] = await Promise.all([
+      Unit.aggregate(pipeline),
+      Unit.aggregate(countPipeline),
+    ]);
+
+    const total = countResult.length > 0 ? countResult[0].total : 0;
+
+    return { units, total };
+  }
+
+  /**
    * Query for N most reviewed units
    */
   static async findMostReviewedUnits(n: number) {
@@ -111,6 +188,33 @@ class UnitRepository {
     });
   }
 
+  /**
+   * Finds units that have the given unit as a prerequisite, projecting only the
+   * unitCode and name fields.
+   *
+   * NOTE: preserves v1 behavior — v1 GET /:unitCode/required-by selects only
+   * `unitCode name` (findRequiredBy returns full documents).
+   */
+  static async findRequiredBySelectCodeName(unitCode: string) {
+    return await Unit.find({
+      'requisites.prerequisites': {
+        $elemMatch: {
+          units: { $in: [unitCode.toUpperCase(), unitCode.toLowerCase()] },
+        },
+      },
+    }).select('unitCode name');
+  }
+
+  /* -------------------------------- Creation -------------------------------- */
+
+  /**
+   * Create and save a new unit
+   */
+  static async create(unitData: Partial<IUnit>) {
+    const unit = new Unit(unitData);
+    return await unit.save();
+  }
+
   /* ------------------------------ Modification ------------------------------ */
 
   /**
@@ -127,6 +231,31 @@ class UnitRepository {
       new: true,
       runValidators: true,
     });
+  }
+
+  /**
+   * Update a unit matched by its exact unitcode.
+   *
+   * NOTE: preserves v1 behavior — v1 PUT /update/:unitcode matches the code
+   * exactly (no lowercasing).
+   */
+  static async updateOneByExactUnitcode(
+    unitcode: string,
+    updateData: UpdateQuery<IUnit>
+  ) {
+    return await Unit.updateOne({ unitCode: unitcode }, updateData);
+  }
+
+  /* --------------------------------- Removal -------------------------------- */
+
+  /**
+   * Delete a unit matched by its exact unitcode.
+   *
+   * NOTE: preserves v1 behavior — v1 DELETE /delete/:unitcode matches the code
+   * exactly and does not lowercase it.
+   */
+  static async deleteOneByExactUnitcode(unitcode: string) {
+    return await Unit.findOneAndDelete({ unitCode: unitcode });
   }
 }
 

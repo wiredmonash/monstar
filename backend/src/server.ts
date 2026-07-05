@@ -13,16 +13,17 @@ import express, { type RequestHandler } from 'express';
 import { setupSwagger } from '@docs/swagger';
 import errorMiddleware from '@shared/middleware/error.middleware';
 import { dbConnect } from '@infrastructure/database/mongodb';
-import { TagManager, unitsV2Router } from '@domains/academics/units';
-import { reviewsV2Router } from '@domains/academics/reviews';
-import adminRouter from '@deprecated/admin.v1.routes';
-import authRouter from '@deprecated/auth.v1.routes';
-import githubRouter from '@deprecated/github.v1.routes';
-import notificationsRouter from '@deprecated/notifications.v1.routes';
-import reviewsV1Router from '@deprecated/reviews.v1.routes';
-import setusRouter from '@deprecated/setus.v1.routes';
-import unitsV1Router from '@deprecated/units.v1.routes';
-import { usersV2Router } from '@domains/identity/users';
+import {
+  TagManager,
+  unitsV1Router,
+  unitsV2Router,
+} from '@domains/academics/units';
+import { reviewsV1Router, reviewsV2Router } from '@domains/academics/reviews';
+import { setusV1Router } from '@domains/academics/setu';
+import { authV1Router, usersV2Router } from '@domains/identity/users';
+import { notificationsV1Router } from '@domains/identity/notifications';
+import { adminV1Router } from '@domains/platform/admin';
+import { githubV1Router } from '@domains/platform/github';
 import { jobsV2Router } from '@domains/recruitment/jobs';
 
 /* --------------------------- Initialize Express --------------------------- */
@@ -87,14 +88,14 @@ app.use('/api/v1/units', unitsV1Router);
 app.use('/api/v2/units', unitsV2Router);
 app.use('/api/v1/reviews', reviewsV1Router);
 app.use('/api/v2/reviews', reviewsV2Router);
-app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/auth', authV1Router);
 app.use('/api/v2/users', usersV2Router);
-app.use('/api/v1/notifications', notificationsRouter);
-app.use('/api/v1/github', githubRouter);
-app.use('/api/v1/setus', setusRouter);
+app.use('/api/v1/notifications', notificationsV1Router);
+app.use('/api/v1/github', githubV1Router);
+app.use('/api/v1/setus', setusV1Router);
 app.use('/api/v2/jobs', jobsV2Router);
 if (isDevelopment && !isProductionMachine) {
-  app.use('/api/admin', adminRouter);
+  app.use('/api/admin', adminV1Router);
 }
 
 /* ---------------------------- Swagger ui setup ---------------------------- */

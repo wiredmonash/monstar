@@ -43,6 +43,43 @@ class UserRepository {
     );
   }
 
+  /**
+   * Find all users
+   */
+  static async findAll() {
+    return await User.find({});
+  }
+
+  /**
+   * Find a user by email
+   */
+  static async findByEmail(email: string) {
+    return await User.findOne({ email });
+  }
+
+  /**
+   * Find a user by email or googleID.
+   *
+   * NOTE: queries the schema's `googleID` field, unlike findByEmailOrGoogleId
+   * which queries a non-existent `googleId`. Preserves the v1 auth lookup.
+   */
+  static async findByEmailOrGoogleID(email: string, googleID: string) {
+    return await User.findOne({
+      $or: [{ email: email }, { googleID: googleID }],
+    });
+  }
+
+  /**
+   * Find a user by ID, projecting only the fields the v1 validate endpoint
+   * exposes (excludes password and other sensitive fields).
+   */
+  static async findByIdWithValidationFields(userId: Id) {
+    return await User.findById(
+      userId,
+      'email username isGoogleUser reviews admin profileImg likedReviews dislikedReviews notifications'
+    );
+  }
+
   /* -------------------------------- Creation -------------------------------- */
 
   /**
@@ -103,6 +140,18 @@ class UserRepository {
     return await User.findByIdAndUpdate(userId, {
       $unset: { refreshToken: 1, refreshTokenExpires: 1 },
     });
+  }
+
+  /* --------------------------------- Removal -------------------------------- */
+
+  /**
+   * Delete a user by ID.
+   *
+   * NOTE: uses findOneAndDelete so the user model's deletion-cascade hook fires
+   * (removes the user's reviews, notifications, avatar and reaction counts).
+   */
+  static async deleteById(userId: Id) {
+    return await User.findOneAndDelete({ _id: userId });
   }
 
   /* -------------------------------- Reactions ------------------------------- */
