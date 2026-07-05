@@ -41,33 +41,6 @@ export class AuthService {
   }
 
   /**
-   * * Register and/or login a Google user
-   *
-   * Register and/or logins a Google user using the Google ID token.
-   *
-   * @param {string} idToken The Google id token of the user.
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  googleAuthenticate(idToken: string): Observable<any> {
-    return this.http
-      .post(
-        `${this.url}/google/authenticate`,
-        { idToken },
-        { withCredentials: true }
-      )
-      .pipe(
-        tap((response: any) => {
-          // Update the current user with the response data
-          const user = new User(response.data);
-          this.currentUser.next(user);
-
-          // ? Debug log
-          // console.log('AuthService | Logged in as:', this.currentUser);
-        })
-      );
-  }
-
-  /**
    * * Refresh the access token using the refresh token
    *
    * Called automatically by the auth interceptor when the access token expires (after 15 minutes).
@@ -177,28 +150,6 @@ export class AuthService {
   }
 
   /**
-   * * Validate the user's session
-   *
-   * Validates the current user's session and updates the current user data.
-   *
-   * @returns {Observable<any>} an observable containing the response from the server.
-   */
-  validateSession(): Observable<any> {
-    return this.http
-      .get(`${this.url}/validate`, { withCredentials: true })
-      .pipe(
-        tap((response: any) => {
-          // Update the current user with the response data
-          const user = new User(response.data);
-          this.currentUser.next(user);
-
-          // ? Debug log
-          // console.log('AuthService | validated user as:', this.currentUser);
-        })
-      );
-  }
-
-  /**
    * * Verify and login the user
    *
    * Verifies the user's email using the provided token and logs them in.
@@ -247,37 +198,6 @@ export class AuthService {
 
             // ? Debug log
             // console.log('AuthService | Updated user details:', this.currentUser);
-          }
-        })
-      );
-  }
-
-  /**
-   * * Upload avatar
-   *
-   * Uploads a new avatar for the user.
-   *
-   * @param {string} file the avatar file to upload.
-   * @param {string} email The email of the user.
-   * @returns {Observable<{ profileImg: string }>} an observable containing updated profile image URL.
-   */
-  uploadAvatar(file: File, email: string): Observable<{ profileImg: string }> {
-    const formData = new FormData();
-    formData.append('avatar', file);
-    formData.append('email', email);
-
-    return this.http
-      .post<{
-        profileImg: string;
-      }>(`${this.url}/upload-avatar`, formData, { withCredentials: true })
-      .pipe(
-        tap((response: any) => {
-          // Update the current user's profile image
-          if (this.currentUser.value) {
-            this.currentUser.value.profileImg = response.profileImg;
-
-            // ? Debug log
-            // console.log('AuthService | Uploaded avatar:', this.currentUser);
           }
         })
       );
