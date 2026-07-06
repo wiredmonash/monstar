@@ -129,7 +129,7 @@ export class NavbarComponent implements OnInit {
 
   // Toggles the sidebar rail on CTRL+S
   @HostListener('document:keydown.control.s', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  handleKeyboardEvent(event: Event) {
     event.preventDefault();
     this.toggleSidebar();
   }
