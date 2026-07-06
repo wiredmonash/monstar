@@ -1,0 +1,44 @@
+name: Feature or task
+description: Propose a new feature, improvement, or task
+title: "[Task]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the change and why it matters.
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: The change in a sentence or two.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The problem it solves or the value it adds.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the app does this touch? Select all that apply.
+      multiple: true
+      options:
+        - frontend
+        - backend
+        - infra
+        - database
+        - seo
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes or constraints
+      description: Anything else worth knowing.
+    validations:
+      required: false
