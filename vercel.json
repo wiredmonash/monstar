@@ -25,6 +25,11 @@
       "dest": "/frontend/$1"
     },
     {
+      "src": "/setu(/.*)?",
+      "status": 404,
+      "dest": "/frontend/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/frontend/index.html"
     }
