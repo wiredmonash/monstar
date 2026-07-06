@@ -34,7 +34,7 @@
       font-weight: bold;
     }
 
-    // * Top right button for reporting/deleting review (hidden unless hovered)
+    // * Top right button for deleting/modifying review (hidden unless hovered)
     .top-right-button {
       position: absolute;
       top: 1rem;
@@ -216,16 +216,6 @@
                 color: white;
                 transform: scale(1.4);
               }
-            }
-          }
-
-          .report-button {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            &:hover {
-              color: white;
             }
           }
         }
