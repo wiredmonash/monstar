@@ -19,6 +19,11 @@ dotenv.config({
 const MONGODB_URI = process.env.MONGODB_CONN_STRING;
 const TODAY = new Date().toISOString().split('T')[0];
 
+// Mirrors the frontend `enableSetuCards` flag (environment.ts). SETU is
+// currently disabled, so its sitemap entries are suppressed. Set to true to
+// restore SETU sitemaps once the feature is re-enabled.
+const ENABLE_SETU_SITEMAP: boolean = false;
+
 interface SitemapUrl {
   url: string;
   changefreq: string;
@@ -47,7 +52,6 @@ async function generateSitemaps() {
 
     // Import Unit Model
     const { Unit } = await import('@domains/academics/units');
-    const { SETU } = await import('@domains/academics/setu');
 
     const staticUrls: SitemapUrl[] = [
       {
@@ -101,27 +105,36 @@ async function generateSitemaps() {
     console.log(`Units G-M: ${unitsGM.length}`);
     console.log(`Units N-Z: ${unitsNZ.length}`);
 
-    // Get units with SETU data
-    console.log('Fetching units with SETU data...');
-    const setuData: UnitRef[] = await SETU.aggregate([
-      { $group: { _id: '$unit_code' } },
-      { $project: { unitCode: '$_id', _id: 0 } },
-    ]);
-    console.log(`Found ${setuData.length} units with SETU data`);
+    let sortedSetuData: UnitRef[] = [];
+    let setuAFSitemap = '';
+    let setuGMSitemap = '';
+    let setuNZSitemap = '';
+    if (ENABLE_SETU_SITEMAP) {
+      const { SETU } = await import('@domains/academics/setu');
 
-    // Sort SETU data alphabetically
-    const sortedSetuData = setuData.sort((a, b) =>
-      a.unitCode.localeCompare(b.unitCode)
-    );
+      console.log('Fetching units with SETU data...');
+      const setuData: UnitRef[] = await SETU.aggregate([
+        { $group: { _id: '$unit_code' } },
+        { $project: { unitCode: '$_id', _id: 0 } },
+      ]);
+      console.log(`Found ${setuData.length} units with SETU data`);
 
-    // Split SETU data into groups by first letter
-    const setuAF = sortedSetuData.filter((u) => /^[a-f]/i.test(u.unitCode));
-    const setuGM = sortedSetuData.filter((u) => /^[g-m]/i.test(u.unitCode));
-    const setuNZ = sortedSetuData.filter((u) => /^[n-z]/i.test(u.unitCode));
+      sortedSetuData = setuData.sort((a, b) =>
+        a.unitCode.localeCompare(b.unitCode)
+      );
 
-    console.log(`SETU Units A-F: ${setuAF.length}`);
-    console.log(`SETU Units G-M: ${setuGM.length}`);
-    console.log(`SETU Units N-Z: ${setuNZ.length}`);
+      const setuAF = sortedSetuData.filter((u) => /^[a-f]/i.test(u.unitCode));
+      const setuGM = sortedSetuData.filter((u) => /^[g-m]/i.test(u.unitCode));
+      const setuNZ = sortedSetuData.filter((u) => /^[n-z]/i.test(u.unitCode));
+
+      console.log(`SETU Units A-F: ${setuAF.length}`);
+      console.log(`SETU Units G-M: ${setuGM.length}`);
+      console.log(`SETU Units N-Z: ${setuNZ.length}`);
+
+      setuAFSitemap = generateSetuSitemapXML(setuAF);
+      setuGMSitemap = generateSetuSitemapXML(setuGM);
+      setuNZSitemap = generateSetuSitemapXML(setuNZ);
+    }
 
     // Generate static sitemap
     const staticSitemap = generateStandardSitemapXML(staticUrls);
@@ -131,13 +144,8 @@ async function generateSitemaps() {
     const unitsGMSitemap = generateUnitSitemapXML(unitsGM);
     const unitsNZSitemap = generateUnitSitemapXML(unitsNZ);
 
-    // Generate SETU sitemaps
-    const setuAFSitemap = generateSetuSitemapXML(setuAF);
-    const setuGMSitemap = generateSetuSitemapXML(setuGM);
-    const setuNZSitemap = generateSetuSitemapXML(setuNZ);
-
     // Generate sitemap index
-    const sitemapIndex = generateSitemapIndexXML();
+    const sitemapIndex = generateSitemapIndexXML(ENABLE_SETU_SITEMAP);
 
     // Output directory
     const outputDir = path.join(backendRoot, '..', 'frontend', 'public');
@@ -157,18 +165,20 @@ async function generateSitemaps() {
       path.join(outputDir, 'sitemap-units-n-z.xml'),
       unitsNZSitemap
     );
-    fs.writeFileSync(
-      path.join(outputDir, 'sitemap-setu-a-f.xml'),
-      setuAFSitemap
-    );
-    fs.writeFileSync(
-      path.join(outputDir, 'sitemap-setu-g-m.xml'),
-      setuGMSitemap
-    );
-    fs.writeFileSync(
-      path.join(outputDir, 'sitemap-setu-n-z.xml'),
-      setuNZSitemap
-    );
+    if (ENABLE_SETU_SITEMAP) {
+      fs.writeFileSync(
+        path.join(outputDir, 'sitemap-setu-a-f.xml'),
+        setuAFSitemap
+      );
+      fs.writeFileSync(
+        path.join(outputDir, 'sitemap-setu-g-m.xml'),
+        setuGMSitemap
+      );
+      fs.writeFileSync(
+        path.join(outputDir, 'sitemap-setu-n-z.xml'),
+        setuNZSitemap
+      );
+    }
 
     // Write the full sitemap for backward compatibility
     const allUnits = [...sortedUnits];
@@ -319,7 +329,7 @@ function generateFullSitemapXML(
  *
  * This will generate the index sitemap when using the split sitemap format
  */
-function generateSitemapIndexXML() {
+function generateSitemapIndexXML(includeSetu: boolean) {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
@@ -346,20 +356,22 @@ function generateSitemapIndexXML() {
   xml += '  </sitemap>\n';
 
   // Setu sitemaps
-  xml += '  <sitemap>\n';
-  xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-a-f.xml</loc>\n';
-  xml += `    <lastmod>${TODAY}</lastmod>\n`;
-  xml += '  </sitemap>\n';
+  if (includeSetu) {
+    xml += '  <sitemap>\n';
+    xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-a-f.xml</loc>\n';
+    xml += `    <lastmod>${TODAY}</lastmod>\n`;
+    xml += '  </sitemap>\n';
 
-  xml += '  <sitemap>\n';
-  xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-g-m.xml</loc>\n';
-  xml += `    <lastmod>${TODAY}</lastmod>\n`;
-  xml += '  </sitemap>\n';
+    xml += '  <sitemap>\n';
+    xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-g-m.xml</loc>\n';
+    xml += `    <lastmod>${TODAY}</lastmod>\n`;
+    xml += '  </sitemap>\n';
 
-  xml += '  <sitemap>\n';
-  xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-n-z.xml</loc>\n';
-  xml += `    <lastmod>${TODAY}</lastmod>\n`;
-  xml += '  </sitemap>\n';
+    xml += '  <sitemap>\n';
+    xml += '    <loc>https://monstar.wired.org.au/sitemap-setu-n-z.xml</loc>\n';
+    xml += `    <lastmod>${TODAY}</lastmod>\n`;
+    xml += '  </sitemap>\n';
+  }
 
   xml += '</sitemapindex>';
   return xml;
