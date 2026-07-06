@@ -378,5 +378,17 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         unitAverageRating
       ),
     });
+
+    // Canonical URL pointing at this unit (overrides the homepage default in
+    // index.html) so Google indexes each unit page as its own page.
+    const existingCanonical = document.querySelector('link[rel="canonical"]');
+    if (existingCanonical) {
+      existingCanonical.remove();
+    }
+
+    const canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    canonicalLink.setAttribute('href', pageUrl);
+    document.head.appendChild(canonicalLink);
   }
 }
