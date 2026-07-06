@@ -40,10 +40,6 @@ const setupSwagger = async (app: Express) => {
         description: 'Unit information and management V2',
       },
       {
-        name: 'Reviews',
-        description: 'Reviews for units',
-      },
-      {
         name: 'Reviews V2',
         description: 'Reviews for units V2',
       },
@@ -66,6 +62,10 @@ const setupSwagger = async (app: Express) => {
       {
         name: 'SETU',
         description: 'Student Evaluation of Teaching and Units data',
+      },
+      {
+        name: 'Jobs',
+        description: 'Student jobs board listings and management',
       },
       {
         name: 'CSRF',

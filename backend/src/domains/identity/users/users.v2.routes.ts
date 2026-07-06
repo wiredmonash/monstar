@@ -56,7 +56,7 @@ router.post(
 
 router.get(
   '/:username',
-  // #swagger.tags = ['User v2']
+  // #swagger.tags = ['User V2']
   // #swagger.summary = 'Get user by username'
   UserController.getByUsername
 );

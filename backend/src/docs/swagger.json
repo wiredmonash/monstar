@@ -17,10 +17,6 @@
       "description": "Unit information and management V2"
     },
     {
-      "name": "Reviews",
-      "description": "Reviews for units"
-    },
-    {
       "name": "Reviews V2",
       "description": "Reviews for units V2"
     },
@@ -43,6 +39,10 @@
     {
       "name": "SETU",
       "description": "Student Evaluation of Teaching and Units data"
+    },
+    {
+      "name": "Jobs",
+      "description": "Student jobs board listings and management"
     },
     {
       "name": "CSRF",
@@ -796,7 +796,7 @@
     "/api/v2/users/{username}": {
       "get": {
         "tags": [
-          "User v2"
+          "User V2"
         ],
         "summary": "Get user by username",
         "description": "",
