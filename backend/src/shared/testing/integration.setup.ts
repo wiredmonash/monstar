@@ -46,13 +46,6 @@ vi.mock('@docs/swagger', () => ({
   setupSwagger: vi.fn().mockResolvedValue(undefined),
 }));
 
-/* ----- Stub nodemailer so report emails never hit a real SMTP server ----- */
-vi.mock('nodemailer', () => ({
-  default: {
-    createTransport: () => ({ sendMail: vi.fn().mockResolvedValue({}) }),
-  },
-}));
-
 /**
  * Converts values of data into mongoose types
  */
