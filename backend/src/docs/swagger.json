@@ -80,148 +80,11 @@
         "tags": [
           "CSRF"
         ],
-        "summary": "Get CSRF token",
+        "summary": "Get a CSRF token for subsequent state-changing requests",
         "description": "",
         "responses": {
           "200": {
             "description": "OK"
-          }
-        }
-      }
-    },
-    "/api/v1/units/": {
-      "get": {
-        "tags": [
-          "Units"
-        ],
-        "summary": "Get all units from the database",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/units/popular": {
-      "get": {
-        "tags": [
-          "Units"
-        ],
-        "summary": "Get 10 most popular units",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/units/unit/{unitcode}": {
-      "get": {
-        "tags": [
-          "Units"
-        ],
-        "summary": "Get a unit by unit code",
-        "description": "",
-        "parameters": [
-          {
-            "name": "unitcode",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/units/filter": {
-      "get": {
-        "tags": [
-          "Units"
-        ],
-        "summary": "Get units with advanced filtering",
-        "description": "",
-        "parameters": [
-          {
-            "name": "offset",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "showReviewed",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "showUnreviewed",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "hideNoOfferings",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "faculty",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "semesters",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "campuses",
-            "in": "query",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -233,26 +96,6 @@
         ],
         "summary": "Create a new unit and add it to the database",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "unit_code": {
-                  "example": "any"
-                },
-                "unit_name": {
-                  "example": "any"
-                },
-                "unit_description": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -324,33 +167,6 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "unit_name": {
-                  "example": "any"
-                },
-                "unit_description": {
-                  "example": "any"
-                },
-                "avgOverallRating": {
-                  "example": "any"
-                },
-                "avgContentRating": {
-                  "example": "any"
-                },
-                "avgFacultyRating": {
-                  "example": "any"
-                },
-                "avgRelevancyRating": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -366,13 +182,121 @@
         }
       }
     },
-    "/api/v1/units/{unitCode}/required-by": {
+    "/api/v2/units/": {
       "get": {
         "tags": [
-          "Units"
+          "Units V2"
         ],
-        "summary": "Get all units that have the specified unit as a prerequisite",
+        "summary": "Get all units",
         "description": "",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/api/v2/units/popular": {
+      "get": {
+        "tags": [
+          "Units V2"
+        ],
+        "summary": "Get 10 most popular units",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/units/filter": {
+      "get": {
+        "tags": [
+          "Units V2"
+        ],
+        "summary": "Get paginated and filtered units",
+        "description": "",
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/v2/units/{unitCode}": {
+      "get": {
+        "tags": [
+          "Units V2"
+        ],
+        "summary": "Get a unit by unit code",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitCode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "populateReviews",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "populateReviewsAuthor",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/units/update/{unitcode}": {
+      "put": {
+        "tags": [
+          "Units V2"
+        ],
+        "summary": "Update a unit",
+        "description": "",
+        "parameters": [
+          {
+            "name": "unitcode",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/v2/units/{unitCode}/required-by": {
+      "get": {
+        "tags": [
+          "Units V2"
+        ],
+        "description": "Get all units that have the given unit as a prerequisite",
         "parameters": [
           {
             "name": "unitCode",
@@ -384,22 +308,16 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/api/v1/reviews/": {
+    "/api/v2/reviews/": {
       "get": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Get all reviews from the database with an optional filter",
+        "summary": "Get all reviews with optional filter",
         "description": "",
         "responses": {
           "200": {
@@ -408,12 +326,33 @@
         }
       }
     },
-    "/api/v1/reviews/{unit}": {
+    "/api/v2/reviews/popular": {
       "get": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Get all reviews for a unit from the database",
+        "summary": "Get N most liked reviews",
+        "description": "",
+        "parameters": [
+          {
+            "name": "n",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/reviews/{unit}": {
+      "get": {
+        "tags": [
+          "Reviews V2"
+        ],
+        "summary": "Get all reviews for a specific unit",
         "description": "",
         "parameters": [
           {
@@ -426,22 +365,16 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/api/v1/reviews/user/{userId}": {
+    "/api/v2/reviews/user/{userId}": {
       "get": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Get all reviews by a specific user from the database",
+        "summary": "Get all reviews by a specific user",
         "description": "",
         "parameters": [
           {
@@ -454,17 +387,14 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/api/v1/reviews/{unit}/create": {
+    "/api/v2/reviews/{unit}/create": {
       "post": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
         "summary": "Create a review for a specific unit",
         "description": "",
@@ -474,75 +404,21 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "review_author": {
-                  "example": "any"
-                },
-                "review_title": {
-                  "example": "any"
-                },
-                "review_semester": {
-                  "example": "any"
-                },
-                "review_grade": {
-                  "example": "any"
-                },
-                "review_year": {
-                  "example": "any"
-                },
-                "review_overall_rating": {
-                  "example": "any"
-                },
-                "review_relevancy_rating": {
-                  "example": "any"
-                },
-                "review_faculty_rating": {
-                  "example": "any"
-                },
-                "review_content_rating": {
-                  "example": "any"
-                },
-                "review_description": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/v1/reviews/update/{reviewId}": {
+    "/api/v2/reviews/update/{reviewId}": {
       "put": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Update a review by MongoDB ID (e.g. Title, Grade Obtained, Ratings)",
+        "summary": "Update a review by ID",
         "description": "",
         "parameters": [
           {
@@ -553,30 +429,18 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/v1/reviews/delete/{reviewId}": {
+    "/api/v2/reviews/delete/{reviewId}": {
       "delete": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Delete a review by MongoDB ID (also removes the review from the Unit\\'s reviews array)",
+        "summary": "Delete a review by ID",
         "description": "",
         "parameters": [
           {
@@ -587,30 +451,18 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
     },
-    "/api/v1/reviews/toggle-reaction/{reviewId}": {
+    "/api/v2/reviews/toggle-reaction/{reviewId}": {
       "patch": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Toggle the likes or dislikes field for a specific review by its ID",
+        "summary": "Toggle like/dislike on a review",
         "description": "",
         "parameters": [
           {
@@ -625,10 +477,16 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
+                "reportReason": {
                   "example": "any"
                 },
-                "reactionType": {
+                "reportDescription": {
+                  "example": "any"
+                },
+                "reporterName": {
+                  "example": "any"
+                },
+                "review": {
                   "example": "any"
                 }
               }
@@ -639,24 +497,18 @@
           "200": {
             "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "201": {
+            "description": "Created"
           }
         }
       }
     },
-    "/api/v1/reviews/send-report": {
+    "/api/v2/reviews/send-report": {
       "post": {
         "tags": [
-          "Reviews"
+          "Reviews V2"
         ],
-        "summary": "Send an email corresponding to a user\\'s report on a review",
+        "summary": "Send report email for a review",
         "description": "",
         "parameters": [
           {
@@ -684,43 +536,6 @@
         "responses": {
           "201": {
             "description": "Created"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/auth/google/authenticate": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Login and/or register a user using Google OAuth",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "idToken": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "403": {
-            "description": "Forbidden"
-          },
-          "409": {
-            "description": "Conflict"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -868,22 +683,16 @@
         }
       }
     },
-    "/api/v1/auth/validate": {
+    "/api/v2/users/me": {
       "get": {
         "tags": [
-          "Auth"
+          "User V2"
         ],
-        "summary": "Check if the user has the access_token in their cookies to keep session",
+        "summary": "Get current user",
         "description": "",
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -891,12 +700,26 @@
         }
       }
     },
-    "/api/v1/auth/upload-avatar": {
+    "/api/v2/users/validate": {
+      "get": {
+        "tags": [
+          "User V2"
+        ],
+        "summary": "Check if the user has the access_token in their cookies to keep session",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/users/google/authenticate": {
       "post": {
         "tags": [
-          "Auth"
+          "User V2"
         ],
-        "summary": "Upload the given avatar to cloudinary and assign it as user\\'s profileImg",
+        "summary": "Login/register a user with Google OAuth",
         "description": "",
         "parameters": [
           {
@@ -905,7 +728,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "idToken": {
                   "example": "any"
                 }
               }
@@ -913,17 +736,81 @@
           }
         ],
         "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/users/refresh": {
+      "post": {
+        "tags": [
+          "User V2"
+        ],
+        "summary": "Refresh access token using refresh token",
+        "description": "",
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v2/users/logout": {
+      "post": {
+        "tags": [
+          "User V2"
+        ],
+        "summary": "Clear the token cookies and invalidate refresh token in database",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v2/users/upload-avatar": {
+      "post": {
+        "tags": [
+          "User V2"
+        ],
+        "summary": "Upload avatar to cloudinary and assign it as user",
+        "description": "",
+        "responses": {
           "200": {
             "description": "OK"
           },
           "400": {
             "description": "Bad Request"
           },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v2/users/{username}": {
+      "get": {
+        "tags": [
+          "User v2"
+        ],
+        "summary": "Get user by username",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -1129,26 +1016,6 @@
         ],
         "summary": "Create a new SETU data entry in the database (Admin access required)",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "unit_code": {
-                  "example": "any"
-                },
-                "Season": {
-                  "example": "any"
-                },
-                "code": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
         "responses": {
           "201": {
             "description": "Created"
@@ -1176,9 +1043,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "map((entry": {
-                  "example": "any"
-                },
                 "length": {
                   "example": "any"
                 }
@@ -1251,6 +1115,168 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get all jobs",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/open": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get all open job listings",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/logos": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get all organisation logos",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Upload or update an organisation logo (admin only)",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/logos/{organisation}": {
+      "delete": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Delete an organisation logo (admin only)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "organisation",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/status/{status}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get job listings by status (OPEN, CLOSED, Opening Soon)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/role-type/{roleType}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get job listings by role type category",
+        "description": "",
+        "parameters": [
+          {
+            "name": "roleType",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/{notionId}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Get a single job listing by ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "notionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v2/jobs/refresh-cache": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "summary": "Invalidate jobs cache (auth required)",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
