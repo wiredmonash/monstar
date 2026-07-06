@@ -98,7 +98,8 @@ const setupSwagger = async (app: Express) => {
   };
 
   const outputFile = './src/docs/swagger.json';
-  const endpointsFiles = ['./src/server.ts'];
+  // swagger.endpoints.ts uses relative imports autogen can follow (see #203).
+  const endpointsFiles = ['./src/docs/swagger.endpoints.ts'];
 
   try {
     await swaggerAutogen(outputFile, endpointsFiles, doc);
