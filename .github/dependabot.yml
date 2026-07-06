@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    # Staying on Angular 18 for now: block major (v19+) bumps so no upgrade PR
+    # appears, while 18.x security patches keep flowing. limit 0 means no
+    # scheduled version-bump PRs on top of the existing security updates.
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: "@angular*"
+        update-types: ["version-update:semver-major"]
