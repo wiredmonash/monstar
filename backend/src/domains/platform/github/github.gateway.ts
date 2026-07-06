@@ -7,25 +7,11 @@ const REPO_OWNER = 'wiredmonash';
 const REPO_NAME = 'monstar';
 
 /**
- * Get GitHub token from environment variables
+ * Headers for GitHub API requests.
  *
- * TODO: Check if this is still required now that the repo is public.
- */
-const getGitHubToken = () => {
-  return process.env.GITHUB_TOKEN;
-};
-
-/**
- * Get authenticated headers for GitHub API requests
+ * The repo is public, so contributors are readable unauthenticated. No token.
  */
 const getAuthHeaders = () => {
-  const token = getGitHubToken();
-  if (token) {
-    return {
-      Authorization: `token ${token}`,
-      Accept: 'application/vnd.github.v3+json',
-    };
-  }
   return {
     Accept: 'application/vnd.github.v3+json',
   };
@@ -55,7 +41,7 @@ class GithubGateway {
   }
 
   /**
-   * Whether an error means the repository is private or the token is invalid
+   * Whether an error means the repository is private
    * (GitHub responds 401/403 in that case).
    */
   static isRepositoryAccessError(error: unknown): boolean {

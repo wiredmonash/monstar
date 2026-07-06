@@ -39,7 +39,6 @@ process.env.CLOUDINARY_API_SECRET = 'test';
 process.env.CLOUDINARY_URL = 'cloudinary://test:test@test';
 process.env.GEMINI_API_KEY = '';
 process.env.NOTION_PAGE_ID = '';
-process.env.GITHUB_TOKEN = '';
 
 /* ----- Stub Swagger so importing the app doesn't generate/serve docs ----- */
 vi.mock('@docs/swagger', () => ({
