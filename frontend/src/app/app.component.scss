@@ -11,7 +11,8 @@ body {
 .wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   background-color: $bg-dark-color;
   padding-left: $sidebar-rail-width;
 
