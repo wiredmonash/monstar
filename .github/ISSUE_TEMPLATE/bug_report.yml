@@ -1,0 +1,55 @@
+name: Bug report
+description: Report something that is broken or behaving unexpectedly
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Fill in the sections below so we can reproduce it.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you see?
+      placeholder: The unit page shows a blank rating.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the steps that trigger the bug.
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the app is affected? Select all that apply.
+      multiple: true
+      options:
+        - frontend
+        - backend
+        - infra
+        - database
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Screenshots or logs
+      description: Paste any console output, screenshots, or error messages.
+    validations:
+      required: false
