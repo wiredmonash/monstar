@@ -1,5 +1,3 @@
-import nodemailer from 'nodemailer';
-
 import asyncHandler from '@shared/utilities/asyncHandler';
 import ReviewService from './review.service';
 
@@ -139,41 +137,6 @@ class ReviewController {
     );
 
     return res.status(200).json(result);
-  });
-
-  /**
-   * Send report email for a review
-   */
-  static sendReport = asyncHandler(async (req, res) => {
-    const { reportReason, reportDescription, reporterName, review } = req.body;
-
-    const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USERNAME,
-      to: process.env.EMAIL_USERNAME,
-      subject: `Report on review written by user ${review.author.username}`,
-      html: `<p>
-Reporter: ${reporterName} <br>
-Reason: ${reportReason} <br>
-Description: ${reportDescription} <br>
-<br>
-Author ID: ${review.author._id} <br>
-Author Username: ${review.author.username} <br>
-<br>
-Review ID: ${review._id} <br>
-Review Title: ${review.title} <br>
-Review Description: ${review.description} <br>
-</p>`,
-    });
-
-    return res.status(201).json({ message: 'Report email sent' });
   });
 }
 

@@ -477,16 +477,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "reportReason": {
+                "userId": {
                   "example": "any"
                 },
-                "reportDescription": {
-                  "example": "any"
-                },
-                "reporterName": {
-                  "example": "any"
-                },
-                "review": {
+                "reactionType": {
                   "example": "any"
                 }
               }
@@ -497,45 +491,8 @@
           "200": {
             "description": "OK"
           },
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/api/v2/reviews/send-report": {
-      "post": {
-        "tags": [
-          "Reviews V2"
-        ],
-        "summary": "Send report email for a review",
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "reportReason": {
-                  "example": "any"
-                },
-                "reportDescription": {
-                  "example": "any"
-                },
-                "reporterName": {
-                  "example": "any"
-                },
-                "review": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
+          "400": {
+            "description": "Bad Request"
           }
         }
       }

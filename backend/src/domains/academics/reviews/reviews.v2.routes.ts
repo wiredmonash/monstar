@@ -66,12 +66,4 @@ router.patch(
   ReviewController.toggleReaction
 );
 
-router.post(
-  '/send-report',
-  userMiddleware,
-  // #swagger.tags = ['Reviews V2']
-  // #swagger.summary = 'Send report email for a review'
-  ReviewController.sendReport
-);
-
 export default router;
