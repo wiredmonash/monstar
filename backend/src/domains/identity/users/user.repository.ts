@@ -20,7 +20,7 @@ class UserRepository {
    */
   static async findByEmailOrGoogleId(email: string, googleId: string) {
     return await User.findOne({
-      $or: [{ email: email }, { googleId: googleId }],
+      $or: [{ email: email }, { googleID: googleId }],
     });
   }
 
