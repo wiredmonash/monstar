@@ -116,6 +116,29 @@ describe(UserService.name, () => {
       expect(updatedUser.refreshToken).not.toBe('old-token');
     });
 
+    it('should match an existing Google user by Google ID when the email differs', async () => {
+      // arrange: user's stored email differs from the email Google returns,
+      // but the Google sub (googleID) is the same
+      const storedEmail = 'jdoe4242@student.monash.edu';
+      const newEmail = 'jane.doe@monash.edu';
+      const googleID = 'google-shared-sub';
+      const existingUser = await User.create({
+        email: storedEmail,
+        username: 'jdoe4242',
+        googleID,
+        isGoogleUser: true,
+        verified: true,
+      });
+      setupGoogleMock(newEmail, 'Jane Doe', googleID);
+
+      // act
+      const result = await UserService.googleAuthenticate(fakeIdTokenString);
+
+      // assert: matched the existing user rather than creating a new one
+      expect(result.user._id.toString()).toEqual(existingUser._id.toString());
+      expect(await User.countDocuments({ googleID })).toBe(1);
+    });
+
     it('should throw Error409Conflict if account exists but is not a Google account', async () => {
       const email = 'jdoe6767@student.monash.edu';
       await User.create({
