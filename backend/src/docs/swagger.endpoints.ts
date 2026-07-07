@@ -4,7 +4,6 @@ import express from 'express';
 // not the '@domains' barrels, which autogen can't resolve. Keep the mounts below
 // in sync with server.ts.
 import reviewsV2Router from '../domains/academics/reviews/reviews.v2.routes';
-import setusV1Router from '../domains/academics/setu/setus.v1.routes';
 import unitsV1Router from '../domains/academics/units/units.v1.routes';
 import unitsV2Router from '../domains/academics/units/units.v2.routes';
 import notificationsV1Router from '../domains/identity/notifications/notifications.v1.routes';
@@ -30,7 +29,6 @@ app.use('/api/v1/auth', authV1Router);
 app.use('/api/v2/users', usersV2Router);
 app.use('/api/v1/notifications', notificationsV1Router);
 app.use('/api/v1/github', githubV1Router);
-app.use('/api/v1/setus', setusV1Router);
 app.use('/api/v2/jobs', jobsV2Router);
 app.use('/api/admin', adminV1Router);
 
