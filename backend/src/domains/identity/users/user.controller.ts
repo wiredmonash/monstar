@@ -24,6 +24,44 @@ class UserController {
   });
 
   /**
+   * Get all users (admin only; used for API testing)
+   */
+  static getAllUsers = asyncHandler(async (_req, res) => {
+    const users = await UserService.getAllUsers();
+    return res.status(200).json(users);
+  });
+
+  /**
+   * Update a user's username (self or admin)
+   */
+  static updateUser = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+    const { username } = req.body;
+    const user = await UserService.updateUser(
+      req.user.id,
+      req.params.userId,
+      username
+    );
+    return res.status(200).json({
+      message: 'User details successfully updated',
+      username: user.username,
+    });
+  });
+
+  /**
+   * Delete a user account (self or admin)
+   */
+  static deleteUser = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
+    await UserService.deleteUser(req.user.id, req.params.userId);
+    return res.status(200).json({ message: 'User successfully deleted' });
+  });
+
+  /**
    * Login/sign up with google oauth
    */
   static authenticateWithGoogle = asyncHandler(async (req, res) => {

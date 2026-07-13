@@ -20,7 +20,7 @@ import {
 } from '@domains/academics/units';
 import { reviewsV2Router } from '@domains/academics/reviews';
 import { setuRouter } from '@domains/academics/setu';
-import { authV1Router, usersV2Router } from '@domains/identity/users';
+import { usersRouter } from '@domains/identity/users';
 import { notificationsRouter } from '@domains/identity/notifications';
 import { adminV1Router } from '@domains/platform/admin';
 import { githubRouter } from '@domains/platform/github';
@@ -88,8 +88,7 @@ app.use('/api/v1/units', unitsV1Router);
 app.use('/api/v2/units', unitsV2Router);
 app.use('/api/v2/reviews', reviewsV2Router);
 app.use('/api/v2/setus', setuRouter);
-app.use('/api/v1/auth', authV1Router);
-app.use('/api/v2/users', usersV2Router);
+app.use('/api/v2/users', usersRouter);
 app.use('/api/v2/notifications', notificationsRouter);
 app.use('/api/v2/github', githubRouter);
 app.use('/api/v2/jobs', jobsV2Router);

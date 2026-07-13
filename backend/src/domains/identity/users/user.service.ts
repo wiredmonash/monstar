@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { cloudinary } from '@infrastructure/storage/cloudinary';
 import type { Id } from '@shared/types';
+import { CreateError } from '@shared/errors/error';
 import {
   Error409Conflict,
   Error403Forbidden,
@@ -138,6 +139,69 @@ class UserService {
     const user = await UserRepository.findByUsername(username);
     if (!user) throw new Error404NotFound('User not found');
     return user;
+  };
+
+  /**
+   * Get all users (admin only; used for API testing)
+   */
+  static getAllUsers = async () => {
+    return await UserRepository.findAll();
+  };
+
+  /**
+   * Delete a user (only the user themselves or an admin may delete)
+   */
+  static deleteUser = async (
+    requestingUserId: string,
+    targetUserId: string
+  ) => {
+    const requestingUser = await UserRepository.findById(requestingUserId);
+    if (!requestingUser)
+      throw new Error404NotFound('Requesting user not found');
+
+    const targetUser = await UserRepository.findById(targetUserId);
+    if (!targetUser) throw new Error404NotFound('Target user not found');
+
+    const isSameUser =
+      requestingUser._id.toString() === targetUser._id.toString();
+    if (!isSameUser && !requestingUser.admin)
+      throw new Error403Forbidden(
+        'You are not authorised to delete this account'
+      );
+
+    // Deletion goes through findOneAndDelete so the user model's cascade hook
+    // fires (removes reviews, notifications, avatar and reaction counts).
+    await UserRepository.deleteById(targetUser._id);
+  };
+
+  /**
+   * Update a user's username (only the user themselves or an admin may update)
+   */
+  static updateUser = async (
+    requestingUserId: string,
+    targetUserId: string,
+    username?: string
+  ) => {
+    const requestingUser = await UserRepository.findById(requestingUserId);
+    if (!requestingUser)
+      throw new Error404NotFound('Requesting user not found');
+
+    const targetUser = await UserRepository.findById(targetUserId);
+    if (!targetUser) throw new Error404NotFound('Target user not found');
+
+    const isSameUser =
+      requestingUser._id.toString() === targetUser._id.toString();
+    if (!isSameUser && !requestingUser.admin)
+      throw new Error403Forbidden(
+        'You are not authorised to update user details'
+      );
+
+    if (!username) throw CreateError(400, 'Username is required to update');
+
+    targetUser.username = username;
+    await targetUser.save();
+
+    return targetUser;
   };
 
   /**
