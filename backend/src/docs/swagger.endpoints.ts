@@ -10,7 +10,7 @@ import notificationsV1Router from '../domains/identity/notifications/notificatio
 import authV1Router from '../domains/identity/users/auth.v1.routes';
 import usersV2Router from '../domains/identity/users/users.v2.routes';
 import adminV1Router from '../domains/platform/admin/admin.v1.routes';
-import githubV1Router from '../domains/platform/github/github.v1.routes';
+import githubRouter from '../domains/platform/github/github.routes';
 import jobsV2Router from '../domains/recruitment/jobs/jobs.v2.routes';
 
 const app = express();
@@ -28,7 +28,7 @@ app.use('/api/v2/reviews', reviewsV2Router);
 app.use('/api/v1/auth', authV1Router);
 app.use('/api/v2/users', usersV2Router);
 app.use('/api/v1/notifications', notificationsV1Router);
-app.use('/api/v1/github', githubV1Router);
+app.use('/api/v2/github', githubRouter);
 app.use('/api/v2/jobs', jobsV2Router);
 app.use('/api/admin', adminV1Router);
 

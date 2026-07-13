@@ -834,7 +834,7 @@
         }
       }
     },
-    "/api/v1/github/contributors": {
+    "/api/v2/github/contributors": {
       "get": {
         "tags": [
           "GitHub"

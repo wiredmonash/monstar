@@ -54,9 +54,6 @@ class GithubService {
 
   /**
    * Filter to human contributors, cap and sort them, and format for the client.
-   *
-   * NOTE: preserves v1 behavior — slice(0, 10) runs BEFORE the sort, so it caps
-   * the first 10 in API order and only then sorts those by contributions desc.
    */
   static formatContributors(contributors: GitHubContributor[]) {
     return contributors

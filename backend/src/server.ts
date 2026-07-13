@@ -23,7 +23,7 @@ import { setusV2Router } from '@domains/academics/setu';
 import { authV1Router, usersV2Router } from '@domains/identity/users';
 import { notificationsV1Router } from '@domains/identity/notifications';
 import { adminV1Router } from '@domains/platform/admin';
-import { githubV1Router } from '@domains/platform/github';
+import { githubRouter } from '@domains/platform/github';
 import { jobsV2Router } from '@domains/recruitment/jobs';
 
 /* --------------------------- Initialize Express --------------------------- */
@@ -91,7 +91,7 @@ app.use('/api/v2/setus', setusV2Router);
 app.use('/api/v1/auth', authV1Router);
 app.use('/api/v2/users', usersV2Router);
 app.use('/api/v1/notifications', notificationsV1Router);
-app.use('/api/v1/github', githubV1Router);
+app.use('/api/v2/github', githubRouter);
 app.use('/api/v2/jobs', jobsV2Router);
 if (isDevelopment && !isProductionMachine) {
   app.use('/api/admin', adminV1Router);
