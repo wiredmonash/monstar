@@ -3,10 +3,10 @@ import asyncHandler from '@shared/utilities/asyncHandler';
 import SetuService from './setu.service';
 
 /**
- * HTTP contract for the v2 SETU endpoints. Uses asyncHandler so thrown errors
+ * HTTP contract for the SETU endpoints. Uses asyncHandler so thrown errors
  * flow to the shared error middleware instead of per-handler try/catch.
  */
-class SetuV2Controller {
+class SetuController {
   /**
    * GET /unit/:unitCode — SETU data for a unit (newest season first)
    */
@@ -18,4 +18,4 @@ class SetuV2Controller {
   });
 }
 
-export default SetuV2Controller;
+export default SetuController;

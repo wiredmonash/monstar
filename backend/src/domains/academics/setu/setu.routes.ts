@@ -1,14 +1,14 @@
 import express from 'express';
 
-import SetuV2Controller from './setu.v2.controller';
+import SetuController from './setu.controller';
 
 const router = express.Router();
 
 router.get(
   '/unit/:unitCode',
-  // #swagger.tags = ['SETU V2']
+  // #swagger.tags = ['SETU']
   // #swagger.summary = 'Get all SETU data for a specific unit code'
-  SetuV2Controller.getByUnitCode
+  SetuController.getByUnitCode
 );
 
 export default router;
