@@ -1,122 +1,130 @@
-# 👥 Contributing to MonSTAR
+# Contributing to MonSTAR
 
-Contributions are welcome, monash uni students preferred.
+Contributions are welcome, Monash students preferred. Questions or ideas for new features: open a GitHub issue or reach out to [@jenul-ferdinand](https://github.com/jenul-ferdinand).
 
-## 🚀 Getting Started with Dev
+- [Development setup](#development-setup)
+  - [Docker](#docker)
+  - [npm](#npm)
+- [Seed data](#seed-data)
+- [Advanced: make shortcuts](#advanced-make-shortcuts)
+- [Development modes](#development-modes)
+- [Submitting changes](#submitting-changes)
 
-### Prerequisites
+## Development setup
 
-Make sure you have these node.js, angular, and mongodb installed.
+Pick one of two setups:
 
-### Setup Instructions
+- **Docker (recommended):** one command starts the frontend, backend, and a MongoDB instance filled with sample data. No MongoDB Atlas credentials required.
+- **npm:** run the servers directly on your machine against your own MongoDB.
 
-1. **Fork and Clone**
-   ```shell
-   git clone https://github.com/your-username/monstar.git
-   cd monstar
-   ```
+### Docker
 
-2. **Install Dependencies**
-   ```shell
-   # Install Angular globally
-   npm install -g @angular/cli@18
-
-   # Install all project dependencies
-   cd frontend && npm install
-   cd ../backend && npm install
-   ```
-
-3. **Environment Configuration**
-   Create a `.env` file in the `backend/` directory using `.env.template` as your guide. You'll need:
-   - MongoDB connection string
-   - Cloudinary API credentials (for profile pictures)
-
-4. **Database Setup**
-   ```shell
-   # Populate units data
-   # POST the JSON from backend/scraper/processed_units.json to localhost:8080/api/v1/units/create-bulk
-
-   # (Optional) Add SETU data
-   # POST the JSON from backend/scraper/setu_data_2019_2024.json to localhost:8080/api/v1/setus/create-bulk
-   ```
-
-## 🛠️ Development Workflow
-
-### Development commands
+You need [Docker](https://docs.docker.com/get-docker/) with the Compose plugin (included in Docker Desktop).
 
 ```shell
-# Development
-cd backend && node server.js # Starts backend server at localhost:8080
-cd frontend && ng serve # Starts frontend server at localhost:4200
+# 1. Fork and clone
+git clone https://github.com/your-username/monstar.git
+cd monstar
 
-# If can use make
-make dev # Starts both backend and frontend servers
+# 2. Create the backend environment file (the defaults work for Docker)
+cp backend/.env.template backend/.env
 
-# Production build (remember to set DEVELOPMENT=false in .env)
-cd frontend && ng build
-cd backend && node server.js
+# 3. Build and start everything
+docker compose up --build
 ```
 
-### Development modes
+The first startup takes a few minutes: Docker builds the images, waits for MongoDB, and seeds the database with the full unit catalogue plus fictional users and reviews. After that:
 
-**Development Mode** (`DEVELOPMENT=true`):
-- Backend enables CORS for frontend communication
-- Frontend uses full URLs to connect to backend
-- Hot reloading for both frontend and backend
+- Frontend: http://localhost:4200
+- Backend: http://localhost:8080 (Swagger docs at `/docs`)
 
-**Production Mode** (`DEVELOPMENT=false`):
-- Backend serves static frontend files
-- Frontend uses relative URLs
-- Optimized builds for performance
+Edits to `frontend/` and `backend/` reload automatically. No rebuild needed.
 
-## 📝 Contribution Guidelines
+Daily commands:
 
-### Code style
-- Follow existing code conventions in the project
-- Use meaningful variable and function names
-- Comment complex logic where necessary
+```shell
+docker compose up -d             # Start in the background
+docker compose logs -f backend   # Follow logs (also: frontend, mongo)
+docker compose down              # Stop everything; database data survives
+```
 
-### Commit messages
-- Use [conventional commit messages](https://gist.github.com/Zekfad/f51cb06ac76e2457f11c80ed705c95a3)
+When a `package.json` changes, rebuild and reseed:
 
-### Pull Request Process
+```shell
+docker compose down -v && docker compose up --build
+```
 
-1. **Create a Branch**
-   ```shell
-   git switch -c thisisabranch
-   ```
+### npm
 
-2. **Make Your Changes**
-   - Write clean, well-documented code
-   - Test your changes
+You need Node.js and a MongoDB instance (local or Atlas).
 
-3. **Submit a Pull Request**
-   - Provide a clear description of your changes
-   - Reference any related issues
-   - Include screenshots for UI changes
+```shell
+# 1. Fork and clone
+git clone https://github.com/your-username/monstar.git
+cd monstar
 
-### What you can add to this project
+# 2. Install dependencies
+npm install -g @angular/cli@18
+cd frontend && npm install
+cd ../backend && npm install
 
-- **Bug Fixes**: Help us squash those pesky bugs
-- **Feature Enhancements**: Improve existing functionality
-- **New Features**: Add value for Monash students (contact jenul15ferdinand@gmail.com first, let's chat about it)
-- **Documentation**: Help others understand and contribute
-- **Performance Improvements**: Make MonSTAR faster and more efficient
+# 3. Create backend/.env from the template, then set
+#    MONGODB_CONN_STRING to your MongoDB instance
+cp backend/.env.template backend/.env
 
-## 🤝 Guidelines
+# 4. Seed the database (units, users, reviews)
+cd backend && npm run seed
 
-- **Be Respectful**: We're all here to learn and improve
-- **Be Constructive**: Provide helpful feedback and suggestions
-- **Be Patient**: Remember that we're all volunteers with other commitments
-- **Have Fun**: Building something great for fellow students should be enjoyable!
+# 5. Start both servers (or run them separately, see below)
+make dev
+```
 
-## 📞 Support
+```shell
+cd backend && npm run dev    # Backend only, localhost:8080
+cd frontend && npm start     # Frontend only, localhost:4200
+```
 
-If you have questions about contributing or need help getting started:
+The seeder only accepts a local MongoDB (`localhost`/`127.0.0.1`), so it can never wipe a shared database. Cloudinary credentials in `.env` are optional; profile picture uploads need them, nothing else does.
 
-- **Open an Issue**: Use GitHub issues for questions or discussions
-- **Contact Us**: Reach out to `jenul15ferdinand@gmail.com`
+## Seed data
 
----
+The sample data is synthetic: fictional students and generated reviews. Destroy and recreate it freely.
 
-*Thank you for helping make MonSTAR better for the Monash community! 🎓*
+```shell
+# Re-run the seeder (does nothing if data exists)
+docker compose run --rm seed
+
+# Wipe the database and reseed
+docker compose run --rm seed npm run seed -- --reset
+
+# Remove containers and volumes; the next `up` reseeds
+docker compose down -v
+```
+
+Under the npm setup, run `npm run seed` or `npm run seed -- --reset` from `backend/` instead.
+
+## Advanced: make shortcuts
+
+The Makefile wraps the Docker commands above. Run `make help` for the full list.
+
+```shell
+make up         # docker compose up --build -d
+make down       # docker compose down
+make logs       # docker compose logs -f
+make seed       # docker compose run --rm seed
+make reset-db   # docker compose run --rm seed npm run seed -- --reset
+make rebuild    # docker compose down -v && docker compose up --build -d
+```
+
+## Development modes
+
+`DEVELOPMENT=true` (local work): the backend enables CORS for localhost:4200 and both servers hot-reload. `DEVELOPMENT=false` (production): the backend serves the built frontend from one origin.
+
+## Submitting changes
+
+1. Create a branch: `git switch -c your-branch-name`
+2. Make your changes and test them.
+3. Commit using [conventional commit messages](https://gist.github.com/Zekfad/f51cb06ac76e2457f11c80ed705c95a3).
+4. Open a pull request that describes the change, references related issues, and includes screenshots for UI changes.
+
+Bug fixes, documentation, and performance work are always welcome. For new features, message [@jenul-ferdinand](https://github.com/jenul-ferdinand) first so we can talk it through.
