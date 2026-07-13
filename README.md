@@ -16,7 +16,7 @@
   <span> · </span>
   <a href="./CONTRIBUTING.md">Contributing</a>
   <span> · </span>
-  <a href="https://github.com/wired-projects/monstar/issues">Issues</a>
+  <a href="https://github.com/wiredmonash/monstar/issues">Issues</a>
   <span> · </span>
   <a href="https://monstar.wired.org.au/changelog">Changelog</a>
 </h3>
@@ -46,7 +46,7 @@ MonSTAR provides several features for exploring and reviewing Monash subjects:
 ### System context
 ![System Context](.docs/1_System_Context.png)
 ### Container diagram
-![Container Diagram](.docs/2_Container_Diagram.png)
+![Container Diagram](.docs/2_Container_Diagram.png?v=2)
 
 ## Contributing
 
@@ -59,7 +59,7 @@ Before starting work on a feature, please read the [Contributing Guide](./CONTRI
 - Testing requirements
 
 You can contribute by:
-- Reporting bugs or suggesting features via [GitHub Issues](https://github.com/wired-projects/monstar/issues)
+- Reporting bugs or suggesting features via [GitHub Issues](https://github.com/wiredmonash/monstar/issues)
 - Fixing existing issues
 - Improving documentation
 - Adding new features (after discussing in an issue first)
@@ -80,7 +80,7 @@ MonSTAR's unit catalog and SETU data are sourced using tools developed by **Sai 
 
 **Developed by:** WIRED Projects Team, Monash University \
 **Primary person of contact:** [@jenul-ferdinand](https://github.com/jenul-ferdinand) on GitHub or proxy_dev on Discord\
-**Issues:** [GitHub Issues](https://github.com/wired-projects/monstar/issues)
+**Issues:** [GitHub Issues](https://github.com/wiredmonash/monstar/issues)
 
 ## License
 
