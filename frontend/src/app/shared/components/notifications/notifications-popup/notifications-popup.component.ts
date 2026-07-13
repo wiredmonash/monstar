@@ -5,9 +5,9 @@ import { ButtonModule } from 'primeng/button';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { Subscription } from 'rxjs';
 import { Notification } from '../../../models/notification.model';
-import { User } from '../../../models/user.model';
+import { IUser } from '../../../models/v2/user.schema';
 import { ApiService } from '../../../services/api.service';
-import { AuthService } from '../../../services/auth.service';
+import { UserService } from '../../../services/api/user.service';
 import { NotificationCardComponent } from '../notification-card/notification-card.component';
 
 @Component({
@@ -28,7 +28,7 @@ export class NotificationsPopupComponent {
   profileColor!: string;
 
   // & |==== User Data ====|
-  user: User | null = null;
+  user: IUser | null = null;
   notifications: Notification[] = [];
 
   // & |==== Subscriptions ====|
@@ -38,11 +38,11 @@ export class NotificationsPopupComponent {
    * ! Constructor
    *
    * @param apiService The API service
-   * @param authService The Auth service
+   * @param userService The User service
    */
   constructor(
     private apiService: ApiService,
-    private authService: AuthService
+    private userService: UserService
   ) {}
 
   /**
@@ -51,8 +51,8 @@ export class NotificationsPopupComponent {
    * Subscribes to the current user observable to get user notifications
    */
   ngOnInit(): void {
-    this.userSubscription = this.authService.getCurrentUser().subscribe({
-      next: (currentUser: User | null) => {
+    this.userSubscription = this.userService.currentUser$.subscribe({
+      next: (currentUser: IUser | null) => {
         this.user = currentUser;
         // console.log('NotificationPopup | Current User:', this.user);
 
@@ -92,9 +92,6 @@ export class NotificationsPopupComponent {
       (notifications: Notification[]) => {
         this.notifications = notifications;
 
-        // Update the notifications property in the user object
-        if (this.user) this.user.notifications = this.notifications;
-
         // console.log(this.notifications);
       },
       (error: any) => {
@@ -108,7 +105,6 @@ export class NotificationsPopupComponent {
     // call the api service to mark the notification as read, and then remove it from notifications[]
     this.apiService.deleteNotificationByIdDELETE(notification._id).subscribe({
       next: () => {
-        this.user?.removeNotification(notification._id);
         this.notifications = this.notifications.filter(
           (n) => n._id !== notification._id
         );
