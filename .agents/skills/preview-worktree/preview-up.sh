@@ -37,22 +37,37 @@ fe_port=$((4200 + slot)); be_port=$((8080 + slot))
 
 mkdir -p "$pv"
 echo "$slot" > "$pv/slot"
+# No pathRewrite: the backend mounts routes under /api (see backend/src/server.ts),
+# and "/api" as a plain prefix matches nested paths where the "/api/*" glob did not.
 cat > "$pv/proxy.json" <<EOF
 {
-  "/api/*": {
-    "target": "http://localhost:$be_port/",
+  "/api": {
+    "target": "http://localhost:$be_port",
     "secure": false,
-    "pathRewrite": { "^/api": "" },
     "changeOrigin": false
   }
 }
 EOF
 
+# The frontend must build with relative /api URLs so calls stay same-origin and
+# hit the proxy. The default (development) config swaps in
+# environment.development.ts, which hardcodes http://localhost:8080 and bypasses
+# the proxy entirely. Prefer the "preview" configuration (relative URLs, dev-speed
+# build); fall back to "production" (also relative URLs) for worktrees branched
+# before the preview config existed.
+if grep -q '"preview"' "$wt/frontend/angular.json"; then
+  fe_config=preview
+else
+  fe_config=production
+  echo "note: no 'preview' config in this worktree's angular.json;" \
+       "using production build (slower rebuilds)"
+fi
+
 setsid env PORT="$be_port" npm --prefix "$wt/backend" run dev \
   > "$pv/backend.log" 2>&1 &
 be_pid=$!
-setsid npx --prefix "$wt/frontend" ng serve --port "$fe_port" \
-  --proxy-config "$pv/proxy.json" > "$pv/frontend.log" 2>&1 &
+setsid npx --prefix "$wt/frontend" ng serve --configuration "$fe_config" \
+  --port "$fe_port" --proxy-config "$pv/proxy.json" > "$pv/frontend.log" 2>&1 &
 fe_pid=$!
 printf '%s\n%s\n' "$be_pid" "$fe_pid" > "$pv/pids"
 
