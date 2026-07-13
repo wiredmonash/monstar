@@ -1,4 +1,4 @@
-.PHONY: dev dev-backend dev-frontend install install-backend install-frontend clean help
+.PHONY: dev dev-backend dev-frontend install install-backend install-frontend clean help up down logs seed reset-db rebuild
 
 # Colors for help text
 BLUE := \033[0;34m
@@ -27,6 +27,27 @@ dev-backend: ## Start only the backend server
 dev-frontend: ## Start only the frontend server
 	@echo "$(GREEN)Starting frontend server...$(NC)"
 	cd frontend && npm start
+
+##@ Docker
+
+up: ## Start frontend, backend, and MongoDB in the background (first run builds and seeds)
+	docker compose up --build -d
+
+down: ## Stop all containers (database data survives)
+	docker compose down
+
+logs: ## Follow logs from all services
+	docker compose logs -f
+
+seed: ## Run the database seeder (does nothing if data exists)
+	docker compose run --rm seed
+
+reset-db: ## Wipe the database and reseed with sample data
+	docker compose run --rm seed npm run seed -- --reset
+
+rebuild: ## Full rebuild after dependency changes (removes volumes, reseeds)
+	docker compose down -v
+	docker compose up --build -d
 
 ##@ Installation
 
