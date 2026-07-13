@@ -42,6 +42,19 @@ MonSTAR provides several features for exploring and reviewing Monash subjects:
 - **Review Interactions** - Like/dislike reviews with notifications
 - **Unit Tags** - Dynamically assigned tags like "WAM Booster"
 
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img alt="Home" src=".docs/product/home.png"><br><sub><b>Home</b> - explore units and see what's trending</sub></td>
+    <td width="50%"><img alt="Browse units" src=".docs/product/list.png"><br><sub><b>Browse</b> - search and filter by rating, campus, and teaching period</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img alt="Unit page" src=".docs/product/overview.png"><br><sub><b>Unit page</b> - ratings, reviews, and a Gemini sentiment overview</sub></td>
+    <td width="50%"><img alt="Pathways map" src=".docs/product/map.png"><br><sub><b>Pathways</b> - prerequisites and follow-on units as an interactive graph</sub></td>
+  </tr>
+</table>
+
 ## Architecture
 ### System context
 ![System Context](.docs/1_System_Context.png)
