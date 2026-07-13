@@ -104,7 +104,7 @@
                 "output": "/"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": [],
             "scripts": []
           }
         }
