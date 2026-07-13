@@ -16,8 +16,8 @@ import { OrganizationChartModule } from 'primeng/organizationchart';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subject } from 'rxjs';
-import { Unit } from '../../shared/models/unit.model';
-import { ApiService } from '../../shared/services/api.service';
+import { IUnitDeeplyPopulated } from '../../shared/models/v2/unit.schema';
+import { GetUnitService } from '../../shared/services/api/get-unit.service';
 
 /**
  * * Unit Node Interface
@@ -73,7 +73,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
 
   isLoading: boolean = false;
 
-  unit: Unit | null = null;
+  unit: IUnitDeeplyPopulated | null = null;
   prerequisiteNumReq: number = 0;
   prerequisiteUnitCodes: string[] | null = null;
   parentUnitCodes: string[] | null = null;
@@ -82,7 +82,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
    * === Constructor ===
    */
   constructor(
-    private apiService: ApiService,
+    private getUnitService: GetUnitService,
     private router: Router,
     private location: Location
   ) {}
@@ -123,8 +123,8 @@ export class UnitMapComponent implements OnInit, OnDestroy {
     const unitCode = this.router.url.split('/')[2];
 
     // Fetch the current unit
-    this.apiService.getUnitByUnitcodeGET(unitCode).subscribe({
-      next: (unit: Unit) => {
+    this.getUnitService.getByUnitcode(unitCode, false, false).subscribe({
+      next: (unit) => {
         // ? Debug log: Current unit
         // console.log('Current unit:', unit);
 
@@ -166,7 +166,8 @@ export class UnitMapComponent implements OnInit, OnDestroy {
             (node) => ' ' + node.label
           );
           // Save the prerequisite number required
-          this.prerequisiteNumReq = unit.requisites.prerequisites[0].NumReq;
+          this.prerequisiteNumReq =
+            unit.requisites.prerequisites[0].NumReq ?? 0;
 
           // Add prerequisite edges
           prereqEdges = prereqNodes.map((node) => ({
@@ -182,7 +183,7 @@ export class UnitMapComponent implements OnInit, OnDestroy {
         this.edges = prereqEdges;
 
         // Fetch the units that are required by the current unit
-        this.apiService.getUnitsRequiringUnitGET(unit.unitCode).subscribe({
+        this.getUnitService.getUnitsRequiringUnit(unit.unitCode).subscribe({
           next: (parentUnits) => {
             // ? Debug log: Fetched parent units
             // console.log('Parent units:', parentUnits);
