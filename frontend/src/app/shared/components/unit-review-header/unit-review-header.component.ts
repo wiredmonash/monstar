@@ -154,7 +154,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
 
     // Check if the unit has prerequisites or parent units
     if (this.unit) {
-      this.isUnitMapButtonEnabled = this.unitHasRequisites();
+      this.evaluateMapEligibility();
     }
   }
 
@@ -174,7 +174,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
         changes['unit'].currentValue.unitCode !==
           changes['unit'].previousValue.unitCode)
     ) {
-      this.isUnitMapButtonEnabled = this.unitHasRequisites();
+      this.evaluateMapEligibility();
     }
   }
 
@@ -185,42 +185,29 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
   /* ------------------------------- Validation ------------------------------- */
 
   /**
-   * * Check if unit has prerequisites and/or parent units
+   * * Evaluate whether the unit qualifies for a map
    *
-   * This checks if the unit has prerequisites or parent units by checking the unit object.
-   * - If the unit object doesn't have prerequisites, the unit map button is disabled.
-   * - If the unit object doesn't have parent units, the unit map button is disabled.
-   *
-   * @returns {boolean} Returns true if the unit has prerequisites or parent units, false otherwise.
+   * Asks the unit module whether the unit has prerequisites or is required by
+   * other units, and enables or disables the unit map button accordingly.
    */
-  unitHasRequisites(): boolean {
-    if (!this.unit) return false;
-
-    if (this.unit.requisites?.prerequisites?.length > 0) {
-      console.info(`UnitReviewHeader | Unit has requisites.`);
-      return true;
+  evaluateMapEligibility(): void {
+    if (!this.unit) {
+      this.isUnitMapButtonEnabled = false;
+      return;
     }
 
-    this.getUnitService.getUnitsRequiringUnit(this.unit.unitCode).subscribe({
-      next: (units) => {
-        if (units.length > 0) {
-          console.info('UnitReviewHeader | Unit has parent units.');
-          this.isUnitMapButtonEnabled = true;
-        } else {
-          console.warn('UnitReviewHeader | Unit has no parent units.');
-          this.isUnitMapButtonEnabled = false;
-        }
+    this.getUnitService.hasMapData(this.unit).subscribe({
+      next: (eligible) => {
+        this.isUnitMapButtonEnabled = eligible;
       },
       error: (error) => {
         console.error(
-          'UnitReviewHeader | Error whilst fetching parent units:',
+          'UnitReviewHeader | Error whilst checking map eligibility:',
           error.error
         );
         this.isUnitMapButtonEnabled = false;
       },
     });
-
-    return false;
   }
 
   /* ----------------------------- UI manipulation ---------------------------- */
