@@ -33,12 +33,12 @@ Students can browse units, read peer reviews, compare SETU scores across semeste
 
 MonSTAR provides several features for exploring and reviewing Monash subjects:
 
-- **Unit Search** - Search by unitcode or the name, additional filtering by teaching period, faculty, etc
-- **Student Reviews** - Read and write reviews with ratings across enjoyment, simplicity, usefulness
-- **AI Sentiment Overviews** - Gemini AI overviews for units, reviewing existing student review sentiment
-- **SETU Data** - Historical SETU results from sem 1 2019 up to most recent (authentication required)
-- **Unit Pathways Map** - Interactive graph showing unit pathways, prerequistes and future requirements
-- **Google Authentication** - Monash student/staff verification through email verification
+- **Unit Search** - Search by unit code or name, with filters for teaching period, faculty, and more
+- **Student Reviews** - Read and write reviews with ratings across enjoyment, simplicity, and usefulness
+- **AI Sentiment Overviews** - Gemini summaries of sentiment across a unit's student reviews
+- **SETU Data** - Historical SETU results from semester 1 2019 to the latest (authentication required)
+- **Unit Pathways Map** - Interactive graph of unit pathways, prerequisites, and follow-on requirements
+- **Google Authentication** - Monash student and staff verification by email
 - **Review Interactions** - Like/dislike reviews with notifications
 - **Unit Tags** - Dynamically assigned tags like "WAM Booster"
 
