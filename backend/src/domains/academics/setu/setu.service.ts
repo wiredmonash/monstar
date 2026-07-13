@@ -3,9 +3,8 @@ import type { Id } from '@shared/types';
 import SetuRepository from './setu.repository';
 
 /**
- * Orchestration for the SETU subdomain. The v1 controller is the only current
- * consumer, but this layer is the canonical service (no v1 prefix) since no v2
- * SETU API exists yet.
+ * Orchestration for the SETU subdomain. Shared by the v1 and v2 controllers;
+ * this is the canonical service (no version prefix).
  */
 class SetuService {
   /**
