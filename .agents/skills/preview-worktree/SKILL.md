@@ -19,6 +19,16 @@ bash <this-skill-dir>/preview-up.sh <worktree-path>
 
 The script allocates a slot, writes `<worktree>/.preview/` (generated proxy config, PIDs, logs), starts both servers detached, waits until they answer, and prints the URL. Report the URL to the user. Logs: `.preview/backend.log`, `.preview/frontend.log`.
 
+## Visual verification
+
+For UI changes, do not stop at HTTP status checks — screenshot the changed pages and look at them (the `webapp-testing` skill has the Playwright patterns). Conventions here:
+
+- Python with Playwright lives in the dedicated venv: `~/.venvs/playwright/bin/python`.
+- Save screenshots to `<worktree>/.preview/shots/` — it is inside the gitignored `.preview/` dir and gets wiped by `preview-down.sh`. Never scatter shots in `/tmp` or the repo.
+- Point the browser at the slot URL (`http://localhost:4200+X`), wait for `networkidle`, then `page.screenshot(path=..., full_page=True)` and view the PNG with the Read tool. Compare against main's UI on 4200 when a before/after matters.
+- Skip `with_server.py` from webapp-testing — `preview-up.sh`/`preview-down.sh` already manage the servers.
+- Signed-in flows hit the Google OAuth origin limitation below; verify those on main's 4200 or skip.
+
 ## Stop — always, once checking is done
 
 ```bash
