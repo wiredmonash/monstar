@@ -57,7 +57,7 @@ describe(ReviewService.name, () => {
         contentRating: 5,
         facultyRating: 5,
         description: 'The quick brown fox jumps over the lazy dog',
-        author: author as unknown as Types.ObjectId,
+        author: new Types.ObjectId(author),
       });
 
       // assert

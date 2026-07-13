@@ -64,6 +64,12 @@ You can contribute by:
 - Improving documentation
 - Adding new features (after discussing in an issue first)
 
+## Contributors
+
+<a href="https://github.com/wiredmonash/monstar/graphs/contributors">
+  <img alt="Contributors" src="https://contrib.rocks/image?repo=wiredmonash/monstar" />
+</a>
+
 ## Data Sources
 
 MonSTAR's unit catalog and SETU data are sourced using tools developed by **Sai Kumar Murali Krishnan**:

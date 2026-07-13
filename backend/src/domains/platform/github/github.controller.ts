@@ -10,7 +10,7 @@ class GithubController {
    * GET /contributors — return formatted repo contributors (or fallback data).
    *
    * The service handles all errors internally and always resolves to a payload,
-   * so this responds with HTTP 200 in every case (matching v1).
+   * so this responds with HTTP 200 in every case.
    */
   static async getContributors(req: Request, res: Response) {
     const payload = await GithubService.getContributors();
