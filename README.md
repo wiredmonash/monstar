@@ -73,7 +73,7 @@ MonSTAR's unit catalog and SETU data are sourced using tools developed by **Sai 
 ## Contact
 
 **Developed by:** WIRED Projects Team, Monash University \
-**Primary person of contact:** Email jenul15ferdinand@gmail.com or add me on discord at proxy_dev\
+**Primary person of contact:** [@jenul-ferdinand](https://github.com/jenul-ferdinand) on GitHub or proxy_dev on Discord\
 **Issues:** [GitHub Issues](https://github.com/wired-projects/monstar/issues)
 
 ## License
