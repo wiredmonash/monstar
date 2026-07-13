@@ -3,10 +3,19 @@ import multer from 'multer';
 
 import UserController from './user.controller';
 import userMiddleware from './user.middleware';
+import adminMiddleware from './admin.middleware';
 import { storage } from '@infrastructure/storage/cloudinary';
 
 const upload = multer({ storage });
 const router = express.Router();
+
+router.get(
+  '/',
+  adminMiddleware,
+  // #swagger.tags = ['User']
+  // #swagger.summary = 'Get all users (admin only)'
+  UserController.getAllUsers
+);
 
 router.get(
   '/me',
@@ -52,6 +61,22 @@ router.post(
   // #swagger.tags = ['User']
   // #swagger.summary = 'Upload avatar to cloudinary and assign it as user's profileImg'
   UserController.uploadAvatar
+);
+
+router.put(
+  '/update/:userId',
+  userMiddleware,
+  // #swagger.tags = ['User']
+  // #swagger.summary = 'Update a user's username (only admins or the user themselves)'
+  UserController.updateUser
+);
+
+router.delete(
+  '/delete/:userId',
+  userMiddleware,
+  // #swagger.tags = ['User']
+  // #swagger.summary = 'Delete a user account (only admins or the user themselves)'
+  UserController.deleteUser
 );
 
 router.get(
