@@ -1,31 +1,30 @@
-import { Types } from 'mongoose';
 
 // Define interface for user data
 export interface UserData {
-  _id?: Types.ObjectId;
+  _id?: string;
   email?: string;
   username?: string;
   isGoogleUser?: boolean;
-  reviews?: Types.ObjectId[];
+  reviews?: string[];
   profileImg?: string;
   admin?: boolean;
   verified?: boolean;
-  likedReviews?: Types.ObjectId[];
-  dislikedReviews?: Types.ObjectId[];
+  likedReviews?: string[];
+  dislikedReviews?: string[];
   notifications?: object[];
 }
 
 export class User {
-  _id!: Types.ObjectId;
+  _id!: string;
   email!: string;
   username!: string;
   isGoogleUser!: boolean;
-  reviews!: Types.ObjectId[];
+  reviews!: string[];
   profileImg!: string;
   admin!: boolean;
   verified!: boolean;
-  likedReviews!: Types.ObjectId[];
-  dislikedReviews!: Types.ObjectId[];
+  likedReviews!: string[];
+  dislikedReviews!: string[];
   notifications!: object[];
 
   constructor(data?: UserData) {
@@ -35,7 +34,7 @@ export class User {
 
     if (!data) {
       // Handle case where data is undefined
-      this._id = new Types.ObjectId();
+      this._id = '';
       this.email = '';
       this.username = '';
       this.isGoogleUser = false;
@@ -50,7 +49,7 @@ export class User {
     }
 
     // Assign values with safe property access
-    this._id = data._id ?? new Types.ObjectId();
+    this._id = data._id ?? '';
     this.email = data.email ?? '';
 
     // Derive username from email if not provided
@@ -68,16 +67,16 @@ export class User {
 
   // Maintain backward compaitibility for constructing User objects
   static fromDetailedConstructor(
-    _id?: Types.ObjectId,
+    _id?: string,
     email?: string,
     username?: string,
     isGoogleUser?: boolean,
-    reviews?: Types.ObjectId[],
+    reviews?: string[],
     profileImg?: string,
     admin?: boolean,
     verified?: boolean,
-    likedReviews?: Types.ObjectId[],
-    dislikedReviews?: Types.ObjectId[],
+    likedReviews?: string[],
+    dislikedReviews?: string[],
     notifications?: object[]
   ): User {
     return new User({
@@ -95,35 +94,35 @@ export class User {
     });
   }
 
-  removeNotification(notificationId: Types.ObjectId) {
+  removeNotification(notificationId: string) {
     this.notifications = this.notifications.filter(
-      (id) => id !== notificationId
+      (id) => String(id) !== notificationId
     );
   }
 
-  addLikedReview(reviewId: Types.ObjectId): void {
+  addLikedReview(reviewId: string): void {
     this.likedReviews.push(reviewId);
   }
 
-  removeLikedReview(reviewId: Types.ObjectId): void {
+  removeLikedReview(reviewId: string): void {
     this.likedReviews = this.likedReviews.filter((id) => id !== reviewId);
   }
 
-  addDislikedReview(reviewId: Types.ObjectId): void {
+  addDislikedReview(reviewId: string): void {
     this.dislikedReviews.push(reviewId);
   }
 
-  removeDislikedReview(reviewId: Types.ObjectId): void {
+  removeDislikedReview(reviewId: string): void {
     this.dislikedReviews = this.dislikedReviews.filter((id) => id !== reviewId);
   }
 
   // Additional helper methods
-  hasLikedReview(reviewId: Types.ObjectId | string): boolean {
+  hasLikedReview(reviewId: string | string): boolean {
     const idString = reviewId.toString();
     return this.likedReviews.some((id) => id.toString() === idString);
   }
 
-  hasDislikedReview(reviewId: Types.ObjectId | string): boolean {
+  hasDislikedReview(reviewId: string | string): boolean {
     const idString = reviewId.toString();
     return this.dislikedReviews.some((id) => id.toString() === idString);
   }

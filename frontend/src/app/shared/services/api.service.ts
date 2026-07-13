@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Types } from 'mongoose';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -30,24 +29,9 @@ export class ApiService {
    * @param {string} notificationId The ID of the notification
    * @returns {Observable<any>} An observable containing the response from the server
    */
-  deleteNotificationByIdDELETE(
-    notificationId: Types.ObjectId
-  ): Observable<any> {
-    return this.http
-      .delete(`${this.url}/notifications/${notificationId}`, {
-        withCredentials: true,
-      })
-      .pipe(
-        tap({
-          next: (response) => {
-            // ? Debug log
-            // console.log('ApiService | Successfully deleted notification:', response);
-          },
-          error: (error) => {
-            // ? Debug log
-            // console.log('ApiService | Error whilst deleting notification:', error.error);
-          },
-        })
-      );
+  deleteNotificationByIdDELETE(notificationId: string): Observable<any> {
+    return this.http.delete(`${this.url}/notifications/${notificationId}`, {
+      withCredentials: true,
+    });
   }
 }

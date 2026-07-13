@@ -1,12 +1,11 @@
-import { Types } from 'mongoose';
 
 export class Notification {
-  _id: Types.ObjectId;
+  _id: string;
   data: ReviewData;
   navigateTo: string;
   isRead: boolean;
   constructor(
-    _id: Types.ObjectId,
+    _id: string,
     data: ReviewData,
     navigateTo: string,
     isRead: boolean
