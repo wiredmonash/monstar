@@ -6,7 +6,7 @@ import {
   FilterData,
   FilteredUnitsResponse,
 } from '../../models/v2/unit.model';
-import { IUnitDeeplyPopulated } from 'app/shared/models/v2/unit.schema';
+import { IUnit, IUnitDeeplyPopulated } from 'app/shared/models/v2/unit.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +37,16 @@ export class GetUnitService {
           },
         })
       );
+  }
+
+  getPopularUnits(): Observable<IUnit[]> {
+    return this.http.get<IUnit[]>(`${this.urlV2}/units/popular`);
+  }
+
+  getUnitsRequiringUnit(unitCode: string): Observable<IUnit[]> {
+    return this.http.get<IUnit[]>(
+      `${this.urlV2}/units/${unitCode}/required-by`
+    );
   }
 
   getUnitsFiltered({
