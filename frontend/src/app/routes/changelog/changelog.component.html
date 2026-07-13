@@ -3,9 +3,22 @@
     <h1 class="section-heading">Changelog</h1>
 
     @if (loading) {
-      <div class="loading-section">
-        <div class="loading-spinner"></div>
-        <p class="text-white text-center">Loading changelog...</p>
+      <div class="timeline-container">
+        @for (_ of [1, 2, 3]; track $index) {
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <div class="skeleton-month-heading">
+                <p-skeleton width="14rem" height="1.75rem" borderRadius="8px" />
+              </div>
+              <div class="skeleton-list">
+                <p-skeleton width="90%" height="1rem" borderRadius="8px" />
+                <p-skeleton width="80%" height="1rem" borderRadius="8px" />
+                <p-skeleton width="85%" height="1rem" borderRadius="8px" />
+              </div>
+            </div>
+          </div>
+        }
       </div>
     }
     @if (error && !loading) {
