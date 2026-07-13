@@ -33,25 +33,43 @@ Students can browse units, read peer reviews, compare SETU scores across semeste
 
 MonSTAR provides several features for exploring and reviewing Monash subjects:
 
-- **Unit Search** - Search by unit code or name, with filters for teaching period, faculty, and more
-- **Student Reviews** - Read and write reviews with ratings across enjoyment, simplicity, and usefulness
-- **AI Sentiment Overviews** - Gemini summaries of sentiment across a unit's student reviews
-- **SETU Data** - Historical SETU results from semester 1 2019 to the latest (authentication required)
-- **Unit Pathways Map** - Interactive graph of unit pathways, prerequisites, and follow-on requirements
-- **Google Authentication** - Monash student and staff verification by email
-- **Review Interactions** - Like/dislike reviews with notifications
-- **Unit Tags** - Dynamically assigned tags like "WAM Booster"
+<table>
+  <tr>
+    <td width="50%"><b>Unit Search</b><br>Search by unit code or name, with filters for teaching period, faculty, and more</td>
+    <td width="50%"><b>Student Reviews</b><br>Read and write reviews with ratings across enjoyment, simplicity, and usefulness</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>AI Sentiment Overviews</b><br>Gemini summaries of sentiment across a unit's student reviews</td>
+    <td width="50%"><b>SETU Data</b> <img alt="removed" src="https://img.shields.io/badge/removed-d73a4a?style=flat-square"><br>Historical SETU results from semester 1 2019 to the latest (authentication required)</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>Unit Pathways Map</b><br>Interactive graph of unit pathways, prerequisites, and follow-on requirements</td>
+    <td width="50%"><b>Google Authentication</b><br>Monash student and staff verification by email</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>Review Interactions</b><br>Like and dislike reviews with notifications</td>
+    <td width="50%"><b>Unit Tags</b><br>Dynamically assigned tags like "WAM Booster"</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>Jobs Board</b> <img alt="new" src="https://img.shields.io/badge/new-2da44e?style=flat-square"><br>Browse internship and graduate roles sourced for Monash students</td>
+    <td width="50%"><b>Grade Calculator</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Calculate your WAM and GPA and project semester results</td>
+  </tr>
+  <tr>
+    <td width="50%"><b>Global Chat</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Real-time chat with other Monash students</td>
+    <td width="50%"><b>Course Planner</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Map out your degree and plan units semester by semester</td>
+  </tr>
+</table>
 
 ## Screenshots
 
 <table>
   <tr>
-    <td width="50%"><img alt="Home" src=".docs/product/home.png"><br><sub><b>Home</b> - explore units and see what's trending</sub></td>
-    <td width="50%"><img alt="Browse units" src=".docs/product/list.png"><br><sub><b>Browse</b> - search and filter by rating, campus, and teaching period</sub></td>
+    <td width="50%"><img alt="Home" src=".docs/product/home.png"><br><b>Home</b> - explore units and see what's trending</td>
+    <td width="50%"><img alt="Browse units" src=".docs/product/list.png"><br><b>Browse</b> - search and filter by rating, campus, and teaching period</td>
   </tr>
   <tr>
-    <td width="50%"><img alt="Unit page" src=".docs/product/overview.png"><br><sub><b>Unit page</b> - ratings, reviews, and a Gemini sentiment overview</sub></td>
-    <td width="50%"><img alt="Pathways map" src=".docs/product/map.png"><br><sub><b>Pathways</b> - prerequisites and follow-on units as an interactive graph</sub></td>
+    <td width="50%"><img alt="Unit page" src=".docs/product/overview.png"><br><b>Unit page</b> - ratings, reviews, and a Gemini sentiment overview</td>
+    <td width="50%"><img alt="Pathways map" src=".docs/product/map.png"><br><b>Pathways</b> - prerequisites and follow-on units as an interactive graph</td>
   </tr>
 </table>
 
