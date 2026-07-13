@@ -23,7 +23,7 @@ The script allocates a slot, writes `<worktree>/.preview/` (generated proxy conf
 
 For UI changes, do not stop at HTTP status checks — screenshot the changed pages and look at them (the `webapp-testing` skill has the Playwright patterns). Conventions here:
 
-- Python with Playwright lives in the dedicated venv: `~/.venvs/playwright/bin/python`.
+- Python with Playwright lives in the dedicated venv: `~/.venvs/playwright/bin/python`. If it's missing on this machine, run `bash <this-skill-dir>/ensure-playwright.sh` once — it creates the venv and downloads Chromium.
 - Save screenshots to `<worktree>/.preview/shots/` — it is inside the gitignored `.preview/` dir and gets wiped by `preview-down.sh`. Never scatter shots in `/tmp` or the repo.
 - Point the browser at the slot URL (`http://localhost:4200+X`), wait for `networkidle`, then `page.screenshot(path=..., full_page=True)` and view the PNG with the Read tool. Compare against main's UI on 4200 when a before/after matters.
 - Skip `with_server.py` from webapp-testing — `preview-up.sh`/`preview-down.sh` already manage the servers.
