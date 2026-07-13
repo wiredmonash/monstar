@@ -1,5 +1,11 @@
+import mongoose from 'mongoose';
+
 import { User, UserService } from '@domains/identity/users';
-import { Error403Forbidden, Error409Conflict } from '@shared/errors/errors';
+import {
+  Error403Forbidden,
+  Error404NotFound,
+  Error409Conflict,
+} from '@shared/errors/errors';
 
 const { mockVerifyIdToken } = vi.hoisted(() => ({
   mockVerifyIdToken: vi.fn(),
@@ -153,6 +159,85 @@ describe(UserService.name, () => {
       await expect(
         UserService.googleAuthenticate(fakeIdTokenString)
       ).rejects.toThrow(Error409Conflict);
+    });
+  });
+
+  // Account deletion
+
+  describe(UserService.deleteUser.name, () => {
+    it('lets a user delete their own account', async () => {
+      const user = await User.create({
+        email: 'selfdel@student.monash.edu',
+        username: 'selfdel',
+        verified: true,
+      });
+
+      await UserService.deleteUser(user._id.toString(), user._id.toString());
+
+      expect(await User.findById(user._id)).toBeNull();
+    });
+
+    it('lets an admin delete another user', async () => {
+      const admin = await User.create({
+        email: 'admin@monash.edu',
+        username: 'admin',
+        admin: true,
+        verified: true,
+      });
+      const target = await User.create({
+        email: 'target@student.monash.edu',
+        username: 'target',
+        verified: true,
+      });
+
+      await UserService.deleteUser(admin._id.toString(), target._id.toString());
+
+      expect(await User.findById(target._id)).toBeNull();
+    });
+
+    it('throws Error403Forbidden when a non-admin deletes another user', async () => {
+      const caller = await User.create({
+        email: 'caller@student.monash.edu',
+        username: 'caller',
+        verified: true,
+      });
+      const target = await User.create({
+        email: 'other@student.monash.edu',
+        username: 'other',
+        verified: true,
+      });
+
+      await expect(
+        UserService.deleteUser(caller._id.toString(), target._id.toString())
+      ).rejects.toThrow(Error403Forbidden);
+
+      expect(await User.findById(target._id)).not.toBeNull();
+    });
+
+    it('throws Error404NotFound when the requesting user does not exist', async () => {
+      const target = await User.create({
+        email: 'stillhere@student.monash.edu',
+        username: 'stillhere',
+        verified: true,
+      });
+      const ghostId = new mongoose.Types.ObjectId().toString();
+
+      await expect(
+        UserService.deleteUser(ghostId, target._id.toString())
+      ).rejects.toThrow(Error404NotFound);
+    });
+
+    it('throws Error404NotFound when the target user does not exist', async () => {
+      const caller = await User.create({
+        email: 'requester@student.monash.edu',
+        username: 'requester',
+        verified: true,
+      });
+      const missingId = new mongoose.Types.ObjectId().toString();
+
+      await expect(
+        UserService.deleteUser(caller._id.toString(), missingId)
+      ).rejects.toThrow(Error404NotFound);
     });
   });
 });
