@@ -7,7 +7,7 @@ export interface ReviewData {
   _id?: Types.ObjectId;
   title?: string;
   semester?: string;
-  grade?: string;
+  grade?: string | null;
   year?: number;
   overallRating?: number;
   relevancyRating?: number;
@@ -26,7 +26,7 @@ export class Review {
   _id!: Types.ObjectId;
   title!: string;
   semester!: string;
-  grade!: string;
+  grade!: string | null;
   year!: number;
   overallRating!: number;
   relevancyRating!: number;
@@ -46,7 +46,7 @@ export class Review {
       this._id = new Types.ObjectId();
       this.title = '';
       this.semester = 'First semester';
-      this.grade = 'P';
+      this.grade = null;
       this.year = new Date().getFullYear();
       this.overallRating = 0;
       this.relevancyRating = 0;
@@ -64,7 +64,7 @@ export class Review {
     this._id = data._id ?? new Types.ObjectId();
     this.title = data.title ?? '';
     this.semester = data.semester ?? 'First semester';
-    this.grade = data.grade ?? 'P';
+    this.grade = data.grade ?? null;
     this.year = data.year ?? new Date().getFullYear();
     this.overallRating = data.overallRating ?? 0;
     this.relevancyRating = data.relevancyRating ?? 0;
@@ -114,7 +114,7 @@ export class Review {
   // Ensure all rating properties default to 0 if undefined
   ensureDefaults(): void {
     this.semester = this.semester ?? 'First semester';
-    this.grade = this.grade ?? 'P';
+    this.grade = this.grade ?? null;
     this.year = this.year ?? new Date().getFullYear();
     this.overallRating = this.overallRating ?? 0;
     this.relevancyRating = this.relevancyRating ?? 0;

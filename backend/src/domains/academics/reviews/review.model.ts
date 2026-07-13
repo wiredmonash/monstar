@@ -5,7 +5,7 @@ const reviewSchema = new Schema(
     title: { type: String, required: true },
     semester: { type: String, required: true },
     year: { type: Number, required: true },
-    grade: { type: String, required: true },
+    grade: { type: String, enum: ['HD', 'D', 'C', 'P', 'N', null], default: null },
 
     overallRating: { type: Number, required: true, min: 0, max: 5 },
     relevancyRating: { type: Number, required: true, min: 0, max: 5 },

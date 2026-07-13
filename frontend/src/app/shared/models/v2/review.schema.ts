@@ -14,7 +14,7 @@ const BaseReviewSchema = z.object({
     .min(1, { message: 'Description is required' })
     .default('Enter your description'),
   semester: semestersEnum.default('First semester'),
-  grade: gradesEnum.default('P'),
+  grade: gradesEnum.nullable().default(null),
   year: z
     .number()
     .int()
