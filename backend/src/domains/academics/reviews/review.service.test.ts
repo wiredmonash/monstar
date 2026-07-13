@@ -88,6 +88,23 @@ describe(ReviewService.name, () => {
         unitBeforeReview.avgRelevancyRating
       );
     });
+
+    it('should store grade as null when none is provided', async () => {
+      const newReview = await ReviewService.createReview('fit5145', {
+        title: 'Testing title',
+        semester: 'Semester 2',
+        year: 2025,
+        overallRating: 5,
+        relevancyRating: 5,
+        contentRating: 5,
+        facultyRating: 5,
+        description: 'The quick brown fox jumps over the lazy dog',
+        author: '678e359d39d199c3f6b3b44f' as unknown as Types.ObjectId,
+      });
+
+      const stored = (await Review.findById(newReview._id))!;
+      expect(stored.grade).toBeNull();
+    });
   });
 
   /* -------------------------------- Reactions ------------------------------- */
