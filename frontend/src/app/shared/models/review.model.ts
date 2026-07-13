@@ -1,10 +1,9 @@
 import { Unit } from './unit.model';
 import { User } from './user.model';
-import { Types } from 'mongoose';
 
 // Define interface for review data
 export interface ReviewData {
-  _id?: Types.ObjectId;
+  _id?: string;
   title?: string;
   semester?: string;
   grade?: string | null;
@@ -14,8 +13,8 @@ export interface ReviewData {
   facultyRating?: number;
   contentRating?: number;
   description?: string;
-  unit?: Types.ObjectId | Unit | null;
-  author?: Types.ObjectId | User | null;
+  unit?: string | Unit | null;
+  author?: string | User | null;
   likes?: number;
   dislikes?: number;
   createdAt?: Date;
@@ -23,7 +22,7 @@ export interface ReviewData {
 }
 
 export class Review {
-  _id!: Types.ObjectId;
+  _id!: string;
   title!: string;
   semester!: string;
   grade!: string | null;
@@ -33,8 +32,8 @@ export class Review {
   facultyRating!: number;
   contentRating!: number;
   description!: string;
-  unit!: Types.ObjectId | Unit | null;
-  author!: Types.ObjectId | User | null;
+  unit!: string | Unit | null;
+  author!: string | User | null;
   likes!: number;
   dislikes!: number;
   createdAt!: Date;
@@ -43,7 +42,7 @@ export class Review {
   constructor(data?: ReviewData) {
     // Handle case where data is undefined
     if (!data) {
-      this._id = new Types.ObjectId();
+      this._id = '';
       this.title = '';
       this.semester = 'First semester';
       this.grade = null;
@@ -61,7 +60,7 @@ export class Review {
     }
 
     // Assign values with safe property access
-    this._id = data._id ?? new Types.ObjectId();
+    this._id = data._id ?? '';
     this.title = data.title ?? '';
     this.semester = data.semester ?? 'First semester';
     this.grade = data.grade ?? null;
@@ -82,7 +81,7 @@ export class Review {
   // Utility method to check if unit is populated
   hasPopulatedUnit(): boolean {
     return (
-      this.unit instanceof Object && !(this.unit instanceof Types.ObjectId)
+      typeof this.unit === 'object' && this.unit !== null
     );
   }
 

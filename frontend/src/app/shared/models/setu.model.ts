@@ -1,8 +1,7 @@
-import { Types } from 'mongoose';
 
 // Define interface for SETU data
 export interface SetuData {
-  _id?: Types.ObjectId;
+  _id?: string;
   unit_code?: string;
   unit_name?: string;
   code?: string;
@@ -30,7 +29,7 @@ export interface SetuData {
 }
 
 export class Setu {
-  _id!: Types.ObjectId;
+  _id!: string;
   unit_code!: string;
   unit_name!: string;
   code!: string;

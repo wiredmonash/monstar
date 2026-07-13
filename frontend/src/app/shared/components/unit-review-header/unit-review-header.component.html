@@ -27,7 +27,7 @@
 
         <!-- Overall Rating -->
         <div class="overall-rating prevent-select">
-          <h2>{{ unit.avgOverallRating | decimal }} <span>out of 5</span></h2>
+          <h2>{{ unit.avgOverallRating | number: '1.1-1' }} <span>out of 5</span></h2>
           <div class="stars">
             <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
               <i
@@ -78,7 +78,7 @@
             [max]="5"
             [step]="0.1"
           ></p-knob>
-          <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
+          <!-- <span class="rating-value">{{ unit.avgContentRating | number: '1.1-1' }}</span> -->
         </div>
 
         <!-- Faculty Rating -->
@@ -101,7 +101,7 @@
             [max]="5"
             [step]="0.1"
           ></p-knob>
-          <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
+          <!-- <span class="rating-value">{{ unit.avgContentRating | number: '1.1-1' }}</span> -->
         </div>
 
         <!-- Relevancy Rating -->
@@ -124,7 +124,7 @@
             [max]="5"
             [step]="0.1"
           ></p-knob>
-          <!-- <span class="rating-value">{{ unit.avgContentRating | decimal }}</span> -->
+          <!-- <span class="rating-value">{{ unit.avgContentRating | number: '1.1-1' }}</span> -->
         </div>
       </div>
 
