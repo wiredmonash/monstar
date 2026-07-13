@@ -3,11 +3,36 @@ import type { IReview } from '@domains/academics/reviews';
 import { UserRepository } from '@domains/identity/users';
 import type { IUser } from '@domains/identity/users';
 import type { Id } from '@shared/types';
-import { Error404NotFound } from '@shared/errors/errors';
+import { Error403Forbidden, Error404NotFound } from '@shared/errors/errors';
 
 import NotificationRepository from './notification.repository';
 
 class NotificationService {
+  /**
+   * List all notifications belonging to a user (populated, newest first)
+   */
+  static getForUser = async (userId: Id) => {
+    return await NotificationRepository.findByUserId(userId);
+  };
+
+  /**
+   * Delete a notification by its ID, enforcing that the requester owns it
+   */
+  static deleteById = async (notificationId: Id, requestingUserId: Id) => {
+    const notification = await NotificationRepository.findById(notificationId);
+    if (!notification) throw new Error404NotFound('Notification not found');
+
+    if (notification.user?.toString() !== requestingUserId.toString())
+      throw new Error403Forbidden(
+        'You are not authorized to delete this notification'
+      );
+
+    await Promise.all([
+      NotificationRepository.deleteById(notification._id),
+      UserRepository.removeNotification(notification.user, notification._id),
+    ]);
+  };
+
   /**
    * Delete a notification
    */

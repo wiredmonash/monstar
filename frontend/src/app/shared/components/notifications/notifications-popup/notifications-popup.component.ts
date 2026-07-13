@@ -6,7 +6,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { Subscription } from 'rxjs';
 import { Notification } from '../../../models/notification.model';
 import { IUser } from '../../../models/v2/user.schema';
-import { ApiService } from '../../../services/api.service';
+import { NotificationService } from '../../../services/api/notification.service';
 import { UserService } from '../../../services/api/user.service';
 import { NotificationCardComponent } from '../notification-card/notification-card.component';
 
@@ -37,11 +37,11 @@ export class NotificationsPopupComponent {
   /**
    * ! Constructor
    *
-   * @param apiService The API service
+   * @param notificationService The Notification service
    * @param userService The User service
    */
   constructor(
-    private apiService: ApiService,
+    private notificationService: NotificationService,
     private userService: UserService
   ) {}
 
@@ -85,10 +85,10 @@ export class NotificationsPopupComponent {
    * Called to get the user's notifications. Will call the backend API to get the user's
    * notifications and store them in the notifications array.
    *
-   * @subscribes apiService.getUserNotificationsGET(userID)
+   * @subscribes notificationService.getByUser(userID)
    */
   getUserNotifications(userID: any) {
-    this.apiService.getUserNotificationsGET(userID).subscribe(
+    this.notificationService.getByUser(userID).subscribe(
       (notifications: Notification[]) => {
         this.notifications = notifications;
 
@@ -103,7 +103,7 @@ export class NotificationsPopupComponent {
 
   removeNotification(notification: Notification) {
     // call the api service to mark the notification as read, and then remove it from notifications[]
-    this.apiService.deleteNotificationByIdDELETE(notification._id).subscribe({
+    this.notificationService.deleteById(notification._id).subscribe({
       next: () => {
         this.notifications = this.notifications.filter(
           (n) => n._id !== notification._id
