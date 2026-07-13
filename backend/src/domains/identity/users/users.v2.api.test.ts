@@ -68,6 +68,16 @@ describe('POST /api/v2/users/refresh', () => {
 
     expect(res.status).toBe(401);
   });
+
+  it('returns 403 for an invalid/expired refresh token', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+    const res = await request(global.app)
+      .post('/api/v2/users/refresh')
+      .set('Cookie', [...cookies, 'refresh_token=not-a-real-token'].join('; '))
+      .set('x-csrf-token', token);
+
+    expect(res.status).toBe(403);
+  });
 });
 
 describe('GET /api/v2/users/me', () => {

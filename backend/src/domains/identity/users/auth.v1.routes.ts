@@ -5,17 +5,9 @@ import { verifyToken, verifyAdmin } from './auth.middleware';
 
 const router = express.Router();
 
-// google/authenticate, /validate and /upload-avatar were removed once the
-// frontend moved to their /api/v2/users equivalents. /refresh and /logout are
-// still called by the frontend auth interceptor; the remaining user-management
-// endpoints have no v2 replacement yet.
-router.post(
-  '/refresh',
-  // #swagger.tags = ['Auth']
-  // #swagger.summary = 'Refresh access token using refresh token'
-  AuthV1Controller.refresh
-);
-
+// google/authenticate, /validate, /upload-avatar, /refresh and /logout were
+// removed once the frontend moved to their /api/v2/users equivalents. The
+// remaining user-management endpoints have no v2 replacement yet.
 router.get(
   '/',
   verifyAdmin,
@@ -30,14 +22,6 @@ router.delete(
   // #swagger.tags = ['Auth']
   // #swagger.summary = 'Delete a user from the database (Only admins or the user themselves can delete accounts)'
   AuthV1Controller.deleteUser
-);
-
-router.post(
-  '/logout',
-  verifyToken,
-  // #swagger.tags = ['Auth']
-  // #swagger.summary = 'Clear the token cookies and invalidate refresh token in database'
-  AuthV1Controller.logout
 );
 
 router.put(

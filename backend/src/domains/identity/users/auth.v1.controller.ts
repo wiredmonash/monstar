@@ -3,8 +3,6 @@ import type { Request, Response } from 'express';
 import { Error403Forbidden, Error404NotFound } from '@shared/errors/errors';
 import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 
-import TokenProvider from './token.service';
-import UserService from './user.service';
 import UserV1Service from './user.v1.service';
 
 /**
@@ -14,39 +12,6 @@ import UserV1Service from './user.v1.service';
  * and `error` vs `message` key choices.
  */
 class AuthV1Controller {
-  /**
-   * POST /refresh
-   */
-  static refresh = async (req: Request, res: Response) => {
-    const { refresh_token } = req.cookies;
-    if (!refresh_token) {
-      return res.status(401).json({ error: 'No refresh token provided' });
-    }
-
-    try {
-      const { newAccessToken, newRefreshToken } =
-        await UserService.refreshUserToken(refresh_token);
-
-      return res
-        .cookie('access_token', newAccessToken, {
-          httpOnly: true,
-          sameSite: 'strict',
-          maxAge: TokenProvider.ACCESS_TOKEN_EXPIRY,
-        })
-        .cookie('refresh_token', newRefreshToken, {
-          httpOnly: true,
-          sameSite: 'strict',
-          maxAge: TokenProvider.REFRESH_TOKEN_EXPIRY,
-        })
-        .status(200)
-        .json({ message: 'Token refreshed successfully' });
-    } catch (error) {
-      if (error instanceof Error403Forbidden)
-        return res.status(403).json({ error: error.message });
-      return res.status(500).json({ error: getErrorMessage(error) });
-    }
-  };
-
   /**
    * GET / (verifyAdmin)
    */
@@ -80,28 +45,6 @@ class AuthV1Controller {
         return res.status(403).json({ error: error.message });
       return res.status(500).json({
         error: `Error occured while deleting user: ${getErrorMessage(error)}`,
-      });
-    }
-  };
-
-  /**
-   * POST /logout (verifyToken)
-   */
-  static logout = async (req: Request, res: Response) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({ error: 'You are not authenticated' });
-      }
-
-      await UserService.invalidateRefreshToken(req.user.id);
-
-      res.clearCookie('access_token', { httpOnly: true, sameSite: 'strict' });
-      res.clearCookie('refresh_token', { httpOnly: true, sameSite: 'strict' });
-
-      return res.status(200).json({ message: 'Logged out successfully' });
-    } catch (error) {
-      return res.status(500).json({
-        error: `An error occurred during logout: ${getErrorMessage(error)}`,
       });
     }
   };
