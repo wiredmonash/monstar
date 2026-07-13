@@ -38,6 +38,29 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  # Local stand-in for Upstash: Redis behind serverless-redis-http (SRH),
+  # which speaks the same REST protocol as @upstash/redis. Lets the backend
+  # exercise its real cache path instead of the in-memory fallback.
+  redis:
+    image: redis:8-alpine
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+      start_interval: 1s
+
+  redis-http:
+    image: hiett/serverless-redis-http:latest
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: local-dev-token
+      SRH_CONNECTION_STRING: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+
   backend:
     <<: *backend-base
     env_file: ./backend/.env
@@ -48,6 +71,14 @@ services:
       PORT: '8080'
       DEVELOPMENT: 'true'
       PRODUCTION_MACHINE: 'false'
+      # Pinned for the same reason: real Upstash credentials in .env would
+      # make local containers share (and invalidate) the production cache.
+      # These point at the local redis + SRH pair instead.
+      MONSTAR_SERVERLESS_CACHE_KV_REST_API_URL: http://redis-http:80
+      MONSTAR_SERVERLESS_CACHE_KV_REST_API_TOKEN: local-dev-token
+      MONSTAR_SERVERLESS_CACHE_KV_REST_API_READ_ONLY_TOKEN: ''
+      MONSTAR_SERVERLESS_CACHE_KV_URL: ''
+      MONSTAR_SERVERLESS_CACHE_REDIS_URL: ''
     ports:
       - '8080:8080'
     depends_on:
