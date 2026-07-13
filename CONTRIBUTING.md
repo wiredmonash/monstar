@@ -14,7 +14,7 @@ Contributions are welcome, Monash students preferred. Questions or ideas for new
 
 Pick one of two setups:
 
-- **Docker (recommended):** one command starts the frontend, backend, and a MongoDB instance filled with sample data. No MongoDB Atlas credentials required.
+- **Docker (recommended):** one command starts the frontend, backend, a MongoDB instance filled with sample data, and a local Redis cache. No MongoDB Atlas or Upstash credentials required.
 - **npm:** run the servers directly on your machine against your own MongoDB.
 
 ### Docker
