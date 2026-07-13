@@ -35,6 +35,18 @@ export class UserService {
     this._authState.next(state);
   }
 
+  /**
+   * Clears the current session state locally without calling the backend.
+   *
+   * Used by the auth interceptor when a token refresh fails: the cookies are
+   * already invalid, so there is no authenticated /logout call to make — we
+   * just drop the in-memory user so every caller observes a logged-out state.
+   */
+  clearSession(): void {
+    this._currentUser.next(null);
+    this._authState.next('logged out');
+  }
+
   /* --------------------- Business logic state management -------------------- */
 
   getId() {

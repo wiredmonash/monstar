@@ -23,7 +23,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 // App specific services and models
 import { Setu } from '../../models/setu.model';
-import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/api/user.service';
 import { SetuService } from '../../services/setu.service';
 
 @Component({
@@ -63,9 +63,9 @@ export class SetuCardComponent implements OnChanges, OnInit {
     return this.isDesktopView && !this.hasSetuData();
   }
 
-  private authService = inject(AuthService);
+  private userService = inject(UserService);
 
-  isAuthenticated$ = this.authService.getCurrentUser().pipe(
+  isAuthenticated$ = this.userService.currentUser$.pipe(
     map((user) => !!user),
     shareReplay({ bufferSize: 1, refCount: true })
   );

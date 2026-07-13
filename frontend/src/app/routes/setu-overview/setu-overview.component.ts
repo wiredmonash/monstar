@@ -24,7 +24,7 @@ import {
   getMetaSetuOverviewTwitterTitle,
 } from '../../shared/constants/constants';
 import { Setu } from '../../shared/models/setu.model';
-import { AuthService } from '../../shared/services/auth.service';
+import { UserService } from '../../shared/services/api/user.service';
 import { SetuService } from '../../shared/services/setu.service';
 import {
   ViewportService,
@@ -87,15 +87,14 @@ export class SetuOverviewComponent implements OnInit, OnDestroy {
     private router: Router,
     private setuService: SetuService,
     private viewportService: ViewportService,
-    private authService: AuthService,
+    private userService: UserService,
     private meta: Meta,
     private titleService: Title
   ) {}
 
   ngOnInit(): void {
     // Subscribe to auth state
-    this.authService
-      .getCurrentUser()
+    this.userService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
         this.isAuthenticated = user !== null;
