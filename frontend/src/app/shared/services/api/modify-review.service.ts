@@ -34,7 +34,7 @@ export class ModifyReviewService {
       {
         title: review.title,
         semester: review.semester,
-        grade: review.grade,
+        ...(review.grade ? { grade: review.grade } : {}),
         year: review.year,
         overallRating: review.overallRating,
         relevancyRating: review.relevancyRating,
