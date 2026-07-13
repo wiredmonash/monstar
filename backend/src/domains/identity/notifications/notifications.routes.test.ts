@@ -4,15 +4,16 @@ import mongoose from 'mongoose';
 import { accessTokenCookie, getCsrf } from '@shared/testing/helpers';
 
 /**
- * Characterization tests for the LIVE v1 notifications endpoints (used by the
- * notifications popup in the frontend). Both require verifyToken.
+ * Characterization tests for the LIVE v2 notifications endpoints (used by the
+ * notifications popup in the frontend). Both are guarded by userMiddleware;
+ * the delete is also behind global CSRF.
  */
-describe('GET /api/v1/notifications/user/:userId', () => {
+describe('GET /api/v2/notifications/user/:userId', () => {
   it('returns the notifications array for the authenticated user (200)', async () => {
     const userId = new mongoose.Types.ObjectId().toString();
 
     const res = await request(global.app)
-      .get(`/api/v1/notifications/user/${userId}`)
+      .get(`/api/v2/notifications/user/${userId}`)
       .set('Cookie', accessTokenCookie(userId));
 
     expect(res.status).toBe(200);
@@ -21,7 +22,7 @@ describe('GET /api/v1/notifications/user/:userId', () => {
 
   it("returns 403 when requesting another user's notifications", async () => {
     const res = await request(global.app)
-      .get(`/api/v1/notifications/user/${new mongoose.Types.ObjectId()}`)
+      .get(`/api/v2/notifications/user/${new mongoose.Types.ObjectId()}`)
       .set(
         'Cookie',
         accessTokenCookie(new mongoose.Types.ObjectId().toString())
@@ -32,23 +33,34 @@ describe('GET /api/v1/notifications/user/:userId', () => {
 
   it('returns 401 when unauthenticated', async () => {
     const res = await request(global.app).get(
-      `/api/v1/notifications/user/${new mongoose.Types.ObjectId()}`
+      `/api/v2/notifications/user/${new mongoose.Types.ObjectId()}`
     );
 
     expect(res.status).toBe(401);
   });
 });
 
-describe('DELETE /api/v1/notifications/:notificationId', () => {
+describe('DELETE /api/v2/notifications/:notificationId', () => {
   it('returns 404 for an unknown notification (auth + CSRF satisfied)', async () => {
     const { token, cookies } = await getCsrf(global.app);
     const userId = new mongoose.Types.ObjectId().toString();
 
     const res = await request(global.app)
-      .delete(`/api/v1/notifications/${new mongoose.Types.ObjectId()}`)
+      .delete(`/api/v2/notifications/${new mongoose.Types.ObjectId()}`)
       .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
       .set('x-csrf-token', token);
 
     expect(res.status).toBe(404);
+  });
+
+  it('returns 401 when unauthenticated', async () => {
+    const { token, cookies } = await getCsrf(global.app);
+
+    const res = await request(global.app)
+      .delete(`/api/v2/notifications/${new mongoose.Types.ObjectId()}`)
+      .set('Cookie', cookies.join('; '))
+      .set('x-csrf-token', token);
+
+    expect(res.status).toBe(401);
   });
 });
