@@ -17,7 +17,7 @@
       "description": "Unit information and management V2"
     },
     {
-      "name": "Reviews",
+      "name": "Reviews V2",
       "description": "Reviews for units V2"
     },
     {
@@ -25,7 +25,7 @@
       "description": "Authentication and user management"
     },
     {
-      "name": "User",
+      "name": "User V2",
       "description": "Authentication and user management V2"
     },
     {
@@ -497,83 +497,12 @@
         }
       }
     },
-    "/api/v1/auth/refresh": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Refresh access token using refresh token",
-        "description": "",
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/auth/": {
+    "/api/v2/users/": {
       "get": {
         "tags": [
-          "Auth"
+          "User"
         ],
-        "summary": "Get all users from the database",
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/auth/delete/{userId}": {
-      "delete": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Delete a user from the database (Only admins or the user themselves can delete accounts)",
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/auth/logout": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Clear the token cookies and invalidate refresh token in database",
+        "summary": "Get all users (admin only)",
         "description": "",
         "responses": {
           "200": {
@@ -581,61 +510,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/api/v1/auth/update/{userId}": {
-      "put": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Update user\\'s username and/or password (Only admins or the user themselves can update account details)",
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "username": {
-                  "example": "any"
-                },
-                "password": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -746,6 +620,50 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v2/users/update/{userId}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update a user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v2/users/delete/{userId}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete a user account (only admins or the user themselves)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1988,7 +1906,6 @@
             "title",
             "semester",
             "year",
-            "grade",
             "overallRating",
             "relevancyRating",
             "facultyRating",
@@ -2037,6 +1954,18 @@
                 "type": {
                   "type": "string",
                   "example": "string"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    "HD",
+                    "D",
+                    "C",
+                    "P",
+                    "N",
+                    null
+                  ],
+                  "items": {}
                 }
               }
             },
