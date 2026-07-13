@@ -26,7 +26,10 @@ export default defineConfig({
         test: {
           ...sharedTest,
           name: 'integration',
-          include: ['src/domains/**/*.api.test.ts'],
+          include: [
+            'src/domains/**/*.api.test.ts',
+            'src/domains/**/*.routes.test.ts',
+          ],
           setupFiles: ['src/shared/testing/integration.setup.ts'],
         },
       },
