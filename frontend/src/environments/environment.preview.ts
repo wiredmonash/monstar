@@ -1,0 +1,11 @@
+// Preview builds (preview-worktree skill): relative URLs so requests stay
+// same-origin and flow through the dev-server proxy to the per-slot backend.
+export const environment = {
+  production: false,
+  apiUrl: '/api/v1',
+  apiV2Url: '/api/v2',
+  authUrl: '/api/v1/auth',
+  setuUrl: '/api/v1/setus',
+  githubUrl: '/api/v1/github',
+  enableSetuCards: false,
+};
