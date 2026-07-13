@@ -32,7 +32,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { combineLatest, map, ReplaySubject } from 'rxjs';
-import { DecimalPipe } from '../../pipes/decimal.pipe';
+import { DecimalPipe } from '@angular/common';
 import { GetUnitService } from '../../services/api/get-unit.service';
 import { ViewportService } from '../../services/viewport.service';
 import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit.component';
