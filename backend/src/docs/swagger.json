@@ -17,7 +17,7 @@
       "description": "Unit information and management V2"
     },
     {
-      "name": "Reviews V2",
+      "name": "Reviews",
       "description": "Reviews for units V2"
     },
     {
@@ -25,7 +25,7 @@
       "description": "Authentication and user management"
     },
     {
-      "name": "User V2",
+      "name": "User",
       "description": "Authentication and user management V2"
     },
     {
@@ -315,7 +315,7 @@
     "/api/v2/reviews/": {
       "get": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Get all reviews with optional filter",
         "description": "",
@@ -329,7 +329,7 @@
     "/api/v2/reviews/popular": {
       "get": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Get N most liked reviews",
         "description": "",
@@ -350,7 +350,7 @@
     "/api/v2/reviews/{unit}": {
       "get": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Get all reviews for a specific unit",
         "description": "",
@@ -372,7 +372,7 @@
     "/api/v2/reviews/user/{userId}": {
       "get": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Get all reviews by a specific user",
         "description": "",
@@ -394,7 +394,7 @@
     "/api/v2/reviews/{unit}/create": {
       "post": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Create a review for a specific unit",
         "description": "",
@@ -416,7 +416,7 @@
     "/api/v2/reviews/update/{reviewId}": {
       "put": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Update a review by ID",
         "description": "",
@@ -438,7 +438,7 @@
     "/api/v2/reviews/delete/{reviewId}": {
       "delete": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Delete a review by ID",
         "description": "",
@@ -460,7 +460,7 @@
     "/api/v2/reviews/toggle-reaction/{reviewId}": {
       "patch": {
         "tags": [
-          "Reviews V2"
+          "Reviews"
         ],
         "summary": "Toggle like/dislike on a review",
         "description": "",
@@ -643,7 +643,7 @@
     "/api/v2/users/me": {
       "get": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Get current user",
         "description": "",
@@ -660,7 +660,7 @@
     "/api/v2/users/validate": {
       "get": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Check if the user has the access_token in their cookies to keep session",
         "description": "",
@@ -674,7 +674,7 @@
     "/api/v2/users/google/authenticate": {
       "post": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Login/register a user with Google OAuth",
         "description": "",
@@ -702,7 +702,7 @@
     "/api/v2/users/refresh": {
       "post": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Refresh access token using refresh token",
         "description": "",
@@ -716,7 +716,7 @@
     "/api/v2/users/logout": {
       "post": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Clear the token cookies and invalidate refresh token in database",
         "description": "",
@@ -733,7 +733,7 @@
     "/api/v2/users/upload-avatar": {
       "post": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Upload avatar to cloudinary and assign it as user",
         "description": "",
@@ -753,7 +753,7 @@
     "/api/v2/users/{username}": {
       "get": {
         "tags": [
-          "User V2"
+          "User"
         ],
         "summary": "Get user by username",
         "description": "",
@@ -772,12 +772,12 @@
         }
       }
     },
-    "/api/v1/notifications/user/{userId}": {
+    "/api/v2/notifications/user/{userId}": {
       "get": {
         "tags": [
           "Notifications"
         ],
-        "summary": "Get all notifications for a user from the database",
+        "summary": "Get all notifications for a user",
         "description": "",
         "parameters": [
           {
@@ -796,14 +796,11 @@
           },
           "403": {
             "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
     },
-    "/api/v1/notifications/{notificationId}": {
+    "/api/v2/notifications/{notificationId}": {
       "delete": {
         "tags": [
           "Notifications"
@@ -824,12 +821,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
