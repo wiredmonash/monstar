@@ -1,4 +1,4 @@
-.PHONY: dev dev-backend dev-frontend install install-backend install-frontend clean help up down logs seed reset-db rebuild
+.PHONY: dev dev-backend dev-frontend install install-backend install-frontend clean help up down logs seed reset-db rebuild test test-backend test-frontend benchmark
 
 # Colors for help text
 BLUE := \033[0;34m
@@ -63,6 +63,17 @@ install-frontend: ## Install frontend dependencies
 	cd frontend && npm install
 
 ##@ Testing
+
+test: test-backend test-frontend ## Run backend and frontend tests
+	@echo "$(GREEN)All tests complete$(NC)"
+
+test-backend: ## Run backend tests (vitest)
+	@echo "$(BLUE)Running backend tests...$(NC)"
+	cd backend && npm test
+
+test-frontend: ## Run frontend tests (ng test, headless single-run)
+	@echo "$(GREEN)Running frontend tests...$(NC)"
+	cd frontend && npm test -- --watch=false --browsers=ChromeHeadless
 
 benchmark: ## Benchmark APIs with artillery
 	@echo "$(YELLOW)Benchmarking APIs...$(NC)"
