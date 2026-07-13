@@ -5,7 +5,11 @@
 <div class="page-container">
   <!-- Left profile panel -->
   @if (state) {
-    <app-profile-panel [state]="state" (logoutPressed)="logout()" />
+    <app-profile-panel
+      [state]="state"
+      (logoutPressed)="logout()"
+      (deleteAccountPressed)="deleteAccount()"
+    />
   } @else {
     <div class="profile-panel-skeleton">
       <div class="skeleton-header">

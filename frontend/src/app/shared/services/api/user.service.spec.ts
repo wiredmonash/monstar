@@ -56,6 +56,21 @@ describe('UserService session state', () => {
     expect(service.currentUserValue).toBeNull();
   });
 
+  it('deletes the account and clears the current user', () => {
+    service.validateSession().subscribe();
+    httpMock
+      .expectOne(`${v2}/users/validate`)
+      .flush({ message: 'Authenticated', data: user });
+    expect(service.currentUserValue).toEqual(user);
+
+    service.deleteAccount(user._id).subscribe();
+    const req = httpMock.expectOne(`${v2}/users/delete/${user._id}`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({ message: 'User successfully deleted' });
+
+    expect(service.currentUserValue).toBeNull();
+  });
+
   it('clearSession drops the user without a backend call', () => {
     service.validateSession().subscribe();
     httpMock
