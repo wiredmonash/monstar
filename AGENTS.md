@@ -64,6 +64,15 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
 
+## Agents Run Dev Servers on the Host, Not Docker
+
+The compose environment (compose.yaml) exists for human development. Agents run the app the host way:
+
+- Main checkout: `make dev` (frontend 4200, backend 8080).
+- Worktrees: the preview-worktree scripts in `.agents/skills/preview-worktree/`, which allocate per-worktree port slots (4201-4209).
+
+compose.yaml hardcodes ports 4200/8080, so an agent-launched compose project collides with the developer's own running stack, and image builds burn minutes per worktree that the host method does not. Touch Docker only when the task is about the Docker setup itself or the user asks for it.
+
 ## Frontend Is Angular 18
 
 Rules for `frontend/` (don't apply newer-Angular idioms):
