@@ -44,3 +44,6 @@ backend/.claude/
 backend/.mcp.json
 
 backend/tests/performance/**/*.report.json
+
+# Preview servers for worktrees (preview-worktree skill)
+.preview/
