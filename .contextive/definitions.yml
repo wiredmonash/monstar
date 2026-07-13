@@ -59,6 +59,32 @@ contexts:
         definition: The official Monash registry of all units, courses, and rules for a given year. The "Source of Truth".
 
   - name: Teaching Evaluation
-    terms: 
+    terms:
       - name: setu
-        definition: Student evaluation of teaching and units.
+        definition: Student Evaluation of Teaching and Units, Monash's official survey producing quantitative scores per unit offering.
+        examples:
+          - SETU data is confidential under the LTQP and cannot be republished by MonSTAR without Monash's permission (see ADR-0013).
+      - name: ltqp
+        definition: Learning and Teaching Quality Procedure, the Monash policy governing who may receive and distribute SETU data.
+        aliases:
+          - learning and teaching quality procedure
+        examples:
+          - Under LTQP clause 2.5, SETU responses are confidential and WIRED is not an authorised recipient.
+
+  - name: MonSTAR Platform
+    domainVisionStatement: Helping Monash students choose units through peer reviews and summaries.
+    terms:
+      - name: monstar
+        definition: 'The WIRED Monash unit-review platform: "Mon" for Monash, "STAR" for star-based reviewing; a brand name rather than an acronym.'
+        examples:
+          - MonSTAR is growing beyond reviews, so the name is treated as a general brand.
+      - name: review
+        definition: A student's subjective, star-rated evaluation of a unit posted on MonSTAR.
+        examples:
+          - A review belongs to exactly one unit and one verified student.
+      - name: ai overview
+        definition: A generated summary of a unit's reviews and metrics shown on the unit page.
+        aliases:
+          - overview
+        examples:
+          - The AI overview condenses a unit's reviews so a student gets a quick take without reading all of them.
