@@ -1,0 +1,15 @@
+# Development image: source is bind-mounted by compose.yaml, so this image
+# only needs Node and the installed dependencies. ng serve provides reload;
+# --poll keeps file watching reliable across Docker bind mounts.
+FROM node:24-slim
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY . .
+
+EXPOSE 4200
+
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]

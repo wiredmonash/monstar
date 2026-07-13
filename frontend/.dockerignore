@@ -1,0 +1,10 @@
+.git
+node_modules
+dist
+.angular
+out-tsc
+coverage
+*.log
+.eslintcache
+.claude
+.mcp.json

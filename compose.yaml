@@ -1,0 +1,114 @@
+# Self-contained development environment: Angular frontend, Express backend,
+# and MongoDB. See CONTRIBUTING.md for setup, seed, and reset commands.
+#
+# Before first run: cp backend/.env.template backend/.env
+name: monstar
+
+# Named volumes (rather than anonymous ones) for node_modules: Docker copies
+# the image's node_modules into the volume only on first creation, not on
+# every container recreate — this is what keeps `docker compose up` fast.
+# After changing dependencies: docker compose down -v && docker compose up --build
+x-backend-base: &backend-base
+  build:
+    context: ./backend
+    dockerfile: Dockerfile.dev
+  volumes:
+    - ./backend:/app
+    - backend-node-modules:/app/node_modules
+
+services:
+  mongo:
+    image: mongo:8
+    # Single-node replica set: the backend uses transactions (user deletion,
+    # tag updates), which standalone mongod does not support.
+    command: ['mongod', '--replSet', 'rs0', '--bind_ip_all']
+    healthcheck:
+      # Reports healthy once the replica set is initiated; initiates it on the
+      # first check after a fresh volume.
+      test:
+        [
+          'CMD-SHELL',
+          "mongosh --quiet --eval \"try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'mongo:27017' }] }).ok }\"",
+        ]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+      start_period: 15s
+      start_interval: 1s
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    <<: *backend-base
+    env_file: ./backend/.env
+    environment:
+      # Pinned here so a stray MONGODB_CONN_STRING in an env file can never
+      # point a container at a real database.
+      MONGODB_CONN_STRING: mongodb://mongo:27017/monstar?replicaSet=rs0
+      PORT: '8080'
+      DEVELOPMENT: 'true'
+      PRODUCTION_MACHINE: 'false'
+    ports:
+      - '8080:8080'
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      # /api/v1/csrf-token responds without touching the database, so this
+      # checks the HTTP server itself.
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:8080/api/v1/csrf-token').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+      start_interval: 1s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - '4200:4200'
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+      # Named volume so the Angular build cache survives container recreation
+      # (warm rebuilds instead of a cold compile on every boot).
+      - angular-cache:/app/.angular
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://localhost:4200').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+      start_interval: 2s
+
+  # One-off job: fills an empty database with synthetic sample data, then
+  # exits. Re-runs on every `up` but skips itself once data exists.
+  seed:
+    <<: *backend-base
+    command: ['npm', 'run', 'seed']
+    environment:
+      MONGODB_CONN_STRING: mongodb://mongo:27017/monstar?replicaSet=rs0
+    depends_on:
+      mongo:
+        condition: service_healthy
+    restart: 'no'
+
+volumes:
+  mongo-data:
+  angular-cache:
+  backend-node-modules:
+  frontend-node-modules:
