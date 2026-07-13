@@ -29,7 +29,7 @@
                         <mxGeometry x="-640" y="570" width="240" height="120" as="geometry"/>
                     </mxCell>
                 </object>
-                <mxCell id="24" style="edgeStyle=none;html=1;strokeColor=#FFFFFF;entryX=0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="6" target="23" edge="1">
+                <mxCell id="24" style="edgeStyle=none;html=1;strokeColor=#808080;entryX=0;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="6" target="23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="25" value="Redirects user to sign in" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="24" vertex="1" connectable="0">
@@ -42,7 +42,7 @@
                         <mxGeometry x="-640" y="320" width="240" height="160" as="geometry"/>
                     </mxCell>
                 </object>
-                <mxCell id="11" style="edgeStyle=none;html=1;strokeColor=#FFFFFF;" parent="1" source="7" edge="1">
+                <mxCell id="11" style="edgeStyle=none;html=1;strokeColor=#808080;" parent="1" source="7" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="-640" y="380" as="targetPoint"/>
                     </mxGeometry>
@@ -57,7 +57,7 @@
                         <mxGeometry x="-1040" y="320" width="240" height="120" as="geometry"/>
                     </mxCell>
                 </object>
-                <mxCell id="8" style="edgeStyle=none;html=1;entryX=0.471;entryY=0.001;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="pAz0fgBWne1En2T8HbsR-4" target="7" edge="1">
+                <mxCell id="8" style="edgeStyle=none;html=1;entryX=0.471;entryY=0.001;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="pAz0fgBWne1En2T8HbsR-4" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="9" value="Loads the UI from" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="8" vertex="1" connectable="0">
@@ -65,7 +65,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="13" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="pAz0fgBWne1En2T8HbsR-4" target="6" edge="1">
+                <mxCell id="13" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="pAz0fgBWne1En2T8HbsR-4" target="6" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="14" value="Views existing reviews of units,&lt;br&gt;Writes reviews for units they&#39;ve completed" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="13" vertex="1" connectable="0">
@@ -73,7 +73,7 @@
                         <mxPoint x="9" y="6" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="17" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="6" target="5" edge="1">
+                <mxCell id="17" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="6" target="5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="18" value="Makes API calls to" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="17" vertex="1" connectable="0">
@@ -81,7 +81,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="19" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="5" target="3" edge="1">
+                <mxCell id="19" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="5" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="20" value="Reads and writes to" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="19" vertex="1" connectable="0">
@@ -89,7 +89,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="21" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="5" target="4" edge="1">
+                <mxCell id="21" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="5" target="4" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="22" value="Fetches and uploads" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="21" vertex="1" connectable="0">
@@ -107,7 +107,7 @@
                         <mxGeometry x="-1050" y="570" width="240" height="120" as="geometry"/>
                     </mxCell>
                 </object>
-                <mxCell id="31" style="edgeStyle=none;html=1;strokeColor=#FFFFFF;" parent="1" source="5" target="30" edge="1">
+                <mxCell id="31" style="edgeStyle=none;html=1;strokeColor=#808080;" parent="1" source="5" target="30" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="32" value="Reads and writes cache to" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="31" connectable="0" vertex="1">
@@ -115,7 +115,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="27" style="edgeStyle=none;html=1;strokeColor=#FFFFFF;entryX=0;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5" target="23" edge="1">
+                <mxCell id="27" style="edgeStyle=none;html=1;strokeColor=#808080;entryX=0;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="5" target="23" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="28" value="Validates auth tokens with" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="27" vertex="1" connectable="0">
@@ -138,7 +138,7 @@
                         <mxGeometry x="40" y="840" width="240" height="120" as="geometry"/>
                     </mxCell>
                 </object>
-                <mxCell id="43" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="5" target="40" edge="1">
+                <mxCell id="43" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="5" target="40" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="44" value="Generates AI unit overviews with" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="43" vertex="1" connectable="0">
@@ -146,7 +146,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="45" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="5" target="41" edge="1">
+                <mxCell id="45" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="5" target="41" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="46" value="Fetches contributor profiles from" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="45" vertex="1" connectable="0">
@@ -154,7 +154,7 @@
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="47" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FFFFFF;" parent="1" source="5" target="42" edge="1">
+                <mxCell id="47" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#808080;" parent="1" source="5" target="42" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="48" value="Fetches job listings from" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="47" vertex="1" connectable="0">
