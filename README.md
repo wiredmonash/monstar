@@ -51,7 +51,7 @@ MonSTAR provides several features for exploring and reviewing Monash subjects:
     <td width="50%"><b>Unit Tags</b><br>Dynamically assigned tags like "WAM Booster"</td>
   </tr>
   <tr>
-    <td width="50%"><b>Jobs Board</b> <img alt="new" src="https://img.shields.io/badge/new-2da44e?style=flat-square"><br>Browse internship and graduate roles sourced for Monash students</td>
+    <td width="50%"><b>Jobs Board</b> <img alt="new" src="https://img.shields.io/badge/new-2da44e?style=flat-square"><br>Browse open roles with Monash student teams, clubs, and societies</td>
     <td width="50%"><b>Grade Calculator</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Calculate your WAM and GPA and project semester results</td>
   </tr>
   <tr>
