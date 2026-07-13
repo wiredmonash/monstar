@@ -33,7 +33,7 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { combineLatest, map, ReplaySubject } from 'rxjs';
 import { DecimalPipe } from '../../pipes/decimal.pipe';
-import { ApiService } from '../../services/api.service';
+import { GetUnitService } from '../../services/api/get-unit.service';
 import { ViewportService } from '../../services/viewport.service';
 import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit.component';
 
@@ -109,7 +109,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
   private resizeHandler = () => this.updateSkeletonHeight();
 
   private userService = inject(UserService);
-  private apiService = inject(ApiService);
+  private getUnitService = inject(GetUnitService);
   private messageService = inject(MessageService);
   private router = inject(Router);
   private viewportService = inject(ViewportService);
@@ -201,7 +201,7 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
       return true;
     }
 
-    this.apiService.getUnitsRequiringUnitGET(this.unit.unitCode).subscribe({
+    this.getUnitService.getUnitsRequiringUnit(this.unit.unitCode).subscribe({
       next: (units) => {
         if (units.length > 0) {
           console.info('UnitReviewHeader | Unit has parent units.');

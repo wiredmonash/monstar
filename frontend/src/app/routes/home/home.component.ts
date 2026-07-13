@@ -29,7 +29,7 @@ import {
 } from '../../shared/constants/constants';
 
 // Models
-import { Unit } from '../../shared/models/unit.model';
+import { IUnit } from '../../shared/models/v2/unit.schema';
 
 // Components
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
@@ -44,7 +44,7 @@ import { DividerModule } from 'primeng/divider';
 import { SkeletonModule } from 'primeng/skeleton';
 
 // Services
-import { ApiService } from '../../shared/services/api.service';
+import { GetUnitService } from '../../shared/services/api/get-unit.service';
 import { NavigationService } from '../../shared/services/navigation.service';
 
 @Component({
@@ -76,7 +76,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   loading: boolean = true;
 
   // Stores the popular units to be displayed on the home page
-  popularUnits: Unit[] = [];
+  popularUnits: IUnit[] = [];
 
   // Reference to the navbar child
   @ViewChild(NavbarComponent) navbar!: NavbarComponent;
@@ -185,7 +185,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   constructor(
     private router: Router,
-    private apiService: ApiService,
+    private getUnitService: GetUnitService,
     private sanitizer: DomSanitizer,
     private navigationService: NavigationService,
     private meta: Meta,
@@ -241,9 +241,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getPopularUnits() {
     this.loading = true;
-    this.apiService.getPopularUnitsGET().subscribe({
-      next: (unitData) => {
-        this.popularUnits = unitData.map((data) => new Unit(data));
+    this.getUnitService.getPopularUnits().subscribe({
+      next: (units) => {
+        this.popularUnits = units;
 
         this.loading = false;
       },
