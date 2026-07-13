@@ -15,6 +15,7 @@
     "start": "node dist/server.js",
     "start:prod": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
+    "seed": "tsx src/scripts/seed-dev.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write . && eslint . --fix",
