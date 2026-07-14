@@ -91,6 +91,7 @@ export class UserProfileComponent {
     }),
     map(({ user, currUser, reviews }) => ({
       username: user?.username ?? null,
+      authcate: user?.email?.slice(0, 8) ?? null,
       user: user ?? null,
       profileImg: user?.profileImg ?? DEFAULT_PROFILE_IMG,
       isCurrentUser:
@@ -140,6 +141,15 @@ export class UserProfileComponent {
         })
       )
       .subscribe();
+  }
+
+  onUsernameSaved(newUsername: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Username updated!',
+      detail: `You are now known as ${newUsername}`,
+    });
+    this.router.navigate(['/user', newUsername]);
   }
 
   logout() {
