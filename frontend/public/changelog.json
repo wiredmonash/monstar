@@ -9,6 +9,16 @@
             "New Sidebar Navigation": [
               "We swapped the pop-out sidebar for an icon rail that stays pinned to the side while you browse.",
               "Cleaned up the login and profile menus so they only show sign-in options we support."
+            ],
+            "Manage Your Profile": [
+              "You can now change your username right from your profile, and we'll let you know if one's already taken.",
+              "Deleting your account now lives in the new profile panel too."
+            ],
+            "Grades Are Optional": [
+              "You can post a review without picking a grade now."
+            ],
+            "Better Link Previews": [
+              "Shared MonSTAR links now show a preview image with our mascots."
             ]
           }
         },
