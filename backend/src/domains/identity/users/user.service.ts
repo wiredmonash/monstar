@@ -2,13 +2,13 @@ import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
 import { cloudinary } from '@infrastructure/storage/cloudinary';
-import type { Id } from '@shared/types';
 import { CreateError } from '@shared/errors/error';
 import {
-  Error409Conflict,
   Error403Forbidden,
   Error404NotFound,
+  Error409Conflict,
 } from '@shared/errors/errors';
+import type { Id } from '@shared/types';
 import { getErrorMessage } from '@shared/utilities/getErrorMessage';
 
 import TokenProvider from './token.service';
@@ -198,7 +198,15 @@ class UserService {
 
     if (!username) throw CreateError(400, 'Username is required to update');
 
-    targetUser.username = username;
+    const trimmed = username.trim();
+    if (trimmed.length < 3 || trimmed.length > 20)
+      throw CreateError(400, 'Username must be between 3 and 20 characters');
+
+    const existing = await UserRepository.findByUsername(trimmed);
+    if (existing && existing._id.toString() !== targetUser._id.toString())
+      throw new Error409Conflict(`Username '${trimmed}' is already taken`);
+
+    targetUser.username = trimmed;
     await targetUser.save();
 
     return targetUser;

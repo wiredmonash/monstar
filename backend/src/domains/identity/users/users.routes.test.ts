@@ -6,7 +6,7 @@ import request from 'supertest';
 
 import { TokenProvider } from '@domains/identity/users';
 
-import { getCsrf, accessTokenCookie } from '@shared/testing/helpers';
+import { accessTokenCookie, getCsrf } from '@shared/testing/helpers';
 
 vi.mock('multer', () => {
   const multer = () => ({
@@ -281,8 +281,18 @@ describe('PUT /api/v2/users/update/:userId (username, self or admin)', () => {
     const callerId = new mongoose.Types.ObjectId();
     const targetId = new mongoose.Types.ObjectId();
     await mongoose.connection.collection('users').insertMany([
-      { _id: callerId, username: 'caller', email: 'c@example.com', admin: false },
-      { _id: targetId, username: 'target', email: 't@example.com', admin: false },
+      {
+        _id: callerId,
+        username: 'caller',
+        email: 'c@example.com',
+        admin: false,
+      },
+      {
+        _id: targetId,
+        username: 'target',
+        email: 't@example.com',
+        admin: false,
+      },
     ]);
 
     const { token, cookies } = await getCsrf(global.app);
@@ -307,6 +317,54 @@ describe('PUT /api/v2/users/update/:userId (username, self or admin)', () => {
       .send({ username: 'x' });
 
     expect(res.status).toBe(401);
+  });
+
+  it('returns 409 when the username is already taken', async () => {
+    const callerId = new mongoose.Types.ObjectId();
+    const otherId = new mongoose.Types.ObjectId();
+    await mongoose.connection.collection('users').insertMany([
+      { _id: callerId, username: 'mine', email: 'm@example.com', admin: false },
+      { _id: otherId, username: 'taken', email: 'o@example.com', admin: false },
+    ]);
+
+    const { token, cookies } = await getCsrf(global.app);
+    const res = await request(global.app)
+      .put(`/api/v2/users/update/${callerId}`)
+      .set(
+        'Cookie',
+        [...cookies, accessTokenCookie(callerId.toString())].join('; ')
+      )
+      .set('x-csrf-token', token)
+      .send({ username: 'taken' });
+
+    expect(res.status).toBe(409);
+
+    const stored = await mongoose.connection
+      .collection('users')
+      .findOne({ _id: callerId });
+    expect(stored?.username).toBe('mine');
+  });
+
+  it('returns 400 when the username exceeds the length limit', async () => {
+    const userId = new mongoose.Types.ObjectId();
+    await mongoose.connection.collection('users').insertOne({
+      _id: userId,
+      username: 'shortname',
+      email: 'len@example.com',
+      admin: false,
+    });
+
+    const { token, cookies } = await getCsrf(global.app);
+    const res = await request(global.app)
+      .put(`/api/v2/users/update/${userId}`)
+      .set(
+        'Cookie',
+        [...cookies, accessTokenCookie(userId.toString())].join('; ')
+      )
+      .set('x-csrf-token', token)
+      .send({ username: 'a'.repeat(21) });
+
+    expect(res.status).toBe(400);
   });
 });
 
@@ -342,8 +400,18 @@ describe('DELETE /api/v2/users/delete/:userId (self or admin)', () => {
     const callerId = new mongoose.Types.ObjectId();
     const targetId = new mongoose.Types.ObjectId();
     await mongoose.connection.collection('users').insertMany([
-      { _id: callerId, username: 'delcaller', email: 'dc@example.com', admin: false },
-      { _id: targetId, username: 'deltarget', email: 'dt@example.com', admin: false },
+      {
+        _id: callerId,
+        username: 'delcaller',
+        email: 'dc@example.com',
+        admin: false,
+      },
+      {
+        _id: targetId,
+        username: 'deltarget',
+        email: 'dt@example.com',
+        admin: false,
+      },
     ]);
 
     const { token, cookies } = await getCsrf(global.app);
