@@ -37,10 +37,8 @@
       display: flex;
       align-items: baseline;
       gap: 0.5rem;
-      min-width: 0;
     }
 
-    // Shared box metrics so the span↔input swap never shifts anything.
     .username {
       font-size: 1.2rem;
       padding: 0;
@@ -65,10 +63,7 @@
       border-radius: 4px;
       outline: 2px solid $primary-color;
       box-sizing: border-box;
-
-      &:disabled {
-        opacity: 0.6;
-      }
+      padding: 0 6px;
     }
 
     .authcate {
@@ -79,7 +74,6 @@
     }
   }
 
-  // Reserved so toggling hint/error/edit never shifts the content below.
   .status-line {
     min-height: 1.2rem;
     font-size: 0.85rem;

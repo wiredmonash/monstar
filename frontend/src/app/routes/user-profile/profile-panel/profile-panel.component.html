@@ -8,8 +8,11 @@
           class="username username-input"
           [value]="draft()"
           [style.width.px]="editWidth()"
-          [disabled]="saving()"
           maxlength="20"
+          name="profile-username-edit"
+          autocomplete="off"
+          data-bwignore
+          readonly
           (input)="draft.set($any($event.target).value)"
           (keydown.enter)="save()"
           (keydown.escape)="cancel()"

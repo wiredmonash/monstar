@@ -2,9 +2,11 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Injector,
   Input,
   Output,
   ViewChild,
+  afterNextRender,
   inject,
   signal,
 } from '@angular/core';
@@ -29,12 +31,12 @@ export class ProfilePanelComponent {
   @ViewChild('usernameInput') usernameInput?: ElementRef<HTMLInputElement>;
 
   private userService = inject(UserService);
+  private injector = inject(Injector);
 
   editing = signal(false);
   draft = signal('');
   error = signal<string | null>(null);
   saving = signal(false);
-  // Pins the input to the display text's width so nothing shifts on edit.
   editWidth = signal(0);
 
   startEdit() {
@@ -43,7 +45,15 @@ export class ProfilePanelComponent {
     this.draft.set(this.state.username ?? '');
     this.error.set(null);
     this.editing.set(true);
-    setTimeout(() => this.usernameInput?.nativeElement.select());
+    afterNextRender(
+      () => {
+        const el = this.usernameInput?.nativeElement;
+        el?.focus();
+        el?.select();
+        if (el) el.readOnly = false;
+      },
+      { injector: this.injector }
+    );
   }
 
   cancel() {
@@ -53,8 +63,6 @@ export class ProfilePanelComponent {
   }
 
   save() {
-    // Guard re-entry: removing/disabling the input fires a stray blur→save
-    // after a save has already started or finished.
     if (this.saving() || !this.editing()) return;
 
     const next = this.draft().trim();
