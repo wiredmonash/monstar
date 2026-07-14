@@ -1,4 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Injector,
+  Input,
+  Output,
+  ViewChild,
+  afterNextRender,
+  inject,
+  signal,
+} from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UserService } from '@services/api/user.service';
 import { DeleteAccountButtonComponent } from '../delete-account-button/delete-account-button.component';
 import { LogoutButtonComponent } from '../logout-button/logout-button.component';
 import { State } from '../user-profile.state';
@@ -12,6 +25,68 @@ import { State } from '../user-profile.state';
 })
 export class ProfilePanelComponent {
   @Input({ required: true }) state!: State;
+  @Output() usernameSaved = new EventEmitter<string>();
   @Output() logoutPressed = new EventEmitter<void>();
   @Output() deleteAccountPressed = new EventEmitter<void>();
+
+  @ViewChild('usernameSpan') usernameSpan?: ElementRef<HTMLElement>;
+  @ViewChild('usernameInput') usernameInput?: ElementRef<HTMLInputElement>;
+
+  private userService = inject(UserService);
+  private injector = inject(Injector);
+
+  editing = signal(false);
+  draft = signal('');
+  error = signal<string | null>(null);
+  saving = signal(false);
+  editWidth = signal(0);
+
+  startEdit() {
+    if (!this.state.isCurrentUser || this.saving()) return;
+    this.editWidth.set(this.usernameSpan?.nativeElement.offsetWidth ?? 0);
+    this.draft.set(this.state.username ?? '');
+    this.error.set(null);
+    this.editing.set(true);
+    afterNextRender(
+      () => {
+        const el = this.usernameInput?.nativeElement;
+        el?.focus();
+        el?.select();
+        if (el) el.readOnly = false;
+      },
+      { injector: this.injector }
+    );
+  }
+
+  cancel() {
+    this.draft.set(this.state.username ?? '');
+    this.error.set(null);
+    this.editing.set(false);
+  }
+
+  save() {
+    if (this.saving() || !this.editing()) return;
+
+    const next = this.draft().trim();
+    const userId = this.state.user?._id;
+
+    if (!next || next === this.state.username || !userId) {
+      this.cancel();
+      return;
+    }
+
+    this.error.set(null);
+    this.saving.set(true);
+    this.userService.updateUsername(userId, next).subscribe({
+      next: (newUsername) => {
+        this.saving.set(false);
+        this.editing.set(false);
+        this.usernameSaved.emit(newUsername);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.saving.set(false);
+        this.error.set(err.error?.message ?? 'Could not update username');
+      },
+    });
+  }
 }

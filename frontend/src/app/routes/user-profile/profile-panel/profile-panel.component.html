@@ -1,12 +1,46 @@
 <div class="profile-panel">
   <div class="user-header">
     <img class="profile-img" [src]="state.profileImg" />
-    <span class="username">{{ state.username ?? 'username not found' }}</span>
+    <div class="name-block">
+      @if (editing()) {
+        <input
+          #usernameInput
+          class="username username-input"
+          [value]="draft()"
+          [style.width.px]="editWidth()"
+          maxlength="20"
+          name="profile-username-edit"
+          autocomplete="off"
+          data-bwignore
+          readonly
+          (input)="draft.set($any($event.target).value)"
+          (keydown.enter)="save()"
+          (keydown.escape)="cancel()"
+          (blur)="save()"
+        />
+      } @else {
+        <span
+          #usernameSpan
+          class="username"
+          [class.editable]="state.isCurrentUser"
+          (click)="startEdit()"
+        >
+          {{ state.username ?? 'username not found' }}
+        </span>
+      }
+      @if (state.authcate) {
+        <span class="authcate">{{ state.authcate }}</span>
+      }
+    </div>
   </div>
   @if (state.isCurrentUser) {
-    <p style="text-align: center; color: grey">
-      More personalisation stuff coming here soon!
-    </p>
+    <div class="status-line">
+      @if (error()) {
+        <span class="edit-error">{{ error() }}</span>
+      } @else if (!editing()) {
+        <span class="edit-hint">Click your username to change it.</span>
+      }
+    </div>
   }
 
   <!-- <p class="bio">

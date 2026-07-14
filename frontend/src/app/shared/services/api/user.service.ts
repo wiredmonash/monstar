@@ -128,6 +128,21 @@ export class UserService {
     return this.http.get<IUser>(`${this.url}/${username}`);
   }
 
+  updateUsername(userId: string, username: string): Observable<string> {
+    return this.http
+      .put<{ message: string; username: string }>(
+        `${this.url}/update/${userId}`,
+        { username }
+      )
+      .pipe(
+        map((res) => res.username),
+        tap((newUsername) => {
+          const user = this._currentUser.value;
+          if (user) this._currentUser.next({ ...user, username: newUsername });
+        })
+      );
+  }
+
   googleAuthenticate(idToken: string): Observable<IUser> {
     return this.http
       .post<UserResponse>(
