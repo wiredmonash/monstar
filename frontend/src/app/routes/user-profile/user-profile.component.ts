@@ -147,4 +147,13 @@ export class UserProfileComponent {
       this.router.navigate(['/']);
     });
   }
+
+  deleteAccount() {
+    const userId = this.userService.getId();
+    if (!userId) return;
+
+    this.userService.deleteAccount(userId).subscribe(() => {
+      this.router.navigate(['/']);
+    });
+  }
 }

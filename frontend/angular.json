@@ -102,6 +102,9 @@
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/app/styles"]
+            },
             "assets": [
               {
                 "glob": "**/*",

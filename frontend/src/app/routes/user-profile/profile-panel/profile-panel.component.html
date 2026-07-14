@@ -19,5 +19,8 @@
 
   @if (state.isCurrentUser) {
     <app-logout-button (click)="logoutPressed.emit()"></app-logout-button>
+    <app-delete-account-button
+      (confirmed)="deleteAccountPressed.emit()"
+    ></app-delete-account-button>
   }
 </div>
