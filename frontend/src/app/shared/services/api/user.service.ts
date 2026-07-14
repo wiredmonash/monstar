@@ -173,6 +173,18 @@ export class UserService {
       );
   }
 
+  deleteAccount(userId: string): Observable<{ message: string }> {
+    return this.http
+      .delete<{
+        message: string;
+      }>(`${this.url}/delete/${userId}`, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          this._currentUser.next(null);
+        })
+      );
+  }
+
   logout(): Observable<{ message: string }> {
     return this.http
       .post<{

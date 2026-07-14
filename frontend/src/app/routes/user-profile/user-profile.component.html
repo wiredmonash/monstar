@@ -9,6 +9,7 @@
       [state]="state"
       (usernameSaved)="onUsernameSaved($event)"
       (logoutPressed)="logout()"
+      (deleteAccountPressed)="deleteAccount()"
     />
   } @else {
     <div class="profile-panel-skeleton">

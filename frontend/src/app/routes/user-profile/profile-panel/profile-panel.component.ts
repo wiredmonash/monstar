@@ -12,13 +12,14 @@ import {
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from '@services/api/user.service';
+import { DeleteAccountButtonComponent } from '../delete-account-button/delete-account-button.component';
 import { LogoutButtonComponent } from '../logout-button/logout-button.component';
 import { State } from '../user-profile.state';
 
 @Component({
   selector: 'app-profile-panel',
   standalone: true,
-  imports: [LogoutButtonComponent],
+  imports: [LogoutButtonComponent, DeleteAccountButtonComponent],
   templateUrl: './profile-panel.component.html',
   styleUrl: './profile-panel.component.scss',
 })
@@ -26,6 +27,7 @@ export class ProfilePanelComponent {
   @Input({ required: true }) state!: State;
   @Output() usernameSaved = new EventEmitter<string>();
   @Output() logoutPressed = new EventEmitter<void>();
+  @Output() deleteAccountPressed = new EventEmitter<void>();
 
   @ViewChild('usernameSpan') usernameSpan?: ElementRef<HTMLElement>;
   @ViewChild('usernameInput') usernameInput?: ElementRef<HTMLInputElement>;

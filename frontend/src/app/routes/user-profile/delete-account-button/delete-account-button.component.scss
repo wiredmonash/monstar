@@ -1,10 +1,9 @@
 @import 'mixins';
-@import 'variables';
 
-.logout-button-container {
+.delete-account-button-container {
   display: flex;
   justify-content: center;
-  background-color: $bg-dark-color;
+  background-color: rgb(197, 54, 54);
   border-radius: 1rem;
   padding: 1rem;
 
@@ -13,7 +12,7 @@
     @include button-hover;
   }
 
-  .text-container {
-    
+  &.confirming {
+    background-color: rgb(150, 30, 30);
   }
 }

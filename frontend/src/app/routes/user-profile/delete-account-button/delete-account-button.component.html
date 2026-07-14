@@ -1,0 +1,9 @@
+<div
+  class="delete-account-button-container"
+  [class.confirming]="confirming()"
+  (click)="onClick()"
+  (mouseleave)="scheduleReset()"
+  (mouseenter)="cancelReset()"
+>
+  {{ confirming() ? 'Are you sure?' : 'Delete account' }}
+</div>
