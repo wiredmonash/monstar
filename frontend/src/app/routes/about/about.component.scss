@@ -91,37 +91,182 @@
   }
 }
 
-// GitHub Contributions Section Styles
-.loading-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  min-height: 200px;
-
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
+// Skeleton Loading Styles
+@keyframes skeleton-pulse {
+  0% {
+    background-position: -200% 0;
   }
-
-  p {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
+  100% {
+    background-position: 200% 0;
   }
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
+$skeleton-bg: linear-gradient(
+  90deg,
+  rgba(255, 255, 255, 0.06) 25%,
+  rgba(255, 255, 255, 0.12) 50%,
+  rgba(255, 255, 255, 0.06) 75%
+);
+$skeleton-bg-size: 200% 100%;
+
+.skeleton-section {
+  .skeleton-summary {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  100% {
-    transform: rotate(360deg);
+
+  .skeleton-summary-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .skeleton-label {
+    width: 100px;
+    height: 14px;
+    border-radius: 4px;
+    background: $skeleton-bg;
+    background-size: $skeleton-bg-size;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-value {
+    width: 48px;
+    height: 28px;
+    border-radius: 4px;
+    background: $skeleton-bg;
+    background-size: $skeleton-bg-size;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.1s;
+  }
+
+  .skeleton-card {
+    background-color: $bg-dark-color;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .skeleton-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .skeleton-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: $skeleton-bg;
+    background-size: $skeleton-bg-size;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .skeleton-card-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .skeleton-text {
+    border-radius: 4px;
+    background: $skeleton-bg;
+    background-size: $skeleton-bg-size;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+
+    &--name {
+      width: 65%;
+      height: 18px;
+    }
+
+    &--username {
+      width: 45%;
+      height: 14px;
+      animation-delay: 0.1s;
+    }
+
+    &--stat-label {
+      width: 80px;
+      height: 12px;
+    }
+
+    &--stat-value {
+      width: 36px;
+      height: 22px;
+      animation-delay: 0.15s;
+    }
+
+    &--progress-label {
+      width: 100px;
+      height: 12px;
+    }
+
+    &--progress-pct {
+      width: 36px;
+      height: 14px;
+      animation-delay: 0.2s;
+    }
+  }
+
+  .skeleton-stats {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .skeleton-stat-box {
+    text-align: center;
+    padding: 1rem 2rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .skeleton-progress {
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+  }
+
+  .skeleton-progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .skeleton-progress-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: $skeleton-bg;
+    background-size: $skeleton-bg-size;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.25s;
+  }
+
+  .skeleton-link {
+    width: 100%;
+    height: 40px;
+    border-radius: 6px;
+    background: $skeleton-bg;
+    background-size: $skeleton-bg-size;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+    animation-delay: 0.3s;
   }
 }
 
@@ -480,6 +625,29 @@
 
   .repository-info {
     padding: 1.5rem;
+  }
+
+  // Skeleton responsive
+  .skeleton-section {
+    .skeleton-card {
+      padding: 1rem;
+    }
+
+    .skeleton-card-header {
+      flex-direction: column;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .skeleton-summary {
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+
+    .skeleton-stat-box {
+      padding: 0.75rem 1rem;
+    }
   }
 }
 
