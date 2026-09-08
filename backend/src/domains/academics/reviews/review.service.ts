@@ -22,10 +22,13 @@ class ReviewService {
   };
 
   /**
-   * Fetch N most liked reviews
+   * Fetch N most liked reviews (capped at 50)
    */
   static fetchMostLiked = async (n = 10) => {
-    return await ReviewRepository.findMostLiked(n);
+    // Junk (NaN, negative) or 0 (which Mongo treats as "no limit") falls back to the default
+    const requested = Math.trunc(n);
+    const limit = requested > 0 ? Math.min(requested, 50) : 10;
+    return await ReviewRepository.findMostLiked(limit);
   };
 
   /**

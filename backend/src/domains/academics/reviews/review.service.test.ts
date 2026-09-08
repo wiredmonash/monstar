@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 import { Review, ReviewService } from '@domains/academics/reviews';
 import { Unit } from '@domains/academics/units';
@@ -34,6 +34,18 @@ describe(ReviewService.name, () => {
       );
 
       expect(controlReviews).toEqual(reviews);
+    });
+  });
+
+  describe(ReviewService.fetchMostLiked.name, () => {
+    it('caps the count at 50 and falls back to 10 for a non-positive count', async () => {
+      // Fixtures hold 18 reviews; seed 60 more so the cap is what limits the result
+      await mongoose.connection
+        .collection('reviews')
+        .insertMany(Array.from({ length: 60 }, (_, likes) => ({ likes })));
+
+      expect(await ReviewService.fetchMostLiked(1000)).toHaveLength(50);
+      expect(await ReviewService.fetchMostLiked(0)).toHaveLength(10);
     });
   });
 
