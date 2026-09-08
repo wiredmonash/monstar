@@ -1,4 +1,7 @@
 import request from 'supertest';
+import mongoose from 'mongoose';
+
+import { accessTokenCookie } from '@shared/testing/helpers';
 
 /**
  * Characterization tests for the v2 units API.
@@ -7,14 +10,32 @@ import request from 'supertest';
  * so it stays constant through the TypeScript conversion. They intentionally
  * assert what the code does today, quirks included.
  */
-describe('GET /api/v2/units', () => {
-  it('returns all units', async () => {
-    const res = await request(global.app).get('/api/v2/units');
+describe('GET /api/v2/units (list all, admin only)', () => {
+  it('returns all units for an admin (200)', async () => {
+    const adminId = new mongoose.Types.ObjectId().toString();
+    const res = await request(global.app)
+      .get('/api/v2/units')
+      .set('Cookie', accessTokenCookie(adminId, true));
 
-    expect(res.status).toBe(201);
+    expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
     expect(res.body).toHaveLength(11);
     expect(res.body[0]).toHaveProperty('unitCode');
+  });
+
+  it('returns 403 for a non-admin user', async () => {
+    const userId = new mongoose.Types.ObjectId().toString();
+    const res = await request(global.app)
+      .get('/api/v2/units')
+      .set('Cookie', accessTokenCookie(userId, false));
+
+    expect(res.status).toBe(403);
+  });
+
+  it('returns 401 without authentication', async () => {
+    const res = await request(global.app).get('/api/v2/units');
+
+    expect(res.status).toBe(401);
   });
 });
 

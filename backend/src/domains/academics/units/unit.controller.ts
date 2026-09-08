@@ -10,7 +10,7 @@ class UnitController {
    */
   static getAll = asyncHandler(async (req, res) => {
     const units = await UnitService.fetchAll();
-    return res.status(201).json(units);
+    return res.status(200).json(units);
   });
 
   /**

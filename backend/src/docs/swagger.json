@@ -190,8 +190,8 @@
         "summary": "Get all units",
         "description": "",
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           }
         }
       }
