@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get(
   '/',
+  adminMiddleware,
   // #swagger.tags = ['Units V2']
   // #swagger.summary = 'Get all units'
   UnitController.getAll
