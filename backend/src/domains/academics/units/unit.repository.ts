@@ -29,7 +29,9 @@ class UnitRepository {
     return populateReviews
       ? await query.populate({
           path: 'reviews',
-          populate: populateReviewsAuthor ? { path: 'author' } : undefined,
+          populate: populateReviewsAuthor
+            ? { path: 'author', select: 'username profileImg' }
+            : undefined,
         })
       : await query;
   }

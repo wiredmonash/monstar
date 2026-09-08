@@ -1,5 +1,7 @@
 import request from 'supertest';
 
+import { expectPublicUserFields } from '@shared/testing/helpers';
+
 /**
  * Characterization tests for the v2 units API.
  *
@@ -62,6 +64,19 @@ describe('GET /api/v2/units/:unitCode', () => {
     const res = await request(global.app).get('/api/v2/units/zzz9999');
 
     expect(res.status).toBe(404);
+  });
+
+  it('populates review authors with public profile fields only', async () => {
+    const res = await request(global.app).get(
+      '/api/v2/units/acb1120?populateReviews=true&populateReviewsAuthor=true'
+    );
+
+    expect(res.status).toBe(200);
+    const authors = res.body.reviews
+      .map((review: { author?: unknown }) => review.author)
+      .filter(Boolean);
+    expect(authors.length).toBeGreaterThan(0);
+    for (const author of authors) expectPublicUserFields(author);
   });
 });
 

@@ -14,7 +14,7 @@ class ReviewRepository {
    * Find all reviews with optional filter
    */
   static async findAll(filter: FilterQuery<IReview> = {}) {
-    return await Review.find(filter).populate('author');
+    return await Review.find(filter).populate('author', 'username profileImg');
   }
 
   /**
@@ -24,7 +24,7 @@ class ReviewRepository {
     return await Review.find()
       .sort({ likes: -1 })
       .limit(n)
-      .populate('author')
+      .populate('author', 'username profileImg')
       .populate('unit');
   }
 
