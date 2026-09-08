@@ -25,22 +25,10 @@ class UserRepository {
   }
 
   /**
-   * Find a user by username (excludes sensitive fields)
+   * Find a user by username (public profile fields only)
    */
   static async findByUsername(username: string) {
-    return await User.findOne(
-      { username },
-      {
-        password: 0,
-        refreshToken: 0,
-        refreshTokenExpires: 0,
-        verificationToken: 0,
-        verificationTokenExpires: 0,
-        resetPasswordToken: 0,
-        resetPasswordExpires: 0,
-        googleID: 0,
-      }
-    );
+    return await User.findOne({ username }, 'username profileImg');
   }
 
   /**
