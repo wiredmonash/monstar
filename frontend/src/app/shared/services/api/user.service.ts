@@ -120,7 +120,7 @@ export class UserService {
 
   me(): Observable<IUser> {
     return this.http
-      .get<IUser>(`${this.url}/me`)
+      .get<IUser>(`${this.url}/me`, { withCredentials: true })
       .pipe(tap((user) => this._currentUser.next(user)));
   }
 
@@ -132,7 +132,8 @@ export class UserService {
     return this.http
       .put<{ message: string; username: string }>(
         `${this.url}/update/${userId}`,
-        { username }
+        { username },
+        { withCredentials: true }
       )
       .pipe(
         map((res) => res.username),
