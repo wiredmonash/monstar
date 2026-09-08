@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 
 import {
   accessTokenCookie,
+  expectPublicUserFields,
   getCsrf,
   seedUserWithReview,
 } from '@shared/testing/helpers';
@@ -41,5 +42,18 @@ describe('DELETE /api/v2/reviews/delete/:reviewId', () => {
     // The review is really gone, so a second delete now 404s.
     const second = await del();
     expect(second.status).toBe(404);
+  });
+});
+
+describe('GET /api/v2/reviews/popular', () => {
+  it('populates each author with public profile fields only', async () => {
+    const res = await request(global.app).get('/api/v2/reviews/popular');
+
+    expect(res.status).toBe(200);
+    const authors = res.body
+      .map((review: { author?: unknown }) => review.author)
+      .filter(Boolean);
+    expect(authors.length).toBeGreaterThan(0);
+    for (const author of authors) expectPublicUserFields(author);
   });
 });

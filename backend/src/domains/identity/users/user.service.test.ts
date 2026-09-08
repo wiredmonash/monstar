@@ -115,7 +115,9 @@ describe(UserService.name, () => {
 
       // act
       const result = await UserService.googleAuthenticate(fakeIdTokenString);
-      const updatedUser = (await User.findById(existingUser._id))!;
+      const updatedUser = (await User.findById(existingUser._id).select(
+        '+refreshToken'
+      ))!;
 
       // assert
       expect(result.user._id.toString()).toEqual(existingUser._id.toString());

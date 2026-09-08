@@ -6,7 +6,11 @@ import request from 'supertest';
 
 import { TokenProvider } from '@domains/identity/users';
 
-import { accessTokenCookie, getCsrf } from '@shared/testing/helpers';
+import {
+  accessTokenCookie,
+  expectPublicUserFields,
+  getCsrf,
+} from '@shared/testing/helpers';
 
 vi.mock('multer', () => {
   const multer = () => ({
@@ -40,6 +44,7 @@ describe('GET /api/v2/users/:username', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('username', username);
+    expectPublicUserFields(res.body);
   });
 
   it('returns 404 for an unknown username', async () => {

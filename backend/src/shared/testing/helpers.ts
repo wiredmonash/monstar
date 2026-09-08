@@ -133,4 +133,22 @@ const seedReactionGraph = async () => {
   };
 };
 
-export { accessTokenCookie, getCsrf, seedUserWithReview, seedReactionGraph };
+/**
+ * Assert a user object returned by a public read carries nothing beyond the
+ * public profile fields (#327).
+ */
+const expectPublicUserFields = (user: Record<string, unknown>) => {
+  expect(user).toHaveProperty('username');
+  const leaked = Object.keys(user).filter(
+    (key) => !['_id', 'username', 'profileImg'].includes(key)
+  );
+  expect(leaked).toEqual([]);
+};
+
+export {
+  accessTokenCookie,
+  getCsrf,
+  seedUserWithReview,
+  seedReactionGraph,
+  expectPublicUserFields,
+};

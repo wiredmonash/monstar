@@ -168,7 +168,6 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
             : review.author),
         profileImg: review.author.profileImg,
         username: review.author.username,
-        email: review.author.email,
       };
     })
   );
