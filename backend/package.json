@@ -67,7 +67,7 @@
     "tsx": "^4.22.4",
     "typescript": "5.5.4",
     "typescript-eslint": "^8.62.0",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "artillery": {
