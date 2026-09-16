@@ -71,6 +71,18 @@ describe('UserService session state', () => {
     expect(service.currentUserValue).toBeNull();
   });
 
+  it('sends credentials on authed reads and updates', () => {
+    service.me().subscribe();
+    const meReq = httpMock.expectOne(`${v2}/users/me`);
+    expect(meReq.request.withCredentials).toBeTrue();
+    meReq.flush(user);
+
+    service.updateUsername('u1', 'newname').subscribe();
+    const updateReq = httpMock.expectOne(`${v2}/users/update/u1`);
+    expect(updateReq.request.withCredentials).toBeTrue();
+    updateReq.flush({ message: 'ok', username: 'newname' });
+  });
+
   it('clearSession drops the user without a backend call', () => {
     service.validateSession().subscribe();
     httpMock
