@@ -58,6 +58,9 @@ MonSTAR provides several features for exploring and reviewing Monash subjects:
     <td width="50%"><b>Global Chat</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Real-time chat with other Monash students</td>
     <td width="50%"><b>Course Planner</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Map out your degree and plan units semester by semester</td>
   </tr>
+  <tr>
+    <td colspan="2"><b>MSA Partnership</b> <img alt="coming soon" src="https://img.shields.io/badge/coming_soon-8957e5?style=flat-square"><br>Official partnership with the Monash Student Association</td>
+  </tr>
 </table>
 
 ## Screenshots
