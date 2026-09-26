@@ -8,6 +8,7 @@ import {
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -149,36 +150,24 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Sponsors data
   sponsors = [
     {
-      name: 'Jane Street',
-      url: 'https://www.janestreet.com/',
-      logoType: 'image' as const,
-      imagePath: 'sponsors/jane-street.svg',
-    },
-    {
-      name: 'Faculty of IT - Monash University',
-      url: 'https://www.monash.edu/it',
-      logoType: 'image' as const,
-      imagePath: 'sponsors/monash.svg',
-    },
-    {
       name: 'WIRED Monash',
       url: 'https://wired.org.au/',
       logoType: 'image' as const,
       imagePath: 'sponsors/wired.svg',
+      color: '#7e00ff',
     },
     {
-      name: 'Honeywell',
-      url: 'https://www.honeywell.com/',
+      name: 'Monash Student Association',
+      url: 'https://msa.monash.edu/',
       logoType: 'image' as const,
-      imagePath: 'sponsors/honeywell.svg',
-    },
-    {
-      name: 'Record Point',
-      url: 'https://www.recordpoint.com/',
-      logoType: 'image' as const,
-      imagePath: 'sponsors/record-point.svg',
+      imagePath: 'sponsors/msa.png',
+      color: '#ff6601',
     },
   ];
+
+  @ViewChild('sponsorsSection') sponsorsSection!: ElementRef<HTMLElement>;
+  sponsorsInView: boolean = false;
+  private sponsorsObserver?: IntersectionObserver;
 
   /**
    * ! Constructor
@@ -208,10 +197,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     this.getPopularUnits();
+    this.observeSponsors();
   }
 
   ngOnDestroy(): void {
     if (this.intervalId) clearInterval(this.intervalId);
+    this.sponsorsObserver?.disconnect();
 
     // Remove meta tags when navigating away from home
     this.meta.removeTag("name='description'");
@@ -311,6 +302,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subheaderState = 'in';
       }, this.subheaderChangeSecondsBuffer * 1000);
     }, this.subheaderChangeSeconds * 1000);
+  }
+
+  private observeSponsors() {
+    this.sponsorsObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        this.sponsorsInView = true;
+        this.sponsorsObserver?.disconnect();
+      },
+      // In view once its top is above the bottom 15% of the screen
+      { rootMargin: '0px 0px -15% 0px' }
+    );
+    this.sponsorsObserver.observe(this.sponsorsSection.nativeElement);
   }
 
   /**
