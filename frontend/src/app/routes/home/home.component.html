@@ -59,46 +59,53 @@
   ></p-divider>
 
   <!-- Sponsors -->
-  <div class="sponsors-section">
-    <h2 class="text-center prevent-select">Proudly Sponsored by</h2>
-    <div class="sponsors-track-container">
-      <div class="sponsors-track">
-        @for (sponsor of sponsors; track sponsor.name) {
-          <a
-            [href]="sponsor.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            [attr.aria-label]="'Visit ' + sponsor.name + ' website'"
-            class="sponsor-item"
-          >
-            @if (sponsor.logoType === 'image') {
-              <img
-                [src]="sponsor.imagePath"
-                [alt]="sponsor.name + ' logo'"
-                class="sponsor-image"
-              />
-            }
-          </a>
+  <div
+    class="sponsors-section"
+    #sponsorsSection
+    [class.in-view]="sponsorsInView"
+  >
+    <h2 class="text-center prevent-select">Brought to you by</h2>
+    <div class="sponsors-row">
+      @for (sponsor of sponsors; track sponsor.name) {
+        <a
+          [href]="sponsor.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="'Visit ' + sponsor.name + ' website'"
+          class="sponsor-item"
+          [style.--brand-color]="sponsor.color"
+        >
+          @if (sponsor.logoType === 'image') {
+            <img
+              [src]="sponsor.imagePath"
+              [alt]="sponsor.name + ' logo'"
+              class="sponsor-image"
+            />
+          }
+        </a>
+        @if (!$last) {
+          <span class="sponsors-x" aria-hidden="true">&times;</span>
         }
-        @for (sponsor of sponsors; track sponsor.name + '-duplicate') {
-          <a
-            [href]="sponsor.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            [attr.aria-label]="'Visit ' + sponsor.name + ' website'"
-            class="sponsor-item"
-          >
-            @if (sponsor.logoType === 'image') {
-              <img
-                [src]="sponsor.imagePath"
-                [alt]="sponsor.name + ' logo'"
-                class="sponsor-image"
-              />
-            }
-          </a>
-        }
-      </div>
+      }
     </div>
+    <p class="sponsors-caption">
+      A
+      <a
+        href="https://wired.org.au/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="wired-link"
+        >WIRED Monash</a
+      >
+      project, in partnership with the
+      <a
+        href="https://msa.monash.edu/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="msa-link"
+        >Monash Student Association</a
+      >.
+    </p>
   </div>
 
   <!-- Divider -->

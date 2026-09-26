@@ -278,31 +278,47 @@
 
 // Fade-in for emote
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 0.8; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.8;
+  }
 }
 
 // Horizontal movement using `translate` property (independent from `transform`)
 @keyframes float-horizontal-right {
-  0% { translate: -5vw 0; }
-  100% { translate: 105vw 0; }
+  0% {
+    translate: -5vw 0;
+  }
+  100% {
+    translate: 105vw 0;
+  }
 }
 
 @keyframes float-horizontal-left {
-  0% { translate: 105vw 0; }
-  100% { translate: -5vw 0; }
+  0% {
+    translate: 105vw 0;
+  }
+  100% {
+    translate: -5vw 0;
+  }
 }
 
 // Vertical bobbing using `transform` property (independent from `translate`)
 @keyframes float-up-down {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(20px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(20px);
+  }
 }
 
 .sponsors-section {
   margin: 3rem auto;
   text-align: center;
-  overflow: hidden;
 
   h2 {
     margin-bottom: 2.5rem;
@@ -315,53 +331,54 @@
     }
   }
 
-  .sponsors-track-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-
-    &::before,
-    &::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 100px;
-      height: 100%;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    &::before {
-      left: 0;
-      background: linear-gradient(to right, $bg-dark-color, transparent);
-    }
-
-    &::after {
-      right: 0;
-      background: linear-gradient(to left, $bg-dark-color, transparent);
-    }
-  }
-
-  .sponsors-track {
+  .sponsors-row {
     display: flex;
-    gap: 4rem;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    animation: scroll-left 30s linear infinite;
-    width: fit-content;
-    will-change: transform;
-
-    &:hover {
-      animation-play-state: paused;
-    }
+    gap: 2.5rem;
 
     @media (max-width: 768px) {
-      gap: 3rem;
-      animation-duration: 25s;
+      gap: 2rem;
     }
 
     @media (max-width: 576px) {
-      gap: 2rem;
-      animation-duration: 20s;
+      gap: 1.5rem;
+    }
+  }
+
+  .sponsors-x {
+    font-family: $poppins;
+    font-size: 2rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.45);
+
+    @media (max-width: 576px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  .sponsors-caption {
+    margin: 2rem 0 0;
+    padding: 0 1rem;
+    font-family: $poppins;
+    color: rgba(255, 255, 255, 0.7);
+
+    a {
+      text-underline-offset: 3px;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    // Lighter than the logo's #7e00ff so the text passes WCAG AA contrast
+    .wired-link {
+      color: #a366ff;
+    }
+
+    .msa-link {
+      color: #ff6601;
     }
   }
 
@@ -369,27 +386,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 180px;
-    padding: 1rem 2rem;
+    padding: 0.5rem;
     text-decoration: none;
-    transition:
-      transform 0.3s ease,
-      opacity 0.3s ease;
+    transition: transform 0.3s ease;
     flex-shrink: 0;
 
-    &:hover {
-      transform: scale(1.1);
-      opacity: 0.8;
-    }
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-6px);
 
-    @media (max-width: 768px) {
-      min-width: 150px;
-      padding: 0.75rem 1.5rem;
-    }
-
-    @media (max-width: 576px) {
-      min-width: 120px;
-      padding: 0.5rem 1rem;
+      .sponsor-image {
+        box-shadow: 0 20px 48px -10px
+          color-mix(in srgb, var(--brand-color) 90%, transparent);
+      }
     }
   }
 
@@ -429,29 +438,44 @@
 
   .sponsor-image {
     max-width: 180px;
-    max-height: 80px;
+    height: 120px;
     width: auto;
-    height: auto;
     object-fit: contain;
+    border-radius: 24%;
+    box-shadow: 0 14px 40px -10px
+      color-mix(in srgb, var(--brand-color) 75%, transparent);
+    transition: box-shadow 0.3s ease;
 
     @media (max-width: 768px) {
       max-width: 150px;
-      max-height: 65px;
+      height: 104px;
     }
 
     @media (max-width: 576px) {
       max-width: 120px;
-      max-height: 50px;
+      height: 88px;
     }
   }
-}
 
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
+  .sponsors-row,
+  .sponsors-caption {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s ease;
   }
-  100% {
-    transform: translateX(calc(-100% / 2));
+
+  .sponsors-caption {
+    transition-delay: 0.15s;
+  }
+
+  &.in-view {
+    .sponsors-row,
+    .sponsors-caption {
+      opacity: 1;
+      transform: none;
+    }
   }
 }
 
@@ -540,8 +564,11 @@ h2 {
     display: none;
   }
 
-  .sponsors-section .sponsors-track {
-    animation: none;
+  .sponsors-section .sponsors-row,
+  .sponsors-section .sponsors-caption {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
