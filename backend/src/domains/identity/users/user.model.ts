@@ -76,6 +76,9 @@ userSchema.pre('remove' as 'deleteOne', async function (next) {
  * - The profile image of the user is deleted from Cloudinary.
  * - The user's liked and disliked reviews are removed from the respective arrays in the reviews.
  *
+ * The database steps run in one transaction. If one fails, the error reaches
+ * the delete hook, which aborts the delete and keeps the account.
+ *
  * @param {Object} user - The user document being deleted
  */
 async function handleUserDeletion(user: any) {
@@ -101,56 +104,49 @@ async function handleUserDeletion(user: any) {
       // Delete all user notifications
       await Notification.deleteMany({ user }).session(session);
 
-      // Delete reviews from units and update averages
-      if (unitIds.length > 0) {
-        // A promise for each unit to update averages and remove reviews
-        await Promise.all(
-          unitIds.map(async (unitId) => {
-            // Get averages for the unit
-            const [averages] = await Review.aggregate([
-              { $match: { unit: unitId } },
-              {
-                $group: {
-                  _id: '$unit',
-                  avgOverallRating: { $avg: '$overallRating' },
-                  avgContentRating: { $avg: '$contentRating' },
-                  avgFacultyRating: { $avg: '$facultyRating' },
-                  avgRelevancyRating: { $avg: '$relevancyRating' },
-                },
-              },
-            ]).session(session);
+      // Delete reviews from units and update averages. One write at a time:
+      // the driver doesn't support parallel operations in a transaction.
+      for (const unitId of unitIds) {
+        // Get averages for the unit
+        const [averages] = await Review.aggregate([
+          { $match: { unit: unitId } },
+          {
+            $group: {
+              _id: '$unit',
+              avgOverallRating: { $avg: '$overallRating' },
+              avgContentRating: { $avg: '$contentRating' },
+              avgFacultyRating: { $avg: '$facultyRating' },
+              avgRelevancyRating: { $avg: '$relevancyRating' },
+            },
+          },
+        ]).session(session);
 
-            // Update unit with new averages and remove reviews
-            await Unit.updateOne(
-              { _id: unitId },
-              {
-                $pull: { reviews: { $in: reviews.map((r) => r._id) } },
-                $set: {
-                  avgOverallRating: averages?.avgOverallRating || 0,
-                  avgContentRating: averages?.avgContentRating || 0,
-                  avgFacultyRating: averages?.avgFacultyRating || 0,
-                  avgRelevancyRating: averages?.avgRelevancyRating || 0,
-                },
-              }
-            ).session(session);
-          })
-        );
+        // Update unit with new averages and remove reviews
+        await Unit.updateOne(
+          { _id: unitId },
+          {
+            $pull: { reviews: { $in: reviews.map((r) => r._id) } },
+            $set: {
+              avgOverallRating: averages?.avgOverallRating || 0,
+              avgContentRating: averages?.avgContentRating || 0,
+              avgFacultyRating: averages?.avgFacultyRating || 0,
+              avgRelevancyRating: averages?.avgRelevancyRating || 0,
+            },
+          }
+        ).session(session);
       }
 
-      // Decrement user's likes/dislikes from other reviews
-      await Promise.all([
-        // Decrement likes for reviews the user liked
-        Review.updateMany(
-          { _id: { $in: user.likedReviews } },
-          { $inc: { likes: -1 } }
-        ).session(session),
+      // Decrement likes for reviews the user liked
+      await Review.updateMany(
+        { _id: { $in: user.likedReviews } },
+        { $inc: { likes: -1 } }
+      ).session(session);
 
-        // Decrement dislikes for reviews the user disliked
-        Review.updateMany(
-          { _id: { $in: user.dislikedReviews } },
-          { $inc: { dislikes: -1 } }
-        ).session(session),
-      ]);
+      // Decrement dislikes for reviews the user disliked
+      await Review.updateMany(
+        { _id: { $in: user.dislikedReviews } },
+        { $inc: { dislikes: -1 } }
+      ).session(session);
 
       console.log(`[User] Updated reviews' likes/dislikes`);
     });
@@ -178,10 +174,6 @@ async function handleUserDeletion(user: any) {
         );
       }
     }
-  } catch (error) {
-    console.error(
-      `[User] Error in handleUserDeletion: ${(error as Error).message}`
-    );
   } finally {
     await session.endSession();
     console.log(`[User] Cleanup process completed for user: ${user._id}`);
