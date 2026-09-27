@@ -243,7 +243,8 @@
         <li class="list-item">deletes your account record.</li>
       </ol>
       <p>
-        Steps 1 to 3 run in one database transaction. Notifications you caused
+        Steps 1 to 3 run in one database transaction, so if any of them fails,
+        MonSTAR deletes nothing and keeps your account. Notifications you caused
         by liking other people's reviews survive the deletion. They stay in
         those people's inboxes, with your username and picture link.
       </p>
