@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
 // Register every model on the connection so cross-model populate() works in
@@ -42,13 +42,14 @@ const loadJson = (relPath: string) => {
   return revive(JSON.parse(raw)) as Record<string, unknown>[];
 };
 
-let mongo: MongoMemoryServer;
+let mongo: MongoMemoryReplSet;
 
 /**
  * Before each test suite, create a mongodb memory server
  */
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
+  // A replica set, because a standalone mongod can't run transactions
+  mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
   await mongoose.connect(mongo.getUri());
 });
 

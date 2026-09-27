@@ -14,7 +14,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -72,14 +72,15 @@ const loadJson = (relPath: string) => {
   return revive(JSON.parse(raw)) as Record<string, unknown>[];
 };
 
-let mongo: MongoMemoryServer;
+let mongo: MongoMemoryReplSet;
 
 /**
  * Start the in-memory MongoDB, point the app's provider at it, then load the
  * real Express app for supertest to drive.
  */
 beforeAll(async () => {
-  mongo = await MongoMemoryServer.create();
+  // A replica set, because a standalone mongod can't run transactions
+  mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
   const uri = mongo.getUri();
 
   // SAFETY: refuse to proceed unless the URI is a local in-memory instance.
