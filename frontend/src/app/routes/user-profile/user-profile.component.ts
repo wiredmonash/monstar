@@ -162,8 +162,17 @@ export class UserProfileComponent {
     const userId = this.userService.getId();
     if (!userId) return;
 
-    this.userService.deleteAccount(userId).subscribe(() => {
-      this.router.navigate(['/']);
+    this.userService.deleteAccount(userId).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Account not deleted',
+          detail: 'Something went wrong. Please try again',
+        });
+      },
     });
   }
 }
