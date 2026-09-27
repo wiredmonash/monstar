@@ -8,6 +8,7 @@ import { AboutComponent } from './routes/about/about.component';
 import { ChangelogComponent } from './routes/changelog/changelog.component';
 import { HomeComponent } from './routes/home/home.component';
 import { NotFoundComponent } from './routes/not-found/not-found.component';
+import { PrivacyComponent } from './routes/privacy/privacy.component';
 import { SetuOverviewComponent } from './routes/setu-overview/setu-overview.component';
 import { TermsAndCondsComponent } from './routes/terms-and-conds/terms-and-conds.component';
 import { UnitListComponent } from './routes/unit-list/unit-list.component';
@@ -26,6 +27,7 @@ export const routes: Routes = [
     ? [{ path: 'setu/:unitCode', component: SetuOverviewComponent }]
     : []),
   { path: 'terms-and-conditions', component: TermsAndCondsComponent },
+  { path: 'privacy', component: PrivacyComponent },
   { path: 'jobs', component: JobsBoardComponent },
   { path: 'about', component: AboutComponent },
   { path: 'changelog', component: ChangelogComponent },

@@ -1,0 +1,283 @@
+<div class="terms-container">
+  <div class="content-wrapper">
+    <h1 class="section-heading">Privacy</h1>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">1. What We Collect</h2>
+      <p>
+        MonSTAR creates your account the first time you sign in with Google.
+        Google sends your email address, account ID, name and profile photo. We
+        keep:
+      </p>
+      <ul class="list-items">
+        <li class="list-item">
+          <b>Your Monash email address</b>, to limit sign-in to Monash accounts
+          and find your account each time you sign in. Only you and admins can
+          see it.
+        </li>
+        <li class="list-item">
+          <b>Your Google account ID</b>, to link your Google account to your
+          MonSTAR account. No one can see it.
+        </li>
+        <li class="list-item">
+          <b>Your username</b>, which shows who wrote a review. It starts as
+          your authcate (the part of your student email before the &#64;), or
+          your first name if you use a staff email. It's public.
+        </li>
+        <li class="list-item">
+          <b>Your profile picture</b>: a link to your Google profile photo, or a
+          picture you upload. It's public and shows next to your reviews.
+        </li>
+        <li class="list-item">
+          <b>An admin flag</b>, which grants moderation rights. Only you and
+          admins can see it.
+        </li>
+        <li class="list-item">
+          <b>The reviews you liked and disliked</b>, so you can vote once per
+          review. Only you and admins can see this list.
+        </li>
+        <li class="list-item">
+          <b>Your notifications</b>, which tell you who liked your reviews. Only
+          you can see them.
+        </li>
+        <li class="list-item">
+          <b>A hash of your session token</b>, which keeps you signed in. No one
+          can see it.
+        </li>
+      </ul>
+      <p>
+        We discard the name on your Google account. We don't ask for phone
+        numbers, postal addresses, student ID numbers, dates of birth or payment
+        details.
+      </p>
+      <p>
+        Because your username starts as your authcate, anyone who can search the
+        Monash directory can find out who wrote your reviews until you change
+        it. You can change your username and upload a different picture on your
+        profile page.
+      </p>
+      <p>
+        <b>Reviews.</b> A review holds a title, your review text, the semester
+        and year you took the unit, an optional grade (HD, D, C, P or N), four
+        ratings from 0 to 5, like and dislike counts, and when you wrote and
+        last edited it. Reviews are public and show your username and profile
+        picture.
+      </p>
+      <p>
+        <b>Votes.</b> Like and dislike counts are public, but the list of
+        reviews you voted on is private. When you like a review, its author gets
+        a notification with your username and profile picture. Dislikes send no
+        notification.
+      </p>
+      <p>
+        <b>Analytics.</b> MonSTAR uses Vercel Web Analytics to count page views.
+        It sets no cookies. For each page view Vercel records the time, the page
+        address, the referring site, a location derived from the request
+        (country, region and city), and your device type, operating system and
+        browser. Profile page addresses reach Vercel with the username replaced
+        by a placeholder. Vercel tells visitors apart with a hash of the
+        request, discards that hash after 24 hours, and shows us only aggregate
+        figures.
+      </p>
+      <p>
+        <b>Cookies and browser storage.</b> The site sets two cookies, both for
+        sign-in (section 4). It keeps your unit list preferences, such as sort
+        order and filters, in your browser's local storage, not on our servers.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">2. Where Your Data Lives</h2>
+      <ul class="list-items">
+        <li class="list-item">
+          <b>MongoDB Atlas</b> (AWS Sydney) is our main database and holds
+          everything above.
+        </li>
+        <li class="list-item">
+          <b>Vercel</b> (Sydney) serves the site, runs our API and counts page
+          views. It handles all API traffic in transit, server logs and
+          page-view analytics.
+        </li>
+        <li class="list-item">
+          <b>Cloudinary</b> (United States) stores the profile pictures you
+          upload.
+        </li>
+        <li class="list-item">
+          <b>Google Sign-In</b> confirms who is signing in. It sends us your
+          email address, account ID, name and photo when you sign in.
+        </li>
+        <li class="list-item">
+          <b>Google Gemini</b> writes the AI overview on each unit page. It gets
+          each unit's review titles, text, semesters, years, grades and ratings,
+          but no usernames, emails or account IDs.
+        </li>
+        <li class="list-item">
+          <b>Upstash Redis</b> (AWS Sydney) caches popular units and the jobs
+          board. It holds review titles, text and ratings for the most-reviewed
+          units, without author details.
+        </li>
+      </ul>
+      <p>
+        Review text is whatever its author wrote, so it can mention people.
+        Nothing sends reviews to Gemini automatically: a developer regenerates
+        the overviews by hand. We use Gemini's free tier, where
+        <a href="https://ai.google.dev/gemini-api/terms" target="_blank"
+          >Google's terms</a
+        >
+        let Google use prompts to improve its products and let human reviewers
+        read them.
+      </p>
+      <p>
+        The site redirects plain HTTP to HTTPS and tells browsers to use HTTPS
+        on later visits. Atlas requires TLS on every database connection and
+        encrypts stored data and snapshots with AES-256.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">3. Who Can See Your Data</h2>
+      <ul class="list-items">
+        <li class="list-item">
+          <b>Anyone</b> can read reviews, like and dislike counts, and public
+          profiles without signing in. A public profile shows a username, a
+          profile picture and that user's reviews. Public pages and the public
+          API show no account data beyond usernames and profile pictures.
+        </li>
+        <li class="list-item">
+          <b>You</b>, when signed in, can see your own email address, votes and
+          notifications. You can change your username and profile picture, edit
+          or delete your reviews, and delete your account. You can't change
+          anyone else's data.
+        </li>
+        <li class="list-item">
+          <b>Admins</b> moderate the site. They can list every user, including
+          email addresses, change usernames, and edit or delete any review or
+          account. The server checks admin rights on every admin request.
+        </li>
+        <li class="list-item">
+          <b>People who manage MonSTAR's service accounts</b> on Atlas, Vercel,
+          Cloudinary, Upstash and Google Cloud can reach the data those services
+          hold.
+        </li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">4. How We Protect It</h2>
+      <ul class="list-items">
+        <li class="list-item">
+          <b>Sign-in.</b> Google handles sign-in. Our server checks that each
+          Google token is genuine and was issued for MonSTAR, then rejects any
+          email address that isn't a Monash student or staff address. MonSTAR
+          has no password sign-in, and no account holds a password.
+        </li>
+        <li class="list-item">
+          <b>Sessions.</b> After you sign in, the server sets two cookies. The
+          access token identifies you on each request and expires after 15
+          minutes. The refresh token lasts 180 days and gets you a new access
+          token without signing in again. The database stores only a SHA-256
+          hash of the refresh token. Each refresh swaps the token for a new one,
+          and signing out deletes the stored hash. Both cookies are HttpOnly
+          (page scripts can't read them), Secure (browsers send them only over
+          HTTPS) and SameSite=Strict (browsers don't send them with requests
+          that start on other sites).
+        </li>
+        <li class="list-item">
+          <b>Permissions.</b> Only a review's author or an admin can edit or
+          delete it, and only you or an admin can change your username or delete
+          your account.
+        </li>
+        <li class="list-item">
+          <b>Secrets.</b> API keys and the token-signing secret live in Vercel's
+          environment settings. Our public code holds only placeholders.
+        </li>
+        <li class="list-item">
+          <b>Breaches.</b> If we suspect a breach, we contain it first, then
+          work out what data was exposed. We tell the Monash Student Association
+          within 72 hours of confirming a breach, and email affected users as
+          soon as we know who they are.
+        </li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">5. How Long We Keep It</h2>
+      <p>
+        We keep your account, reviews, votes and notifications until you delete
+        them or your account. Only sessions expire on their own: access tokens
+        after 15 minutes and refresh tokens after 180 days.
+      </p>
+      <p>Some copies outlast the original:</p>
+      <ul class="list-items">
+        <li class="list-item">
+          The popular-units cache holds review text and ratings, without author
+          details, for up to one week.
+        </li>
+        <li class="list-item">
+          Each unit's AI overview summarises the reviews the unit had when a
+          developer last regenerated it. A deleted review still shapes that
+          summary until the next regeneration.
+        </li>
+        <li class="list-item">
+          Our server logs internal user IDs, not names or emails, when it
+          deletes an account. Vercel keeps runtime logs for one hour.
+        </li>
+      </ul>
+      <p>The database has no backups, so deleted data leaves no copy behind.</p>
+      <p>
+        <b>Deleting your account.</b> Use the <i>Delete account</i> button on
+        your profile page, then confirm. MonSTAR then:
+      </p>
+      <ol class="list-items" style="list-style-type: decimal">
+        <li class="list-item">
+          deletes all your reviews and recalculates the average ratings of the
+          units you reviewed;
+        </li>
+        <li class="list-item">deletes the notifications addressed to you;</li>
+        <li class="list-item">
+          removes your likes and dislikes from other people's reviews;
+        </li>
+        <li class="list-item">
+          deletes your uploaded profile picture, if you uploaded one;
+        </li>
+        <li class="list-item">deletes your account record.</li>
+      </ol>
+      <p>
+        Steps 1 to 3 run in one database transaction. Notifications you caused
+        by liking other people's reviews survive the deletion. They stay in
+        those people's inboxes, with your username and picture link.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">
+        6. Seeing, Correcting and Deleting Your Data
+      </h2>
+      <ul class="list-items">
+        <li class="list-item">
+          <b>See it.</b> When signed in, you can see your profile, reviews and
+          notifications on the site. For a full copy, email
+          <a href="mailto:monstarapp@gmail.com">monstarapp&commat;gmail.com</a>
+          from your Monash address. We reply within 30 days with your account
+          record, reviews and notifications.
+        </li>
+        <li class="list-item">
+          <b>Correct it.</b> Change your username and picture on your profile
+          page, and edit your reviews at any time.
+        </li>
+        <li class="list-item">
+          <b>Delete it.</b> Delete single reviews, or your whole account
+          (section 5).
+        </li>
+      </ul>
+    </div>
+
+    <div class="content-section">
+      <h2 class="subsection-heading">Contact Us</h2>
+      <p>
+        For questions or complaints about your data, email
+        <a href="mailto:monstarapp@gmail.com">monstarapp&commat;gmail.com</a>.
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { AsyncPipe, DOCUMENT } from '@angular/common';
 import { Component, HostListener, inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ReviewCardComponent } from '@components/review-card/review-card.component';
 import { ShinyMonstarTitleComponent } from '@components/shiny-monstar-title/shiny-monstar-title.component';
 import { GetReviewService } from '@services/api/get-review.service';
@@ -26,6 +26,7 @@ interface State {
     ReviewCardComponent,
     AsyncPipe,
     SkeletonModule,
+    RouterLink,
   ],
   providers: [MessageService],
   templateUrl: './auth.component.html',
