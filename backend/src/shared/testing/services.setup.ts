@@ -15,6 +15,9 @@ import.meta.glob(['../../domains/**/*.model.ts'], {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Token signing needs a secret, and CI has no .env to load one from
+process.env.JWT_SECRET = 'test-secret';
+
 /**
  * Converts values of data into mongoose types
  */
