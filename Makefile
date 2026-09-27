@@ -1,4 +1,4 @@
-.PHONY: dev dev-backend dev-frontend install install-backend install-frontend clean help up down logs seed reset-db rebuild test test-backend test-frontend benchmark
+.PHONY: dev dev-backend dev-frontend install install-backend install-frontend hooks clean help up down logs seed reset-db rebuild test test-backend test-frontend benchmark
 
 # Colors for help text
 BLUE := \033[0;34m
@@ -51,7 +51,7 @@ rebuild: ## Full rebuild after dependency changes (removes volumes, reseeds)
 
 ##@ Installation
 
-install: install-backend install-frontend ## Install dependencies for both frontend and backend
+install: install-backend install-frontend hooks ## Install dependencies for both frontend and backend
 	@echo "$(GREEN)All dependencies installed successfully!$(NC)"
 
 install-backend: ## Install backend dependencies
@@ -61,6 +61,10 @@ install-backend: ## Install backend dependencies
 install-frontend: ## Install frontend dependencies
 	@echo "$(GREEN)Installing frontend dependencies...$(NC)"
 	cd frontend && npm install
+
+hooks: ## Enable project git hooks (Conventional Commit message check)
+	@git config core.hooksPath .githooks
+	@echo "$(BLUE)Git hooks enabled (.githooks)$(NC)"
 
 ##@ Testing
 
