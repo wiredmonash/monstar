@@ -43,7 +43,7 @@ if git diff "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" --quiet -- . \
   ':(exclude).vscode/**' \
   ':(exclude).idea/**' \
   ':(exclude)bruno/**' \
-  ':(exclude)docs/**'; then
+  ':(exclude).docs/**'; then
   echo "Only documentation/config files changed. Skipping deployment."
   exit 0
 else
