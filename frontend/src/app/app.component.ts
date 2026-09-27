@@ -8,6 +8,14 @@ import { FooterService } from '@services/footer.service';
 
 // Vercel Analytics
 import { inject as injectAnalytics } from '@vercel/analytics';
+import type { BeforeSendEvent } from '@vercel/analytics';
+
+// Profile URLs carry usernames, which default to a student's authcate, so
+// replace them before the page view leaves the browser.
+export const maskProfileUrl = (event: BeforeSendEvent): BeforeSendEvent => ({
+  ...event,
+  url: event.url.replace(/\/user\/[^/?#]+/g, '/user/[username]'),
+});
 
 @Component({
   selector: 'app-root',
@@ -26,7 +34,7 @@ export class AppComponent implements OnInit {
     private footerService: FooterService
   ) {
     // Inject Vercel Analytics
-    injectAnalytics();
+    injectAnalytics({ beforeSend: maskProfileUrl });
   }
 
   ngOnInit(): void {
