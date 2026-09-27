@@ -73,6 +73,15 @@
     align-items: center;
     gap: 2rem;
 
+    .privacy-note {
+      color: rgb(150, 150, 150);
+
+      a {
+        color: inherit;
+        text-decoration: underline;
+      }
+    }
+
     .guest-section {
       width: 100%;
 
