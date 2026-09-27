@@ -4,7 +4,7 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
 
-import { TokenProvider } from '@domains/identity/users';
+import { TokenProvider, UserService } from '@domains/identity/users';
 
 import {
   accessTokenCookie,
@@ -30,6 +30,16 @@ vi.mock('multer', () => {
 const FAKE_AVATAR_URL =
   'https://res.cloudinary.com/demo/image/upload/user_avatars/fake.png';
 
+// Both session cookies must carry the Secure attribute.
+const expectSecureAuthCookies = (res: request.Response) => {
+  const setCookies = (res.headers['set-cookie'] as unknown as string[]) || [];
+  for (const name of ['access_token', 'refresh_token']) {
+    expect(setCookies.find((c) => c.startsWith(`${name}=`))).toMatch(
+      /; Secure/
+    );
+  }
+};
+
 describe('GET /api/v2/users/:username', () => {
   it('returns the user when the username exists (200)', async () => {
     const username = 'profileuser';
@@ -51,6 +61,28 @@ describe('GET /api/v2/users/:username', () => {
     const res = await request(global.app).get('/api/v2/users/nobody');
 
     expect(res.status).toBe(404);
+  });
+});
+
+describe('POST /api/v2/users/google/authenticate', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('sets Secure session cookies on login (200)', async () => {
+    vi.spyOn(UserService, 'googleAuthenticate').mockResolvedValue({
+      accessToken: 'access',
+      refreshToken: 'refresh',
+      user: {},
+    } as never);
+
+    const { token, cookies } = await getCsrf(global.app);
+    const res = await request(global.app)
+      .post('/api/v2/users/google/authenticate')
+      .set('Cookie', cookies.join('; '))
+      .set('x-csrf-token', token)
+      .send({ idToken: 'fake-id-token' });
+
+    expect(res.status).toBe(200);
+    expectSecureAuthCookies(res);
   });
 });
 
@@ -79,6 +111,7 @@ describe('POST /api/v2/users/refresh', () => {
     ).join(';');
     expect(setCookie).toMatch(/access_token=/);
     expect(setCookie).toMatch(/refresh_token=/);
+    expectSecureAuthCookies(res);
   });
 
   it('returns 401 when no refresh token cookie is present', async () => {

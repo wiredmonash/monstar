@@ -74,11 +74,13 @@ class UserController {
       .cookie('access_token', accessToken, {
         httpOnly: true,
         sameSite: 'strict',
+        secure: true,
         maxAge: TokenProvider.ACCESS_TOKEN_EXPIRY,
       })
       .cookie('refresh_token', refreshToken, {
         httpOnly: true,
         sameSite: 'strict',
+        secure: true,
         maxAge: TokenProvider.REFRESH_TOKEN_EXPIRY,
       })
       .status(200)
@@ -101,11 +103,13 @@ class UserController {
       .cookie('access_token', newAccessToken, {
         httpOnly: true,
         sameSite: 'strict',
+        secure: true,
         maxAge: TokenProvider.ACCESS_TOKEN_EXPIRY,
       })
       .cookie('refresh_token', newRefreshToken, {
         httpOnly: true,
         sameSite: 'strict',
+        secure: true,
         maxAge: TokenProvider.REFRESH_TOKEN_EXPIRY,
       })
       .status(200)
@@ -121,8 +125,16 @@ class UserController {
     }
     await UserService.invalidateRefreshToken(req.user.id);
 
-    res.clearCookie('access_token', { httpOnly: true, sameSite: 'strict' });
-    res.clearCookie('refresh_token', { httpOnly: true, sameSite: 'strict' });
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: true,
+    });
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: true,
+    });
 
     return res.status(200).json({ message: 'Logged out successfully' });
   });
