@@ -66,7 +66,10 @@ fi
 setsid env PORT="$be_port" npm --prefix "$wt/backend" run dev \
   > "$pv/backend.log" 2>&1 &
 be_pid=$!
-setsid npx --prefix "$wt/frontend" ng serve --configuration "$fe_config" \
+# npm start runs ng serve from frontend/, where the CLI looks for angular.json.
+# npx --prefix keeps the caller's cwd, so the CLI fell back to searching from its
+# own install path, which breaks once node_modules links to a shared cache.
+setsid npm --prefix "$wt/frontend" start -- --configuration "$fe_config" \
   --port "$fe_port" --proxy-config "$pv/proxy.json" > "$pv/frontend.log" 2>&1 &
 fe_pid=$!
 printf '%s\n%s\n' "$be_pid" "$fe_pid" > "$pv/pids"
