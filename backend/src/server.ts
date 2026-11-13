@@ -32,6 +32,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Parse query strings into strings and arrays only. The default qs parser turns
+// `?a[$ne]=x` into { a: { $ne: 'x' } }, which reaches Mongo as an operator.
+// Express reads this when the router is created, so keep it above app.use().
+app.set('query parser', 'simple');
+
 /* ------------------------ Environment configuration ----------------------- */
 const isDevelopment = process.env.DEVELOPMENT === 'true';
 const isProductionMachine = process.env.PRODUCTION_MACHINE !== 'false';
