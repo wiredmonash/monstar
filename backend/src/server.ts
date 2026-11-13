@@ -50,8 +50,11 @@ if (isDevelopment) {
   );
 }
 
-app.use(express.json({ limit: '50mb' })); // Increased payload limit for JSON requests.
-app.use(express.urlencoded({ limit: '50mb', extended: true })); // Increased payload limit for URL-encoded requests.
+// Admin bulk unit import needs large bodies; everything else stays small so
+// anonymous clients can't make the server parse huge payloads.
+app.use('/api/v1/units/create-bulk', express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ limit: '100kb', extended: true }));
 app.use(cookieParser());
 
 /* ---------------------------------- CSRF ---------------------------------- */
