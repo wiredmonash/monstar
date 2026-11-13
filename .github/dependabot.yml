@@ -11,3 +11,14 @@ updates:
     ignore:
       - dependency-name: "@angular*"
         update-types: ["version-update:semver-major"]
+  - package-ecosystem: npm
+    directory: /backend
+    schedule:
+      interval: weekly
+    # The frontend stays ungrouped while it is on Angular 18: some of its fixes
+    # need Angular 21 and would fail a grouped build.
+    open-pull-requests-limit: 0
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
