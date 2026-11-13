@@ -61,6 +61,6 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: ${{ matrix.package }}/package-lock.json
-      - run: npm ci
+      - run: npm ci --ignore-scripts # prettier needs no install scripts
       - name: Check formatting of changed files
         run: git diff -z --name-only --relative --diff-filter=d HEAD^ HEAD | xargs -0r npx prettier --check --ignore-unknown
