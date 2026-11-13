@@ -8,6 +8,7 @@ import {
   Error404NotFound,
   Error409Conflict,
   Error401NotAuthorized,
+  Error422Unprocessable,
 } from '@shared/errors/errors';
 
 import ReviewRepository from './review.repository';
@@ -88,6 +89,25 @@ class ReviewService {
     userId: Id,
     updateData: UpdateQuery<IReview>
   ) => {
+    const allowedFields = [
+      'title',
+      'semester',
+      'grade',
+      'year',
+      'overallRating',
+      'relevancyRating',
+      'facultyRating',
+      'contentRating',
+      'description',
+    ];
+    const hasOnlyAllowedFields = Object.keys(updateData).every((key) =>
+      allowedFields.includes(key)
+    );
+    if (!hasOnlyAllowedFields)
+      throw new Error422Unprocessable(
+        'Disallowed fields present in update data'
+      );
+
     const review = await ReviewRepository.findById(reviewId);
     if (!review) throw new Error404NotFound('Review not found');
 

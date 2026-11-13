@@ -65,7 +65,6 @@ class ReviewController {
     // TODO: FIX THIS SLOP
     // Normalize payload to current review schema and enforce author from token
     const review = await ReviewService.createReview(unitCode, {
-      ...requestBody,
       title: requestBody.title ?? requestBody.review_title,
       semester: requestBody.semester ?? requestBody.review_semester,
       grade: requestBody.grade ?? requestBody.review_grade,
