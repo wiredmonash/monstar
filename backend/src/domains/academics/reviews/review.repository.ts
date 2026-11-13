@@ -97,7 +97,10 @@ class ReviewRepository {
    * Update a review by ID
    */
   static async updateById(reviewId: Id, updateData: UpdateQuery<IReview>) {
-    return await Review.findByIdAndUpdate(reviewId, updateData, { new: true });
+    return await Review.findByIdAndUpdate(reviewId, updateData, {
+      new: true,
+      runValidators: true,
+    });
   }
 
   /* --------------------------------- Removal -------------------------------- */

@@ -477,9 +477,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
-                  "example": "any"
-                },
                 "reactionType": {
                   "example": "any"
                 }

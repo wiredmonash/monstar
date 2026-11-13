@@ -16,11 +16,12 @@ function buildFilterQuery({
 }: Record<string, any> = {}) {
   const query: Record<string, any> = {};
 
-  // Search filter (unit code or name)
+  // Search filter (unit code or name), escaped so input matches as plain text
   if (search) {
+    const pattern = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     query.$or = [
-      { unitCode: { $regex: search, $options: 'i' } },
-      { name: { $regex: search, $options: 'i' } },
+      { unitCode: { $regex: pattern, $options: 'i' } },
+      { name: { $regex: pattern, $options: 'i' } },
     ];
   }
 

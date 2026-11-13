@@ -65,7 +65,6 @@ class ReviewController {
     // TODO: FIX THIS SLOP
     // Normalize payload to current review schema and enforce author from token
     const review = await ReviewService.createReview(unitCode, {
-      ...requestBody,
       title: requestBody.title ?? requestBody.review_title,
       semester: requestBody.semester ?? requestBody.review_semester,
       grade: requestBody.grade ?? requestBody.review_grade,
@@ -88,12 +87,9 @@ class ReviewController {
    * Update a review by ID
    */
   static updateReview = asyncHandler(async (req, res) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'You are not authenticated' });
-    }
     const updatedReview = await ReviewService.updateReview(
       req.params.reviewId,
-      req.user.id,
+      req.user!.id,
       req.body
     );
 
@@ -107,10 +103,7 @@ class ReviewController {
    * Delete a review by ID
    */
   static deleteReview = asyncHandler(async (req, res) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'You are not authenticated' });
-    }
-    await ReviewService.deleteReview(req.params.reviewId, req.user.id);
+    await ReviewService.deleteReview(req.params.reviewId, req.user!.id);
 
     return res.status(200).json({
       message: 'Review successfully deleted',
@@ -122,7 +115,8 @@ class ReviewController {
    */
   static toggleReaction = asyncHandler(async (req, res) => {
     const reviewId = req.params.reviewId;
-    const { userId, reactionType } = req.body;
+    // The reacting user comes from the token, never from the body
+    const { reactionType } = req.body;
 
     if (!['like', 'dislike'].includes(reactionType)) {
       return res.status(400).json({
@@ -132,7 +126,7 @@ class ReviewController {
 
     const result = await ReviewService.toggleReaction(
       reviewId,
-      userId,
+      req.user!.id,
       reactionType
     );
 

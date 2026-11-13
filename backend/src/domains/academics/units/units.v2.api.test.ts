@@ -71,6 +71,36 @@ describe('GET /api/v2/units/filter', () => {
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty('error');
   });
+
+  it('ignores operator-shaped query keys instead of running them', async () => {
+    // qs would parse this to { campuses: { $ne: 'Peninsula' } } and filter on it
+    const res = await request(global.app).get(
+      '/api/v2/units/filter?campuses[$ne]=Peninsula'
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(11);
+  });
+
+  it('filters by every value of a repeated query key', async () => {
+    const res = await request(global.app).get(
+      '/api/v2/units/filter?campuses=Peninsula&campuses=Malaysia'
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(7);
+  });
+
+  it('matches search text literally and case-insensitively', async () => {
+    const search = (text: string) =>
+      request(global.app).get(
+        `/api/v2/units/filter?search=${encodeURIComponent(text)}`
+      );
+
+    expect((await search('FIT')).body.total).toBe(3);
+    // Regex syntax is plain text, so no unit matches it
+    expect((await search('(')).status).toBe(404);
+  });
 });
 
 describe('GET /api/v2/units/:unitCode', () => {

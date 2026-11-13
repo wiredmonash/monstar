@@ -1,10 +1,13 @@
 import request from 'supertest';
 import mongoose from 'mongoose';
 
+import { Review } from '@domains/academics/reviews';
+import { User } from '@domains/identity/users';
 import {
   accessTokenCookie,
   expectPublicUserFields,
   getCsrf,
+  seedReactionGraph,
   seedUserWithReview,
 } from '@shared/testing/helpers';
 
@@ -55,5 +58,109 @@ describe('GET /api/v2/reviews/popular', () => {
       .filter(Boolean);
     expect(authors.length).toBeGreaterThan(0);
     for (const author of authors) expectPublicUserFields(author);
+  });
+});
+
+// Send a mutating request as userId, with the CSRF token the app requires
+const sendAs = async (
+  userId: string,
+  method: 'patch' | 'post' | 'put',
+  url: string,
+  body: object
+) => {
+  const { token, cookies } = await getCsrf(global.app);
+  return request(global.app)
+    [method](url)
+    .set('Cookie', [...cookies, accessTokenCookie(userId)].join('; '))
+    .set('x-csrf-token', token)
+    .send(body);
+};
+
+describe('PATCH /api/v2/reviews/toggle-reaction/:reviewId', () => {
+  it('reacts as the logged-in user, whatever userId the body names', async () => {
+    const { authorId, reactorId, reviewId } = await seedReactionGraph();
+
+    const res = await sendAs(
+      reactorId,
+      'patch',
+      `/api/v2/reviews/toggle-reaction/${reviewId}`,
+      { userId: authorId, reactionType: 'like' }
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.body.reactions).toEqual({ liked: true, disliked: false });
+    const reactor = await User.findById(reactorId);
+    expect(reactor!.likedReviews.map(String)).toEqual([reviewId]);
+    const author = await User.findById(authorId);
+    expect(author!.likedReviews).toHaveLength(0);
+
+    // The author's like notification is written in the background
+    await vi.waitFor(async () => {
+      const notified = await User.findById(authorId);
+      expect(notified!.notifications).toHaveLength(1);
+    });
+  });
+});
+
+describe('PUT /api/v2/reviews/update/:reviewId', () => {
+  it("updates the author's editable fields", async () => {
+    const { userId, reviewId } = await seedUserWithReview();
+
+    const res = await sendAs(
+      userId,
+      'put',
+      `/api/v2/reviews/update/${reviewId}`,
+      { title: 'Edited', overallRating: 5 }
+    );
+
+    expect(res.status).toBe(200);
+    expect(await Review.findById(reviewId).lean()).toMatchObject({
+      title: 'Edited',
+      overallRating: 5,
+    });
+  });
+
+  it('rejects other fields and out-of-range ratings, leaving the review as it was', async () => {
+    const { userId, reviewId } = await seedUserWithReview();
+    const update = (body: object) =>
+      sendAs(userId, 'put', `/api/v2/reviews/update/${reviewId}`, body);
+
+    expect((await update({ $inc: { likes: 9999 } })).status).toBe(422);
+    const otherUser = new mongoose.Types.ObjectId();
+    expect((await update({ author: otherUser })).status).toBe(422);
+    expect((await update({ overallRating: 99 })).status).toBeGreaterThanOrEqual(
+      400
+    );
+
+    const review = await Review.findById(reviewId).lean();
+    expect(review).toMatchObject({ likes: 0, overallRating: 4 });
+    expect(String(review!.author)).toBe(userId);
+  });
+});
+
+describe('POST /api/v2/reviews/:unit/create', () => {
+  it('creates the review as the logged-in user, ignoring likes in the body', async () => {
+    const { userId } = await seedUserWithReview();
+
+    const res = await sendAs(userId, 'post', '/api/v2/reviews/fit2095/create', {
+      title: 'Solid unit',
+      semester: 'First semester',
+      year: 2025,
+      overallRating: 4,
+      relevancyRating: 4,
+      facultyRating: 4,
+      contentRating: 4,
+      description: 'Worth taking',
+      likes: 9999,
+      dislikes: 9999,
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchObject({
+      title: 'Solid unit',
+      author: userId,
+      likes: 0,
+      dislikes: 0,
+    });
   });
 });
