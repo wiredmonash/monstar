@@ -3,9 +3,45 @@
   <div class="content-wrapper mt-8">
     <h1 class="section-heading">MonSTAR Project Contributions</h1>
 
-    <div *ngIf="loading" class="loading-section">
-      <div class="loading-spinner"></div>
-      <p class="text-white text-center">Loading project contributions...</p>
+    <div *ngIf="loading" class="skeleton-section">
+      <!-- Skeleton Summary -->
+      <div class="skeleton-summary">
+        <div class="skeleton-summary-item">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-value"></div>
+        </div>
+        <div class="skeleton-summary-item">
+          <div class="skeleton-label"></div>
+          <div class="skeleton-value"></div>
+        </div>
+      </div>
+
+      <!-- Skeleton Cards Grid -->
+      <div class="contributors-grid">
+        <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="skeleton-card">
+          <div class="skeleton-card-header">
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-card-info">
+              <div class="skeleton-text skeleton-text--name"></div>
+              <div class="skeleton-text skeleton-text--username"></div>
+            </div>
+          </div>
+          <div class="skeleton-stats">
+            <div class="skeleton-stat-box">
+              <div class="skeleton-text skeleton-text--stat-label"></div>
+              <div class="skeleton-text skeleton-text--stat-value"></div>
+            </div>
+          </div>
+          <div class="skeleton-progress">
+            <div class="skeleton-progress-info">
+              <div class="skeleton-text skeleton-text--progress-label"></div>
+              <div class="skeleton-text skeleton-text--progress-pct"></div>
+            </div>
+            <div class="skeleton-progress-bar"></div>
+          </div>
+          <div class="skeleton-link"></div>
+        </div>
+      </div>
     </div>
 
     <div *ngIf="error && !loading" class="error-section">
