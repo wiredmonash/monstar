@@ -87,12 +87,9 @@ class ReviewController {
    * Update a review by ID
    */
   static updateReview = asyncHandler(async (req, res) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'You are not authenticated' });
-    }
     const updatedReview = await ReviewService.updateReview(
       req.params.reviewId,
-      req.user.id,
+      req.user!.id,
       req.body
     );
 
@@ -106,10 +103,7 @@ class ReviewController {
    * Delete a review by ID
    */
   static deleteReview = asyncHandler(async (req, res) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'You are not authenticated' });
-    }
-    await ReviewService.deleteReview(req.params.reviewId, req.user.id);
+    await ReviewService.deleteReview(req.params.reviewId, req.user!.id);
 
     return res.status(200).json({
       message: 'Review successfully deleted',
@@ -120,9 +114,6 @@ class ReviewController {
    * Toggle like/dislike on a review
    */
   static toggleReaction = asyncHandler(async (req, res) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'You are not authenticated' });
-    }
     const reviewId = req.params.reviewId;
     // The reacting user comes from the token, never from the body
     const { reactionType } = req.body;
@@ -135,7 +126,7 @@ class ReviewController {
 
     const result = await ReviewService.toggleReaction(
       reviewId,
-      req.user.id,
+      req.user!.id,
       reactionType
     );
 
