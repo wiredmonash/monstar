@@ -15,7 +15,8 @@ export class NotificationService {
 
   getByUser(userId: string): Observable<Notification[]> {
     return this.http.get<Notification[]>(
-      `${this.url}/notifications/user/${userId}`
+      `${this.url}/notifications/user/${userId}`,
+      { withCredentials: true }
     );
   }
 
