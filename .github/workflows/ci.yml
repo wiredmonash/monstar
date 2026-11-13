@@ -36,6 +36,10 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: backend/package-lock.json
+      # artillery's Playwright engine downloads Chromium on install, which fails
+      # on Ubuntu 26.04 runners. No CI step uses a browser.
       - run: npm ci
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
       - run: npm run build
       - run: npm test
