@@ -121,8 +121,12 @@ class ReviewController {
    * Toggle like/dislike on a review
    */
   static toggleReaction = asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'You are not authenticated' });
+    }
     const reviewId = req.params.reviewId;
-    const { userId, reactionType } = req.body;
+    // The reacting user comes from the token, never from the body
+    const { reactionType } = req.body;
 
     if (!['like', 'dislike'].includes(reactionType)) {
       return res.status(400).json({
@@ -132,7 +136,7 @@ class ReviewController {
 
     const result = await ReviewService.toggleReaction(
       reviewId,
-      userId,
+      req.user.id,
       reactionType
     );
 

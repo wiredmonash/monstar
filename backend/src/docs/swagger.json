@@ -477,9 +477,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "userId": {
-                  "example": "any"
-                },
                 "reactionType": {
                   "example": "any"
                 }
@@ -493,6 +490,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
