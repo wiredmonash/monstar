@@ -29,12 +29,11 @@ export class HighlightUnitPipe implements PipeTransform {
       text = value.slice(0, truncateTo) + '...';
     }
 
-    // Fast fail if the text doesn't contain any unit codes
-    if (!UNIT_CODE_REGEX.test(text)) {
-      UNIT_CODE_REGEX.lastIndex = 0;
-      return text;
-    }
-    UNIT_CODE_REGEX.lastIndex = 0;
+    // Review text is user input: escape it so the links below are the only HTML
+    text = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
 
     // Replace unit codes with links directed to their respective unit pages
     const replacedText = text.replace(UNIT_CODE_REGEX, (match) => {
