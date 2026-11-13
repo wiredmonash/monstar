@@ -1,13 +1,24 @@
 version: 2
 updates:
+  # Staying on Angular 18 for now: block major (v19+) bumps so no upgrade PR
+  # appears, while 18.x security patches keep flowing. limit 0 means no
+  # scheduled version-bump PRs on top of the existing security updates.
   - package-ecosystem: npm
     directory: /frontend
     schedule:
       interval: weekly
-    # Staying on Angular 18 for now: block major (v19+) bumps so no upgrade PR
-    # appears, while 18.x security patches keep flowing. limit 0 means no
-    # scheduled version-bump PRs on top of the existing security updates.
     open-pull-requests-limit: 0
     ignore:
       - dependency-name: "@angular*"
         update-types: ["version-update:semver-major"]
+  # The frontend stays ungrouped while it is on Angular 18: some of its fixes
+  # need Angular 21 and would fail a grouped build.
+  - package-ecosystem: npm
+    directory: /backend
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
