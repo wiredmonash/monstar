@@ -31,9 +31,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-
-// 'simple' yields strings/arrays only; qs makes `?a[$ne]=x` a Mongo operator.
-// Express reads this when it creates the router, so keep it above app.use().
 app.set('query parser', 'simple');
 
 /* ------------------------ Environment configuration ----------------------- */
