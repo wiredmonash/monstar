@@ -37,8 +37,6 @@ fe_port=$((4200 + slot)); be_port=$((8080 + slot))
 
 mkdir -p "$pv"
 echo "$slot" > "$pv/slot"
-# No pathRewrite: the backend mounts routes under /api (see backend/src/server.ts),
-# and "/api" as a plain prefix matches nested paths where the "/api/*" glob did not.
 cat > "$pv/proxy.json" <<EOF
 {
   "/api": {
@@ -49,12 +47,6 @@ cat > "$pv/proxy.json" <<EOF
 }
 EOF
 
-# The frontend must build with relative /api URLs so calls stay same-origin and
-# hit the proxy. The default (development) config swaps in
-# environment.development.ts, which hardcodes http://localhost:8080 and bypasses
-# the proxy entirely. Prefer the "preview" configuration (relative URLs, dev-speed
-# build); fall back to "production" (also relative URLs) for worktrees branched
-# before the preview config existed.
 if grep -q '"preview"' "$wt/frontend/angular.json"; then
   fe_config=preview
 else
@@ -66,9 +58,6 @@ fi
 setsid env PORT="$be_port" npm --prefix "$wt/backend" run dev \
   > "$pv/backend.log" 2>&1 &
 be_pid=$!
-# npm start runs ng serve from frontend/, where the CLI looks for angular.json.
-# npx --prefix keeps the caller's cwd, so the CLI fell back to searching from its
-# own install path, which breaks once node_modules links to a shared cache.
 setsid npm --prefix "$wt/frontend" start -- --configuration "$fe_config" \
   --port "$fe_port" --proxy-config "$pv/proxy.json" > "$pv/frontend.log" 2>&1 &
 fe_pid=$!
