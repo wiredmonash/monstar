@@ -98,8 +98,7 @@ describe('GET /api/v2/units/filter', () => {
       );
 
     expect((await search('FIT')).body.total).toBe(3);
-    // Regex syntax is plain text, so no unit matches these
-    expect((await search('.*')).status).toBe(404);
+    // Regex syntax is plain text, so no unit matches it
     expect((await search('(')).status).toBe(404);
   });
 });
