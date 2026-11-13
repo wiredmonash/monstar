@@ -90,6 +90,18 @@ describe('GET /api/v2/units/filter', () => {
     expect(res.status).toBe(200);
     expect(res.body.total).toBe(7);
   });
+
+  it('matches search text literally and case-insensitively', async () => {
+    const search = (text: string) =>
+      request(global.app).get(
+        `/api/v2/units/filter?search=${encodeURIComponent(text)}`
+      );
+
+    expect((await search('FIT')).body.total).toBe(3);
+    // Regex syntax is plain text, so no unit matches these
+    expect((await search('.*')).status).toBe(404);
+    expect((await search('(')).status).toBe(404);
+  });
 });
 
 describe('GET /api/v2/units/:unitCode', () => {
