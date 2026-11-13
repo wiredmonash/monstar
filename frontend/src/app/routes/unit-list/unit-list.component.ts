@@ -320,7 +320,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
    * Handle paginator page change.
    */
   onPageChange(event: PaginatorState) {
-    if (event.first) this.filterData.offset = event.first;
+    this.filterData.offset = event.first ?? 0;
     if (event.rows) this.filterData.limit = event.rows;
     localStorage.setItem('rowsPerPage', JSON.stringify(this.filterData.limit));
     this.fetchPaginatedUnits();
