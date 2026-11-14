@@ -6,8 +6,6 @@ export { default as jobsV2Router } from './jobs.v2.routes';
 export {
   JOB_STATUS,
   JOB_ROLE_TYPE,
-  isValidJobStatus,
-  isValidJobRoleType,
   normalizeJobStatus,
   normalizeJobRoleType,
 } from './job.options';

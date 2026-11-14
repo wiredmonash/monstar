@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 import Review from '@domains/academics/reviews/review.model';
 import Unit from '@domains/academics/units/unit.model';
 import Notification from '@domains/identity/notifications/notification.model';
-import { cloudinary } from '@infrastructure/storage/cloudinary';
+import { destroyByUrl } from '@infrastructure/storage/cloudinary';
 
 const userSchema = new Schema({
   email: { type: String, required: true },
@@ -51,16 +51,6 @@ userSchema.pre('findOneAndDelete', async function (next) {
   try {
     const user = await this.model.findOne(this.getFilter());
     await handleUserDeletion(user);
-    next();
-  } catch (error) {
-    next(error as Error);
-  }
-});
-
-// Middleware for remove (legacy hook; no-op under Mongoose 8 document API)
-userSchema.pre('remove' as 'deleteOne', async function (next) {
-  try {
-    await handleUserDeletion(this);
     next();
   } catch (error) {
     next(error as Error);
@@ -154,11 +144,7 @@ async function handleUserDeletion(user: any) {
     // Handle profile image deletion
     if (user.profileImg) {
       try {
-        const urlParts = user.profileImg.split('/');
-        const fileName = urlParts[urlParts.length - 1].split('.')[0];
-        const publicId = `user_avatars/${fileName}`;
-
-        const result = await cloudinary.uploader.destroy(publicId);
+        const result = await destroyByUrl(user.profileImg, 'user_avatars');
         if (result.result !== 'ok') {
           console.error(
             `[User] Error deleting profile image from Cloudinary: ${result.result}`
