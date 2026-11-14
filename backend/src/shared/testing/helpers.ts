@@ -31,31 +31,33 @@ const getCsrf = async (app: Express) => {
   return { token: res.body.csrfToken, cookies };
 };
 
-/**
- * Insert a user and a review authored by them (for the unit `acb2420`) using
- * raw collection writes, bypassing schema validation the same way the fixture
- * loader does. Returns the ids needed to drive owner-only endpoints.
- */
-const seedUserWithReview = async () => {
-  const userId = new mongoose.Types.ObjectId();
-  const reviewId = new mongoose.Types.ObjectId();
-
-  const unit = await Unit.findOne({ unitCode: 'acb2420' });
-
-  await mongoose.connection.collection('users').insertOne({
-    _id: userId,
-    username: 'tester',
-    email: `tester+${userId}@example.com`,
+const insertUser = (
+  id: mongoose.Types.ObjectId,
+  username: string,
+  extra: Record<string, unknown> = {}
+) =>
+  mongoose.connection.collection('users').insertOne({
+    _id: id,
+    username,
+    email: `${username}+${id}@example.com`,
     admin: false,
-    reviews: [reviewId],
+    reviews: [],
     likedReviews: [],
     dislikedReviews: [],
     notifications: [],
+    ...extra,
   });
 
+const insertReview = async (
+  id: mongoose.Types.ObjectId,
+  authorId: mongoose.Types.ObjectId,
+  title: string
+) => {
+  const unit = await Unit.findOne({ unitCode: 'acb2420' });
+
   await mongoose.connection.collection('reviews').insertOne({
-    _id: reviewId,
-    title: 'Seed review',
+    _id: id,
+    title,
     semester: 'S1',
     year: 2024,
     grade: 'D',
@@ -67,8 +69,21 @@ const seedUserWithReview = async () => {
     likes: 0,
     dislikes: 0,
     unit: unit!._id,
-    author: userId,
+    author: authorId,
   });
+};
+
+/**
+ * Insert a user and a review authored by them (for the unit `acb2420`) using
+ * raw collection writes, bypassing schema validation the same way the fixture
+ * loader does. Returns the ids needed to drive owner-only endpoints.
+ */
+const seedUserWithReview = async () => {
+  const userId = new mongoose.Types.ObjectId();
+  const reviewId = new mongoose.Types.ObjectId();
+
+  await insertUser(userId, 'tester', { reviews: [reviewId] });
+  await insertReview(reviewId, userId, 'Seed review');
 
   return { userId: userId.toString(), reviewId: reviewId.toString() };
 };
@@ -83,48 +98,9 @@ const seedReactionGraph = async () => {
   const reactorId = new mongoose.Types.ObjectId();
   const reviewId = new mongoose.Types.ObjectId();
 
-  const unit = await Unit.findOne({ unitCode: 'acb2420' });
-
-  await mongoose.connection.collection('users').insertMany([
-    {
-      _id: authorId,
-      username: 'author',
-      email: `author+${authorId}@example.com`,
-      admin: false,
-      reviews: [reviewId],
-      likedReviews: [],
-      dislikedReviews: [],
-      notifications: [],
-    },
-    {
-      _id: reactorId,
-      username: 'reactor',
-      profileImg: '',
-      email: `reactor+${reactorId}@example.com`,
-      admin: false,
-      reviews: [],
-      likedReviews: [],
-      dislikedReviews: [],
-      notifications: [],
-    },
-  ]);
-
-  await mongoose.connection.collection('reviews').insertOne({
-    _id: reviewId,
-    title: 'Reaction target',
-    semester: 'S1',
-    year: 2024,
-    grade: 'D',
-    overallRating: 4,
-    relevancyRating: 4,
-    facultyRating: 4,
-    contentRating: 4,
-    description: 'seed',
-    likes: 0,
-    dislikes: 0,
-    unit: unit!._id,
-    author: authorId,
-  });
+  await insertUser(authorId, 'author', { reviews: [reviewId] });
+  await insertUser(reactorId, 'reactor', { profileImg: '' });
+  await insertReview(reviewId, authorId, 'Reaction target');
 
   return {
     authorId: authorId.toString(),
