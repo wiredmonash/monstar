@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import type { Job } from './job.types';
 
 const NOTION_API_BASE = 'https://www.notion.so/api/v3';
@@ -35,11 +33,6 @@ function _extractMultiSelect(prop: any) {
   return raw ? raw.split(',').map((s: string) => s.trim()) : [];
 }
 
-function _extractUrl(prop: any) {
-  if (!prop) return null;
-  return prop[0][0] ?? null;
-}
-
 function _extractDate(prop: any) {
   if (!prop) return null;
   try {
@@ -56,23 +49,33 @@ class NotionProvider {
 
   /* ----------------------------- API Endpoints ----------------------------- */
 
+  static async _post(endpoint: string, body: unknown) {
+    const response = await fetch(`${NOTION_API_BASE}/${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Notion answers 403 to Node's default `node` user agent
+        'User-Agent': 'monstar',
+      },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok)
+      throw new Error(`Notion ${endpoint} failed with ${response.status}`);
+    return (await response.json()) as any;
+  }
+
   /**
    * @param {string} pageId
    * @returns {Promise<Object>}
    */
   static async _loadPageChunk(pageId: string) {
-    const response = await axios.post(
-      `${NOTION_API_BASE}/loadPageChunk`,
-      {
-        pageId: toUUID(pageId),
-        limit: 50,
-        chunkNumber: 0,
-        cursor: { stack: [] },
-        verticalColumns: false,
-      },
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-    return response.data;
+    return await this._post('loadPageChunk', {
+      pageId: toUUID(pageId),
+      limit: 50,
+      chunkNumber: 0,
+      cursor: { stack: [] },
+      verticalColumns: false,
+    });
   }
 
   /**
@@ -88,26 +91,21 @@ class NotionProvider {
     spaceId: string,
     limit = 999
   ) {
-    const response = await axios.post(
-      `${NOTION_API_BASE}/queryCollection`,
-      {
-        collection: { id: collectionId, spaceId },
-        collectionView: { id: collectionViewId, spaceId },
-        loader: {
-          type: 'reducer',
-          reducers: {
-            collection_group_results: {
-              type: 'results',
-              limit,
-            },
+    return await this._post('queryCollection', {
+      collection: { id: collectionId, spaceId },
+      collectionView: { id: collectionViewId, spaceId },
+      loader: {
+        type: 'reducer',
+        reducers: {
+          collection_group_results: {
+            type: 'results',
+            limit,
           },
-          searchQuery: '',
-          userTimeZone: 'UTC',
         },
+        searchQuery: '',
+        userTimeZone: 'UTC',
       },
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-    return response.data;
+    });
   }
 
   /* ----------------------------- Metadata Cache ---------------------------- */
@@ -157,19 +155,13 @@ class NotionProvider {
       const raw = props[key];
 
       switch (def.type) {
-        case 'title':
-        case 'text':
-          row[def.name] = _extractText(raw);
-          break;
         case 'status':
         case 'select':
+        case 'url':
           row[def.name] = _extractSelect(raw);
           break;
         case 'multi_select':
           row[def.name] = _extractMultiSelect(raw);
-          break;
-        case 'url':
-          row[def.name] = _extractUrl(raw);
           break;
         case 'date':
           row[def.name] = _extractDate(raw);
