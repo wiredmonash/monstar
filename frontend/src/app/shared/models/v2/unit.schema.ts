@@ -18,7 +18,6 @@ export interface AiOverview {
   generatedAt?: Date;
   model?: string;
   totalReviewsConsidered?: number;
-  setuSeasons?: string[];
 }
 
 interface BaseUnit {

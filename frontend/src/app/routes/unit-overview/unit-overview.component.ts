@@ -42,10 +42,8 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { AiOverviewComponent } from '../../shared/components/ai-overview/ai-overview.component';
 import { ReviewCardComponent } from '../../shared/components/review-card/review-card.component';
-import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
 import { UnitReviewHeaderComponent } from '../../shared/components/unit-review-header/unit-review-header.component';
 import {
   BASE_URL,
@@ -64,7 +62,6 @@ import {
   imports: [
     ReviewCardComponent,
     UnitReviewHeaderComponent,
-    SetuCardComponent,
     AiOverviewComponent,
     ToastModule,
     ProgressSpinnerModule,
@@ -80,8 +77,6 @@ import {
 export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('headerSkeleton') headerSkeleton!: ElementRef;
   @ViewChild('unitOverviewContainer') unitOverviewContainer!: ElementRef;
-
-  enableSetuCards = environment.enableSetuCards;
 
   isSplitView: boolean = false;
   splitViewMinWidth: number = 1414;

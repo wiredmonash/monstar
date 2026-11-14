@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { environment } from '../environments/environment';
 
 // Component Imports
 import { AuthComponent } from '@routes/auth/auth.component';
@@ -9,7 +8,6 @@ import { ChangelogComponent } from './routes/changelog/changelog.component';
 import { HomeComponent } from './routes/home/home.component';
 import { NotFoundComponent } from './routes/not-found/not-found.component';
 import { PrivacyComponent } from './routes/privacy/privacy.component';
-import { SetuOverviewComponent } from './routes/setu-overview/setu-overview.component';
 import { TermsAndCondsComponent } from './routes/terms-and-conds/terms-and-conds.component';
 import { UnitListComponent } from './routes/unit-list/unit-list.component';
 import { UnitMapComponent } from './routes/unit-map/unit-map.component';
@@ -27,9 +25,6 @@ export const routes: Routes = [
     data: { hideFooter: true },
   },
   { path: 'map/:unitcode', component: UnitMapComponent },
-  ...(environment.enableSetuCards
-    ? [{ path: 'setu/:unitCode', component: SetuOverviewComponent }]
-    : []),
   { path: 'terms-and-conditions', component: TermsAndCondsComponent },
   { path: 'privacy', component: PrivacyComponent },
   { path: 'jobs', component: JobsBoardComponent, data: { hideFooter: true } },
