@@ -6,8 +6,6 @@ Units of study and what students say about them.
   Routes: `/api/v2/units`
 - [reviews](reviews/): student reviews of units.
   Routes: `/api/v2/reviews`
-- [setu](setu/): scraped SETU survey results.
-  Routes: `/api/v2/setus`
 
 Notes:
 
