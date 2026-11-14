@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
 export interface GitHubContributor {
   username: string;
@@ -13,32 +12,46 @@ export interface GitHubContributor {
   type: string;
 }
 
-interface BackendResponse {
-  success: boolean;
-  status: number;
-  message: string;
-  data: GitHubContributor[];
+// A contributor as the GitHub REST API returns it
+interface ApiContributor {
+  login: string;
+  type: string;
+  avatar_url: string;
+  contributions: number;
+  html_url: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class GitHubService {
-  private apiUrl = environment.githubUrl;
+  // The repo is public, so its contributors are readable without a token
+  private apiUrl =
+    'https://api.github.com/repos/wiredmonash/monstar/contributors';
 
   constructor(private http: HttpClient) {}
 
-  // Get all contributor data for the MonSTAR project from backend
+  // Get the top human contributors to the MonSTAR project from GitHub
   getMonstarContributors(): Observable<GitHubContributor[]> {
-    return this.http.get<BackendResponse>(`${this.apiUrl}/contributors`).pipe(
-      map((response) => {
-        if (response.success && response.data) {
-          return response.data;
-        }
-        return this.getFallbackContributors();
+    return this.http.get<ApiContributor[]>(this.apiUrl).pipe(
+      map((contributors) => {
+        if (!contributors.length) return this.getFallbackContributors();
+
+        return contributors
+          .filter((c) => c.type === 'User')
+          .slice(0, 10)
+          .sort((a, b) => b.contributions - a.contributions)
+          .map((c) => ({
+            username: c.login,
+            name: c.login,
+            avatar_url: c.avatar_url,
+            contributions: c.contributions,
+            html_url: c.html_url,
+            type: c.type,
+          }));
       }),
       catchError((error) => {
-        console.error('Error fetching contributors from backend:', error);
+        console.error('Error fetching contributors from GitHub:', error);
         return of(this.getFallbackContributors());
       })
     );
