@@ -2,7 +2,6 @@
 import './bootstrap';
 
 /* ----------------------------- Module imports ----------------------------- */
-import path from 'path';
 import { fileURLToPath } from 'url';
 
 import cookieParser from 'cookie-parser';
@@ -13,22 +12,16 @@ import express, { type RequestHandler } from 'express';
 import { setupSwagger } from '@docs/swagger';
 import errorMiddleware from '@shared/middleware/error.middleware';
 import { dbConnect } from '@infrastructure/database/mongodb';
-import {
-  TagManager,
-  unitsV1Router,
-  unitsV2Router,
-} from '@domains/academics/units';
+import { TagManager, unitsV2Router } from '@domains/academics/units';
 import { reviewsV2Router } from '@domains/academics/reviews';
 import { setuRouter } from '@domains/academics/setu';
 import { usersRouter } from '@domains/identity/users';
 import { notificationsRouter } from '@domains/identity/notifications';
 import { adminV1Router } from '@domains/platform/admin';
-import { githubRouter } from '@domains/platform/github';
 import { jobsV2Router } from '@domains/recruitment/jobs';
 
 /* --------------------------- Initialize Express --------------------------- */
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 app.set('query parser', 'simple');
@@ -51,7 +44,6 @@ if (isDevelopment) {
   );
 }
 
-app.use('/api/v1/units/create-bulk', express.json({ limit: '50mb' }));
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ limit: '100kb', extended: true }));
 app.use(cookieParser());
@@ -86,13 +78,11 @@ app.use(async (req, res, next) => {
 });
 
 /* --------------------------------- Routes --------------------------------- */
-app.use('/api/v1/units', unitsV1Router);
 app.use('/api/v2/units', unitsV2Router);
 app.use('/api/v2/reviews', reviewsV2Router);
 app.use('/api/v2/setus', setuRouter);
 app.use('/api/v2/users', usersRouter);
 app.use('/api/v2/notifications', notificationsRouter);
-app.use('/api/v2/github', githubRouter);
 app.use('/api/v2/jobs', jobsV2Router);
 if (isDevelopment && !isProductionMachine) {
   app.use('/api/admin', adminV1Router);
@@ -100,13 +90,6 @@ if (isDevelopment && !isProductionMachine) {
 
 /* ---------------------------- Swagger ui setup ---------------------------- */
 setupSwagger(app).catch(console.error);
-
-/* -------------------------- Serving static files -------------------------- */
-if (!isDevelopment) {
-  app.use(
-    express.static(path.join(__dirname, '../frontend/dist/frontend/browser'))
-  );
-}
 
 /* ------------------------ Error handling middleware ----------------------- */
 app.use(errorMiddleware);

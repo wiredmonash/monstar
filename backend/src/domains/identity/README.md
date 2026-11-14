@@ -9,5 +9,5 @@ Who the user is and what the platform tells them.
 
 Notes:
 
-- Auth middleware lives in [users](users/), not in shared: import `verifyToken`, `verifyUser`, and `verifyAdmin` from `@domains/identity/users` (defined in [auth.middleware.ts](users/auth.middleware.ts)).
+- Auth middleware lives in [users](users/), not in shared: import `userMiddleware` and `adminMiddleware` from `@domains/identity/users`.
 - The [User schema](users/user.model.ts) stores the Google account id as `googleID` (capital D). Keep that casing in queries and projections.

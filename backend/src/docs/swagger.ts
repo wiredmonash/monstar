@@ -32,10 +32,6 @@ const setupSwagger = async (app: Express) => {
     produces: ['application/json'],
     tags: [
       {
-        name: 'Units',
-        description: 'Unit information and management',
-      },
-      {
         name: 'Units V2',
         description: 'Unit information and management V2',
       },
@@ -54,10 +50,6 @@ const setupSwagger = async (app: Express) => {
       {
         name: 'Notifications',
         description: 'User notifications',
-      },
-      {
-        name: 'GitHub',
-        description: 'GitHub integration for repository operations',
       },
       {
         name: 'SETU',
