@@ -21,14 +21,18 @@ export const routes: Routes = [
   { path: 'auth', component: AuthComponent },
   { path: 'list', component: UnitListComponent },
   { path: 'user/:username', component: UserProfileComponent },
-  { path: 'unit/:unitcode', component: UnitOverviewComponent },
+  {
+    path: 'unit/:unitcode',
+    component: UnitOverviewComponent,
+    data: { hideFooter: true },
+  },
   { path: 'map/:unitcode', component: UnitMapComponent },
   ...(environment.enableSetuCards
     ? [{ path: 'setu/:unitCode', component: SetuOverviewComponent }]
     : []),
   { path: 'terms-and-conditions', component: TermsAndCondsComponent },
   { path: 'privacy', component: PrivacyComponent },
-  { path: 'jobs', component: JobsBoardComponent },
+  { path: 'jobs', component: JobsBoardComponent, data: { hideFooter: true } },
   { path: 'about', component: AboutComponent },
   { path: 'changelog', component: ChangelogComponent },
 

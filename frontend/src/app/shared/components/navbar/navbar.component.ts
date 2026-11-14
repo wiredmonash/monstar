@@ -14,8 +14,6 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { NavigationService } from '../../services/navigation.service';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
 import { NotificationsPopupComponent } from '../notifications/notifications-popup/notifications-popup.component';
 
 export interface State {
@@ -68,12 +66,8 @@ export class NavbarComponent implements OnInit {
   hamburgColor: string = 'white';
   profileColor: string = 'white';
 
-  viewportType: ViewportType = 'desktop';
-
   private messageService = inject(MessageService);
   private userService = inject(UserService);
-  private viewportService = inject(ViewportService);
-  private navigationService = inject(NavigationService);
   private router = inject(Router);
 
   state$: Observable<State> = this.userService.currentUser$.pipe(
@@ -100,10 +94,6 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateNavbarColor();
-
-    this.viewportService.viewport$.subscribe((type) => {
-      this.viewportType = type;
-    });
   }
 
   /**
@@ -163,6 +153,8 @@ export class NavbarComponent implements OnInit {
    */
   navigateTo(route: string) {
     this.sidebarExpanded.set(false);
-    this.navigationService.navigateTo([route]);
+    this.router.navigate([route]);
+    // The router only resets scroll when the URL changes
+    window.scrollTo(0, 0);
   }
 }

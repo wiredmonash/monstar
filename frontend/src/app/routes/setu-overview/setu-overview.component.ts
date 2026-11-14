@@ -26,10 +26,7 @@ import {
 import { Setu } from '../../shared/models/setu.model';
 import { UserService } from '../../shared/services/api/user.service';
 import { SetuService } from '../../shared/services/setu.service';
-import {
-  ViewportService,
-  ViewportType,
-} from '../../shared/services/viewport.service';
+import { ViewportService } from '../../shared/services/viewport.service';
 
 @Component({
   selector: 'app-setu-overview',
@@ -56,7 +53,9 @@ export class SetuOverviewComponent implements OnInit, OnDestroy {
   selectedSetu: Setu | null = null; // Track which SETU data is currently selected for detailed view
   loading = true;
   error: string | null = null;
-  viewportType: ViewportType = 'desktop';
+  get viewportType() {
+    return this.viewportService.type();
+  }
 
   // Authentication
   isAuthenticated = false;
@@ -100,13 +99,6 @@ export class SetuOverviewComponent implements OnInit, OnDestroy {
         this.isAuthenticated = user !== null;
         // Prevent body scrolling when not authenticated
         this.updateBodyScrollLock();
-      });
-
-    // Subscribe to viewport changes
-    this.viewportService.viewport$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((type) => {
-        this.viewportType = type;
       });
 
     // Get unit code from route params

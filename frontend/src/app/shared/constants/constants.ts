@@ -1,5 +1,3 @@
-export const NAVBAR_HEIGHT = '57.2px';
-
 export const BASE_URL = 'https://monstar.wired.org.au';
 
 export const DEFAULT_PROFILE_IMG =

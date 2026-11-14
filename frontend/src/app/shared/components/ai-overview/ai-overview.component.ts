@@ -1,18 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 // PrimeNG modules
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 
 // App specific models
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AiOverview,
   IUnitDeeplyPopulated,
 } from 'app/shared/models/v2/unit.schema';
 import { SkeletonModule } from 'primeng/skeleton';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
 
 @Component({
   selector: 'app-ai-overview',
@@ -21,25 +19,13 @@ import { ViewportService, ViewportType } from '../../services/viewport.service';
   templateUrl: './ai-overview.component.html',
   styleUrl: './ai-overview.component.scss',
 })
-export class AiOverviewComponent implements OnInit {
+export class AiOverviewComponent {
   window = window;
-  viewportType: ViewportType = 'desktop';
 
   @Input() unit: IUnitDeeplyPopulated | undefined;
 
   get aiOverview(): AiOverview | null {
     return this.unit?.aiOverview || null;
-  }
-
-  private destroyRef = inject(DestroyRef);
-  private viewportService = inject(ViewportService);
-
-  ngOnInit(): void {
-    this.viewportService.viewport$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((type) => {
-        this.viewportType = type;
-      });
   }
 
   getFormattedDate(format: 'short' | 'default' = 'default'): string {

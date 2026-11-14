@@ -7,15 +7,15 @@ import {
   HostListener,
   inject,
   Input,
-  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SEMESTERS } from 'app/shared/models/v2/enums';
 import {
+  emptyReview,
   ICreateReview,
   IUpdateReview,
-  UpdateReviewSchema,
 } from 'app/shared/models/v2/review.schema';
 import { IUnit } from 'app/shared/models/v2/unit.schema';
 import { MessageService } from 'primeng/api';
@@ -26,7 +26,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RatingModule } from 'primeng/rating';
 import { ToastModule } from 'primeng/toast';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { ViewportService } from '../../services/viewport.service';
 import { RatingComponent } from '../rating/rating.component';
 
 @Component({
@@ -57,7 +57,7 @@ import { RatingComponent } from '../rating/rating.component';
     ]),
   ],
 })
-export class WriteReviewUnitComponent implements OnInit {
+export class WriteReviewUnitComponent {
   // View children for the input fields and buttons
   @ViewChild('titleInput') titleInput?: ElementRef;
   @ViewChild('semesterInput') semesterInput?: Dropdown;
@@ -71,10 +71,7 @@ export class WriteReviewUnitComponent implements OnInit {
 
   @Input({ required: true }) unit: IUnit | undefined;
 
-  @Input() review: IUpdateReview | undefined = UpdateReviewSchema.safeParse({
-    _id: '',
-    author: '',
-  }).data;
+  @Input() review: IUpdateReview | undefined = emptyReview();
 
   @Input({ required: true }) editMode: boolean = false;
   @Input() visible: boolean = false;
@@ -85,31 +82,7 @@ export class WriteReviewUnitComponent implements OnInit {
   // List of years to choose from (see initialiseYearOptions)
   yearOptions: Array<{ label: string; value: number }> = [];
 
-  semesterOptions = [
-    { label: 'First semester', value: 'First semester' },
-    { label: 'Second semester', value: 'Second semester' },
-    { label: 'Summer semester A', value: 'Summer semester A' },
-    { label: 'Summer semester B', value: 'Summer semester B' },
-    { label: 'Research quarter 1', value: 'Research quarter 1' },
-    { label: 'Research quarter 2', value: 'Research quarter 2' },
-    { label: 'Research quarter 3', value: 'Research quarter 3' },
-    { label: 'Research quarter 4', value: 'Research quarter 4' },
-    { label: 'Winter semester', value: 'Winter semester' },
-    { label: 'Full year', value: 'Full year' },
-    { label: 'First semester (Northern)', value: 'First semester (Northern)' },
-    { label: 'Trimester 2', value: 'Trimester 2' },
-    {
-      label: 'Second semester to First semester',
-      value: 'Second semester to First semester',
-    },
-    { label: 'Term 1', value: 'Term 1' },
-    { label: 'Term 2', value: 'Term 2' },
-    { label: 'Term 3', value: 'Term 3' },
-    { label: 'Trimester 3', value: 'Trimester 3' },
-    { label: 'Teaching period 3', value: 'Teaching period 3' },
-    { label: 'Teaching period 4', value: 'Teaching period 4' },
-    { label: 'Teaching period 5', value: 'Teaching period 5' },
-  ];
+  semesterOptions = SEMESTERS.map((s) => ({ label: s, value: s }));
 
   gradeOptions = [
     { label: 'HD', value: 'HD' },
@@ -142,20 +115,15 @@ export class WriteReviewUnitComponent implements OnInit {
   // List of dangerous characters
   dangerousChars = ['{', '}', '/', '>', '<', '+', '\\', '*'];
 
-  // Viewport type
-  viewportType: ViewportType = 'desktop';
+  get viewportType() {
+    return this.viewportService.type();
+  }
 
   private messageService = inject(MessageService);
   private viewportService = inject(ViewportService);
 
   constructor() {
     this.initialiseYearOptions();
-  }
-
-  ngOnInit(): void {
-    this.viewportService.viewport$.subscribe((type) => {
-      this.viewportType = type;
-    });
   }
 
   openDialog() {
