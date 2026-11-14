@@ -6,5 +6,4 @@ export { default as TokenProvider } from './token.service';
 export { default as userMiddleware } from './user.middleware';
 export { default as adminMiddleware } from './admin.middleware';
 export { default as usersRouter } from './users.routes';
-export { verifyToken, verifyUser, verifyAdmin } from './auth.middleware';
 export type { IUser } from './user.types';

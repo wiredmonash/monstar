@@ -13,7 +13,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { DomSanitizer, Meta, SafeHtml, Title } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 // Constants
@@ -46,7 +46,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 
 // Services
 import { GetUnitService } from '../../shared/services/api/get-unit.service';
-import { NavigationService } from '../../shared/services/navigation.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-home',
@@ -176,8 +176,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private getUnitService: GetUnitService,
     private sanitizer: DomSanitizer,
-    private navigationService: NavigationService,
-    private meta: Meta,
+    private seo: SeoService,
     private titleService: Title
   ) {}
 
@@ -205,18 +204,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sponsorsObserver?.disconnect();
 
     // Remove meta tags when navigating away from home
-    this.meta.removeTag("name='description'");
-    this.meta.removeTag("name='keywords'");
-    this.meta.removeTag("name='author'");
-    this.meta.removeTag("property='og:site_name'");
-    this.meta.removeTag("property='og:title'");
-    this.meta.removeTag("property='og:description'");
-    this.meta.removeTag("property='og:url'");
-    this.meta.removeTag("property='og:type'");
-    this.meta.removeTag("property='og:locale'");
-    this.meta.removeTag("name='twitter:card'");
-    this.meta.removeTag("name='twitter:title'");
-    this.meta.removeTag("name='twitter:description'");
+    this.seo.clear();
 
     // Reset title to default
     this.titleService.setTitle(
@@ -334,7 +322,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
 
   navigateTo(nav: string) {
-    this.navigationService.navigateTo([nav]);
+    this.router.navigate([nav]);
   }
 
   /**
@@ -344,49 +332,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    */
 
   private updateMetaTags(): void {
-    const pageUrl = BASE_URL;
-
-    // Set the document title
-    this.titleService.setTitle(META_BASIC_TITLE);
-
-    // Core meta tags
-    this.meta.updateTag({
-      name: 'viewport',
-      content: 'width=device-width, initial-scale=1',
-    });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
-
-    // Basic meta tags
-    this.meta.updateTag({
-      name: 'description',
-      content: META_HOME_DESCRIPTION,
-    });
-    this.meta.updateTag({ name: 'keywords', content: META_HOME_KEYWORDS });
-    this.meta.updateTag({ name: 'author', content: META_AUTHOR });
-
-    // Open Graph tags for social sharing
-    this.meta.updateTag({ property: 'og:site_name', content: META_SITENAME });
-    this.meta.updateTag({ property: 'og:title', content: META_BASIC_TITLE });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: META_HOME_OPEN_GRAPH_DESCRIPTION,
-    });
-    this.meta.updateTag({ property: 'og:url', content: pageUrl });
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
-    this.meta.updateTag({ property: 'og:locale', content: 'en_AU' });
-
-    // Twitter Card tags
-    this.meta.updateTag({
-      name: 'twitter:card',
-      content: 'summary_large_image',
-    });
-    this.meta.updateTag({
-      name: 'twitter:title',
-      content: META_BASIC_TWITTER_TITLE,
-    });
-    this.meta.updateTag({
-      name: 'twitter:description',
-      content: META_HOME_TWITTER_DESCRIPTION,
+    this.seo.set(META_BASIC_TITLE, {
+      description: META_HOME_DESCRIPTION,
+      keywords: META_HOME_KEYWORDS,
+      author: META_AUTHOR,
+      'og:site_name': META_SITENAME,
+      'og:title': META_BASIC_TITLE,
+      'og:description': META_HOME_OPEN_GRAPH_DESCRIPTION,
+      'og:url': BASE_URL,
+      'og:type': 'website',
+      'og:locale': 'en_AU',
+      'twitter:card': 'summary_large_image',
+      'twitter:title': META_BASIC_TWITTER_TITLE,
+      'twitter:description': META_HOME_TWITTER_DESCRIPTION,
     });
   }
 }

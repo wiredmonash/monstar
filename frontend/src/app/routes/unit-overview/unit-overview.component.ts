@@ -11,13 +11,11 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { DeleteReviewService } from '@services/api/delete-review.service';
 import { GetUnitService } from '@services/api/get-unit.service';
-import { ModifyReviewService } from '@services/api/modify-review.service';
-import { PostReviewService } from '@services/api/post-review.service';
+import { ReviewService } from '@services/api/review.service';
 import { UserService } from '@services/api/user.service';
+import { SeoService } from '@services/seo.service';
 import {
   ICreateReview,
   IReview,
@@ -44,10 +42,8 @@ import {
   take,
   tap,
 } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { AiOverviewComponent } from '../../shared/components/ai-overview/ai-overview.component';
 import { ReviewCardComponent } from '../../shared/components/review-card/review-card.component';
-import { SetuCardComponent } from '../../shared/components/setu-card/setu-card.component';
 import { UnitReviewHeaderComponent } from '../../shared/components/unit-review-header/unit-review-header.component';
 import {
   BASE_URL,
@@ -59,7 +55,6 @@ import {
   getMetaUnitOverviewTwitterDescription,
   getMetaUnitOverviewTwitterTitle,
 } from '../../shared/constants/constants';
-import { FooterService } from '../../shared/services/footer.service';
 
 @Component({
   selector: 'app-unit-overview',
@@ -67,7 +62,6 @@ import { FooterService } from '../../shared/services/footer.service';
   imports: [
     ReviewCardComponent,
     UnitReviewHeaderComponent,
-    SetuCardComponent,
     AiOverviewComponent,
     ToastModule,
     ProgressSpinnerModule,
@@ -84,8 +78,6 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('headerSkeleton') headerSkeleton!: ElementRef;
   @ViewChild('unitOverviewContainer') unitOverviewContainer!: ElementRef;
 
-  enableSetuCards = environment.enableSetuCards;
-
   isSplitView: boolean = false;
   splitViewMinWidth: number = 1414;
 
@@ -97,15 +89,11 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   private getUnitService = inject(GetUnitService);
-  private deleteReviewService = inject(DeleteReviewService);
-  private modifyReviewService = inject(ModifyReviewService);
-  private postReviewService = inject(PostReviewService);
+  private reviewService = inject(ReviewService);
   private messageService = inject(MessageService);
   private userService = inject(UserService);
-  private meta = inject(Meta);
+  private seo = inject(SeoService);
   private route = inject(ActivatedRoute);
-  private titleService = inject(Title);
-  private footerService = inject(FooterService);
 
   private refreshReviews$ = new BehaviorSubject<void>(undefined);
   private sortCriteria$ = new BehaviorSubject<string>('most-likes');
@@ -152,7 +140,6 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this.footerService.hideFooter();
     this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
   }
 
@@ -163,17 +150,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.resizeHandler);
     this.unitOverviewContainer.nativeElement.style.height = '';
-    this.footerService.showFooter();
-
-    this.meta.removeTag("name='description'");
-    this.meta.removeTag("name='keywords'");
-    this.meta.removeTag("property='og:title'");
-    this.meta.removeTag("property='og:description'");
-    this.meta.removeTag("property='og:url'");
-    this.meta.removeTag("property='og:type'");
-    this.meta.removeTag("name='twitter:card'");
-    this.meta.removeTag("name='twitter:title'");
-    this.meta.removeTag("name='twitter:description'");
+    this.seo.clear();
   }
 
   setSort(criteria: string): void {
@@ -215,7 +192,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onDeleteReview(reviewId: string) {
-    this.deleteReviewService
+    this.reviewService
       .deleteById(reviewId)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -239,7 +216,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
         take(1),
         filter((code) => code !== null),
         exhaustMap((unitCode) => {
-          return this.postReviewService.createReview(unitCode, review);
+          return this.reviewService.createReview(unitCode, review);
         }),
         tap((newReview: IReview) => {
           this.messageService.add({
@@ -255,7 +232,7 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onEditReview(review: IUpdateReview) {
-    this.modifyReviewService
+    this.reviewService
       .editReview(review)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -333,62 +310,34 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
     const unitName: string = unit.name;
     const pageUrl: string = `${BASE_URL}/unit/${unit.unitCode}`;
 
-    // Basic meta tags
-    this.titleService.setTitle(getMetaUnitOverviewTitle(unitCode, unitName));
-    this.meta.updateTag({
-      name: 'description',
-      content: getMetaUnitOverviewDescription(
-        unitReviewsCount,
-        unitCode,
-        unitName
-      ),
-    });
-    this.meta.updateTag({
-      name: 'keywords',
-      content: getMetaUnitOverviewKeywords(unitCode, unitName),
-    });
-
-    // Open Graph tags for social sharing
-    this.meta.updateTag({
-      property: 'og:title',
-      content: getMetaUnitOverviewOpenGraphTitle(unitCode, unitName),
-    });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: getMetaUnitOverviewOpenGraphDescription(
-        unitCode,
-        unitAverageRating,
-        unitReviewsCount
-      ),
-    });
-    this.meta.updateTag({ property: 'og:url', content: pageUrl });
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
-
-    // Twitter Card tags
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
-    this.meta.updateTag({
-      name: 'twitter:title',
-      content: getMetaUnitOverviewTwitterTitle(unitCode),
-    });
-    this.meta.updateTag({
-      name: 'twitter:description',
-      content: getMetaUnitOverviewTwitterDescription(
-        unitCode,
-        unitName,
-        unitAverageRating
-      ),
-    });
-
-    // Canonical URL pointing at this unit (overrides the homepage default in
-    // index.html) so Google indexes each unit page as its own page.
-    const existingCanonical = document.querySelector('link[rel="canonical"]');
-    if (existingCanonical) {
-      existingCanonical.remove();
-    }
-
-    const canonicalLink = document.createElement('link');
-    canonicalLink.setAttribute('rel', 'canonical');
-    canonicalLink.setAttribute('href', pageUrl);
-    document.head.appendChild(canonicalLink);
+    this.seo.set(
+      getMetaUnitOverviewTitle(unitCode, unitName),
+      {
+        description: getMetaUnitOverviewDescription(
+          unitReviewsCount,
+          unitCode,
+          unitName
+        ),
+        keywords: getMetaUnitOverviewKeywords(unitCode, unitName),
+        'og:title': getMetaUnitOverviewOpenGraphTitle(unitCode, unitName),
+        'og:description': getMetaUnitOverviewOpenGraphDescription(
+          unitCode,
+          unitAverageRating,
+          unitReviewsCount
+        ),
+        'og:url': pageUrl,
+        'og:type': 'website',
+        'twitter:card': 'summary',
+        'twitter:title': getMetaUnitOverviewTwitterTitle(unitCode),
+        'twitter:description': getMetaUnitOverviewTwitterDescription(
+          unitCode,
+          unitName,
+          unitAverageRating
+        ),
+      },
+      // Canonical URL pointing at this unit (overrides the homepage default in
+      // index.html) so Google indexes each unit page as its own page.
+      pageUrl
+    );
   }
 }

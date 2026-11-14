@@ -7,7 +7,6 @@
   "scripts": {
     "test": "vitest run --project services --project integration",
     "test:integration": "vitest run --project integration",
-    "test:perf": "vitest run --project performance",
     "build": "tsc -p tsconfig.build.json && tsc-alias",
     "vercel-build": "npm run build",
     "typecheck": "tsc --noEmit",
@@ -25,15 +24,12 @@
   "dependencies": {
     "@google/genai": "~1.34.0",
     "@upstash/redis": "~1.36.0",
-    "axios": "1.20.0",
-    "bcrypt": "5.1.1",
     "cloudinary": "1.41.3",
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
     "csurf": "1.11.0",
     "dotenv": "17.2.3",
     "express": "4.22.3",
-    "express-async-handler": "~1.2.0",
     "google-auth-library": "~9.15.1",
     "jsonwebtoken": "~9.0.3",
     "mongoose": "~8.24.1",
@@ -42,7 +38,6 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
-    "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/csurf": "^1.11.5",
@@ -51,12 +46,10 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^26.0.0",
     "@types/supertest": "^7.2.0",
-    "artillery": "2.0.27",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "globals": "16.5.0",
-    "ioredis-mock": "^8.13.1",
     "mongodb-memory-server": "11.0.1",
     "mongoose-to-swagger": "1.5.1",
     "prettier": "3.7.4",
@@ -68,10 +61,5 @@
     "typescript": "5.5.4",
     "typescript-eslint": "^8.62.0",
     "vitest": "^4.1.11"
-  },
-  "overrides": {
-    "artillery": {
-      "@opentelemetry/api": "1.9.0"
-    }
   }
 }

@@ -8,11 +8,12 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnitCardComponent } from '@components/unit-card/unit-card.component';
 import { GetUnitService } from '@services/api/get-unit.service';
+import { SeoService } from '@services/seo.service';
 import { ViewportService } from '@services/viewport.service';
+import { CAMPUSES, FACULTIES, SEMESTERS } from 'app/shared/models/v2/enums';
 import { IUnit } from 'app/shared/models/v2/unit.schema';
 import { ButtonModule } from 'primeng/button';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
@@ -73,7 +74,6 @@ export class UnitListComponent implements OnInit, OnDestroy {
 
   // Loading state of unit cards
   loading: boolean = true;
-  testing: boolean = true;
 
   @ViewChild('sortByDropdown') sortByDropdown!: Dropdown;
   isSortByFocused: boolean = false;
@@ -85,69 +85,13 @@ export class UnitListComponent implements OnInit, OnDestroy {
   @ViewChild('op') overlayPanel!: OverlayPanel;
   @ViewChild('filterButton', { read: ElementRef }) filterButton!: ElementRef;
 
-  allFaculties: string[] = [
-    'Art, Design and Architecture',
-    'Arts',
-    'Business and Economics',
-    'Education',
-    'Engineering',
-    'Information Technology',
-    'Law',
-    'Medicine, Nursing and Health Sciences',
-    'Pharmacy and Pharmaceutical Sciences',
-    'Science',
-  ];
-  allSemesters: string[] = [
-    'First semester',
-    'Second semester',
-    'Summer semester A',
-    'Summer semester B',
-    'Research quarter 1',
-    'Research quarter 2',
-    'Research quarter 3',
-    'Research quarter 4',
-    'Winter semester',
-    'Full year',
-    'First semester (Northern)',
-    'Trimester 2',
-    'Second semester to First semester',
-    'Term 1',
-    'Term 2',
-    'Term 3',
-    'Trimester 3',
-    'Teaching period 3',
-    'Teaching period 4',
-    'Teaching period 5',
-  ];
-  allCampuses: string[] = [
-    'Clayton',
-    'Caulfield',
-    'Malaysia',
-    'Overseas',
-    'Peninsula',
-    'City (Melbourne)',
-    'Alfred Hospital',
-    'Monash Online',
-    'Monash Medical Centre',
-    'Monash Law Chambers',
-    'Notting Hill',
-    'Parkville',
-    'Hudson Institute of Medical Research',
-    'Gippsland',
-    'Indonesia',
-    'Box Hill',
-    'Warragul',
-    'Prato',
-    'Suzhou (SEU)',
-    'Southbank',
-    'Moe',
-  ];
+  allFaculties: string[] = [...FACULTIES];
+  allSemesters: string[] = [...SEMESTERS];
+  allCampuses: string[] = [...CAMPUSES];
 
-  // Prerequisites
-  hasPrerequisites: boolean = false;
-
-  // Viewport type
-  viewportType: string = 'desktop';
+  get viewportType() {
+    return this.viewportService.type();
+  }
 
   // Debouncing search
   private $$debounchedSearch = new Subject<string>();
@@ -167,8 +111,7 @@ export class UnitListComponent implements OnInit, OnDestroy {
 
   constructor(
     private unitService: GetUnitService,
-    private meta: Meta,
-    private titleService: Title,
+    private seo: SeoService,
     private viewportService: ViewportService,
     private route: ActivatedRoute,
     private router: Router
@@ -227,15 +170,10 @@ export class UnitListComponent implements OnInit, OnDestroy {
 
     // Fetches the paginated units from the backend
     this.fetchPaginatedUnits();
-
-    // Subscribe to the viewport service and get the viewport type
-    this.viewportService.viewport$.subscribe((type) => {
-      this.viewportType = type;
-    });
   }
 
   ngOnDestroy(): void {
-    this.removeMetaTags();
+    this.seo.clear();
 
     // Unsubscribe from the debounced search
     this.$$debounchedSearch.complete();
@@ -403,64 +341,22 @@ export class UnitListComponent implements OnInit, OnDestroy {
   private updateMetaTags(): void {
     const pageUrl = `${BASE_URL}/list`;
 
-    // Basic meta tags
-    this.titleService.setTitle(META_UNIT_LIST_TITLE);
-    this.meta.updateTag({
-      name: 'description',
-      content: META_BASIC_DESCRIPTION,
-    });
-    this.meta.updateTag({ name: 'keywords', content: META_BASIC_KEYWORDS });
-
-    // Open Graph tags for social sharing
-    this.meta.updateTag({
-      property: 'og:title',
-      content: META_UNIT_LIST_TITLE,
-    });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: META_BASIC_OPEN_GRAPH_DESCRIPTION,
-    });
-    this.meta.updateTag({ property: 'og:url', content: pageUrl });
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
-
-    // Twitter Card tags
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
-    this.meta.updateTag({
-      name: 'twitter:title',
-      content: META_BASIC_TWITTER_TITLE,
-    });
-    this.meta.updateTag({
-      name: 'twitter:description',
-      content: META_BASIC_DESCRIPTION,
-    });
-
-    // Canonical URLs
-    const canonicalUrl = this.filterData.search
-      ? `https://monstar.wired.org.au/list?search=${encodeURIComponent(this.filterData.search)}`
-      : 'https://monstar.wired.org.au/list';
-
-    // Remove previous canonical if it exists
-    const existingCanonical = document.querySelector('link[rel="canonical"]');
-    if (existingCanonical) {
-      existingCanonical.remove();
-    }
-
-    // Add new canonical
-    const canonicalLink = document.createElement('link');
-    canonicalLink.setAttribute('rel', 'canonical');
-    canonicalLink.setAttribute('href', canonicalUrl);
-    document.head.appendChild(canonicalLink);
-  }
-
-  private removeMetaTags() {
-    this.meta.removeTag("name='description'");
-    this.meta.removeTag("name='keywords'");
-    this.meta.removeTag("property='og:title'");
-    this.meta.removeTag("property='og:description'");
-    this.meta.removeTag("property='og:url'");
-    this.meta.removeTag("property='og:type'");
-    this.meta.removeTag("name='twitter:card'");
-    this.meta.removeTag("name='twitter:title'");
-    this.meta.removeTag("name='twitter:description'");
+    this.seo.set(
+      META_UNIT_LIST_TITLE,
+      {
+        description: META_BASIC_DESCRIPTION,
+        keywords: META_BASIC_KEYWORDS,
+        'og:title': META_UNIT_LIST_TITLE,
+        'og:description': META_BASIC_OPEN_GRAPH_DESCRIPTION,
+        'og:url': pageUrl,
+        'og:type': 'website',
+        'twitter:card': 'summary',
+        'twitter:title': META_BASIC_TWITTER_TITLE,
+        'twitter:description': META_BASIC_DESCRIPTION,
+      },
+      this.filterData.search
+        ? `${pageUrl}?search=${encodeURIComponent(this.filterData.search)}`
+        : pageUrl
+    );
   }
 }

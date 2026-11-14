@@ -1,5 +1,3 @@
-import type { Types } from 'mongoose';
-
 import type { Id } from '@shared/types';
 
 import User from './user.model';
@@ -156,26 +154,6 @@ class UserRepository {
       { $pull: { dislikedReviews: reviewId } },
       { new: true }
     );
-  }
-
-  /**
-   * Check if user has liked a review
-   */
-  static async hasLikedReview(userId: Id, reviewId: Id) {
-    const user = await User.findById(userId, { likedReviews: 1 });
-    return user
-      ? user.likedReviews.includes(reviewId as Types.ObjectId)
-      : false;
-  }
-
-  /**
-   * Check if user has disliked a review
-   */
-  static async hasDislikedReview(userId: Id, reviewId: Id) {
-    const user = await User.findById(userId, { dislikedReviews: 1 });
-    return user
-      ? user.dislikedReviews.includes(reviewId as Types.ObjectId)
-      : false;
   }
 
   /* ------------------------------ Notifications ----------------------------- */

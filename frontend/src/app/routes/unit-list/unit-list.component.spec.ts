@@ -18,7 +18,6 @@ describe('UnitListComponent', () => {
       null!,
       null!,
       null!,
-      null!,
       null!
     );
 

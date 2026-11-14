@@ -10,6 +10,12 @@ class AppError extends Error {
 
 /* ------------------------------ Basic errors ------------------------------ */
 
+class Error400BadRequest extends AppError {
+  constructor(message = 'Bad request') {
+    super(message, 400);
+  }
+}
+
 class Error401NotAuthorized extends AppError {
   constructor(message = 'Not authorized') {
     super(message, 401);
@@ -40,17 +46,11 @@ class Error422Unprocessable extends AppError {
   }
 }
 
-class Error429RateLimited extends AppError {
-  constructor(message = 'Too many requests') {
-    super(message, 429);
-  }
-}
-
 export {
+  Error400BadRequest,
   Error401NotAuthorized,
   Error403Forbidden,
   Error404NotFound,
   Error409Conflict,
   Error422Unprocessable,
-  Error429RateLimited,
 };

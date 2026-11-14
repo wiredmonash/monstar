@@ -69,15 +69,6 @@ body {
   overscroll-behavior: none !important;
 }
 
-// Full page container class used by the full page layout directive
-// for making the unit overview page full height.
-.full-page-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
 /** 
 *  ! |======================================================================|
 *  ! | GLOBAL VARIABLES
@@ -90,16 +81,7 @@ body {
   --primary-color: #e288e2;
   --bg-dark-color: #1e1e1e;
   --fg-dark-color: #2c2c2c;
-
-  // Width limits for responsive design
-  --desktop-limit: 1024px;
-  --tablet-limit: 768px;
-  --mobile-limit: 400px;
 }
-
-$desktop-limit: 1024px;
-$tablet-limit: 768px;
-$mobile-limit: 400px;
 
 /** 
 *  ! |======================================================================|
@@ -148,32 +130,5 @@ $mobile-limit: 400px;
   // Smaller font for toast details
   .p-toast-message-text .p-toast-detail {
     font-size: 0.8rem !important;
-  }
-}
-
-// Make toast responsive
-:host ::ng-deep {
-  @media screen and (max-width: 576px) {
-    .p-toast {
-      width: 90vw !important;
-      max-width: 90vw !important;
-      right: 5vw !important;
-    }
-
-    .p-toast-message {
-      width: 100% !important;
-    }
-
-    .p-toast-message-content {
-      padding: 0.75rem !important;
-    }
-
-    .p-toast-message-text .p-toast-summary {
-      font-size: 0.9rem !important;
-    }
-
-    .p-toast-message-text .p-toast-detail {
-      font-size: 0.8rem !important;
-    }
   }
 }

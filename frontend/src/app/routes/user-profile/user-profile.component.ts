@@ -3,9 +3,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReviewCardComponent } from '@components/review-card/review-card.component';
-import { DeleteReviewService } from '@services/api/delete-review.service';
-import { GetReviewService } from '@services/api/get-review.service';
-import { ModifyReviewService } from '@services/api/modify-review.service';
+import { ReviewService } from '@services/api/review.service';
 import { UserService } from '@services/api/user.service';
 import { DEFAULT_PROFILE_IMG } from 'app/shared/constants/constants';
 import { IUpdateReview } from 'app/shared/models/v2/review.schema';
@@ -46,9 +44,7 @@ export class UserProfileComponent {
   private destroyRef = inject(DestroyRef);
 
   private userService = inject(UserService);
-  private getReviewService = inject(GetReviewService);
-  private modifyReviewService = inject(ModifyReviewService);
-  private deleteReviewService = inject(DeleteReviewService);
+  private reviewService = inject(ReviewService);
   private messageService = inject(MessageService);
 
   private refreshReviews$ = new BehaviorSubject<void>(undefined);
@@ -77,7 +73,7 @@ export class UserProfileComponent {
         switchMap((user) => {
           if (!user) return of({ user: null, currUser, reviews: [] });
 
-          return this.getReviewService.getReviewsByUser(user._id).pipe(
+          return this.reviewService.getReviewsByUser(user._id).pipe(
             map((reviews) => ({
               user,
               currUser,
@@ -109,7 +105,7 @@ export class UserProfileComponent {
   );
 
   onEditReview(review: IUpdateReview) {
-    this.modifyReviewService
+    this.reviewService
       .editReview(review)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -126,7 +122,7 @@ export class UserProfileComponent {
   }
 
   onDeleteReview(reviewId: string) {
-    this.deleteReviewService
+    this.reviewService
       .deleteById(reviewId)
       .pipe(
         takeUntilDestroyed(this.destroyRef),

@@ -1,9 +1,16 @@
 import { AsyncPipe, DOCUMENT } from '@angular/common';
-import { Component, HostListener, inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnDestroy,
+  OnInit,
+  Renderer2,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReviewCardComponent } from '@components/review-card/review-card.component';
 import { ShinyMonstarTitleComponent } from '@components/shiny-monstar-title/shiny-monstar-title.component';
-import { GetReviewService } from '@services/api/get-review.service';
+import { ReviewService } from '@services/api/review.service';
 import { UserService } from '@services/api/user.service';
 import { IReviewFullyPopulated } from 'app/shared/models/v2/review.schema';
 import { MessageService } from 'primeng/api';
@@ -54,9 +61,9 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.showLeftPanel = window.innerWidth >= 1130;
   }
 
-  private getReviewService = inject(GetReviewService);
+  private reviewService = inject(ReviewService);
 
-  state$ = this.getReviewService.getMostLiked().pipe(
+  state$ = this.reviewService.getMostLiked().pipe(
     map((reviews: IReviewFullyPopulated[]) => {
       const state: State = {
         reviews: [],
