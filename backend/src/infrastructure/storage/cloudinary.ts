@@ -1,7 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary'; // Cloudinary library
 import { CloudinaryStorage } from 'multer-storage-cloudinary'; // Multer storage enging for Cloudinary
-import dotenv from 'dotenv';
-dotenv.config({ quiet: true });
 
 // Configure Cloudinary with credentials from environment variables
 cloudinary.config({
@@ -48,5 +46,13 @@ const orgStorage = new CloudinaryStorage({
   } as any,
 });
 
-// Export the Cloudinary instance and storage engines
-export { cloudinary, storage, orgStorage };
+/**
+ * Delete an uploaded image given its delivery URL and upload folder. The public
+ * id is the folder plus the URL's filename without its extension.
+ */
+const destroyByUrl = (url: string, folder: 'user_avatars' | 'orgs') =>
+  cloudinary.uploader.destroy(
+    `${folder}/${url.split('/').pop()!.split('.')[0]}`
+  );
+
+export { storage, orgStorage, destroyByUrl };

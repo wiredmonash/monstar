@@ -37,16 +37,6 @@ class UnitRepository {
   }
 
   /**
-   * Find unit by exact unitcode (no lowercasing)
-   *
-   * NOTE: preserves v1 behavior — v1 GET /unit/:unitcode matches the code
-   * exactly and does not lowercase it (unlike findOneByUnitcode).
-   */
-  static async findOneByExactUnitcode(unitcode: string) {
-    return await Unit.findOne({ unitCode: unitcode });
-  }
-
-  /**
    * Find unit by id
    */
   static async findById(unitId: Id) {
@@ -149,31 +139,6 @@ class UnitRepository {
       new: true,
       runValidators: true,
     });
-  }
-
-  /**
-   * Update a unit matched by its exact unitcode.
-   *
-   * NOTE: preserves v1 behavior — v1 PUT /update/:unitcode matches the code
-   * exactly (no lowercasing).
-   */
-  static async updateOneByExactUnitcode(
-    unitcode: string,
-    updateData: UpdateQuery<IUnit>
-  ) {
-    return await Unit.updateOne({ unitCode: unitcode }, updateData);
-  }
-
-  /* --------------------------------- Removal -------------------------------- */
-
-  /**
-   * Delete a unit matched by its exact unitcode.
-   *
-   * NOTE: preserves v1 behavior — v1 DELETE /delete/:unitcode matches the code
-   * exactly and does not lowercase it.
-   */
-  static async deleteOneByExactUnitcode(unitcode: string) {
-    return await Unit.findOneAndDelete({ unitCode: unitcode });
   }
 }
 

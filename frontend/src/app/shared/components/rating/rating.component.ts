@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
 
 @Component({
   selector: 'app-rating',
@@ -20,24 +19,13 @@ export class RatingComponent implements OnInit {
   starsArray: number[] = [];
   // Rating on hover
   hoverRating: number = 0;
-  // Viewport type
-  viewportType: ViewportType = 'desktop';
-
-  constructor(private viewportService: ViewportService) {}
-
   /**
    * * Initialise the stars array
    *
-   * - Create an array of length `stars` to loop over in the template
-   * - Subscribes to viewport changes
+   * Create an array of length `stars` to loop over in the template
    */
   ngOnInit(): void {
     this.starsArray = Array(this.stars).fill(0);
-
-    // Subscribe to viewport changes
-    this.viewportService.viewport$.subscribe((type) => {
-      this.viewportType = type;
-    });
   }
 
   /**

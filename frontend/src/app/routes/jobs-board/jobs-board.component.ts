@@ -10,10 +10,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Meta, Title } from '@angular/platform-browser';
 import { IJob } from '@models/job.schema';
 import { JobService } from '@services/api/jobs.api.service';
 import { UserService } from '@services/api/user.service';
+import { SeoService } from '@services/seo.service';
 import {
   BASE_URL,
   META_AUTHOR,
@@ -32,7 +32,6 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
 import { forkJoin } from 'rxjs';
-import { FooterService } from '../../shared/services/footer.service';
 import { buildOrgLogoMap } from '../../shared/utils/string-similarity';
 
 @Component({
@@ -59,9 +58,7 @@ export class JobsBoardComponent implements OnInit, OnDestroy {
   private destroyRef = inject(DestroyRef);
   private jobService = inject(JobService);
   private userService = inject(UserService);
-  private meta = inject(Meta);
-  private titleService = inject(Title);
-  private footerService = inject(FooterService);
+  private seo = inject(SeoService);
 
   jobs: IJob[] = [];
   filteredJobs: IJob[] = [];
@@ -96,7 +93,6 @@ export class JobsBoardComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    this.footerService.hideFooter();
     this.isSplitView = window.innerWidth >= this.splitViewMinWidth;
     window.addEventListener('resize', this.resizeHandler);
     this.updateMetaTags();
@@ -112,21 +108,7 @@ export class JobsBoardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener('resize', this.resizeHandler);
     document.body.style.overflow = '';
-    this.footerService.showFooter();
-
-    // Remove meta tags
-    this.meta.removeTag("name='description'");
-    this.meta.removeTag("name='keywords'");
-    this.meta.removeTag("name='author'");
-    this.meta.removeTag("property='og:site_name'");
-    this.meta.removeTag("property='og:title'");
-    this.meta.removeTag("property='og:description'");
-    this.meta.removeTag("property='og:url'");
-    this.meta.removeTag("property='og:type'");
-    this.meta.removeTag("property='og:locale'");
-    this.meta.removeTag("name='twitter:card'");
-    this.meta.removeTag("name='twitter:title'");
-    this.meta.removeTag("name='twitter:description'");
+    this.seo.clear();
 
     // Remove JSON-LD structured data
     this.removeJsonLd();
@@ -251,42 +233,19 @@ export class JobsBoardComponent implements OnInit, OnDestroy {
   }
 
   private updateMetaTags(): void {
-    const pageUrl = BASE_URL + '/jobs';
-
-    // Set the document title
-    this.titleService.setTitle(META_JOBS_TITLE);
-
-    // Basic meta tags
-    this.meta.updateTag({
-      name: 'description',
-      content: META_JOBS_DESCRIPTION,
-    });
-    this.meta.updateTag({ name: 'keywords', content: META_JOBS_KEYWORDS });
-    this.meta.updateTag({ name: 'author', content: META_AUTHOR });
-
-    // Open Graph tags for social sharing
-    this.meta.updateTag({ property: 'og:site_name', content: META_SITENAME });
-    this.meta.updateTag({ property: 'og:title', content: META_JOBS_TITLE });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: META_JOBS_OPEN_GRAPH_DESCRIPTION,
-    });
-    this.meta.updateTag({ property: 'og:url', content: pageUrl });
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
-    this.meta.updateTag({ property: 'og:locale', content: 'en_AU' });
-
-    // Twitter Card tags
-    this.meta.updateTag({
-      name: 'twitter:card',
-      content: 'summary_large_image',
-    });
-    this.meta.updateTag({
-      name: 'twitter:title',
-      content: META_JOBS_TITLE,
-    });
-    this.meta.updateTag({
-      name: 'twitter:description',
-      content: META_JOBS_TWITTER_DESCRIPTION,
+    this.seo.set(META_JOBS_TITLE, {
+      description: META_JOBS_DESCRIPTION,
+      keywords: META_JOBS_KEYWORDS,
+      author: META_AUTHOR,
+      'og:site_name': META_SITENAME,
+      'og:title': META_JOBS_TITLE,
+      'og:description': META_JOBS_OPEN_GRAPH_DESCRIPTION,
+      'og:url': BASE_URL + '/jobs',
+      'og:type': 'website',
+      'og:locale': 'en_AU',
+      'twitter:card': 'summary_large_image',
+      'twitter:title': META_JOBS_TITLE,
+      'twitter:description': META_JOBS_TWITTER_DESCRIPTION,
     });
   }
 

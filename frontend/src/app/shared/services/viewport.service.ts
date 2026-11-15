@@ -1,71 +1,24 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { Injectable, signal } from '@angular/core';
 
 export type ViewportType = 'desktop' | 'laptop' | 'tablet' | 'mobile';
+
+const viewportFor = (width: number): ViewportType => {
+  if (width <= 400) return 'mobile';
+  if (width <= 768) return 'tablet';
+  if (width <= 1024) return 'laptop';
+  return 'desktop';
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class ViewportService {
-  // Breakpoints for different viewport types
-  private desktopLimit = 1024;
-  private tabletLimit = 768;
-  private mobileLimit = 400;
+  /** The current viewport type, kept up to date as the window resizes. */
+  readonly type = signal(viewportFor(window.innerWidth));
 
-  // BehaviorSubject to store the current viewport type
-  private viewportSubject = new BehaviorSubject<ViewportType>(
-    this.getCurrentViewportType()
-  );
-  // Expose as observable if needed
-  viewport$ = this.viewportSubject.asObservable();
-
-  /**
-   * ! Constructor
-   *
-   * Detects the current viewport and listens for window resize events
-   */
   constructor() {
-    // Detect the current viewport
-    this.detectViewport();
-
-    // Listen for window resize events
-    window.addEventListener('resize', this.detectViewport.bind(this));
-  }
-
-  /**
-   * * Checks the current window width and updates the viewport subject.
-   */
-  private detectViewport() {
-    const viewportType = this.getCurrentViewportType();
-    this.viewportSubject.next(viewportType);
-  }
-
-  /**
-   * * Determines the viewport type based on window width
-   */
-  private getCurrentViewportType(): ViewportType {
-    const width = window.innerWidth;
-    if (width <= this.mobileLimit) {
-      if (!environment.production) {
-        console.log('ViewportService | getCurrentViewportType: mobile');
-      }
-      return 'mobile';
-    } else if (width <= this.tabletLimit) {
-      if (!environment.production) {
-        console.log('ViewportService | getCurrentViewportType: tablet');
-      }
-      return 'tablet';
-    } else if (width <= this.desktopLimit) {
-      if (!environment.production) {
-        console.log('ViewportService | getCurrentViewportType: laptop');
-      }
-      return 'laptop';
-    } else {
-      if (!environment.production) {
-        console.log('ViewportService | getCurrentViewportType: desktop');
-      }
-      return 'desktop';
-    }
+    window.addEventListener('resize', () =>
+      this.type.set(viewportFor(window.innerWidth))
+    );
   }
 }

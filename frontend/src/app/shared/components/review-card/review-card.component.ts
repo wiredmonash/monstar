@@ -12,19 +12,18 @@ import {
   EventEmitter,
   inject,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import { ModifyReviewService } from '@services/api/modify-review.service';
+import { ReviewService } from '@services/api/review.service';
 import { UserService } from '@services/api/user.service';
 import {
+  emptyReview,
   IReview,
   IReviewAuthorPopulated,
   IReviewFullyPopulated,
   IUpdateReview,
-  UpdateReviewSchema,
 } from 'app/shared/models/v2/review.schema';
 import { IUnit } from 'app/shared/models/v2/unit.schema';
 import { ConfirmationService, MenuItem } from 'primeng/api';
@@ -35,9 +34,9 @@ import { ConfirmPopup, ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenuModule } from 'primeng/menu';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
-import { combineLatest, map, ReplaySubject, Subscription } from 'rxjs';
+import { combineLatest, map, ReplaySubject } from 'rxjs';
 import { HighlightUnitPipe } from '../../pipes/highlight-unit.pipe';
-import { ViewportService, ViewportType } from '../../services/viewport.service';
+import { ViewportService } from '../../services/viewport.service';
 import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit.component';
 
 @Component({
@@ -79,7 +78,7 @@ import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit
     ]),
   ],
 })
-export class ReviewCardComponent implements OnInit, OnDestroy {
+export class ReviewCardComponent implements OnInit {
   Math = Math;
 
   @Input() variant: 'default' | 'compact' | 'profile' = 'default';
@@ -125,26 +124,34 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   defaultProfileImg =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSWwfGUCDwrZZK12xVpCOqngxSpn0BDpq6ewQ&s';
 
-  private viewportSubscription: Subscription = new Subscription();
-  viewportType: ViewportType = 'desktop';
+  get viewportType() {
+    return this.viewportService.type();
+  }
 
   // Inputted to child in template (write-review-unit)
-  reviewEdit: IUpdateReview = UpdateReviewSchema.safeParse({
-    _id: '',
-    author: '',
-  }).data!;
+  reviewEdit: IUpdateReview = emptyReview();
   startEditReview(review: IReviewAuthorPopulated) {
-    this.reviewEdit = UpdateReviewSchema.parse({
-      ...review,
-      author: typeof review.author === 'object' ? review.author._id : review.author,
-    });
+    this.reviewEdit = {
+      _id: review._id,
+      title: review.title,
+      description: review.description,
+      semester: review.semester,
+      grade: review.grade ?? null,
+      year: review.year,
+      overallRating: review.overallRating,
+      relevancyRating: review.relevancyRating,
+      facultyRating: review.facultyRating,
+      contentRating: review.contentRating,
+      author:
+        typeof review.author === 'object' ? review.author._id : review.author,
+    };
     if (this.writeReviewDialog) {
       this.writeReviewDialog.openDialog();
     }
   }
 
   private userService = inject(UserService);
-  private modifyReviewService = inject(ModifyReviewService);
+  private reviewService = inject(ReviewService);
   private confirmationService = inject(ConfirmationService);
   private viewportService = inject(ViewportService);
 
@@ -173,12 +180,6 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    this.viewportSubscription = this.viewportService.viewport$.subscribe(
-      (type) => {
-        this.viewportType = type;
-      }
-    );
-
     this.dropdownMenuItems = [
       {
         label: 'Edit',
@@ -196,10 +197,6 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
         },
       },
     ];
-  }
-
-  ngOnDestroy(): void {
-    this.viewportSubscription.unsubscribe();
   }
 
   /* ----------------------------- Review deletion ---------------------------- */
@@ -239,7 +236,7 @@ export class ReviewCardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.modifyReviewService
+    this.reviewService
       .toggleReaction(reviewId, userId, reactionType)
       .subscribe({
         next: (updatedReview: IReview) => {

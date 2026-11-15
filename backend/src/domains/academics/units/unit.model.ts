@@ -65,7 +65,6 @@ const UnitSchema = new Schema({
     model: { type: String },
     totalReviewsConsidered: { type: Number },
     reviewSampleSize: { type: Number },
-    setuSeasons: { type: [String], default: [] },
   },
 });
 

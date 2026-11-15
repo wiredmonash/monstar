@@ -4,12 +4,10 @@ import express from 'express';
 // not the '@domains' barrels, which autogen can't resolve. Keep the mounts below
 // in sync with server.ts.
 import reviewsV2Router from '../domains/academics/reviews/reviews.v2.routes';
-import unitsV1Router from '../domains/academics/units/units.v1.routes';
 import unitsV2Router from '../domains/academics/units/units.v2.routes';
 import notificationsRouter from '../domains/identity/notifications/notifications.routes';
 import usersRouter from '../domains/identity/users/users.routes';
 import adminV1Router from '../domains/platform/admin/admin.v1.routes';
-import githubRouter from '../domains/platform/github/github.routes';
 import jobsV2Router from '../domains/recruitment/jobs/jobs.v2.routes';
 
 const app = express();
@@ -21,12 +19,10 @@ app.get(
   (_req, res) => res.json({ csrfToken: '' })
 );
 
-app.use('/api/v1/units', unitsV1Router);
 app.use('/api/v2/units', unitsV2Router);
 app.use('/api/v2/reviews', reviewsV2Router);
 app.use('/api/v2/users', usersRouter);
 app.use('/api/v2/notifications', notificationsRouter);
-app.use('/api/v2/github', githubRouter);
 app.use('/api/v2/jobs', jobsV2Router);
 app.use('/api/admin', adminV1Router);
 

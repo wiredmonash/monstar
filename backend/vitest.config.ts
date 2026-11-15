@@ -33,15 +33,6 @@ export default defineConfig({
           setupFiles: ['src/shared/testing/integration.setup.ts'],
         },
       },
-      {
-        resolve,
-        test: {
-          ...sharedTest,
-          name: 'performance',
-          include: ['src/shared/testing/performance/*.test.ts'],
-          setupFiles: ['src/shared/testing/performance/setup.ts'],
-        },
-      },
     ],
   },
 });

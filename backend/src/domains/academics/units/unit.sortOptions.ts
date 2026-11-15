@@ -31,20 +31,10 @@ function getSortCriteria(sortOption: string): Record<string, 1 | -1> {
 }
 
 /**
- * Checks if the sort option requires filtering by review count
- */
-function requiresReviews(sortOption: string) {
-  return (
-    sortOption === SORT_OPTIONS.HIGHEST_OVERALL ||
-    sortOption === SORT_OPTIONS.LOWEST_OVERALL
-  );
-}
-
-/**
  * Validates if a sort option is valid
  */
 function isValidSortOption(sortOption: string) {
   return Object.values(SORT_OPTIONS).includes(sortOption);
 }
 
-export { SORT_OPTIONS, getSortCriteria, requiresReviews, isValidSortOption };
+export { SORT_OPTIONS, getSortCriteria, isValidSortOption };

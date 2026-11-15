@@ -11,14 +11,8 @@ Allow: https://monstar.wired.org.au/map
 # Units (all subject/unit pages)
 Allow: https://monstar.wired.org.au/unit/*
 
-# SETU results (all survey results pages)
-Allow: https://monstar.wired.org.au/setu/*
-
 # Sitemap references (for completeness)
 Sitemap: https://monstar.wired.org.au/sitemap-static.xml
 Sitemap: https://monstar.wired.org.au/sitemap-units-a-f.xml
 Sitemap: https://monstar.wired.org.au/sitemap-units-g-m.xml
 Sitemap: https://monstar.wired.org.au/sitemap-units-n-z.xml
-Sitemap: https://monstar.wired.org.au/sitemap-setu-a-f.xml
-Sitemap: https://monstar.wired.org.au/sitemap-setu-g-m.xml
-Sitemap: https://monstar.wired.org.au/sitemap-setu-n-z.xml

@@ -10,14 +10,10 @@
  * at the in-memory server, because mongodb.provider captures that variable at
  * module-load time.
  */
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { clearCollections, seedFixtures } from './seedFixtures';
 
 /* ------- Hermetic environment: keep providers inert and offline ------- */
 process.env.NODE_ENV = 'test';
@@ -45,33 +41,6 @@ vi.mock('@docs/swagger', () => ({
   setupSwagger: vi.fn().mockResolvedValue(undefined),
 }));
 
-/**
- * Converts values of data into mongoose types
- */
-const revive = (val: unknown): unknown => {
-  if (Array.isArray(val)) return val.map(revive);
-
-  if (val && typeof val === 'object') {
-    const obj = val as Record<string, unknown>;
-    if (obj.$oid) return new mongoose.Types.ObjectId(obj.$oid as string);
-    if (obj.$date) return new Date(obj.$date as string);
-
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(obj)) out[k] = revive(v);
-    return out;
-  }
-  return val;
-};
-
-/**
- * Loads json data revived into mongoose values
- */
-const loadJson = (relPath: string) => {
-  const abs = path.join(__dirname, relPath);
-  const raw = fs.readFileSync(abs, 'utf8');
-  return revive(JSON.parse(raw)) as Record<string, unknown>[];
-};
-
 let mongo: MongoMemoryReplSet;
 
 /**
@@ -97,31 +66,8 @@ beforeAll(async () => {
   global.app = (await import('../../server')).default;
 });
 
-/**
- * Seed sample data before each test.
- */
-beforeEach(async () => {
-  const users = loadJson('./fixtures/users.json');
-  const units = loadJson('./fixtures/units.json');
-  const reviews = loadJson('./fixtures/reviews.json');
-
-  if (users.length)
-    await mongoose.connection.collection('users').insertMany(users);
-  if (units.length)
-    await mongoose.connection.collection('units').insertMany(units);
-  if (reviews.length)
-    await mongoose.connection.collection('reviews').insertMany(reviews);
-});
-
-/**
- * Clear all collections after each test.
- */
-afterEach(async () => {
-  const collections = await mongoose.connection.db!.collections();
-  for (const c of collections) {
-    await c.deleteMany({});
-  }
-});
+beforeEach(seedFixtures);
+afterEach(clearCollections);
 
 /**
  * Tear down the connection and in-memory server.

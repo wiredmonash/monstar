@@ -12,15 +12,13 @@ const setupSwagger = async (app: Express) => {
 
   const { Notification } = await import('@domains/identity/notifications');
   const { Review } = await import('@domains/academics/reviews');
-  const { SETU } = await import('@domains/academics/setu');
   const { Unit } = await import('@domains/academics/units');
   const { User } = await import('@domains/identity/users');
 
   const doc = {
     info: {
       title: 'MonSTAR API',
-      description:
-        'MonSTAR backend API for Monash University unit reviews and SETU data',
+      description: 'MonSTAR backend API for Monash University unit reviews',
       version: '1.0.0',
     },
     host:
@@ -31,10 +29,6 @@ const setupSwagger = async (app: Express) => {
     consumes: ['application/json'],
     produces: ['application/json'],
     tags: [
-      {
-        name: 'Units',
-        description: 'Unit information and management',
-      },
       {
         name: 'Units V2',
         description: 'Unit information and management V2',
@@ -54,14 +48,6 @@ const setupSwagger = async (app: Express) => {
       {
         name: 'Notifications',
         description: 'User notifications',
-      },
-      {
-        name: 'GitHub',
-        description: 'GitHub integration for repository operations',
-      },
-      {
-        name: 'SETU',
-        description: 'Student Evaluation of Teaching and Units data',
       },
       {
         name: 'Jobs',
@@ -92,7 +78,6 @@ const setupSwagger = async (app: Express) => {
       User: m2s(User),
       Unit: m2s(Unit),
       Review: m2s(Review),
-      SETU: m2s(SETU),
       Notification: m2s(Notification),
     },
   };

@@ -1,8 +1,6 @@
-import { z } from 'zod';
+export type Grade = 'HD' | 'D' | 'C' | 'P' | 'N';
 
-export const gradesEnum = z.enum(['HD', 'D', 'C', 'P', 'N']);
-
-export const semestersEnum = z.enum([
+export const SEMESTERS = [
   'First semester',
   'Second semester',
   'Summer semester A',
@@ -23,9 +21,10 @@ export const semestersEnum = z.enum([
   'Teaching period 3',
   'Teaching period 4',
   'Teaching period 5',
-]);
+] as const;
+export type Semester = (typeof SEMESTERS)[number];
 
-export const campusesEnum = z.enum([
+export const CAMPUSES = [
   'Clayton',
   'Caulfield',
   'Malaysia',
@@ -47,9 +46,9 @@ export const campusesEnum = z.enum([
   'Suzhou (SEU)',
   'Southbank',
   'Moe',
-]);
+] as const;
 
-export const facultiesEnum = z.enum([
+export const FACULTIES = [
   'Art, Design and Architecture',
   'Arts',
   'Business and Economics',
@@ -60,11 +59,6 @@ export const facultiesEnum = z.enum([
   'Medicine, Nursing and Health Sciences',
   'Pharmacy and Pharmaceutical Sciences',
   'Science',
-]);
+] as const;
 
-export const unitCardTagEnum = z.enum([
-  'most-reviews',
-  'controversial',
-  'wam-booster',
-]);
-export type IUnitCardEnum = z.infer<typeof unitCardTagEnum>;
+export type IUnitCardEnum = 'most-reviews' | 'controversial' | 'wam-booster';

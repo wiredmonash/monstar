@@ -4,7 +4,4 @@ export const environment = {
   production: false,
   apiUrl: '/api/v1',
   apiV2Url: '/api/v2',
-  setuUrl: '/api/v2/setus',
-  githubUrl: '/api/v2/github',
-  enableSetuCards: false,
 };

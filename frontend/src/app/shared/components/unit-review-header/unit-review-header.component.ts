@@ -6,7 +6,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -63,7 +62,7 @@ import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit
   templateUrl: './unit-review-header.component.html',
   styleUrls: ['./unit-review-header.component.scss'],
 })
-export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
+export class UnitReviewHeaderComponent implements OnDestroy, OnChanges {
   @ViewChild(WriteReviewUnitComponent)
   writeReviewDialog!: WriteReviewUnitComponent;
 
@@ -96,7 +95,9 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
   ];
   @ViewChild('sortMenu') sortMenu!: OverlayPanel;
 
-  viewportType: string = 'desktop';
+  get viewportType() {
+    return this.viewportService.type();
+  }
 
   // Skeleton height for the header when it's loading (pixels)
   private readonly SKELETON_HEIGHTS = {
@@ -140,12 +141,6 @@ export class UnitReviewHeaderComponent implements OnInit, OnDestroy, OnChanges {
       return state;
     })
   );
-
-  ngOnInit(): void {
-    this.viewportService.viewport$.subscribe((type) => {
-      this.viewportType = type;
-    });
-  }
 
   ngAfterViewInit(): void {
     // Resize listener to update the skeleton height

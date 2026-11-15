@@ -1,9 +1,9 @@
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
-import { cloudinary } from '@infrastructure/storage/cloudinary';
-import { CreateError } from '@shared/errors/error';
+import { destroyByUrl } from '@infrastructure/storage/cloudinary';
 import {
+  Error400BadRequest,
   Error403Forbidden,
   Error404NotFound,
   Error409Conflict,
@@ -196,11 +196,14 @@ class UserService {
         'You are not authorised to update user details'
       );
 
-    if (!username) throw CreateError(400, 'Username is required to update');
+    if (!username)
+      throw new Error400BadRequest('Username is required to update');
 
     const trimmed = username.trim();
     if (trimmed.length < 3 || trimmed.length > 20)
-      throw CreateError(400, 'Username must be between 3 and 20 characters');
+      throw new Error400BadRequest(
+        'Username must be between 3 and 20 characters'
+      );
 
     const existing = await UserRepository.findByUsername(trimmed);
     if (existing && existing._id.toString() !== targetUser._id.toString())
@@ -221,10 +224,7 @@ class UserService {
 
     if (user.profileImg) {
       try {
-        const urlParts = user.profileImg.split('/');
-        const fileName = urlParts[urlParts.length - 1].split('.')[0];
-        const publicId = `user_avatars/${fileName}`;
-        await cloudinary.uploader.destroy(publicId);
+        await destroyByUrl(user.profileImg, 'user_avatars');
       } catch (error) {
         console.error('Failed to delete old avatar:', getErrorMessage(error));
       }

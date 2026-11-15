@@ -1,30 +1,22 @@
-import { z } from 'zod';
+export interface IUser {
+  _id: string;
+  email: string;
+  username?: string;
+  isGoogleUser: boolean;
+  googleID: string | null;
 
-export const UserSchema = z.object({
-  _id: z.string(),
-  email: z.union([
-    z.string().regex(/^[a-zA-Z]{4}\d{4}@student\.monash\.edu$/),
-    z.string().regex(/^[a-zA-Z]+\.[a-zA-Z]+@monash\.edu$/),
-  ]),
-  username: z.string().optional(),
-  isGoogleUser: z.boolean().default(false),
-  googleID: z.string().nullable().default(null),
-  
-  reviews: z.array(z.string()).default([]),
+  reviews: string[];
 
-  profileImg: z.string().optional(),
-  admin: z.boolean().default(false),
+  profileImg?: string;
+  admin: boolean;
 
-  refreshToken: z.string().optional(),
-  refreshTokenExpires: z.date().optional(),
+  refreshToken?: string;
+  refreshTokenExpires?: Date;
 
-  likedReviews: z.array(z.string()).default([]),
-  dislikedReviews: z.array(z.string()).default([]),
+  likedReviews: string[];
+  dislikedReviews: string[];
 
-  notifications: z.array(z.string()).default([]),
-})
+  notifications: string[];
+}
 
-export interface IUser extends z.infer<typeof UserSchema> {};
-
-export const authStateEnum = z.enum(['logged out', 'logged in']);
-export type AuthState = z.infer<typeof authStateEnum>;
+export type AuthState = 'logged out' | 'logged in';

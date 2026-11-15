@@ -17,5 +17,5 @@ From [tsconfig.json](../../tsconfig.json): `@routes`, `@components`, `@services`
 
 - New page: add a folder under [routes/](routes/) and register the component in [app.routes.ts](app.routes.ts).
 - Set `standalone: true` explicitly on components, directives, and pipes. Implicit standalone starts in Angular 19 and omitting it here breaks the build.
-- Take API URLs from the [environments/](../environments/) constants (`apiUrl`, `setuUrl`, and friends); don't hardcode `/api/v1` in services.
+- Take API URLs from the [environments/](../environments/) constants (`apiUrl`, `apiV2Url`); don't hardcode `/api/v1` in services.
 - The Angular 18 rules in [AGENTS.md](../../../AGENTS.md) cover which newer-Angular APIs don't exist here.

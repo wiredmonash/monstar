@@ -1,5 +1,3 @@
-export const NAVBAR_HEIGHT = '57.2px';
-
 export const BASE_URL = 'https://monstar.wired.org.au';
 
 export const DEFAULT_PROFILE_IMG =
@@ -122,41 +120,3 @@ export const getMetaUnitOverviewTwitterDescription = (
   averageRating: number
 ): string =>
   `See what Monash students think about ${unitCode} (${unitName}). Average rating: ${averageRating}/5.`;
-
-// * SETU ---------------------------------------------------------------------|
-// Title
-export const getMetaSetuOverviewTitle = (unitCode: string): string =>
-  `${unitCode} SETU Evaluation Results | Monash University Student Feedback`;
-
-// Description
-export const getMetaSetuOverviewDescription = (
-  unitCode: string,
-  seasonYear?: string
-): string =>
-  `View official SETU evaluation data for ${unitCode} at Monash University ${seasonYear ? `from ${seasonYear}` : ''}. See student satisfaction scores, teaching quality metrics, and learning outcome ratings.`;
-
-// Keywords
-export const getMetaSetuOverviewKeywords = (unitCode: string): string =>
-  `${unitCode} SETU, Monash SETU data, ${unitCode} student evaluation, Monash University feedback, ${unitCode} teaching quality, ${unitCode} student satisfaction, Monash ${unitCode} ratings, Student Evaluation of Teaching and Units, Monash course evaluation, ${unitCode} learning outcomes`;
-
-// Open Graph Title
-export const getMetaSetuOverviewOpenGraphTitle = (unitCode: string): string =>
-  `${unitCode} SETU Evaluation Data | Official Student Feedback`;
-
-// Open Graph Description
-export const getMetaSetuOverviewOpenGraphDescription = (
-  unitCode: string,
-  aggregateScore?: number
-): string =>
-  `Explore official SETU data for ${unitCode} at Monash University${aggregateScore ? `. Overall satisfaction score: ${aggregateScore}/5` : ''}. Compare semester results and view detailed teaching metrics.`;
-
-// Twitter Title
-export const getMetaSetuOverviewTwitterTitle = (unitCode: string): string =>
-  `${unitCode} SETU Results | Monash University`;
-
-// Twitter Description
-export const getMetaSetuOverviewTwitterDescription = (
-  unitCode: string,
-  aggregateScore?: number
-): string =>
-  `Official SETU evaluation data for ${unitCode}${aggregateScore ? ` shows ${aggregateScore}/5 overall satisfaction` : ''}. See detailed student feedback metrics for this Monash unit.`;

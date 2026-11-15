@@ -1,4 +1,4 @@
-.PHONY: dev dev-backend dev-frontend install install-backend install-frontend hooks clean help up down logs seed reset-db rebuild test test-backend test-frontend benchmark
+.PHONY: dev dev-backend dev-frontend install install-backend install-frontend hooks clean help up down logs seed reset-db rebuild test test-backend test-frontend
 
 # Colors for help text
 BLUE := \033[0;34m
@@ -78,11 +78,6 @@ test-backend: ## Run backend tests (vitest)
 test-frontend: ## Run frontend tests (ng test, headless single-run)
 	@echo "$(GREEN)Running frontend tests...$(NC)"
 	cd frontend && npm test -- --watch=false --browsers=ChromeHeadless
-
-benchmark: ## Benchmark APIs with artillery
-	@echo "$(YELLOW)Benchmarking APIs...$(NC)"
-	cd backend && artillery run artillery.yml
-	@echo "$(GREEN)Benchmarks of APIs complete$(NC)"
 
 ##@ Cleanup
 

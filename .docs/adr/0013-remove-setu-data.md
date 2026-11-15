@@ -26,6 +26,7 @@ Comply and remove SETU from the platform:
 - The team removed SETU data and UI by the 23 December 2025 deadline (`fix/remove-setu`, PR #133, merged 23 Dec 2025).
 - July 2026 follow-ups hardened SETU routes to hard 404s (rather than soft redirects) and removed SETU sitemap entries so search engines drop the pages.
 - PR #254 deleted the remaining public SETU API endpoints (July 2026).
+- PR #426 (November 2026) removed the SETU code that had stayed in the repository behind a disabled flag, along with the unit read route (`/api/v2/setus/unit/:unitCode`) that was still mounted. The removal is two commits: `7f9fde28f1c1` (frontend) and `9a139dce0f06` (backend). Reverting both restores the code as it built and passed tests alongside the rest of that PR. The sitemap script would need its SETU entries written again.
 
 ## Consequences
 

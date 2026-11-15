@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FooterComponent } from '@components/footer/footer.component';
 import { NavbarComponent } from '@components/navbar/navbar.component';
-import { FooterService } from '@services/footer.service';
+import { filter } from 'rxjs';
 
 // Vercel Analytics
 import { inject as injectAnalytics } from '@vercel/analytics';
@@ -31,17 +36,20 @@ export class AppComponent implements OnInit {
 
   constructor(
     private primengConfig: PrimeNGConfig,
-    private footerService: FooterService
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     // Inject Vercel Analytics
     injectAnalytics({ beforeSend: maskProfileUrl });
   }
 
   ngOnInit(): void {
-    // Subscribe to footer visibility changes
-    this.footerService.showFooter$.subscribe((show) => {
-      this.showFooter = show;
-    });
+    // Routes opt out of the footer with `data: { hideFooter: true }`
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.showFooter = !this.route.firstChild?.snapshot.data['hideFooter'];
+      });
 
     // Enable PrimeNG ripple effect globally
     this.primengConfig.ripple = true;

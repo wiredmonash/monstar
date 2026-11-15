@@ -1,8 +1,6 @@
 import { getGeminiClient } from '@infrastructure/ai/gemini';
 import { Review } from '@domains/academics/reviews';
 import type { IReviewLean } from '@domains/academics/reviews';
-import { SETU } from '@domains/academics/setu';
-import type { ISETULean } from '@domains/academics/setu';
 
 import Unit from './unit.model';
 import type { IUnit } from './unit.types';
@@ -13,7 +11,6 @@ console.log(
 );
 const MAX_REVIEW_SAMPLES = 15;
 const MAX_REVIEW_TEXT_LENGTH = 800;
-const MAX_SETU_SEASONS = 4;
 const MIN_REGENERATION_DAYS = 120; // roughly every semester
 
 class AiOverviewProvider {
@@ -48,14 +45,9 @@ class AiOverviewProvider {
     }
 
     const reviewSamples = reviewDocs.slice(0, MAX_REVIEW_SAMPLES);
-    const setuEntries = await SETU.find({ unit_code: unit.unitCode })
-      .sort({ Season: -1 })
-      .limit(MAX_SETU_SEASONS)
-      .lean();
 
     const prompt = buildPrompt({
       unit,
-      setuEntries,
       reviews: reviewSamples,
       totalReviewCount: reviewDocs.length,
     });
@@ -90,7 +82,6 @@ class AiOverviewProvider {
         model: GEMINI_MODEL,
         totalReviewsConsidered: reviewDocs.length,
         reviewSampleSize: reviewSamples.length,
-        setuSeasons: setuEntries.map((entry) => entry.Season),
       };
       await unit.save();
 
@@ -182,12 +173,10 @@ class AiOverviewProvider {
 
 const buildPrompt = ({
   unit,
-  setuEntries,
   reviews,
   totalReviewCount,
 }: {
   unit: IUnit;
-  setuEntries: ISETULean[];
   reviews: IReviewLean[];
   totalReviewCount: number;
 }) => {
@@ -203,7 +192,6 @@ const buildPrompt = ({
     `  <avg-simplicity>${typeof unit.avgFacultyRating === 'number' ? unit.avgFacultyRating.toFixed(2) : ''}</avg-simplicity>\n` +
     `  <avg-usefulness>${typeof unit.avgRelevancyRating === 'number' ? unit.avgRelevancyRating.toFixed(2) : ''}</avg-usefulness>\n` +
     `  <total-reviews>${totalReviewCount}</total-reviews>\n` +
-    `  ${buildSetuXml(setuEntries)}\n` +
     `  ${buildReviewsXml(reviews)}\n` +
     '</unit>';
 
@@ -245,36 +233,6 @@ const formatRatings = (review: IReviewLean) => {
     parts.push(`<usefulness>${review.relevancyRating}</usefulness>`);
   }
   return parts.length > 0 ? parts.join('\n      ') : '';
-};
-
-const buildSetuXml = (entries: ISETULean[]) => {
-  if (!entries.length) return '<setu />';
-
-  const rows = entries.map((entry) => {
-    const aggMean = Array.isArray(entry.agg_score)
-      ? entry.agg_score[0]
-      : undefined;
-    const aggMedian = Array.isArray(entry.agg_score)
-      ? entry.agg_score[1]
-      : undefined;
-    return (
-      `    <setu-entry season="${escapeXml(entry.Season)}">\n` +
-      `        <responses>${entry.Responses}</responses>\n` +
-      `        <invited>${entry.Invited}</invited>\n` +
-      (typeof aggMean === 'number'
-        ? `        <aggregate-mean>${aggMean.toFixed(2)}</aggregate-mean>\n`
-        : '') +
-      (typeof aggMedian === 'number'
-        ? `        <aggregate-median>${aggMedian.toFixed(2)}</aggregate-median>\n`
-        : '') +
-      (entry.I8 && entry.I8.length
-        ? `        <overall-satisfaction>${entry.I8.join(', ')}</overall-satisfaction>\n`
-        : '') +
-      '    </setu-entry>'
-    );
-  });
-
-  return `<setu>\n${rows.join('\n')}\n  </setu>`;
 };
 
 /**

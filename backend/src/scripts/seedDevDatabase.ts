@@ -130,7 +130,7 @@ async function seed() {
     return;
   }
 
-  /* Units — full catalogue, same field mapping as the v1 bulk-create flow. */
+  /* Units — full catalogue. */
   const unitsJson = JSON.parse(
     fs.readFileSync(
       path.join(__dirname, '../docs/sample-data/processed_units.json'),
@@ -191,9 +191,18 @@ async function seed() {
           overallRating,
           // Keep the other ratings within one point of overall so the
           // averages look plausible.
-          relevancyRating: Math.min(5, Math.max(1, overallRating + randomInt(-1, 1))),
-          facultyRating: Math.min(5, Math.max(1, overallRating + randomInt(-1, 1))),
-          contentRating: Math.min(5, Math.max(1, overallRating + randomInt(-1, 1))),
+          relevancyRating: Math.min(
+            5,
+            Math.max(1, overallRating + randomInt(-1, 1))
+          ),
+          facultyRating: Math.min(
+            5,
+            Math.max(1, overallRating + randomInt(-1, 1))
+          ),
+          contentRating: Math.min(
+            5,
+            Math.max(1, overallRating + randomInt(-1, 1))
+          ),
           likes: randomInt(0, 15),
           dislikes: randomInt(0, 4),
           unit: unit._id,
