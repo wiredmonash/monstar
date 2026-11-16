@@ -53,7 +53,6 @@ export class ReviewService {
 
   toggleReaction(
     reviewId: string,
-    userId: string,
     reactionType: 'like' | 'dislike'
   ): Observable<IReview> {
     return this.http
@@ -62,7 +61,7 @@ export class ReviewService {
         reactions: object;
       }>(
         `${this.url}/toggle-reaction/${reviewId}`,
-        { userId, reactionType },
+        { reactionType },
         { withCredentials: true }
       )
       .pipe(map((response) => response.review));
