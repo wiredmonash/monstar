@@ -25,25 +25,23 @@ function buildFilterQuery({
     ];
   }
 
+  // A repeated query key arrives as an array and matches any of its values
+  const anyOf = (value: any, map = (v: any) => v) =>
+    Array.isArray(value) && value.length > 0
+      ? { $in: value.map(map) }
+      : map(value);
+
   // Faculty filter
-  if (faculty && Array.isArray(faculty) && faculty.length > 0) {
-    query.school = { $in: faculty.map((f) => 'Faculty of ' + f) };
-  } else if (faculty) {
-    query.school = 'Faculty of ' + faculty;
-  }
+  if (faculty) query.school = anyOf(faculty, (f) => 'Faculty of ' + f);
 
   // Semester filter
-  if (semesters && Array.isArray(semesters) && semesters.length > 0) {
-    query.offerings = { $elemMatch: { period: { $in: semesters } } };
-  } else if (semesters) {
-    query.offerings = { $elemMatch: { period: semesters } };
+  if (semesters) {
+    query.offerings = { $elemMatch: { period: anyOf(semesters) } };
   }
 
   // Campus filter
-  if (campuses && Array.isArray(campuses) && campuses.length > 0) {
-    query.offerings = { $elemMatch: { location: { $in: campuses } } };
-  } else if (campuses) {
-    query.offerings = { $elemMatch: { location: campuses } };
+  if (campuses) {
+    query.offerings = { $elemMatch: { location: anyOf(campuses) } };
   }
 
   // Reviewed/Unreviewed filters
