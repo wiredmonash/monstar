@@ -265,8 +265,6 @@ export class UnitListComponent implements OnInit, OnDestroy {
     if (event.rows) this.filterData.limit = event.rows;
     localStorage.setItem('rowsPerPage', JSON.stringify(this.filterData.limit));
     this.fetchPaginatedUnits();
-    // Only once the render is done: the loading skeletons make the page
-    // shorter, and a slide measured on the old page overshoots past the footer
     afterNextRender(() => this.slideToTop(), { injector: this.injector });
   }
 
@@ -281,7 +279,6 @@ export class UnitListComponent implements OnInit, OnDestroy {
     if (!from) return;
     window.scrollTo({ top: 0, behavior: 'instant' });
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    // Everything that scrolls with the page; the fixed sidebar rail stays put
     document
       .querySelectorAll('nav.navbar, .wrapper > main, .wrapper > footer')
       .forEach((el) =>

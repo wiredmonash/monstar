@@ -13,7 +13,6 @@ describe('UnitListComponent', () => {
       'getUnitsFiltered',
     ]);
     unitService.getUnitsFiltered.and.returnValue(of({ units: [], total: 100 }));
-    // Paging only goes through the unit service.
     component = new UnitListComponent(
       unitService,
       null!,
@@ -31,8 +30,8 @@ describe('UnitListComponent', () => {
       return of({ units: [], total: 100 });
     });
 
-    component.onPageChange({ first: 24, rows: 24 }); // page 2
-    component.onPageChange({ first: 0, rows: 24 }); // back to page 1
+    component.onPageChange({ first: 24, rows: 24 });
+    component.onPageChange({ first: 0, rows: 24 });
 
     expect(offsets).toEqual([24, 0]);
   });
@@ -42,11 +41,9 @@ describe('UnitListComponent', () => {
     navbar.className = 'navbar';
     const animate = spyOn(navbar, 'animate');
     spyOnProperty(window, 'scrollY').and.returnValue(500);
-    // <any>: jasmine types an overloaded spy by its last overload, (x, y)
     const scrollTo = spyOn<any>(window, 'scrollTo');
 
-    component.onPageChange({ first: 24, rows: 24 }); // page 2
-    // Not yet: the page is shorter once the loading skeletons render
+    component.onPageChange({ first: 24, rows: 24 });
     expect(scrollTo).not.toHaveBeenCalled();
     TestBed.inject(ApplicationRef).tick();
     navbar.remove();
