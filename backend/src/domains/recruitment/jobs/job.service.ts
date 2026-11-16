@@ -18,19 +18,13 @@ class JobService {
     const date = value instanceof Date ? value : new Date(value);
     if (Number.isNaN(date.getTime())) return null;
 
-    const parts = new Intl.DateTimeFormat('en-CA', {
+    // en-CA writes dates as YYYY-MM-DD
+    return new Intl.DateTimeFormat('en-CA', {
       timeZone: this.JOBS_TIME_ZONE,
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-    }).formatToParts(date);
-
-    const year = parts.find((part) => part.type === 'year')?.value;
-    const month = parts.find((part) => part.type === 'month')?.value;
-    const day = parts.find((part) => part.type === 'day')?.value;
-
-    if (!year || !month || !day) return null;
-    return `${year}-${month}-${day}`;
+    }).format(date);
   };
 
   static hasCloseDatePassed = (
