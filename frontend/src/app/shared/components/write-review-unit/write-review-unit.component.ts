@@ -24,7 +24,6 @@ import { Dialog, DialogModule } from 'primeng/dialog';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { RatingModule } from 'primeng/rating';
 import { ToastModule } from 'primeng/toast';
 import { ViewportService } from '../../services/viewport.service';
 import { RatingComponent } from '../rating/rating.component';
@@ -39,7 +38,6 @@ import { RatingComponent } from '../rating/rating.component';
     ButtonModule,
     InputTextModule,
     InputTextareaModule,
-    RatingModule,
     DropdownModule,
     ToastModule,
     RatingComponent,

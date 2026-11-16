@@ -10,7 +10,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { GetUnitService } from '@services/api/get-unit.service';
 import { ReviewService } from '@services/api/review.service';
@@ -24,7 +23,6 @@ import {
 } from 'app/shared/models/v2/review.schema';
 import { IUnitDeeplyPopulated } from 'app/shared/models/v2/unit.schema';
 import { MessageService } from 'primeng/api';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
@@ -64,11 +62,9 @@ import {
     UnitReviewHeaderComponent,
     AiOverviewComponent,
     ToastModule,
-    ProgressSpinnerModule,
     SkeletonModule,
     ScrollPanelModule,
     CommonModule,
-    FormsModule,
   ],
   providers: [MessageService],
   templateUrl: './unit-overview.component.html',

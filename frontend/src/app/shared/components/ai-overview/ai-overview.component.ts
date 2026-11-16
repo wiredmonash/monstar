@@ -1,9 +1,7 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 // PrimeNG modules
 import { CardModule } from 'primeng/card';
-import { TooltipModule } from 'primeng/tooltip';
 
 // App specific models
 import {
@@ -15,7 +13,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 @Component({
   selector: 'app-ai-overview',
   standalone: true,
-  imports: [CommonModule, CardModule, TooltipModule, SkeletonModule],
+  imports: [CardModule, SkeletonModule],
   templateUrl: './ai-overview.component.html',
   styleUrl: './ai-overview.component.scss',
 })

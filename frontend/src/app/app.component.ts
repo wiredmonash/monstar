@@ -6,7 +6,6 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { FooterComponent } from '@components/footer/footer.component';
 import { NavbarComponent } from '@components/navbar/navbar.component';
 import { filter } from 'rxjs';
@@ -25,7 +24,7 @@ export const maskProfileUrl = (event: BeforeSendEvent): BeforeSendEvent => ({
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, ToastModule],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent],
   providers: [MessageService],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'], // Fixed the typo from 'styleUrl' to 'styleUrls'

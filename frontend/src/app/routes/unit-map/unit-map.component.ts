@@ -12,7 +12,6 @@ import * as shape from 'd3-shape';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
-import { OrganizationChartModule } from 'primeng/organizationchart';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subject } from 'rxjs';
@@ -27,7 +26,6 @@ import { GetUnitService } from '../../shared/services/api/get-unit.service';
   selector: 'app-unit-map',
   standalone: true,
   imports: [
-    OrganizationChartModule,
     NgxGraphModule,
     ButtonModule,
     ToolbarModule,

@@ -8,15 +8,11 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IUnitCardEnum } from 'app/shared/models/v2/enums';
 import { PrimeNgSeverity } from 'app/shared/models/v2/types';
-import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChipModule } from 'primeng/chip';
-import { RatingModule } from 'primeng/rating';
-import { SkeletonModule } from 'primeng/skeleton';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { IOffering, IUnit } from '../../models/v2/unit.schema';
@@ -27,15 +23,11 @@ import { TruncatePipe } from '../../pipes/truncate.pipe';
   standalone: true,
   imports: [
     CardModule,
-    FormsModule,
-    RatingModule,
-    ButtonModule,
     UpperCasePipe,
     TruncatePipe,
     TooltipModule,
     CommonModule,
     ChipModule,
-    SkeletonModule,
     TagModule,
   ],
   templateUrl: './unit-card.component.html',

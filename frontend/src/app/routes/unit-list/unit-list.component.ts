@@ -23,11 +23,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { SkeletonModule } from 'primeng/skeleton';
-import { SplitButtonModule } from 'primeng/splitbutton';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {
@@ -49,10 +48,9 @@ import {
   standalone: true,
   imports: [
     UnitCardComponent,
-    ProgressSpinnerModule,
     ToolbarModule,
     ButtonModule,
-    SplitButtonModule,
+    TooltipModule,
     InputTextModule,
     FormsModule,
     PaginatorModule,

@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReviewCardComponent } from '@components/review-card/review-card.component';
-import { ShinyMonstarTitleComponent } from '@components/shiny-monstar-title/shiny-monstar-title.component';
 import { ReviewService } from '@services/api/review.service';
 import { UserService } from '@services/api/user.service';
 import { IReviewFullyPopulated } from 'app/shared/models/v2/review.schema';
@@ -28,7 +27,6 @@ interface State {
   standalone: true,
   imports: [
     AuthGoogleButtonComponent,
-    ShinyMonstarTitleComponent,
     DividerModule,
     ReviewCardComponent,
     AsyncPipe,

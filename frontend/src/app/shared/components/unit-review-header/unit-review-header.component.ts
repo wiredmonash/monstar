@@ -18,14 +18,9 @@ import { IUnitDeeplyPopulated } from 'app/shared/models/v2/unit.schema';
 import { IUser } from 'app/shared/models/v2/user.schema';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { DividerModule } from 'primeng/divider';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
 import { KnobModule } from 'primeng/knob';
 import { ListboxModule } from 'primeng/listbox';
 import { OverlayPanel, OverlayPanelModule } from 'primeng/overlaypanel';
-import { RatingModule } from 'primeng/rating';
 import { RippleModule } from 'primeng/ripple';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
@@ -41,16 +36,11 @@ import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit
   standalone: true,
   imports: [
     CommonModule,
-    DialogModule,
     ButtonModule,
-    InputTextModule,
-    RatingModule,
     WriteReviewUnitComponent,
-    DropdownModule,
     FormsModule,
     DecimalPipe,
     ToastModule,
-    DividerModule,
     TooltipModule,
     KnobModule,
     RippleModule,

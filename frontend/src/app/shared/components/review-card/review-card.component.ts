@@ -5,7 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { CommonModule, SlicePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
   Component,
@@ -27,12 +27,10 @@ import {
 } from 'app/shared/models/v2/review.schema';
 import { IUnit } from 'app/shared/models/v2/unit.schema';
 import { ConfirmationService, MenuItem } from 'primeng/api';
-import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopup, ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenuModule } from 'primeng/menu';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { combineLatest, map, ReplaySubject } from 'rxjs';
 import { HighlightUnitPipe } from '../../pipes/highlight-unit.pipe';
@@ -43,10 +41,7 @@ import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit
   selector: 'app-review-card',
   standalone: true,
   imports: [
-    SlicePipe,
-    AvatarModule,
     CommonModule,
-    ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
     MenuModule,
