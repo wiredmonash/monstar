@@ -1,7 +1,6 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { UserService } from '../services/api/user.service';
 import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 
 // Flag to prevent multiple token refresh requests
@@ -22,7 +21,6 @@ let isRefreshing = false;
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const userService = inject(UserService);
-  const router = inject(Router);
 
   /**
    * Skip interceptor logic for authentication endpoints to prevent infinite loops.

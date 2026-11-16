@@ -5,7 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { CommonModule, SlicePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
   Component,
@@ -27,12 +27,10 @@ import {
 } from 'app/shared/models/v2/review.schema';
 import { IUnit } from 'app/shared/models/v2/unit.schema';
 import { ConfirmationService, MenuItem } from 'primeng/api';
-import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmPopup, ConfirmPopupModule } from 'primeng/confirmpopup';
 import { MenuModule } from 'primeng/menu';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { combineLatest, map, ReplaySubject } from 'rxjs';
 import { HighlightUnitPipe } from '../../pipes/highlight-unit.pipe';
@@ -43,10 +41,7 @@ import { WriteReviewUnitComponent } from '../write-review-unit/write-review-unit
   selector: 'app-review-card',
   standalone: true,
   imports: [
-    SlicePipe,
-    AvatarModule,
     CommonModule,
-    ProgressSpinnerModule,
     ConfirmPopupModule,
     ButtonModule,
     MenuModule,
@@ -229,27 +224,20 @@ export class ReviewCardComponent implements OnInit {
   toggleReaction(reactionType: 'like' | 'dislike') {
     if (!this.review) return;
     const reviewId = this.review._id;
+    // There is no rollback when nobody is signed in, and nothing to send
     const rollback = this.userService.toggleReaction(reviewId, reactionType);
-    const userId = this.userService.getId();
-    if (!userId) {
-      console.error('User id was not retrieved');
-      return;
-    }
+    if (!rollback) return;
 
-    this.reviewService
-      .toggleReaction(reviewId, userId, reactionType)
-      .subscribe({
-        next: (updatedReview: IReview) => {
-          this.review = {
-            ...this.review,
-            likes: updatedReview.likes,
-            dislikes: updatedReview.dislikes,
-          } as IReviewAuthorPopulated;
-        },
-        error: () => {
-          if (rollback) rollback();
-        },
-      });
+    this.reviewService.toggleReaction(reviewId, reactionType).subscribe({
+      next: (updatedReview: IReview) => {
+        this.review = {
+          ...this.review,
+          likes: updatedReview.likes,
+          dislikes: updatedReview.dislikes,
+        } as IReviewAuthorPopulated;
+      },
+      error: rollback,
+    });
   }
 
   /* ----------------------------- Helper methods ----------------------------- */

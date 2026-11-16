@@ -5,9 +5,6 @@ import { UserService } from '@services/api/user.service';
 import { IUser } from 'app/shared/models/v2/user.schema';
 import { MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
-import { BadgeModule } from 'primeng/badge';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { RippleModule } from 'primeng/ripple';
 import { StyleClassModule } from 'primeng/styleclass';
 import { ToastModule } from 'primeng/toast';
@@ -32,14 +29,11 @@ interface RailLink {
   standalone: true,
   imports: [
     RouterLink,
-    ButtonModule,
     RippleModule,
     StyleClassModule,
     AvatarModule,
-    DialogModule,
     ToastModule,
     TooltipModule,
-    BadgeModule,
     NotificationsPopupComponent,
     AsyncPipe,
   ],

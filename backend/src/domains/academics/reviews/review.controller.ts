@@ -44,7 +44,7 @@ class ReviewController {
     const unitCode = req.params.unit.toLowerCase();
     const authUserId = req.user?.id || req.user?._id;
     const requestBody = req.body || {};
-    const requestedAuthorId = requestBody.author || requestBody.review_author;
+    const requestedAuthorId = requestBody.author;
 
     if (!authUserId) {
       return res.status(401).json({
@@ -62,22 +62,17 @@ class ReviewController {
       });
     }
 
-    // TODO: FIX THIS SLOP
-    // Normalize payload to current review schema and enforce author from token
+    // Take only the review fields and enforce author from token
     const review = await ReviewService.createReview(unitCode, {
-      title: requestBody.title ?? requestBody.review_title,
-      semester: requestBody.semester ?? requestBody.review_semester,
-      grade: requestBody.grade ?? requestBody.review_grade,
-      year: requestBody.year ?? requestBody.review_year,
-      overallRating:
-        requestBody.overallRating ?? requestBody.review_overall_rating,
-      relevancyRating:
-        requestBody.relevancyRating ?? requestBody.review_relevancy_rating,
-      facultyRating:
-        requestBody.facultyRating ?? requestBody.review_faculty_rating,
-      contentRating:
-        requestBody.contentRating ?? requestBody.review_content_rating,
-      description: requestBody.description ?? requestBody.review_description,
+      title: requestBody.title,
+      semester: requestBody.semester,
+      grade: requestBody.grade,
+      year: requestBody.year,
+      overallRating: requestBody.overallRating,
+      relevancyRating: requestBody.relevancyRating,
+      facultyRating: requestBody.facultyRating,
+      contentRating: requestBody.contentRating,
+      description: requestBody.description,
       author: authUserId,
     });
     return res.status(201).json(review);

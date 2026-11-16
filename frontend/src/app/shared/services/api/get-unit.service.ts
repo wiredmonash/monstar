@@ -1,11 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, of, switchMap, tap } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import {
-  FilterData,
-  FilteredUnitsResponse,
-} from '../../models/v2/unit.model';
+import { FilterData, FilteredUnitsResponse } from '../../models/v2/unit.model';
 import {
   UnitMap,
   UnitMapEdge,
@@ -30,18 +27,10 @@ export class GetUnitService {
       .set('populateReviews', populateReviews)
       .set('populateReviewsAuthor', populateReviewsAuthor);
 
-    return this.http
-      .get<IUnitDeeplyPopulated>(`${this.urlV2}/units/${unitCode}`, { params })
-      .pipe(
-        tap({
-          next: (res) => {
-            console.log('Response:', res);
-          },
-          error: (err) => {
-            console.error('Error', err.error);
-          },
-        })
-      );
+    return this.http.get<IUnitDeeplyPopulated>(
+      `${this.urlV2}/units/${unitCode}`,
+      { params }
+    );
   }
 
   getPopularUnits(): Observable<IUnit[]> {

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -11,7 +10,7 @@ import {
 @Component({
   selector: 'app-changelog',
   standalone: true,
-  imports: [CommonModule, SkeletonModule],
+  imports: [SkeletonModule],
   templateUrl: './changelog.component.html',
   styleUrl: './changelog.component.scss',
 })

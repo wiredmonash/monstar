@@ -24,7 +24,6 @@ import { Dialog, DialogModule } from 'primeng/dialog';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { RatingModule } from 'primeng/rating';
 import { ToastModule } from 'primeng/toast';
 import { ViewportService } from '../../services/viewport.service';
 import { RatingComponent } from '../rating/rating.component';
@@ -39,7 +38,6 @@ import { RatingComponent } from '../rating/rating.component';
     ButtonModule,
     InputTextModule,
     InputTextareaModule,
-    RatingModule,
     DropdownModule,
     ToastModule,
     RatingComponent,
@@ -61,7 +59,6 @@ export class WriteReviewUnitComponent {
   // View children for the input fields and buttons
   @ViewChild('titleInput') titleInput?: ElementRef;
   @ViewChild('semesterInput') semesterInput?: Dropdown;
-  @ViewChild('gradeInput') gradeInput?: Dropdown;
   @ViewChild('yearInput') yearInput?: Dropdown;
   @ViewChild('descriptionInput') descriptionInput?: ElementRef;
   @ViewChild('relevancyRatingInput') relevancyRatingInput!: ElementRef;
@@ -83,14 +80,6 @@ export class WriteReviewUnitComponent {
   yearOptions: Array<{ label: string; value: number }> = [];
 
   semesterOptions = SEMESTERS.map((s) => ({ label: s, value: s }));
-
-  gradeOptions = [
-    { label: 'HD', value: 'HD' },
-    { label: 'D', value: 'D' },
-    { label: 'C (credit)', value: 'C' },
-    { label: 'P (pass)', value: 'P' },
-    { label: 'N (fail)', value: 'N' },
-  ];
 
   slideDirection: 'next' | 'prev' = 'next';
   isAnimating: boolean = false;
@@ -236,12 +225,6 @@ export class WriteReviewUnitComponent {
           if (!this.isAnimating) {
             this.yearInput?.focus();
             this.yearInput?.show();
-          }
-          break;
-        case 'grade': // ! REMOVED
-          if (!this.isAnimating) {
-            this.gradeInput?.focus();
-            this.gradeInput?.show();
           }
           break;
         case 'submit':
