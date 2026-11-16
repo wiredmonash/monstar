@@ -34,9 +34,7 @@ if git diff "$VERCEL_GIT_PREVIOUS_SHA" "$VERCEL_GIT_COMMIT_SHA" --quiet -- . \
   ':(exclude).eslintrc*' \
   ':(exclude).eslintignore' \
   ':(exclude).editorconfig' \
-  ':(exclude).artillery.yml' \
   ':(exclude)processed_units.json' \
-  ':(exclude)setu_data_2019_2024.json' \
   ':(exclude).env.template' \
   ':(exclude).mcp.json' \
   ':(exclude).claude/**' \
