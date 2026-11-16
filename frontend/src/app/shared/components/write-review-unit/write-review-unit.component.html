@@ -165,26 +165,6 @@
                 ></p-dropdown>
               </div>
             }
-            <!-- * Grade -->
-            @case ('grade') {
-              <span class="p-text-secondary block mb-3"
-                >What grade did you get?<br />(this won't be shown in your
-                review)</span
-              >
-
-              <div class="flex flex-column mb-4 centered-container">
-                <p-dropdown
-                  #gradeInput
-                  [options]="gradeOptions"
-                  [(ngModel)]="review.grade"
-                  [style]="{ 'margin-bottom': '1.4rem' }"
-                  appendTo="body"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Select a grade"
-                ></p-dropdown>
-              </div>
-            }
             <!-- * Content Rating -->
             @case ('contentRating') {
               <span class="p-text-secondary block mb-4"
