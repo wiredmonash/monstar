@@ -229,7 +229,6 @@ export class UnitReviewHeaderComponent implements OnDestroy, OnChanges {
   }
 
   onSort(event: any) {
-    console.log('Sorting by: ', event.value);
     this.sortBy.emit(event.value);
 
     // Closes the dropdown menu after selection

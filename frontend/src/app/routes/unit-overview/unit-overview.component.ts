@@ -277,8 +277,6 @@ export class UnitOverviewComponent implements OnInit, AfterViewInit, OnDestroy {
    * Reset scroll position on all possible containers
    */
   private resetScrollPosition(): void {
-    console.log('Resetting scroll position');
-
     // Reset main window scroll
     window.scrollTo(0, 0);
     document.body.scrollTop = 0;
