@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
+  afterNextRender,
   Component,
   ElementRef,
   HostListener,
+  Injector,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -114,7 +116,8 @@ export class UnitListComponent implements OnInit, OnDestroy {
     private seo: SeoService,
     private viewportService: ViewportService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private injector: Injector
   ) {}
 
   /* ----------------------------- Lifecycle hooks ---------------------------- */
@@ -262,6 +265,31 @@ export class UnitListComponent implements OnInit, OnDestroy {
     if (event.rows) this.filterData.limit = event.rows;
     localStorage.setItem('rowsPerPage', JSON.stringify(this.filterData.limit));
     this.fetchPaginatedUnits();
+    // Only once the render is done: the loading skeletons make the page
+    // shorter, and a slide measured on the old page overshoots past the footer
+    afterNextRender(() => this.slideToTop(), { injector: this.injector });
+  }
+
+  /**
+   * Jump to the top, then slide the page down from where it was.
+   *
+   * Reads as a smooth scroll, but the scroll itself is instant, so user input
+   * can't cancel it and Firefox can't drop it mid re-render.
+   */
+  private slideToTop() {
+    const from = window.scrollY;
+    if (!from) return;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Everything that scrolls with the page; the fixed sidebar rail stays put
+    document
+      .querySelectorAll('nav.navbar, .wrapper > main, .wrapper > footer')
+      .forEach((el) =>
+        el.animate(
+          [{ transform: `translateY(${-from}px)` }, { transform: 'none' }],
+          { duration: 400, easing: 'ease-out' }
+        )
+      );
   }
 
   /**
