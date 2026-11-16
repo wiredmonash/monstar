@@ -53,9 +53,6 @@ class AiOverviewProvider {
     });
 
     console.log(
-      `[AIOverview][Model] Using model: ${GEMINI_MODEL} for unit ${unit.unitCode}`
-    );
-    console.log(
       `[AIOverview][Prompt] Generated prompt for unit ${unit.unitCode}\n${prompt}\n\n`
     );
 

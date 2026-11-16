@@ -34,27 +34,13 @@ class AdminV1Controller {
    * @param {number} delayMs - Throttle between requests (default service value)
    */
   static async regenerateAllOverviews(req: Request, res: Response) {
-    console.log('[Admin Route] AI overview regenerate endpoint called');
-    console.log('[Admin Route] Request body:', req.body);
-
     try {
       const { force = false, delayMs } = req.body || {};
-      console.log(
-        '[Admin Route] Parsed params - force:',
-        force,
-        'delayMs:',
-        delayMs
-      );
-      console.log(
-        '[Admin Route] Calling AiOverviewService.generateOverviewsForAllUnits...'
-      );
 
       const result = await AiOverviewService.generateOverviewsForAllUnits({
         force: Boolean(force),
         delayMs: typeof delayMs === 'number' ? delayMs : undefined,
       });
-
-      console.log('[Admin Route] Service returned:', result);
 
       return res.status(200).json({
         message: 'AI overviews regeneration completed',
